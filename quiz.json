@@ -1,0 +1,32 @@
+[
+  {
+		"question": "hey qué tal estás",
+		"answers": ["muy bien"],
+    "number": 1
+	},
+  {
+		"question": "pregunta 2",
+		"answers": ["2"],
+    "number": 2
+	},
+  {
+	"question": "pregunta 3",
+		"answers": ["3"],
+    "number": 3
+	},
+  {
+		"question": "pregunta 4",
+		"answers": ["4"],
+    "number": 4
+	},
+  {
+		"question": "pregunta 5",
+		"answers": ["5"],
+    "number": 5
+	},
+  {
+		"question": "pregunta 6",
+		"answers": ["6"],
+    "number": 6
+	}
+]
