@@ -20,24 +20,21 @@ module.exports = async (client, oldRole, newRole) => {
 	if (langcode === 'es')
 		if (nuevoperm[0] && permremoved[0])
 			logs_channel.send(
-				`${user} ha actualizado los permisos del rol \`\`${newRole.name}\`\`, se le ha añadido: \`\`${nuevoperm.join(
+				`${user} ha actualizado los permisos del rol \`${newRole.name}\`, se le ha añadido: \`${nuevoperm.join(
 					', '
-				)}\`\`. Se le ha removido: \`\`${permremoved.join(', ')}\`\``
+				)}\`. Se le ha removido: \`${permremoved.join(', ')}\``
 			);
 		else if (permremoved[0])
-			logs_channel.send(`${user} ha actualizado los permisos del rol \`\`${newRole.name}\`\`, se le ha removido: \`\`${permremoved.join(', ')}\`\``);
+			logs_channel.send(`${user} ha actualizado los permisos del rol \`${newRole.name}\`, se le ha removido: \`${permremoved.join(', ')}\``);
 		else if (nuevoperm[0])
-			logs_channel.send(`${user} ha actualizado los permisos del rol \`\`${newRole.name}\`\`, se le ha añadido: \`\`${nuevoperm.join(', ')}\`\``);
-		else logs_channel.send(`Un rol ha sido actualizado: \`\`${newRole.name}\`\``);
+			logs_channel.send(`${user} ha actualizado los permisos del rol \`${newRole.name}\`, se le ha añadido: \`${nuevoperm.join(', ')}\``);
+		else logs_channel.send(`Un rol ha sido actualizado: \`${newRole.name}\``);
 	else if (langcode === 'en')
 		if (nuevoperm[0] && permremoved[0])
 			logs_channel.send(
-				`${user} has updated \`\`${newRole.name}\`\` role permissions, added: \`\`${nuevoperm.join(', ')}\`\`. Removed: \`\`${permremoved.join(
-					', '
-				)}\`\``
+				`${user} has updated \`${newRole.name}\` role permissions, added: \`${nuevoperm.join(', ')}\`. Removed: \`${permremoved.join(', ')}\``
 			);
-		else if (permremoved[0])
-			logs_channel.send(`${user} has updated \`\`${newRole.name}\`\` role permissions, removed: \`\`${permremoved.join(', ')}\`\``);
-		else if (nuevoperm[0]) logs_channel.send(`${user} has updated \`\`${newRole.name}\`\` role permissions, added: \`\`${nuevoperm.join(', ')}\`\``);
-		else logs_channel.send(`A role has been updated: \`\`${newRole.name}\`\``);
+		else if (permremoved[0]) logs_channel.send(`${user} has updated \`${newRole.name}\` role permissions, removed: \`${permremoved.join(', ')}\``);
+		else if (nuevoperm[0]) logs_channel.send(`${user} has updated \`${newRole.name}\` role permissions, added: \`${nuevoperm.join(', ')}\``);
+		else logs_channel.send(`A role has been updated: \`${newRole.name}\``);
 };

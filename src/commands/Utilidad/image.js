@@ -11,7 +11,7 @@ const { ModelServer } = require('../../utils/models');
 module.exports = {
 	name: 'image',
 	description: 'Search an image in Google',
-	ESdesc: 'Busca una imagen',
+	ESdesc: 'Busca una imagen en Google',
 	usage: 'image <search>',
 	example: 'image hotdog',
 	aliases: ['img', 'imgsearch'],

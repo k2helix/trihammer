@@ -23,8 +23,8 @@ module.exports = {
 	name: 'remindme',
 	description: 'Add a reminder',
 	ESdesc: 'Añade un recordatorio',
-	usage: 'remindme [list] <time> [reason]',
-	example: 'remindme 1h add a new command\nremindme list',
+	usage: 'remindme [list] <time or date (DD/MM/YYYY)> [reason]',
+	example: 'remindme 1h add a new command\nremindme 05/03/2021 do homework\nremindme list',
 	aliases: ['radd', 'r-add', 'remind'],
 	type: 1,
 	async execute(client, message, args) {
@@ -48,9 +48,19 @@ module.exports = {
 		let { util } = require(`../../utils/lang/${langcode}.js`);
 
 		let time_v = Convert(args[0]);
-		if (!time_v) return;
+		let ms;
+		if (!time_v) {
+			let date = args[0].split('/');
+			if (date.length > 2) return;
+			let [day, month, year] = date;
+			if (!year) year = new Date(Date.now()).getFullYear();
+			if (date.some((n) => isNaN(n))) return message.channel.send('🤔');
+			if (year.length !== 4) year = '20' + year;
 
-		let remind = new ModelRemind({ id: message.author.id, reason: motivo, active: true, expire: Date.now() + time_v.tiempo });
+			let jsDate = new Date(year, month - 1, day);
+			ms = jsDate.getTime();
+		} else ms = Date.now() + time_v.tiempo;
+		let remind = new ModelRemind({ id: message.author.id, reason: motivo, active: true, expire: ms });
 		await remind.save();
 
 		message.channel.send(util.remind(motivo, args[0]));
