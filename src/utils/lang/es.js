@@ -118,8 +118,8 @@ module.exports = {
 		user_infrs:
 			'Infracciones de {user} ```ml\nTipo | Moderador | Razón | Duración | ¿Activa? | Fecha | Infr ID \n ------------------------------------',
 		infrs_404: 'El usuario proporcionado no tiene infracciones.',
-		channel_lock: 'El envío de mensajes en este canal ha sido denegado para ``{role}``',
-		channel_unlock: 'El envío de mensajes en este canal ha sido restablecido para ``{role}``',
+		channel_lock: 'El envío de mensajes en este canal ha sido denegado para `{role}`',
+		channel_unlock: 'El envío de mensajes en este canal ha sido restablecido para `{role}`',
 		temp_infr_md: 'Has sido {action} en {server}. Razón: {reason} | Tiempo: {time}',
 		temp_infr: '{user} ha sido {action}. Razón: {reason} | Tiempo: {time}',
 		time_404: 'Necesitas incluir el tiempo que será sancionado',
@@ -297,7 +297,7 @@ module.exports = {
 			}
 		},
 		remind: function (reason, time) {
-			return `Entendido, te recordaré \`${reason}\` en ${Convert(time).nombre}`;
+			return `Entendido, te recordaré \`${reason}\` en ${Convert(time).nombre || time}`;
 		},
 		timezone: 'La hora actual en {country} es {time}',
 		today: {
@@ -424,14 +424,14 @@ module.exports = {
 			moved: ':orange_circle: {user} ha abadonado el canal de voz {oldChannel} y se ha unido al canal de voz {newChannel}'
 		},
 		user: {
-			name: 'El usuario {oldUser} ha cambiado de nombre de usuario, antes era ``{oldUser}`` y ahora es ``{newUser}``.'
+			name: 'El usuario {oldUser} ha cambiado de nombre de usuario, antes era `{oldUser}` y ahora es `{newUser}`.'
 		},
 		role: {
 			update: {
-				added: '{user} ha actualizado los permisos del rol ``{role}``, se le ha añadido: ``{perms}``',
-				removed: '{user} ha actualizado los permisos del rol ``{role}``, se le ha removido: ``{perms}``',
-				both: '{user} ha actualizado los permisos del rol ``{role}``, se le ha añadido: ``{added}``. Se le ha removido: ``{removed}``',
-				none: 'Un rol ha sido actualizado: ``{role}``'
+				added: '{user} ha actualizado los permisos del rol `{role}`, se le ha añadido: `{perms}`',
+				removed: '{user} ha actualizado los permisos del rol `{role}`, se le ha removido: `{perms}`',
+				both: '{user} ha actualizado los permisos del rol `{role}`, se le ha añadido: `{added}`. Se le ha removido: `{removed}`',
+				none: 'Un rol ha sido actualizado: `{role}`'
 			},
 			delete: '{user} ha borrado un rol: {role}',
 			create: '{user} ha creadp un rol: {role}'
@@ -459,10 +459,9 @@ module.exports = {
 		},
 		channel: {
 			update: {
-				added: '{user} ha cambiado los permisos del rol ``{role}`` en el canal {channel}, se le ha añadido: ``{perms}``',
-				removed: '{user} ha cambiado los permisos del rol ``{role}`` en el canal {channel}, se le ha removido: ``{perms}``',
-				both:
-					'{user} ha cambiado los permisos del rol ``{role}`` en el canal {channel}, se le ha añadido: ``{added}``. Se le ha removido ``{removed}``'
+				added: '{user} ha cambiado los permisos del rol `{role}` en el canal {channel}, se le ha añadido: `{perms}`',
+				removed: '{user} ha cambiado los permisos del rol `{role}` en el canal {channel}, se le ha removido: `{perms}`',
+				both: '{user} ha cambiado los permisos del rol `{role}` en el canal {channel}, se le ha añadido: `{added}`. Se le ha removido `{removed}`'
 			},
 			delete: '{user} ha borrado un canal de tipo {channel}: {name}',
 			create: '{user} ha creado un canal de tipo {channel}: {name}'

@@ -123,8 +123,8 @@ module.exports = {
 		user_404: "I couldn't find an user with id {id}",
 		user_infrs: "{user}'s infractions ```ml\nType | Moderator | Reason | Duration | Active? | Date | Infr ID \n ------------------------------------",
 		infrs_404: "The given user doesn't have infractions",
-		channel_lock: 'SEND_MESSAGES permission has been denied for ``{role}``',
-		channel_unlock: 'SEND_MESSAGES permission has been re-established for ``{role}``',
+		channel_lock: 'SEND_MESSAGES permission has been denied for `{role}`',
+		channel_unlock: 'SEND_MESSAGES permission has been re-established for `{role}`',
 		temp_infr_md: 'You have been {action} in {server}. Reason: {reason} | Duration: {time}',
 		temp_infr: '{user} has been {action}. Reason: {reason} | Time {time}',
 		time_404: 'You need to type the time.',
@@ -302,7 +302,7 @@ module.exports = {
 			}
 		},
 		remind: function (reason, time) {
-			return `Ok, I will remind you \`${reason}\` in ${Convert(time).nombre}`;
+			return `Ok, I will remind you \`${reason}\` in ${Convert(time).nombre || time}`;
 		},
 		timezone: 'The current time in {country} is {time}',
 		today: {
@@ -429,14 +429,14 @@ module.exports = {
 			moved: ':orange_circle: {user} has left voice channel {oldChannel} and has joined voice channel {newChannel}'
 		},
 		user: {
-			name: 'User {oldUser} has changed their username, before change was ``{oldUser}`` and after change ``{newUser}``.'
+			name: 'User {oldUser} has changed their username, before change was `{oldUser}` and after change `{newUser}` .'
 		},
 		role: {
 			update: {
-				added: '{user} has updated ``{role}`` role permissions, added: ``{perms}``',
-				removed: '{user} has updated ``{role}`` role permissions, removed: ``{perms}``',
-				both: '{user} has updated ``{role}`` role permissions, added: ``{added}``. Removed: ``{removed}``',
-				none: 'A role has been updated: ``{role}``'
+				added: '{user} has updated `{role}` role permissions, added: `{perms}`',
+				removed: '{user} has updated `{role}` role permissions, removed: `{perms}`',
+				both: '{user} has updated `{role}` role permissions, added: `{added}` . Removed: `{removed}`',
+				none: 'A role has been updated: `{role}`'
 			},
 			delete: '{user} has deleted a role: {role}',
 			create: '{user} has created a role: {role}'
@@ -464,9 +464,9 @@ module.exports = {
 		},
 		channel: {
 			update: {
-				added: '{user} has updated ``{role}`` role permissions in {channel}, added: ``{added}``',
-				removed: '{user} has updated ``{role}`` role permissions in {channel}, removed: ``{perms}``',
-				both: '{user} has updated ``{role}`` role permissions in {channel}, added: ``{added}``. Removed: ``{removed}``'
+				added: '{user} has updated `{role}` role permissions in {channel}, added: `{added}`',
+				removed: '{user} has updated `{role}` role permissions in {channel}, removed: `{perms}`',
+				both: '{user} has updated `{role}` role permissions in {channel}, added: `{added}` . Removed: `{removed}`'
 			},
 			delete: '{user} has deleted {channel}: {name}',
 			create: '{user} has created {channel}: {name}'
