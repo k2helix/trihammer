@@ -37,7 +37,7 @@ module.exports = {
 				.setTitle('Reminders')
 				.setColor('RANDOM')
 				.setDescription(reminders.map((remind) => `**${remind.reason}** - ${msToTime(remind.expire - Date.now())}`).join('\n'));
-			message.channel.send(embed);
+			return message.channel.send(embed);
 		}
 
 		let motivo = args.slice(1).join(' ');
@@ -51,7 +51,7 @@ module.exports = {
 		let ms;
 		if (!time_v) {
 			let date = args[0].split('/');
-			if (date.length > 2) return;
+			if (date.length < 2) return;
 			let [day, month, year] = date;
 			if (!year) year = new Date(Date.now()).getFullYear();
 			if (date.some((n) => isNaN(n))) return message.channel.send('🤔');
