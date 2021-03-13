@@ -111,6 +111,14 @@ let SchemaPlaylists = new mongoose.Schema({
 
 let ModelPlaylists = mongoose.model('playlists', SchemaPlaylists);
 
+let SchemaTwitter = new mongoose.Schema({
+	server: String,
+	channel: String,
+	twitter: [{ name: String, id: String }]
+});
+
+let ModelTwitter = mongoose.model('twitter', SchemaTwitter);
+
 module.exports = {
 	ModelRemind,
 	ModelServer,
@@ -121,5 +129,6 @@ module.exports = {
 	ModelLvlRol,
 	ModelMutes,
 	ModelTempban,
-	ModelPlaylists
+	ModelPlaylists,
+	ModelTwitter
 };

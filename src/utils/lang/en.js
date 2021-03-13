@@ -95,7 +95,16 @@ module.exports = {
 		lang_set: 'Ok, {idioma} set as new language.',
 		admin_perm: 'You need the administrator role to execute this command.',
 		mod_perm: 'You need the administrator or moderator role to execute this command.',
-		command_used: ':wrench: {user} has used the command **{command}** in {channel}'
+		command_used: ':wrench: {user} has used the command **{command}** in {channel}',
+		twitter: {
+			follow: function (username, channel, id) {
+				return `You will receive notificacions from ${username} (${id}) in <#${channel.id}> when the bot restars (less than 12h)`;
+			},
+			unfollow: function (username) {
+				return `You won't receive more notifications from ${username} when the bot restars (less than 12h)`;
+			},
+			not_following: 'You are not following that user, use `twitter follow username #channel` to follow them'
+		}
 	},
 	kawaii: {
 		cuddle: '{author} cuddles with {member} uwu',
