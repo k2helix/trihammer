@@ -12,7 +12,7 @@ module.exports = {
 	description: 'Send a message when someone you want posts a tweet',
 	ESdesc: 'Envía un mensaje cuando alguien que quieras pone un tweet',
 	usage: 'twitter <follow | unfollow> username channel',
-	example: 'twitter follow WillyrexYT #twitter\ntwitter unfollow WillyrexYT',
+	example: 'twitter follow WillyrexYT #twitter\ntwitter unfollow WillyrexYT #twitter',
 	aliases: ['twt'],
 	type: 3,
 	async execute(client, message, args) {
@@ -36,13 +36,12 @@ module.exports = {
 					if (!twitter) {
 						let newTwitterModel = new ModelTwitter({
 							server: message.guild.id,
-							channel: channel.id,
-							twitter: [{ name: username, id: id }]
+							twitter: [{ name: username, id: id, channel: channel.id }]
 						});
 						await newTwitterModel.save();
 						twitter = newTwitterModel;
 					} else {
-						twitter.twitter.push({ name: username, id: id });
+						twitter.twitter.push({ name: username, id: id, channel: channel.id });
 						twitter.save();
 					}
 					message.channel.send(config.twitter.follow(username, channel, id));
@@ -51,12 +50,15 @@ module.exports = {
 
 			case 'unfollow':
 				let userName = args[1].toLowerCase();
+				let Channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
+
 				if (!userName) return;
+				if (!Channel) return;
 
 				let Twitter = await ModelTwitter.findOne({ server: message.guild.id });
 				if (!Twitter) return message.channel.send(config.twitter.not_following);
 
-				let newArray = Twitter.twitter.filter((t) => t.name !== userName);
+				let newArray = Twitter.twitter.filter((t) => t.name !== userName && t.channel !== Channel.id);
 				if (Twitter.twitter == newArray) return message.channel.send(config.twitter.not_following);
 				Twitter.twitter = newArray;
 				Twitter.save();
