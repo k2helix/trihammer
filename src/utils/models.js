@@ -113,8 +113,7 @@ let ModelPlaylists = mongoose.model('playlists', SchemaPlaylists);
 
 let SchemaTwitter = new mongoose.Schema({
 	server: String,
-	channel: String,
-	twitter: [{ name: String, id: String }]
+	twitter: [{ name: String, id: String, channel: String }]
 });
 
 let ModelTwitter = mongoose.model('twitter', SchemaTwitter);
