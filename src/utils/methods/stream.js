@@ -36,7 +36,6 @@ async function checkTweets(client) {
 			ids.push(element.id);
 		}
 	});
-
 	const stream = T.stream('statuses/filter', { follow: ids });
 	// const stream = T.stream('statuses/filter', { follow: ['1273009744022822918', '2206903392', '1143818663038017536'] }); //1143818663038017536 alt id
 
@@ -85,7 +84,13 @@ async function checkTweets(client) {
 		// 	.setTimestamp();
 		// if (img) embed.setImage(img);
 		models.forEach((model) => {
-			client.channels.cache.get(model.twitter.channel).send(`${rt} https://twitter.com/${owner}/status/${tweet.id_str}`);
+			let arr = model.twitter;
+			let pos = arr
+				.map(function (twt) {
+					return twt.name;
+				})
+				.indexOf(tweet.user.screen_name.toLowerCase());
+			client.channels.cache.get(model.twitter[pos].channel).send(`${rt} https://twitter.com/${owner}/status/${tweet.id_str}`);
 		});
 	});
 
