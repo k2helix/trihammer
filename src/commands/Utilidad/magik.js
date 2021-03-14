@@ -43,7 +43,7 @@ module.exports = {
 		let result = await request.post('https://fapi.wrmsr.io/evalmagik', {
 			headers: {
 				'Content-Type': 'application/json',
-				authorization: 'Bearer ' + '6b32d7c4d4d6fc8813825917ca61e'
+				authorization: 'Bearer ' + process.env.FAPI_API_TOKEN
 			},
 			body: JSON.stringify({
 				images: [image],

@@ -19,12 +19,12 @@ module.exports = {
 		let attachments = message.attachments.array();
 		if (attachments[0]) image = attachments[0].url;
 		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
-		if (!image.toLowerCase().includes('.gif')) return message.channel.send('gmagik [user or gif or url] (not image!!)');
+		if (!image.toLowerCase().includes('.gif')) return message.channel.send('gmagik [user or gif or url] (not jpg or png!!)');
 		let msg = await message.channel.send(util.loading);
 		let result = await request.post('https://fapi.wrmsr.io/magikscript', {
 			headers: {
 				'Content-Type': 'application/json',
-				authorization: 'Bearer ' + '6b32d7c4d4d6fc8813825917ca61e'
+				authorization: 'Bearer ' + process.env.FAPI_API_TOKEN
 			},
 			body: JSON.stringify({
 				images: [image],
