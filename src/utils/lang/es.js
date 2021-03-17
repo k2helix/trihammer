@@ -319,6 +319,13 @@ module.exports = {
 			to: 'A',
 			not_found: 'Idioma no encontrado, usa `translate list` para ver la lista de idiomas'
 		},
+		map: {
+			street: 'Nombre de la calle',
+			zipcode: 'Código postal',
+			city: 'Ciudad',
+			state: 'Estado',
+			country: 'País'
+		},
 		loading: '<a:loading:735243076758667275> Procesando...',
 		nsfw: 'Este canal no es NSFW, usa el comando en uno que lo sea',
 		invite: {

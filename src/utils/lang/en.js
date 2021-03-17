@@ -324,6 +324,13 @@ module.exports = {
 			to: 'To',
 			not_found: 'Language not found, use `translate list` to check the languages list'
 		},
+		map: {
+			street: 'Street name',
+			zipcode: 'Zip code',
+			city: 'City',
+			state: 'State',
+			country: 'Country'
+		},
 		loading: '<a:loading:735243076758667275> Processing...',
 		nsfw: "This channel isn't NSFW, use the command in one NSFW channel",
 		invite: {
