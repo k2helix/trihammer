@@ -13,6 +13,7 @@
 // const glitch = require('glitch-canvas')
 const request = require('node-superfetch');
 const { MessageAttachment } = require('discord.js');
+const { ModelServer } = require('../../utils/models');
 module.exports = {
 	name: 'gglitch',
 	description: 'Glitch a gif',
@@ -22,46 +23,30 @@ module.exports = {
 	aliases: ['gifglitch'],
 	type: 4,
 	async execute(client, message, args) {
+		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
+		let langcode = serverConfig.lang;
+		let { util } = require(`../../utils/lang/${langcode}.js`);
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
 		let image = user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 });
 		let attachments = message.attachments.array();
 		if (attachments[0]) image = attachments[0].url;
 		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
-		let iterations;
-		let amount;
 
-		switch (user.id) {
-			case message.author.id:
-				if (!isNaN(args[0]) && !isNaN(args[1])) {
-					iterations = Number(args[0]) > 99 ? 99 : Number(args[0]);
-					amount = Number(args[1]) > 99 ? 99 : Number(args[1]);
-				} else {
-					iterations = Math.floor(Math.random() * 20 + 1);
-					amount = Math.floor(Math.random() * 30 + 1);
-				}
-				break;
-
-			case (message.mentions.users.first() || client.users.cache.get(args[0])).id:
-				if (!isNaN(args[1]) && !isNaN(args[2])) {
-					iterations = Number(args[1]) > 99 ? 99 : Number(args[1]);
-					amount = Number(args[2]) > 99 ? 99 : Number(args[2]);
-				} else {
-					iterations = Math.floor(Math.random() * 20 + 1);
-					amount = Math.floor(Math.random() * 30 + 1);
-				}
-				break;
-		}
-		let { body } = await request.post('https://api.pxlapi.dev/glitch', {
-			headers: { 'Content-Type': 'application/json', Authorization: 'Application ' + process.env.PXL_API_TOKEN },
-			body: JSON.stringify({
-				images: [image],
-				gif: {},
-				iterations: iterations,
-				amount: amount
+		let msg = await message.channel.send(util.loading);
+		let { body } = await request
+			.post('https://api.pxlapi.dev/glitch', {
+				headers: { 'Content-Type': 'application/json', Authorization: 'Application ' + process.env.PXL_API_TOKEN },
+				body: JSON.stringify({
+					images: [image],
+					gif: {}
+				})
 			})
-		});
+			.catch((err) => {
+				return message.channel.send(err.message);
+			});
 		const attachment = new MessageAttachment(body, 'glitch.gif');
-		message.channel.send(`Iterations ${iterations}; Amount ${amount}`, attachment);
+		message.channel.send(`Glitched gif:`, attachment);
+		msg.delete();
 	}
 };
 // return message.channel.send('Command disabled');
