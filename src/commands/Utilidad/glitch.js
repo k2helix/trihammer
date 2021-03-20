@@ -4,8 +4,8 @@ module.exports = {
 	name: 'glitch',
 	description: 'Glitch an image',
 	ESdesc: 'Glitchea una imagen',
-	usage: 'glitch [user or image or url] [iterations] [amount]',
-	example: 'glitch\nglitch @user 10 23',
+	usage: 'glitch [user or image or url]',
+	example: 'glitch\nglitch @user',
 	cooldown: 3,
 	type: 4,
 	myPerms: [true, 'ATTACH_FILES'],
@@ -15,30 +15,6 @@ module.exports = {
 		let attachments = message.attachments.array();
 		if (attachments[0]) image = attachments[0].url;
 		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
-		let iterations;
-		let amount;
-
-		switch (user.id) {
-			case message.author.id:
-				if (!isNaN(args[0]) && !isNaN(args[1])) {
-					iterations = Number(args[0]) > 99 ? 99 : Number(args[0]);
-					amount = Number(args[1]) > 99 ? 99 : Number(args[1]);
-				} else {
-					iterations = Math.floor(Math.random() * 20 + 1);
-					amount = Math.floor(Math.random() * 30 + 1);
-				}
-				break;
-
-			case (message.mentions.users.first() || client.users.cache.get(args[0])).id:
-				if (!isNaN(args[1]) && !isNaN(args[2])) {
-					iterations = Number(args[1]) > 99 ? 99 : Number(args[1]);
-					amount = Number(args[2]) > 99 ? 99 : Number(args[2]);
-				} else {
-					iterations = Math.floor(Math.random() * 20 + 1);
-					amount = Math.floor(Math.random() * 30 + 1);
-				}
-				break;
-		}
 
 		let result = await request.post('https://fapi.wrmsr.io/glitch', {
 			headers: {
@@ -48,13 +24,13 @@ module.exports = {
 			body: JSON.stringify({
 				images: [image],
 				args: {
-					iterations: iterations,
-					amount: amount
+					iterations: Math.floor(Math.random() * 99) + 1,
+					amount: Math.floor(Math.random() * 30) + 1
 				}
 			})
 		});
 		const attachment = new MessageAttachment(result.raw, 'glitch.png');
-		message.channel.send(`Iterations ${iterations}; Amount ${amount}`, attachment);
+		message.channel.send(`Glitched image`, attachment);
 	}
 };
 

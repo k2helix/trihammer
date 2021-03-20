@@ -329,7 +329,10 @@ module.exports = {
 			zipcode: 'Zip code',
 			city: 'City',
 			state: 'State',
-			country: 'Country'
+			country: 'Country',
+			found: function (results, current) {
+				return `Found ${results.length} results. Currently showing the ${current}`;
+			}
 		},
 		loading: '<a:loading:735243076758667275> Processing...',
 		nsfw: "This channel isn't NSFW, use the command in one NSFW channel",

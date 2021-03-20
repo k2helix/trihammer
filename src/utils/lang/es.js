@@ -324,7 +324,10 @@ module.exports = {
 			zipcode: 'Código postal',
 			city: 'Ciudad',
 			state: 'Estado',
-			country: 'País'
+			country: 'País',
+			found: function (results, current) {
+				return `Encontré ${results.length} resultados. Mostrando el ${current}`;
+			}
 		},
 		loading: '<a:loading:735243076758667275> Procesando...',
 		nsfw: 'Este canal no es NSFW, usa el comando en uno que lo sea',
