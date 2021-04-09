@@ -39,10 +39,9 @@ module.exports = {
 
 		msg.react('⬅️');
 		msg.react('➡️');
-		msg.react('🚶');
 
 		const filter = (reaction, user) => {
-			return ['⬅️', '➡️', '🚶'].includes(reaction.emoji.name) && user.id === message.author.id;
+			return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
 		};
 		const collector = msg.createReactionCollector(filter, { time: 60000 });
 		collector.on('collect', (reaction) => {
@@ -80,9 +79,6 @@ module.exports = {
 					embed.fields[3].value = previous.zipcode || 'No';
 					embed.fields[4].value = previous.streetName || 'No';
 					msg.edit(embed);
-					break;
-				case '🚶':
-					msg.channel.send('Soon™');
 					break;
 			}
 		});
