@@ -3,8 +3,8 @@ const cheerio = require('cheerio');
 const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'world',
-	description: '¡Vamos a cambiarlo!',
-	ESdesc: "Let's ChangeIt!",
+	description: "Let's ChangeIt!",
+	ESdesc: '¡Vamos a cambiarlo!',
 	usage: 'world',
 	example: 'world',
 	type: 1,

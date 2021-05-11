@@ -73,7 +73,7 @@ module.exports = {
 		const opponent = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 		if (!opponent) return;
 
-		if (c4db.has(message.channel.id)) return;
+		if (c4db.has(`${message.author.id}&${opponent.user.id}`)) return message.channel.send('Seems like you are already playing.');
 		let serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		const langcode = serverConfig.lang;
 		let { util } = require(`../../utils/lang/${langcode}.js`);
@@ -92,16 +92,16 @@ module.exports = {
 		while (!winner && board.some((row) => row.includes(null))) {
 			const user = userTurn ? message.author : opponent;
 			const sign = userTurn ? 'user' : 'oppo';
-			if (!c4db.has(message.channel.id)) {
+			if (!c4db.has(`${message.author.id}&${opponent.user.id}`)) {
 				let mensaje = await message.channel.send(
 					stripIndents`
 					${user}` +
 						util.connect4.column +
 						`\n${displayBoard(board)}\n${nums.join('')}`
 				);
-				c4db.set(message.channel.id, mensaje.id);
+				c4db.set(`${message.author.id}&${opponent.user.id}`, mensaje.id);
 			} else {
-				let mensage = await c4db.obtener(message.channel.id);
+				let mensage = await c4db.obtener(`${message.author.id}&${opponent.user.id}`);
 				let mensaje = await message.channel.messages.fetch(mensage);
 				mensaje.edit(
 					stripIndents`
@@ -148,11 +148,12 @@ module.exports = {
 			turn.first().delete({ timeout: 1000 });
 		}
 
-		if (winner === 'time') return message.channel.send('Partida finalizada por inactividad') && c4db.delete(message.channel.id);
+		// eslint-disable-next-line prettier/prettier
+		if (winner === 'time') return message.channel.send('Partida finalizada por inactividad') && c4db.delete(`${message.author.id}&${opponent.user.id}`);
 		message.channel.send(winner ? util.connect4.win + `${winner}!` : util.connect4.draw);
-		let msgDB = await c4db.obtener(message.channel.id);
+		let msgDB = await c4db.obtener(`${message.author.id}&${opponent.user.id}`);
 		let msg = await message.channel.messages.fetch(msgDB);
 		msg.edit(stripIndents`${displayBoard(board)}\n${nums.join('')}`);
-		c4db.delete(message.channel.id);
+		c4db.delete(`${message.author.id}&${opponent.user.id}`);
 	}
 };
