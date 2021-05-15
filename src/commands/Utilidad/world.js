@@ -64,8 +64,8 @@ module.exports = {
 						parseInt(array.find((o) => o.id === 'oil_days').count.replace(',', '')) / 365.25
 					)} years)`
 			)
-			.addField('Natural gas left (boe)', array.find((o) => o.id === 'gas_reserves').count)
-			.addField('Natural gas left (boe)', array.find((o) => o.id === 'coal_reserves').count)
+			.addField('Natural gas left (barrels of oil equivalent)', array.find((o) => o.id === 'gas_reserves').count)
+			.addField('Coal left (boe)', array.find((o) => o.id === 'coal_reserves').count)
 			.addField('**--------------------**', '** **')
 			.addField('**ENVIRONMENT**\nForest loss this year', array.find((o) => o.id === 'forest_loss').count + ' hectares')
 			.addField('Land lost to soil erosion this year', array.find((o) => o.id === 'soil_erosion').count + ' ha')
