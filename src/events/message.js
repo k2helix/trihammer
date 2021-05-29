@@ -40,7 +40,7 @@ module.exports = async (client, message) => {
 	}
 
 	const langcode = serverConfig.lang;
-	const prefix = serverConfig.prefix;
+	const prefix = '-';
 	const { other, config, util, xp } = require(`../utils/lang/${langcode}.js`);
 
 	require('../utils/methods/spam').check(serverConfig, message);

@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 const { MessageAttachment } = require('discord.js');
 const request = require('node-superfetch');
 const { ModelServer } = require('../../utils/models');
@@ -11,6 +12,7 @@ module.exports = {
 	cooldown: 5,
 	myPerms: [true, 'ATTACH_FILES'],
 	async execute(client, message, args) {
+		return message.channel.send('Command disabled');
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		let langcode = serverConfig.lang;
 		let { util } = require(`../../utils/lang/${langcode}.js`);

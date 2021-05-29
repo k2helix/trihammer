@@ -7,6 +7,7 @@ module.exports = {
 	ESdesc: '¡Vamos a cambiarlo!',
 	usage: 'world',
 	example: 'world',
+	cooldown: 10,
 	type: 1,
 	async execute(client, message) {
 		let msg = await message.channel.send('Loading...');
