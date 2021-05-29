@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 // const captureWebsite = require('capture-website');
 // const { MessageEmbed } = require('discord.js');
 // const { ModelServer } = require('../../utils/models');
@@ -12,6 +13,7 @@ module.exports = {
 	aliases: ['ss'],
 	type: 1,
 	async execute(client, message, args) {
+		return message.channel.send('Command disabled again');
 		if (!args[0]) return;
 		let website = args[0].includes('http') ? args[0] : `https://${args[0]}`;
 		let delay = isNaN(args[1]) ? 0 : args[1];

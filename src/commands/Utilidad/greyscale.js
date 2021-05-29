@@ -19,12 +19,12 @@ module.exports = {
 	ESdesc: 'Pasa a blanco y negro una imagen',
 	usage: 'greyscale [user or image or url]',
 	example: 'greyscale @user\ngreyscale',
-	aliases: ['grey'],
+	aliases: ['grey', 'gray', 'grayscale'],
 	type: 4,
 	myPerms: [true, 'ATTACH_FILES'],
 	async execute(client, message, args) {
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-		let image = user.displayAvatarURL({ format: 'png' });
+		let image = user.displayAvatarURL({ format: 'png', size: 1024 });
 		let attachments = message.attachments.array();
 		if (attachments[0]) image = attachments[0].url;
 		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
