@@ -88,7 +88,11 @@ module.exports = {
 				max: 1,
 				time: 60000
 			});
-			if (!response.size) return message.channel.send(turn === 'user' ? 'oppo' : 'user');
+			if (!response.size) {
+				tttdb.delete(`${message.author.id}&${opponent.user.id}`);
+				winner = turn === 'user' ? 'oppo' : 'user';
+				return message.channel.send(winner);
+			}
 			let move = response.first().content.split(' ');
 			let column = move[0] - 1;
 			let row = move[1] - 1;
