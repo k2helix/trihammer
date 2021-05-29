@@ -88,6 +88,7 @@ module.exports = {
 				max: 1,
 				time: 60000
 			});
+			if (!response.size) return message.channel.send(turn === 'user' ? 'oppo' : 'user');
 			let move = response.first().content.split(' ');
 			let column = move[0] - 1;
 			let row = move[1] - 1;
