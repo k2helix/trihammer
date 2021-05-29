@@ -1,9 +1,4 @@
 /* eslint-disable no-unused-vars */
-let board = [
-	[null, null, null],
-	[null, null, null],
-	[null, null, null]
-];
 const playerOneEmoji = '❌';
 const playerTwoEmoji = '🔵';
 const blankEmoji = '<:blank:848220685709213717>';
@@ -74,6 +69,11 @@ module.exports = {
 		const verification = await verify(message.channel, opponent);
 		if (!verification) return message.channel.send(util.connect4.unverified);
 
+		let board = [
+			[null, null, null],
+			[null, null, null],
+			[null, null, null]
+		];
 		let winner = null;
 		let turn = 'user';
 		let user = message.member;
