@@ -268,6 +268,7 @@ function wordOfTheDay(client, channel) {
 					.addField('Traducción:', `${wordData.english[0]}`)
 					.addField('Pronunciación:', pronunciation + ` (${fromKana(pronunciation).toLowerCase()})`);
 				channel.send(embed);
+				client.channels.cache.get('860655239278624797').send(embed);
 			});
 		});
 	});
