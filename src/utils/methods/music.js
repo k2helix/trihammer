@@ -1,5 +1,5 @@
 const { ModelServer } = require('../models');
-const ytdl = require('ytdl-core-discord');
+const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const { array_move } = require('./functions');
 
@@ -56,7 +56,7 @@ async function play(guild, song) {
 
 	// let stream = concatStreams([ttsStream, ytStream]);
 
-	const dispatcher = serverQueue.connection.play(await ytdl(song.url), { seek: seek }); //type: 'opus'
+	const dispatcher = serverQueue.connection.play(ytdl(song.url), { seek: seek }); //type: 'opus'
 	dispatcher
 		.once('finish', () => {
 			if (serverQueue.loop === true) {
