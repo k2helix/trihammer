@@ -1,5 +1,5 @@
 const { ModelServer } = require('../models');
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 const Discord = require('discord.js');
 const { array_move } = require('./functions');
 
@@ -47,7 +47,7 @@ async function play(guild, song) {
 	// 		return format.container === opt.videoFormat && format.audioBitrate;
 	// 	}
 	// };
-	let ytdlStream = ytdl(song.url); //await
+	// // let ytdlStream = ytdl(song.url); //await
 
 	// const ffmpeg = new FFmpeg(ytdlStream);
 	// ytStream = ffmpeg.format('mp3').pipe(ytStream);
@@ -56,7 +56,7 @@ async function play(guild, song) {
 
 	// let stream = concatStreams([ttsStream, ytStream]);
 
-	const dispatcher = serverQueue.connection.play(ytdlStream, { seek: seek }); //type: 'opus'
+	const dispatcher = serverQueue.connection.play(await ytdl(song.url), { seek: seek, type: 'opus' }); //type: 'opus'
 	dispatcher
 		.once('finish', (reason) => {
 			if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
