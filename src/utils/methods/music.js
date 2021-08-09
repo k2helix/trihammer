@@ -56,11 +56,9 @@ async function play(guild, song) {
 
 	// let stream = concatStreams([ttsStream, ytStream]);
 
-	const dispatcher = serverQueue.connection.play(await ytdl(song.url), { seek: seek, type: 'opus' }); //type: 'opus'
+	const dispatcher = serverQueue.connection.play(await ytdl(song.url), { seek: seek }); //type: 'opus'
 	dispatcher
-		.once('finish', (reason) => {
-			if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
-			else console.log(reason);
+		.once('finish', () => {
 			if (serverQueue.loop === true) {
 				serverQueue.songs.push(serverQueue.songs.shift());
 				serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
