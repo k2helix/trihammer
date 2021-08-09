@@ -56,7 +56,7 @@ async function play(guild, song) {
 
 	// let stream = concatStreams([ttsStream, ytStream]);
 
-	const dispatcher = serverQueue.connection.play(ytdl(song.url), { seek: seek }); //type: 'opus'
+	const dispatcher = serverQueue.connection.play(ytdl(song.url, { quality: 'highestaudio' }), { seek: seek }); //type: 'opus'
 	dispatcher
 		.once('finish', () => {
 			if (serverQueue.loop === true) {
