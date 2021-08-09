@@ -48,7 +48,7 @@
     "spamnya": "^1.1.1",
     "twit": "^2.2.11",
     "utf-8-validate": "^5.0.4",
-    "ytdl-core": "^4.5.0",
+    "ytdl-core": "^4.9.1",
     "ytdl-core-discord": "^1.2.5",
     "zlib-sync": "^0.1.7"
   },
