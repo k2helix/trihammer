@@ -105,7 +105,7 @@ module.exports = {
 			turn = turn === 'user' ? 'oppo' : 'user';
 			winner = checkWinner(board);
 			if (winner) {
-				message.channel.send(winner);
+				message.channel.send(winner + ' has won!');
 				tttdb.delete(`${message.author.id}&${opponent.user.id}`);
 			}
 			response.first().delete({ timeout: 1000 });

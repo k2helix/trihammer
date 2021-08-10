@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 const request = require('node-superfetch');
 const { MessageEmbed } = require('discord.js');
@@ -50,27 +51,27 @@ module.exports = {
 		let { util, music } = require(`../../utils/lang/${langcode}.js`);
 
 		switch (args[0]) {
-			case 'ps':
-				let { game, DLCs } = await getGameResults(args.slice(1).join(' '));
-				if (!game) return message.channel.send(util.game.not_found);
-				let DLCMap = DLCs.map((each) => `${each.attributes.name} (${each.attributes.skus[0].prices['non-plus-user']['actual-price'].display})`);
+			// case 'ps':
+			// 	let { game, DLCs } = await getGameResults(args.slice(1).join(' '));
+			// 	if (!game) return message.channel.send(util.game.not_found);
+			// 	let DLCMap = DLCs.map((each) => `${each.attributes.name} (${each.attributes.skus[0].prices['non-plus-user']['actual-price'].display})`);
 
-				let embed = new MessageEmbed()
-					.setTitle(game.name)
-					.setColor('RANDOM')
-					.setImage(game['media-list'].screenshots[0].url)
+			// 	let embed = new MessageEmbed()
+			// 		.setTitle(game.name)
+			// 		.setColor('RANDOM')
+			// 		.setImage(game['media-list'].screenshots[0].url)
 
-					.addField(util.game.release, game['release-date'])
-					.addField(util.game.genres, game.genres.join(', ') || 'No')
-					.addField('Size', `${game['file-size'].value}${game['file-size'].unit}`)
-					.addField(util.game.price, game.skus[0].prices['non-plus-user']['actual-price'].display)
-					.addField(util.game.publishers, game['provider-name'])
-					.addField('DLCs', `${DLCs[0] ? DLCMap.slice(0, 3).join('\n') : 'No'}${DLCMap.length > 3 ? `\n${DLCMap.length - 3} more...` : ''}`, false)
+			// 		.addField(util.game.release, game['release-date'])
+			// 		.addField(util.game.genres, game.genres.join(', ') || 'No')
+			// 		.addField('Size', `${game['file-size'].value}${game['file-size'].unit}`)
+			// 		.addField(util.game.price, game.skus[0].prices['non-plus-user']['actual-price'].display)
+			// 		.addField(util.game.publishers, game['provider-name'])
+			// 		.addField('DLCs', `${DLCs[0] ? DLCMap.slice(0, 3).join('\n') : 'No'}${DLCMap.length > 3 ? `\n${DLCMap.length - 3} more...` : ''}`, false)
 
-					.setFooter('PS Store');
-				message.channel.send(embed);
+			// 		.setFooter('PS Store');
+			// 	message.channel.send(embed);
 
-				break;
+			// 	break;
 
 			default:
 				try {
@@ -174,24 +175,25 @@ module.exports = {
 							}
 						});
 				} catch (err) {
-					let { game, DLCs } = await getGameResults(args.join(' '));
-					if (!game) return message.channel.send(util.game.not_found);
-					let DLCMap = DLCs.map((each) => `${each.attributes.name} (${each.attributes.skus[0].prices['non-plus-user']['actual-price'].display})`);
+					return message.channel.send(util.game.not_found);
+					// let { game, DLCs } = await getGameResults(args.join(' '));
+					// if (!game) return message.channel.send(util.game.not_found);
+					// let DLCMap = DLCs.map((each) => `${each.attributes.name} (${each.attributes.skus[0].prices['non-plus-user']['actual-price'].display})`);
 
-					let embed = new MessageEmbed()
-						.setTitle(game.name)
-						.setColor('RANDOM')
-						.setImage(game['media-list'].screenshots[0].url)
+					// let embed = new MessageEmbed()
+					// 	.setTitle(game.name)
+					// 	.setColor('RANDOM')
+					// 	.setImage(game['media-list'].screenshots[0].url)
 
-						.addField(util.game.release, game['release-date'])
-						.addField(util.game.genres, game.genres.join(', ') || 'No')
-						.addField('Size', `${game['file-size'].value}${game['file-size'].unit}`)
-						.addField(util.game.price, game.skus[0].prices['non-plus-user']['actual-price'].display)
-						.addField(util.game.publishers, game['provider-name'])
-						.addField('DLCs', `${DLCs[0] ? DLCMap.slice(0, 3).join('\n') : 'No'}${DLCMap.length > 3 ? `\n${DLCMap.length - 3} more...` : ''}`, false)
+					// 	.addField(util.game.release, game['release-date'])
+					// 	.addField(util.game.genres, game.genres.join(', ') || 'No')
+					// 	.addField('Size', `${game['file-size'].value}${game['file-size'].unit}`)
+					// 	.addField(util.game.price, game.skus[0].prices['non-plus-user']['actual-price'].display)
+					// 	.addField(util.game.publishers, game['provider-name'])
+					// 	.addField('DLCs', `${DLCs[0] ? DLCMap.slice(0, 3).join('\n') : 'No'}${DLCMap.length > 3 ? `\n${DLCMap.length - 3} more...` : ''}`, false)
 
-						.setFooter('PS Store');
-					message.channel.send(embed);
+					// 	.setFooter('PS Store');
+					// message.channel.send(embed);
 				}
 				break;
 		}
