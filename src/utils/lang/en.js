@@ -207,6 +207,7 @@ module.exports = {
 			playlist_songs: 'Playlist songs',
 			no_playlists: 'The given uses does not have playlists'
 		},
+		yttogether: 'Click here to start **YouTube Together** in ',
 		no_vc: 'You are not in a voice channel',
 		no_queue: "There isn't any song in the queue",
 		lyrics_name: 'You need to type the name of the song',

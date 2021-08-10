@@ -202,6 +202,7 @@ module.exports = {
 			playlist_songs: 'Canciones de la playlist',
 			no_playlists: 'El usuario proporcionado no tiene playlists'
 		},
+		yttogether: 'Click aquí para empezar **YouTube Together** en ',
 		no_vc: 'No estás en un canal de voz',
 		no_queue: 'No hay ninguna canción en la cola',
 		lyrics_name: 'Debes poner el nombre de la canción',

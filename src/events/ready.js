@@ -51,7 +51,8 @@ module.exports = (client) => {
 		['Hollow Knight', 'PLAYING'],
 		['Hallownest', 'WATCHING'],
 		['Silksong', 'LISTENING'],
-		['Nightmare King Grimm', 'WATCHING']
+		['Nightmare King Grimm', 'WATCHING'],
+		['Leo Messi', 'WATCHING']
 	];
 
 	let status = Math.floor(Math.random() * actividades.length);
