@@ -1,12 +1,12 @@
 /* eslint-disable no-case-declarations */
-function replaceAll(str, obj) {
-	for (var key in obj) {
-		let regexp = new RegExp(`\\${key}`, 'g');
-		str = str.replace(regexp, obj[key]);
-	}
+// function replaceAll(str, obj) {
+// 	for (var key in obj) {
+// 		let regexp = new RegExp(`\\${key}`, 'g');
+// 		str = str.replace(regexp, obj[key]);
+// 	}
 
-	return str;
-}
+// 	return str;
+// }
 
 const request = require('node-superfetch');
 const cheerio = require('cheerio');
@@ -135,63 +135,63 @@ module.exports = {
 				data = await getInfoFromURL(results[animeIndex - 1].url);
 				data.url = results[animeIndex - 1].url;
 				break;
-			case '-screenshot':
-				// eslint-disable-next-line no-inner-declarations
-				function Time_convertor(ms) {
-					let horas = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-					let minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-					let segundos = Math.floor((ms % (1000 * 60)) / 1000);
+			// case '-screenshot':
+			// 	// eslint-disable-next-line no-inner-declarations
+			// 	function Time_convertor(ms) {
+			// 		let horas = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			// 		let minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+			// 		let segundos = Math.floor((ms % (1000 * 60)) / 1000);
 
-					let final2 = '';
-					if (segundos < 10) segundos = '0' + segundos;
-					if (minutos < 10) minutos = '0' + minutos;
-					if (horas < 10) horas = '0' + horas;
+			// 		let final2 = '';
+			// 		if (segundos < 10) segundos = '0' + segundos;
+			// 		if (minutos < 10) minutos = '0' + minutos;
+			// 		if (horas < 10) horas = '0' + horas;
 
-					if (segundos > 0) final2 += segundos > 1 ? `${minutos}:${segundos}` : `${minutos}:${segundos}`;
-					if (horas > 1) if (segundos > 0) final2 += segundos > 1 ? `${horas}:${minutos}:${segundos}` : `${horas}:${minutos}:${segundos}`;
+			// 		if (segundos > 0) final2 += segundos > 1 ? `${minutos}:${segundos}` : `${minutos}:${segundos}`;
+			// 		if (horas > 1) if (segundos > 0) final2 += segundos > 1 ? `${horas}:${minutos}:${segundos}` : `${horas}:${minutos}:${segundos}`;
 
-					return final2;
-				}
+			// 		return final2;
+			// 	}
 
-				let image = args[0].startsWith('http') ? args[0] : message.attachments.array()[0];
-				if (!image) return message.channel.send(util.anime.screenshot.no_image);
+			// 	let image = args[0].startsWith('http') ? args[0] : message.attachments.array()[0];
+			// 	if (!image) return message.channel.send(util.anime.screenshot.no_image);
 
-				try {
-					let msg = await message.channel.send(util.loading);
-					let { body } = await request.get(`https://trace.moe/api/search?url=${image === args[0] ? image : image.url}`);
-					let found = body.docs[0];
-					let all = body.docs
-						.filter((anm) => anm.title_romaji !== found.title_romaji)
-						.map((anm) => `[${anm.title_romaji}](https://myanimelist.net/anime/${anm.mal_id})`)
-						.join('\n');
-					let fileUrl = encodeURI(
-						`https://trace.moe/thumbnail.php?anilist_id=${found.anilist_id}&file=${found.filename.replace(/&/g, '%26')}&t=${found.at}&token=${
-							found.tokenthumb
-						}`
-					);
-					let video = encodeURI(`https://media.trace.moe/video/${found.anilist_id}/${found.filename}`);
-					video = replaceAll(video, { '(': '%28', ')': '%29', '&': '%26' }) + `?t=${found.at}&token=${found.tokenthumb}`;
-					let nsfw = found.is_adult ? 'YES 7w7' : 'No 😫';
+			// 	try {
+			// 		let msg = await message.channel.send(util.loading);
+			// 		let { body } = await request.get(`https://trace.moe/api/search?url=${image === args[0] ? image : image.url}`);
+			// 		let found = body.docs[0];
+			// 		let all = body.docs
+			// 			.filter((anm) => anm.title_romaji !== found.title_romaji)
+			// 			.map((anm) => `[${anm.title_romaji}](https://myanimelist.net/anime/${anm.mal_id})`)
+			// 			.join('\n');
+			// 		let fileUrl = encodeURI(
+			// 			`https://trace.moe/thumbnail.php?anilist_id=${found.anilist_id}&file=${found.filename.replace(/&/g, '%26')}&t=${found.at}&token=${
+			// 				found.tokenthumb
+			// 			}`
+			// 		);
+			// 		let video = encodeURI(`https://media.trace.moe/video/${found.anilist_id}/${found.filename}`);
+			// 		video = replaceAll(video, { '(': '%28', ')': '%29', '&': '%26' }) + `?t=${found.at}&token=${found.tokenthumb}`;
+			// 		let nsfw = found.is_adult ? 'YES 7w7' : 'No 😫';
 
-					let embed = new MessageEmbed()
-						.setTitle(util.image.title)
-						.setColor('RANDOM')
-						.addField('Anime:', `[${found.title_romaji}](https://myanimelist.net/anime/${found.mal_id})`)
-						.addField(util.anime.screenshot.at, Time_convertor(found.at * 1000))
-						.addField(util.anime.screenshot.similarity, (found.similarity * 100).toFixed(1))
-						.addField('Video:', `[Click](${video})`)
-						.addField('NSFW', nsfw)
-						.addField(util.anime.screenshot.more_results, all || 'No')
-						.setImage(fileUrl);
+			// 		let embed = new MessageEmbed()
+			// 			.setTitle(util.image.title)
+			// 			.setColor('RANDOM')
+			// 			.addField('Anime:', `[${found.title_romaji}](https://myanimelist.net/anime/${found.mal_id})`)
+			// 			.addField(util.anime.screenshot.at, Time_convertor(found.at * 1000))
+			// 			.addField(util.anime.screenshot.similarity, (found.similarity * 100).toFixed(1))
+			// 			.addField('Video:', `[Click](${video})`)
+			// 			.addField('NSFW', nsfw)
+			// 			.addField(util.anime.screenshot.more_results, all || 'No')
+			// 			.setImage(fileUrl);
 
-					message.channel.send(embed);
-					msg.delete();
-				} catch (err) {
-					message.channel.send(err.message);
-					console.error(err);
-				}
+			// 		message.channel.send(embed);
+			// 		msg.delete();
+			// 	} catch (err) {
+			// 		message.channel.send(err.message);
+			// 		console.error(err);
+			// 	}
 
-				return;
+			// 	return;
 			default:
 				data = await getInfoFromName(anime);
 				break;

@@ -1,6 +1,6 @@
 const request = require('node-superfetch');
 const cheerio = require('cheerio');
-const match = require('match-sorter').default;
+const { matchSorter } = require('match-sorter');
 //editado de mal-scraper
 const getFromBorder = ($, t) => {
 	return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim();
@@ -67,7 +67,7 @@ async function getInfoFromName(name, getBestMatch = true) {
 	if (!items.length) return;
 
 	try {
-		const bestMacth = getBestMatch ? match(items, name, { keys: ['name'] })[0] : items[0];
+		const bestMacth = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
 		const url = bestMacth ? bestMacth.url : items[0].url;
 		const data = await getInfoFromURL(url);
 
