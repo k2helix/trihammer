@@ -5,7 +5,7 @@ module.exports = async (client, role) => {
 	if (!serverConfig) return;
 	let langcode = serverConfig.lang;
 	let logs_channel = role.guild.channels.cache.get(serverConfig.serverlogs);
-	if (!role.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOGS)) return;
+	if (!role.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
 	const entry = await role.guild.fetchAuditLogs({ type: 'ROLE_DELETE' }).then((audit) => audit.entries.first());
 
