@@ -34,7 +34,7 @@ client.config = { prefix: 't-', admins: ['461279654158925825', '6386936958390108
 require('./modules/twitter').checkTweets(client);
 
 // const array = ['Mod', 'xp', 'Utilidad', 'Kawaii', 'config', 'Music'];
-const array = ['config', 'development', 'fun', 'information', 'moderation', 'music', 'social', 'utility'];
+const array = ['config', 'development', 'fun', 'information', 'moderation', 'Music', 'social', 'utility'];
 
 array.some((arr) => {
 	const commandFiles = fs.readdirSync('./src/commands/' + arr).filter((file) => file.endsWith('.js'));
