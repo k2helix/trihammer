@@ -1,4 +1,4 @@
-const { queue } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 module.exports = {
 	name: 'volume',
@@ -26,6 +26,6 @@ module.exports = {
 		if (parseFloat(args[1]) > 10) return message.channel.send('NO');
 
 		serverQueue.volume = args[1];
-		serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
+		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(args[1] / 5);
 	}
 };

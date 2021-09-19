@@ -1,8 +1,8 @@
 /* eslint-disable no-case-declarations */
-const { youtube } = require('../../utils/methods/music');
+const { youtube } = require('../../modules/music');
 const { MessageEmbed } = require('discord.js');
 const { ModelServer, ModelPlaylists } = require('../../utils/models');
-const { handleVideo } = require('../../utils/methods/music');
+const { handleVideo } = require('../../modules/music');
 module.exports = {
 	name: 'playlist',
 	description: 'Create or add songs into a playlist',
@@ -17,6 +17,7 @@ module.exports = {
 		let { music } = require(`../../utils/lang/${serverConfig.lang}`);
 		if (!args[0]) return;
 		let playlists = await ModelPlaylists.find({ author: message.author.id }).limit(10);
+		const filter = (msg) => msg.author.id === message.author.id;
 		switch (args[0]) {
 			case 'list':
 				if (!playlists[0]) return;
@@ -38,15 +39,9 @@ module.exports = {
 								.setColor('RANDOM')
 								.setDescription(topPlaylists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 								.setFooter(music.playlists.play_from_other);
-							message.channel.send(topEmbed);
+							message.channel.send({ embeds: [topEmbed] });
 
-							resp = await message.channel
-								.awaitMessages((msg) => msg.author.id === message.author.id, {
-									max: 1,
-									time: 20000,
-									errors: ['time']
-								})
-								.catch(() => false);
+							resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 							if (!resp) return;
 							if (resp.first().content.toLowerCase().includes('play')) {
@@ -74,15 +69,9 @@ module.exports = {
 								.setColor('RANDOM')
 								.setDescription(recentPlaylists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 								.setFooter(music.playlists.play_from_other);
-							message.channel.send(recentEmbed);
+							message.channel.send({ embeds: [recentEmbed] });
 
-							resp = await message.channel
-								.awaitMessages((msg) => msg.author.id === message.author.id, {
-									max: 1,
-									time: 20000,
-									errors: ['time']
-								})
-								.catch(() => false);
+							resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 							if (!resp) return;
 							if (resp.first().content.toLowerCase().includes('play')) {
@@ -113,15 +102,9 @@ module.exports = {
 								.setColor('RANDOM')
 								.setDescription(byPlaylists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 								.setFooter(music.playlists.play_from_other);
-							message.channel.send(byEmbed);
+							message.channel.send({ embeds: [byEmbed] });
 
-							resp = await message.channel
-								.awaitMessages((msg) => msg.author.id === message.author.id, {
-									max: 1,
-									time: 20000,
-									errors: ['time']
-								})
-								.catch(() => false);
+							resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 							if (!resp) return;
 							if (resp.first().content.toLowerCase().includes('play')) {
@@ -149,15 +132,9 @@ module.exports = {
 					.setColor('RANDOM')
 					.setDescription(playlists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 					.setFooter(music.playlists.play);
-				message.channel.send(listEmbed);
+				message.channel.send({ embeds: [listEmbed] });
 
-				const resp = await message.channel
-					.awaitMessages((msg) => msg.author.id === message.author.id, {
-						max: 1,
-						time: 20000,
-						errors: ['time']
-					})
-					.catch(() => false);
+				const resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 				if (!resp) return;
 				if (resp.first().content.toLowerCase().includes('play')) {
@@ -187,27 +164,15 @@ module.exports = {
 					.setColor('RANDOM')
 					.setDescription(plSongs.map((s) => `**${++sCount}**. [${s.name}](https://www.youtube.com/watch?v=${s.id})`))
 					.setFooter(music.playlists.song_add_or_remove);
-				message.channel.send(songEmbed);
+				message.channel.send({ embeds: [songEmbed] });
 
-				const songResponse = await message.channel
-					.awaitMessages((msg) => msg.author.id === message.author.id, {
-						max: 1,
-						time: 20000,
-						errors: ['time']
-					})
-					.catch(() => false);
+				const songResponse = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 				if (!songResponse) return;
 				switch (songResponse.first().content.split(' ')[0]) {
 					case 'add':
 						message.channel.send(music.playlists.which_song);
-						const nameResponse = await message.channel
-							.awaitMessages((msg) => msg.author.id === message.author.id, {
-								max: 1,
-								time: 20000,
-								errors: ['time']
-							})
-							.catch(() => false);
+						const nameResponse = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 						const searchString = nameResponse.first().content;
 						const videos = await youtube.searchVideos(searchString, 10).catch(() => false);
@@ -218,19 +183,11 @@ module.exports = {
 							.setTitle(music.song_select)
 							.setColor('#1423aa')
 							.setFooter(music.cancel_select)
-							.setDescription(
-								`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`
-							)
+							.setDescription(`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`)
 							.setTimestamp();
-						await message.channel.send(embed);
+						await message.channel.send({ embeds: [embed] });
 
-						const videoResponse = await message.channel
-							.awaitMessages((msg) => msg.author.id === message.author.id, {
-								max: 1,
-								time: 20000,
-								errors: ['time']
-							})
-							.catch(() => false);
+						const videoResponse = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 						if (typeof videoResponse === 'boolean') return await message.channel.send(music.cancel);
 						else if (videoResponse.first().content === 'cancel') return await message.channel.send('Ok');
@@ -280,15 +237,9 @@ module.exports = {
 					.setColor('RANDOM')
 					.setDescription(playlists.map((pl) => `**${++plCount}**. ${pl.name}`).join('\n'))
 					.setFooter(music.playlists.type_to_remove);
-				message.channel.send(delEmbed);
+				message.channel.send({ embeds: [delEmbed] });
 
-				const response = await message.channel
-					.awaitMessages((msg) => msg.author.id === message.author.id, {
-						max: 1,
-						time: 20000,
-						errors: ['time']
-					})
-					.catch(() => false);
+				const response = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
 				if (!response) return;
 				if (response.first().content === 'cancel') return await message.channel.send('Ok');

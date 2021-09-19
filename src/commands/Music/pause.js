@@ -1,4 +1,4 @@
-const { queue } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 module.exports = {
 	name: 'pause',
@@ -12,7 +12,7 @@ module.exports = {
 		const { music } = require(`../../utils/lang/${langcode}`);
 		if (serverQueue && serverQueue.playing) {
 			serverQueue.playing = false;
-			serverQueue.connection.dispatcher.pause();
+			serverQueue.audioPlayer.pause();
 			return message.channel.send('⏸');
 		}
 		return message.channel.send(music.no_queue);

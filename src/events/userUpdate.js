@@ -6,15 +6,12 @@ module.exports = (client, oldUser, newUser) => {
 			if (!serverConfig) return;
 			let langcode = serverConfig.lang;
 			let logs_channel = g.channels.cache.get(serverConfig.memberlogs);
-			if (!logs_channel || logs_channel.type !== 'text') return;
+			if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
 
 			if (!g.members.cache.has(oldUser.id)) return;
-			if (!logs_channel || logs_channel.type !== 'text') return;
-			if (langcode === 'es')
-				logs_channel.send(`El usuario ${oldUser.tag} ha cambiado de nombre de usuario, antes era \`${oldUser.tag}\` y ahora es \`${newUser.tag}\`.`);
+			if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+			if (langcode === 'es') logs_channel.send(`El usuario ${oldUser.tag} ha cambiado de nombre de usuario, antes era \`${oldUser.tag}\` y ahora es \`${newUser.tag}\`.`);
 			else if (langcode === 'en')
-				logs_channel.send(
-					`User ${oldUser.tag} has changed their username, before change was \`${oldUser.tag}\` and after change \`${newUser.tag}\`.`
-				);
+				logs_channel.send(`User ${oldUser.tag} has changed their username, before change was \`${oldUser.tag}\` and after change \`${newUser.tag}\`.`);
 		});
 };

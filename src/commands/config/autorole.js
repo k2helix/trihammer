@@ -1,4 +1,5 @@
 const { ModelServer } = require('../../utils/models');
+const { Permissions } = require('discord.js');
 module.exports = {
 	name: 'autorole',
 	description: 'Set the auto role (the role given to new members)',
@@ -14,8 +15,7 @@ module.exports = {
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id });
 		let langcode = serverConfig.lang;
 		let { config } = require(`../../utils/lang/${langcode}`);
-		let permiso =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.hasPermission('ADMINISTRATOR');
+		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
 		if (!permiso) return message.channel.send(config.admin_perm);
 		serverConfig.autorole = rol.id;
 		serverConfig.save();

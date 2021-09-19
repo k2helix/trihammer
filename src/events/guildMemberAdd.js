@@ -36,11 +36,9 @@ module.exports = async (client, member) => {
 	const welcomeConfig = await ModelWelc.findOne({ server: member.guild.id });
 	if (!welcomeConfig) {
 		let logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
-		if (!logs_channel || logs_channel.type !== 'text') return;
-		if (langcode === 'en')
-			logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} has joined the server, created ${member.user.createdAt}`);
-		else if (langcode === 'es')
-			logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} ha entrado al servidor, creado en ${member.user.createdAt}`);
+		if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+		if (langcode === 'en') logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} has joined the server, created ${member.user.createdAt}`);
+		else if (langcode === 'es') logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} ha entrado al servidor, creado en ${member.user.createdAt}`);
 	} else {
 		let canal = welcomeConfig.canal;
 		let welcomechannel = member.guild.channels.cache.get(canal);
@@ -67,13 +65,10 @@ module.exports = async (client, member) => {
 		ctx.drawImage(avatar, 625, 25, 350, 350);
 		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
 		if (logs_channel && welcomechannel) {
-			welcomechannel.send(attachment);
-			if (langcode === 'en')
-				logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} has joined the server, created ${member.user.createdAt}`);
+			welcomechannel.send({ files: [attachment] });
+			if (langcode === 'en') logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} has joined the server, created ${member.user.createdAt}`);
 			else if (langcode === 'es')
-				logs_channel.send(
-					`<:online:663872345009684481> ${member.user.tag} - ${member.id} ha entrado al servidor, creado hace ${member.user.createdAt}`
-				);
-		} else if (welcomechannel && !logs_channel) welcomechannel.send(attachment);
+				logs_channel.send(`<:online:663872345009684481> ${member.user.tag} - ${member.id} ha entrado al servidor, creado hace ${member.user.createdAt}`);
+		} else if (welcomechannel && !logs_channel) welcomechannel.send({ files: [attachment] });
 	}
 };

@@ -1,6 +1,6 @@
-const { queue } = require('../../utils/methods/music');
-const { handleVideo } = require('../../utils/methods/music');
-const { youtube } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
+const { handleVideo } = require('../../modules/music');
+const { youtube } = require('../../modules/music');
 
 module.exports = {
 	name: 'seek',
@@ -23,6 +23,8 @@ module.exports = {
 		// let hours = array[2] ? array[2] * 60 * 60 : 0
 
 		const all = Math.floor(seconds + minutes /*+ Number(hours)*/);
+		if (isNaN(all)) return;
+		if (all === 0) return message.channel.send('you lazy');
 		const url = serverQueue.songs[0].url;
 		const video = await youtube.getVideo(url);
 		handleVideo(video, message, voiceChannel, false, all);

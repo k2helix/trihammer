@@ -1,4 +1,4 @@
-const { queue } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 module.exports = {
 	name: 'skip',
@@ -26,7 +26,7 @@ module.exports = {
 
 		skips.push(message.author.id);
 		if (skips.length >= required) {
-			serverQueue.connection.dispatcher.end();
+			serverQueue.audioPlayer.stop();
 			return await message.channel.send(music.skip.skipping);
 		} else return await message.channel.send(music.skip.voting.replace('{votes}', `${skips.length}/${required}`));
 	}

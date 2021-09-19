@@ -1,8 +1,8 @@
-const { youtube } = require('../../utils/methods/music');
+const { youtube } = require('../../modules/music');
 
 const { MessageEmbed } = require('discord.js');
 const { ModelServer } = require('../../utils/models');
-const { handleVideo } = require('../../utils/methods/music');
+const { handleVideo } = require('../../modules/music');
 
 module.exports = {
 	name: 'search',
@@ -32,10 +32,12 @@ module.exports = {
 			.setFooter(music.cancel_select)
 			.setDescription(`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`)
 			.setTimestamp();
-		await message.channel.send(embed);
+		await message.channel.send({ embeds: [embed] });
 
+		let filter = (msg) => msg.author.id === message.author.id;
 		const response = await message.channel
-			.awaitMessages((msg) => msg.author.id === message.author.id, {
+			.awaitMessages({
+				filter,
 				max: 1,
 				time: 20000,
 				errors: ['time']

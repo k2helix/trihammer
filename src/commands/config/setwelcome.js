@@ -1,4 +1,5 @@
 const { ModelServer, ModelWelc } = require('../../utils/models');
+const { Permissions } = require('discord.js');
 module.exports = {
 	name: 'setwelcome',
 	description: 'Set the welcome channel',
@@ -15,8 +16,7 @@ module.exports = {
 		let langcode = serverConfig.lang;
 		let { config } = require(`../../utils/lang/${langcode}`);
 
-		let permiso =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.hasPermission('ADMINISTRATOR');
+		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
 		if (!permiso) return message.channel.send(config.admin_perm);
 		if (args[0] === 'disable') {
 			welcome.canal = 'none';
@@ -28,7 +28,7 @@ module.exports = {
 				server: message.guild.id,
 				canal: channel.id,
 				color: '#ffffff',
-				image: 'https://github.com/discordjs/guide/blob/master/code-samples/popular-topics/canvas/12/wallpaper.jpg?raw=true',
+				image: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
 				text: `Welcome to ${message.guild.name}`
 			});
 			welcome = newModel;

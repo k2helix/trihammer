@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const { queue } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 
 module.exports = {
@@ -29,14 +29,12 @@ module.exports = {
 			.setTitle(music.queue_songs)
 			.setColor('RANDOM')
 			.setDescription(
-				`${selectedPortion
-					.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) - ${song.duration}`)
-					.join('\n')}\n ${music.now_playing}\n${serverQueue.songs[0].title} - [${serverQueue.songs[0].duration}](https://www.youtube.com/watch?v=${
-					serverQueue.songs[0].id
-				})`
+				`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) - ${song.duration}`).join('\n')}\n ${
+					music.now_playing
+				}\n${serverQueue.songs[0].title} - [${serverQueue.songs[0].duration}](https://www.youtube.com/watch?v=${serverQueue.songs[0].id})`
 			)
 			.setFooter(music.queue_page.replaceAll({ '{number}': page, '{total}': Math.floor(serverQueue.songs.length / 10) + 1 }))
 			.setTimestamp();
-		return await message.channel.send(embed);
+		return await message.channel.send({ embeds: [embed] });
 	}
 };
