@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const { array_move } = require('../utils/functions');
 
 const { StreamType, createAudioPlayer, createAudioResource, joinVoiceChannel } = require('@discordjs/voice');
-const prism = require('prism-media');
+// const prism = require('prism-media');
 // var googleTTS = require('google-tts-api');
 // const https = require('https');
 
@@ -59,15 +59,15 @@ async function play(guild, song) {
 	let stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
 	let currentType = StreamType.Arbitrary;
 	// eslint-disable-next-line curly
-	if (song.seek !== 0) {
-		const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
-		let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
-		let seekStream = new prism.FFmpeg({
-			args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
-		});
-		currentType = StreamType.Raw;
-		stream = stream.pipe(seekStream);
-	}
+	// if (song.seek !== 0) {
+	// 	const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
+	// 	let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
+	// 	let seekStream = new prism.FFmpeg({
+	// 		args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
+	// 	});
+	// 	currentType = StreamType.Raw;
+	// 	stream = stream.pipe(seekStream);
+	// }
 	const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
 	const player = createAudioPlayer();
 	player.play(resource);
