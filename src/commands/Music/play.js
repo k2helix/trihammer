@@ -1,7 +1,7 @@
-const { youtube } = require('../../utils/methods/music');
+const { youtube } = require('../../modules/music');
 
 const { ModelServer } = require('../../utils/models');
-const { handleVideo } = require('../../utils/methods/music');
+const { handleVideo } = require('../../modules/music');
 
 module.exports = {
 	name: 'play',
@@ -38,7 +38,7 @@ module.exports = {
 		} else {
 			// eslint-disable-next-line no-redeclare
 			var video = await youtube.getVideo(url).catch(async () => {
-				const videos = await youtube.searchVideos(searchString, 1).catch(() => false);
+				const videos = await youtube.searchVideos(searchString, 1).catch((error) => console.log(error));
 				if (typeof videos === 'boolean' || videos.length < 1) return false;
 				return videos[0];
 			});

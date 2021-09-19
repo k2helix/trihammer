@@ -117,15 +117,13 @@ module.exports = {
 		bulkDelete_14d: 'Solo puedes borrar mensajes que son de antes de hace 14 días.',
 		delete_infr: 'Ok, infracción {key} eliminada.',
 		embed: {
-			embed_code:
-				'Necesitas incluir el código JSON del embed o mira el ejemplo del comando usando `command embed` (https://phodit.net/embedbuilder/).',
+			embed_code: 'Necesitas incluir el código JSON del embed o mira el ejemplo del comando usando `command embed` (https://phodit.net/embedbuilder/).',
 			create_embed: '\nPara saber cómo usar el comando, puedes usar `embed help`',
 			how_it_works:
 				'**Cómo usar el comando EMBED**\nEl comando `embed` puede funcionar de dos formas, la primera, usando el código JSON del embed (https://phodit.net/embedbuilder/), y la segunda es separando lo que quieras en el embed con **|**\nUn ejemplo sería `embed title: título del embed | description: descripción del embed | fields: [{"name": "título del primer campo", "value": "valor del primer campo" }, ...]`\n Este es un ejemplo sencillo, le puedes añadir muchas más cosas al embed (title, description, fields, footer, thumbnail, image y color). No tienen por qué ir en orden, lo único necesario es que el título sea lo primero, después, puedes ordenarlo como quieras.\nEsta ha sido la ayuda para el comando EMBED, si necesitas más ayuda, puedes preguntar en el servidor de soporte (t-support)'
 		},
 		user_404: 'No pude encontrar a algún usuario con id {id}',
-		user_infrs:
-			'Infracciones de {user} ```ml\nTipo | Moderador | Razón | Duración | ¿Activa? | Fecha | Infr ID \n ------------------------------------',
+		user_infrs: 'Infracciones de {user} ```ml\nTipo | Moderador | Razón | Duración | ¿Activa? | Fecha | Infr ID \n ------------------------------------',
 		infrs_404: 'El usuario proporcionado no tiene infracciones.',
 		channel_lock: 'El envío de mensajes en este canal ha sido denegado para `{role}`',
 		channel_unlock: 'El envío de mensajes en este canal ha sido restablecido para `{role}`',
@@ -179,8 +177,8 @@ module.exports = {
 	},
 	music: {
 		loop: {
-			enabled: '**🔁 Loop activado**',
-			disabled: '**🔁 Loop desactivado**'
+			enabled: '🔁 Loop activado',
+			disabled: '🔁 Loop desactivado'
 		},
 		playlists: {
 			titles: {
@@ -202,7 +200,12 @@ module.exports = {
 			playlist_songs: 'Canciones de la playlist',
 			no_playlists: 'El usuario proporcionado no tiene playlists'
 		},
-		yttogether: 'Click aquí para empezar **YouTube Together** en ',
+		ytt: {
+			yttogether: 'Click aquí para empezar **YouTube Together** en ',
+			yt_invited: 'Fuiste invitad@ por **{author}** a una sesión de **YouTube Together**: ',
+			yt_nodm: 'No pude enviar un mensaje directo al usuario',
+			yt_dm: 'El usuario fue notificado por mensaje directo'
+		},
 		no_vc: 'No estás en un canal de voz',
 		no_queue: 'No hay ninguna canción en la cola',
 		lyrics_name: 'Debes poner el nombre de la canción',
@@ -218,10 +221,13 @@ module.exports = {
 		cannot_remove: 'No puedes borrar esa canción',
 		song_removed: '{song} ha sido removida de la cola',
 		song_404: 'La cola no tiene ninguna canción con ese número',
+		invalid_song: 'Canción invalida, cancelando.',
 		song_select: '__**Selección de canciones**__',
 		cancel_select: 'Escribe "cancel" si no quieres seleccionar ninguna canción',
 		type_a_number: 'Pon un número para escuchar la canción',
 		cancel: 'No hubo respuesta. Cancelando...',
+		seek: 'Saltado a {time} correctamente',
+		seek_cancelled: 'El video finaliza antes de llegar ahí.',
 		skip: {
 			already_voted: 'Ya has votado para saltar ({votes})',
 			skipping: 'Saltando...',
@@ -295,12 +301,13 @@ module.exports = {
 			footer: 'Página '
 		},
 		sauce: {
+			no_image: 'No pude encontrar ninguna imagen en ese mensaje',
 			title: '¡Salsa!',
 			more_source: 'Otras fuentes:',
 			looks_like: function (url, result) {
-				return `Obtuve resultados con un ${result.header.similarity}% de similaridad: [${decodeURI(
-					result.data.title || result.data.source || result.data.ext_urls[0]
-				)}](${result.data.ext_urls ? result.data.ext_urls[0] : 'https://discord.com'}).`;
+				return `Obtuve resultados con un ${result.header.similarity}% de similaridad: [${decodeURI(result.data.title || result.data.source || result.data.ext_urls[0])}](${
+					result.data.ext_urls ? result.data.ext_urls[0] : 'https://discord.com'
+				}).`;
 			},
 			search_sources: function (url) {
 				return `<:google:749389813274378241> [Buscar imagen en google](https://www.google.com/searchbyimage?image_url=${url})\n<:yandex:749389643367186573> [Buscar imagen en Yandex (recomendado)](https://yandex.com/images/search?url=${url}&rpt=imageview)\n<:saucenao:785119535454748682> [Buscar imagen en SauceNAO (NSFW)](https://saucenao.com/search.php?url=${url})`;
@@ -318,7 +325,8 @@ module.exports = {
 			title: 'Traducción',
 			from: 'De',
 			to: 'A',
-			not_found: 'Idioma no encontrado, usa `translate list` para ver la lista de idiomas'
+			not_found: 'Idioma no encontrado, usa `translate list` para ver la lista de idiomas',
+			text_not_found: 'No pude encontrar texto en ese mensaje'
 		},
 		map: {
 			street: 'Nombre de la calle',
@@ -359,6 +367,7 @@ module.exports = {
 			},
 			footer: ' comandos.'
 		},
+		invalid_user: 'No has proporcionado un usuario válido',
 		game: {
 			release: 'Fecha de salida:',
 			genres: 'Géneros:',
@@ -374,7 +383,10 @@ module.exports = {
 			bot: 'no se puede jugar contra bots.',
 			challenge: ', aceptas el desafío? (yes o no)',
 			unverified: 'Parece que no ha aceptado...',
+			waiting: 'Esperando una respuesta...',
+			success: '¡Respuesta recibida! ¡Buena suerte!',
 			column: ', qué columna eliges? Escribe `end` para finalizar.',
+			tictactoe: 'Escribe la fila seguida de la columna que quieras, por ejemplo 1 3',
 			timeout: 'Te quedaste sin tiempo...',
 			inactivity: 'Partida finalizada por inactividad',
 			win: '¡Felicidades, ',
@@ -391,6 +403,8 @@ module.exports = {
 			footer: 'Los campos entre <> son obligatorios, mientras que entre [] son opcionales.'
 		},
 		anime: {
+			nothing_selected: 'Nada seleccionado',
+			you_cant: 'No puedes seleccionar si no usaste tú el comando.',
 			episodes: 'Episodios',
 			status: 'Estado',
 			aired: 'Emitido',
@@ -428,13 +442,17 @@ module.exports = {
 			reset: 'Tu cooldown ha sido reseteado, gracias por votar por mí <3',
 			no_reset: 'Parece que aún no has votado por mí en top.gg (https://top.gg/bot/611710846426415107/vote)'
 		},
-		lvlup: '¡Enhorabuena, {user}, has conseguido el rol {role}! :tada:'
+		lvlup: '¡Enhorabuena, {user}, has conseguido el rol {role}! :tada:',
+		no_perms: 'No tienes permiso de usar este comando',
+		need_lvl: 'El nivel debe ser un número'
 	},
 	other: {
 		need_perm: {
 			channel: 'Necesito tener permiso de {perms} en este canal para ejecutar ese comando.',
-			guild: 'Necesito tener permiso de {perms} en el servidor para ejecutar ese comando.'
+			guild: 'Necesito tener permiso de {perms} en el servidor para ejecutar ese comando.',
+			attach_files: 'Necesitas tener permiso de subir archivos para ejecutar ese comando'
 		},
+		error: 'Ocurrió un error al ejecutar ese comando: ',
 		mention: 'Mi prefijo es `{prefix}`, si necesitas ayuda usa `{prefix}help`'
 	},
 	events: {

@@ -1,0 +1,53 @@
+const { MessageEmbed } = require('discord.js');
+const request = require('node-superfetch');
+const translate = require('@vitalets/google-translate-api');
+
+function monthandday(ms) {
+	let date = new Date(ms),
+		months = {
+			0: '1',
+			1: '2',
+			2: '3',
+			3: '4',
+			4: '5',
+			5: '6',
+			6: '7',
+			7: '8',
+			8: '9',
+			9: '10',
+			10: '11',
+			11: '12'
+		},
+		month = months[date.getMonth()],
+		day = date.getDate();
+
+	return `${month}/${day}`;
+}
+module.exports = {
+	name: 'today-in-history',
+	description: 'Get information about today in history',
+	ESdesc: 'Obtén información sobre hoy en la historia',
+	usage: 'today-in-history',
+	example: 'today-in-history',
+	aliases: ['todayinhistory', 'today'],
+	type: 0,
+	async execute(client, interaction, guildConf) {
+		interaction.deferReply();
+		const date = monthandday(Date.now());
+		let { util } = require(`../../utils/lang/${guildConf.lang}.js`);
+
+		const { text } = await request.get(`http://history.muffinlabs.com/date/${date}`);
+		const body = JSON.parse(text);
+		const events = body.data.Events;
+		const event = events[Math.floor(Math.random() * events.length)];
+		let translated = await translate(event.text, { from: 'en', to: guildConf.lang });
+		const embed = new MessageEmbed()
+			.setColor(0x9797ff)
+			.setURL(body.url)
+			.setTitle(`${util.today.title} (${body.date})`)
+			.setTimestamp()
+			.setDescription(`${event.year}: ${translated.text}`)
+			.addField(util.today.see_more, event.links.map((link) => `[${link.title}](${link.link})`).join('\n'));
+		interaction.editReply({ embeds: [embed] });
+	}
+};

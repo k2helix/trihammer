@@ -184,8 +184,8 @@ module.exports = {
 	},
 	music: {
 		loop: {
-			enabled: '**🔁 Loop enabled**',
-			disabled: '**🔁 Loop disabled**'
+			enabled: '🔁 Loop enabled',
+			disabled: '🔁 Loop disabled'
 		},
 		playlists: {
 			titles: {
@@ -207,7 +207,12 @@ module.exports = {
 			playlist_songs: 'Playlist songs',
 			no_playlists: 'The given uses does not have playlists'
 		},
-		yttogether: 'Click here to start **YouTube Together** in ',
+		ytt: {
+			yttogether: 'Click here to start **YouTube Together** in ',
+			yt_invited: 'You have been invited by **{author}** to a session of **YouTube Together**: ',
+			yt_nodm: 'I could not send a direct message to the user',
+			yt_dm: 'The user was notified in DM'
+		},
 		no_vc: 'You are not in a voice channel',
 		no_queue: "There isn't any song in the queue",
 		lyrics_name: 'You need to type the name of the song',
@@ -219,14 +224,17 @@ module.exports = {
 		queue_songs: '__**Queued Songs:**__',
 		queue_page: 'Page {number} of {total}',
 		need_qnumber: 'Type a number to delete it from the queue',
-		must_be_number: 'Tienes que envíar un número',
+		must_be_number: 'You must type a number',
 		cannot_remove: 'You cannot delete that song',
 		song_removed: '{song} has been removed of the queue',
 		song_404: "There isn't a song with that number in the queue",
+		invalid_song: 'Invalid song, cancelling.',
 		song_select: '__**Song Selection**__',
 		cancel_select: 'Type "cancel" if you do not want to select any song.',
 		type_a_number: 'Type a number to select the song',
 		cancel: 'No response. Cancelling...',
+		seek: 'Jumped to {time} succesfully',
+		seek_cancelled: 'The video ends before arriving there',
 		skip: {
 			already_voted: 'You already voted to skip ({votes})',
 			skipping: 'Skipping...',
@@ -300,12 +308,13 @@ module.exports = {
 			footer: 'Page '
 		},
 		sauce: {
+			no_image: 'I could not find any image in that message',
 			title: 'Sauce!',
 			more_source: 'Other sources:',
 			looks_like: function (url, result) {
-				return `I found results with ${result.header.similarity}% of similarity: [${decodeURI(
-					result.data.title || result.data.source || result.data.ext_urls[0]
-				)}](${result.data.ext_urls ? result.data.ext_urls[0] : 'https://discord.com'}).`;
+				return `I found results with ${result.header.similarity}% of similarity: [${decodeURI(result.data.title || result.data.source || result.data.ext_urls[0])}](${
+					result.data.ext_urls ? result.data.ext_urls[0] : 'https://discord.com'
+				}).`;
 			},
 			search_sources: function (url) {
 				return `<:google:749389813274378241> [Search image in Google](https://www.google.com/searchbyimage?image_url=${url})\n<:yandex:749389643367186573> [Search image in Yandex (recommended)](https://yandex.com/images/search?url=${url}&rpt=imageview)\n<:saucenao:785119535454748682> [Search image in SauceNAO (NSFW)](https://saucenao.com/search.php?url=${url})`;
@@ -323,7 +332,8 @@ module.exports = {
 			title: 'Translation',
 			from: 'From',
 			to: 'To',
-			not_found: 'Language not found, use `translate list` to check the languages list'
+			not_found: 'Language not found, use `translate list` to check the languages list',
+			text_not_found: 'I could not find text in that message'
 		},
 		map: {
 			street: 'Street name',
@@ -364,6 +374,7 @@ module.exports = {
 			},
 			footer: ' commands.'
 		},
+		invalid_user: 'You did not provide a valid user',
 		game: {
 			release: 'Release Date:',
 			genres: 'Genres:',
@@ -379,7 +390,10 @@ module.exports = {
 			bot: 'bots may not be played against.',
 			challenge: ', do you accept the challenge? (yes or no)',
 			unverified: 'Looks like they declined...',
+			waiting: 'Waiting for an answer...',
+			success: 'Answer received! Good luck!',
 			column: ', which column do you pick? Type `end` to forefeit.',
+			tictactoe: 'Type the row followed by the column you choose, for example 1 3.',
 			timeout: 'Sorry, time is up!',
 			inactivity: 'Game ended due to inactivity',
 			win: 'Congrats, ',
@@ -396,6 +410,8 @@ module.exports = {
 			footer: 'The things inside <> are required, while inside [] are optional.'
 		},
 		anime: {
+			nothing_selected: 'Nothing selected',
+			you_cant: 'You cannot select if you did not use the command.',
 			episodes: 'Episodes',
 			status: 'Status',
 			aired: 'Aired',
@@ -433,13 +449,17 @@ module.exports = {
 			reset: 'Your cooldown has been reset, thanks for voting <3',
 			no_reset: "Looks like you haven't voted for me (https://top.gg/bot/611710846426415107/vote)"
 		},
-		lvlup: 'Congratulations, {user}, you received the role {role}! :tada:'
+		lvlup: 'Congratulations, {user}, you received the role {role}! :tada:',
+		no_perms: 'You do not have permission to use this command',
+		need_lvl: 'The level must be a number'
 	},
 	other: {
 		need_perm: {
 			channel: 'I need the following permission in the channel to execute that command: {perms}',
-			guild: 'I need the following permission in the server to execute that command: {perms}'
+			guild: 'I need the following permission in the server to execute that command: {perms}',
+			attach_files: 'You need permission to attach files to use this command'
 		},
+		error: 'An error ocurred while executing that command: ',
 		mention: 'My prefix is `{prefix}`, if you need help use `{prefix}help`'
 	},
 	events: {

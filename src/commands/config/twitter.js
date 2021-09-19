@@ -1,6 +1,7 @@
 /* eslint-disable no-case-declarations */
 const { ModelTwitter, ModelServer } = require('../../utils/models');
 const Twitter = require('twit');
+const { Permissions } = require('discord.js');
 const T = new Twitter({
 	consumer_key: process.env.TWITTER_CONSUMER_KEY,
 	consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -20,6 +21,8 @@ module.exports = {
 		let { config } = require(`../../utils/lang/${serverConfig.lang}`);
 		if (!args[0]) return;
 
+		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
+		if (!permiso) return message.channel.send(config.admin_perm);
 		switch (args[0]) {
 			case 'follow':
 				let username = args[1].toLowerCase();

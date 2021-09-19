@@ -4,9 +4,7 @@ module.exports = async (client, guild) => {
 	let server = client.channels.cache.get('640548372574371852');
 	guild.members.fetch();
 	setTimeout(() => {
-		server.send(
-			`Me he unido al servidor ${guild.name} (${guild.id}), que tiene ${guild.members.cache.size} miembros. Su owner es ${guild.owner.user.tag} (${guild.owner.id})`
-		);
+		server.send(`Me he unido al servidor ${guild.name} (${guild.id}), que tiene ${guild.members.cache.size} miembros. Ahora estoy en ${client.guilds.cache.size} servidores.`);
 	}, 30000);
 	await request.post('https://top.gg/api/bots/stats', {
 		headers: {

@@ -6,7 +6,7 @@ module.exports = async (client, member) => {
 	const { events } = require(`../utils/lang/${serverConfig.lang}.js`);
 
 	let logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
-	if (!logs_channel || logs_channel.type !== 'text') return;
+	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
 
 	logs_channel.send(events.member.remove(member));
 

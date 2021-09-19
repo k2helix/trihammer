@@ -1,4 +1,4 @@
-const { queue } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 module.exports = {
 	name: 'queueremove',
@@ -26,8 +26,7 @@ module.exports = {
 
 		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
 
-		if (djRole && !message.member.roles.cache.has(djRole.id) && message.member.id !== serverQueue.songs[index].requested)
-			return message.channel.send(music.need_dj.remove);
+		if (djRole && !message.member.roles.cache.has(djRole.id) && message.member.id !== serverQueue.songs[index].requested) return message.channel.send(music.need_dj.remove);
 
 		await message.channel.send(music.song_removed.replace('{song}', serverQueue.songs[Math.floor(args[0] - 1)].title));
 		serverQueue.songs.splice(index, 1);

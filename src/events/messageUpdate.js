@@ -7,7 +7,7 @@ module.exports = async (client, old_message, new_message) => {
 	let langcode = serverConfig.lang;
 	let { events } = require(`../utils/lang/${langcode}.js`);
 	let logs_channel = old_message.guild.channels.cache.get(serverConfig.messagelogs);
-	if (!logs_channel || logs_channel.type !== 'text') return;
+	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
 	if (old_message.length > 1800 || new_message.length > 1800) return;
 	let obj = {
 		'{user}': `${old_message.author.tag} (${old_message.author.id})`,

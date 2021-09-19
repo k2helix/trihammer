@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { queue } = require('../../utils/methods/music');
+const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 
 function setCharAt(str, index, chr) {
@@ -67,8 +67,8 @@ module.exports = {
 		}
 
 		let seek = serverQueue.songs[0].seek;
-		let now = Time_convertor(serverQueue.connection.dispatcher.streamTime + Number(seek * 1000));
-		let porcentaje = Math.floor(((serverQueue.connection.dispatcher.streamTime + Number(seek * 1000)) / durationMs) * 100);
+		let now = Time_convertor(serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000));
+		let porcentaje = Math.floor(((serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000)) / durationMs) * 100);
 		let index = Math.floor(porcentaje / 10);
 		let string = '▬▬▬▬▬▬▬▬▬▬';
 		let position = setCharAt(string, index, ':radio_button:');
@@ -81,6 +81,6 @@ module.exports = {
 			.addField(' ឵឵ ', `[${now} / ${serverQueue.songs[0].duration}](https://www.youtube.com/watch?v=${serverQueue.songs[0].id})`, true)
 			.addField(`${porcentaje}%`, position, true)
 			.addField(music.play.now_playing.requested_by, `<@${serverQueue.songs[0].requested}>`, true);
-		message.channel.send(embed);
+		message.channel.send({ embeds: [embed] });
 	}
 };
