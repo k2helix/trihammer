@@ -10,7 +10,7 @@ module.exports = async (client, oldMember, newMember) => {
 
 	let logs_channel = oldMember.guild.channels.cache.get(serverConfig.memberlogs);
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
-	if (!oldMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOGS)) return;
+	if (!oldMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
 
 	var Changes = {
 		unknown: 0,

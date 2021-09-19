@@ -3,7 +3,7 @@ const { ModelServer } = require('../utils/models');
 const { Permissions } = require('discord.js');
 module.exports = async (client, message) => {
 	if (message.author.bot || message.system) return;
-	if (!message.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOGS)) return;
+	if (!message.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
 	const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 	if (!serverConfig) return;
 	let langcode = serverConfig.lang;

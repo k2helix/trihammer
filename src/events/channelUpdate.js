@@ -9,7 +9,7 @@ module.exports = async (client, oldChannel, newChannel) => {
 	if (!logs_channel || logs_channel.type !== 'text') return;
 	if (oldChannel.position !== newChannel.position) return;
 	if (oldChannel.parent !== newChannel.parent) return;
-	if (!oldChannel.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOGS)) return;
+	if (!oldChannel.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
 	const entry1 = await oldChannel.guild.fetchAuditLogs().then((audit) => audit.entries.first());
 	if (!entry1.action.includes('OVERWRITE')) return;
 	const entry = await oldChannel.guild.fetchAuditLogs({ type: entry1.action }).then((audit) => audit.entries.first());

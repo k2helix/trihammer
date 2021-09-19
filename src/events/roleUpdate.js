@@ -11,7 +11,7 @@ module.exports = async (client, oldRole, newRole) => {
 	let langcode = serverConfig.lang;
 	let logs_channel = oldRole.guild.channels.cache.get(serverConfig.serverlogs);
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
-	if (!oldRole.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOGS)) return;
+	if (!oldRole.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
 	const entry = await oldRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' }).then((audit) => audit.entries.first());
 
 	if (!entry) return;
