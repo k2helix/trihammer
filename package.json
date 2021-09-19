@@ -16,7 +16,6 @@
     "decode-encode-binary": "^1.4.16",
     "discord.js": "^13.2.0-dev.1630411689.d16ada9",
     "dotenv": "^8.2.0",
-    "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.2.7",
     "glitch-canvas": "^1.1.9",
     "japaneasy": "github:Trunks8257/japaneasy",
