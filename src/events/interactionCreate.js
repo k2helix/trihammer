@@ -48,6 +48,7 @@ module.exports = async (client, interaction) => {
 		const command = client.interactionCommands.get(interaction.commandName);
 
 		if (!command) return;
+		if (command.type === 3 || command.type === 2) return interaction.reply({ content: 'Moderation and configuration commands are not available yet', ephemeral: true });
 
 		if (command.myPerms) {
 			let perms = command.myPerms.slice(1);
