@@ -350,7 +350,7 @@ module.exports = {
 		invite: {
 			title: 'Invite me to your server!',
 			description:
-				"An useful and interactive bot which strives to make your server a better place.\n> [Recommended invitation](https://discordapp.com/api/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot)\n> [Invitation without perms](https://discordapp.com/oauth2/authorize?client_id=611710846426415107&scope=bot&permissions=0)\n If you need help, don't hesitate to join the [support server](https://discord.gg/EjG6XZs) and ask there."
+				"A useful and interactive bot which strives to make your server a better place.\n> [Recommended invitation](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot%20applications.commands)\n> [Invitation without perms](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=0&scope=bot%20applications.commands)\n If you need help, don't hesitate to join the [support server](https://discord.gg/EjG6XZs) and ask there."
 		},
 		horse_race: {
 			choose_horse: '**choose a horse to bet on:** _(Type the number)_',

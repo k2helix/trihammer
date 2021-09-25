@@ -343,7 +343,7 @@ module.exports = {
 		invite: {
 			title: '¡Invítame a tu servidor!',
 			description:
-				'Un bot útil e interactivo que se esfuerza por hacer de tu servidor un lugar mejor.\n> [Invitación recomendada](https://discordapp.com/api/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot)\n> [Invitación sin permisos](https://discordapp.com/oauth2/authorize?client_id=611710846426415107&scope=bot&permissions=0)\n Si necesitas ayuda, no dudes en pasarte por el [servidor de soporte](https://discord.gg/EjG6XZs) y preguntar alli.'
+				'Un bot útil e interactivo que se esfuerza por hacer de tu servidor un lugar mejor.\n> [Invitación recomendada](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot%20applications.commands)\n> [Invitación sin permisos](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=0&scope=bot%20applications.commands)\n Si necesitas ayuda, no dudes en pasarte por el [servidor de soporte](https://discord.gg/EjG6XZs) y preguntar alli.'
 		},
 		horse_race: {
 			choose_horse: '**escoge un caballo al que apostar:** _(Escribe el número)_',
