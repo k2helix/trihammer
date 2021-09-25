@@ -1,7 +1,7 @@
 require('dotenv').config();
 
-// const { init, captureException } = require('@sentry/node');
-// init({ dsn: process.env.SENTRY_DSN });
+const { init, captureException } = require('@sentry/node');
+init({ dsn: process.env.SENTRY_DSN });
 
 const mongoose = require(`mongoose`);
 mongoose.connect(process.env.MONGO_URI, {
@@ -64,7 +64,7 @@ fs.readdir('./src/events/', (err, files) => {
 process.on('unhandledRejection', (error) => {
 	console.error(error);
 	client.channels.cache.get('640548372574371852').send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
-	// captureException(error);
+	captureException(error);
 });
 
 client.login(process.env.TOKEN);
