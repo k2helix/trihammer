@@ -116,7 +116,7 @@ module.exports = {
 					.setTitle(util.image.title)
 					.setColor('RANDOM')
 					.setDescription(`${results.map((result) => `**${results.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}\n ${util.anime.type_a_number}`);
-				message.channel.send(searchEmbed);
+				message.channel.send({ embeds: [searchEmbed] });
 				try {
 					let filter = (msg) => msg.content > 0 && msg.content < 11;
 					var response = await message.channel.awaitMessages({

@@ -1,4 +1,5 @@
 const { ModelServer } = require('../../utils/models');
+const { Permissions } = require('discord.js');
 module.exports = {
 	name: 'youtube',
 	description: 'Watch YouTube with friends!',
@@ -13,6 +14,7 @@ module.exports = {
 		const { music } = require(`../../utils/lang/${langcode}`);
 
 		if (!voiceChannel) return await message.channel.send(music.no_vc);
+		if (!voiceChannel.permissionsFor(message.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE)) return message.channel.send('I need `CREATE_INSTANT_INVITE` permission');
 
 		let invite = await voiceChannel.createInvite({ targetApplication: '755600276941176913', targetType: 2 });
 		message.channel.send(music.yttogether + `${voiceChannel.name}: <https://discord.gg/${invite.code}>`);

@@ -16,6 +16,6 @@ module.exports = {
 			.setColor('RANDOM')
 			.setDescription(`[Link](${user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })})`)
 			.setImage(user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 }));
-		message.channel.send(info_embed);
+		message.channel.send({ embeds: [info_embed] });
 	}
 };
