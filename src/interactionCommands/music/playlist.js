@@ -39,7 +39,7 @@ module.exports = {
 								.setColor('RANDOM')
 								.setDescription(topPlaylists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 								.setFooter(music.playlists.play_from_other);
-							message.channel.send(topEmbed);
+							message.channel.send({ embeds: [topEmbed] });
 
 							resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
@@ -69,7 +69,7 @@ module.exports = {
 								.setColor('RANDOM')
 								.setDescription(recentPlaylists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 								.setFooter(music.playlists.play_from_other);
-							message.channel.send(recentEmbed);
+							message.channel.send({ embeds: [recentEmbed] });
 
 							resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
@@ -102,7 +102,7 @@ module.exports = {
 								.setColor('RANDOM')
 								.setDescription(byPlaylists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 								.setFooter(music.playlists.play_from_other);
-							message.channel.send(byEmbed);
+							message.channel.send({ embeds: [byEmbed] });
 
 							resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
@@ -132,7 +132,7 @@ module.exports = {
 					.setColor('RANDOM')
 					.setDescription(playlists.map((pl) => `**${++cct}**. ${pl.name}`).join('\n'))
 					.setFooter(music.playlists.play);
-				message.channel.send(listEmbed);
+				message.channel.send({ embeds: [listEmbed] });
 
 				const resp = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
@@ -164,7 +164,7 @@ module.exports = {
 					.setColor('RANDOM')
 					.setDescription(plSongs.map((s) => `**${++sCount}**. [${s.name}](https://www.youtube.com/watch?v=${s.id})`))
 					.setFooter(music.playlists.song_add_or_remove);
-				message.channel.send(songEmbed);
+				message.channel.send({ embeds: [songEmbed] });
 
 				const songResponse = await message.channel.awaitMessages({ filter, max: 1, time: 20000, errors: ['time'] }).catch(() => false);
 
@@ -183,9 +183,7 @@ module.exports = {
 							.setTitle(music.song_select)
 							.setColor('#1423aa')
 							.setFooter(music.cancel_select)
-							.setDescription(
-								`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`
-							)
+							.setDescription(`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`)
 							.setTimestamp();
 						await message.channel.send({ embeds: [embed] });
 

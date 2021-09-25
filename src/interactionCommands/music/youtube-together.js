@@ -1,3 +1,4 @@
+const Permissions = require('discord.js');
 module.exports = {
 	name: 'youtube-together',
 	description: 'Watch YouTube with friends!',
@@ -9,6 +10,8 @@ module.exports = {
 		const { music } = require(`../../utils/lang/${guildConf.lang}`);
 		const voiceChannel = interaction.member.voice.channel;
 		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
+		if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE))
+			return interaction.reply({ content: 'I need `CREATE_INSTANT_INVITE` permission', ephemeral: true });
 
 		let invite = await voiceChannel.createInvite({ targetApplication: '755600276941176913', targetType: 2 });
 		if (!invite) return interaction.reply({ content: '❌ | Could not start **YouTube Together**!', ephemeral: true });
