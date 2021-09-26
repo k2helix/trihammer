@@ -1,5 +1,4 @@
 const { ModelServer } = require('../utils/models');
-const { Permissions } = require('discord.js');
 module.exports = async (client, oldChannel, newChannel) => {
 	if (oldChannel.type === 'dm') return;
 	const serverConfig = await ModelServer.findOne({ server: oldChannel.guild.id }).lean();
@@ -9,12 +8,7 @@ module.exports = async (client, oldChannel, newChannel) => {
 	if (!logs_channel || logs_channel.type !== 'text') return;
 	if (oldChannel.position !== newChannel.position) return;
 	if (oldChannel.parent !== newChannel.parent) return;
-	if (!oldChannel.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-	const entry1 = await oldChannel.guild.fetchAuditLogs().then((audit) => audit.entries.first());
-	if (!entry1.action.includes('OVERWRITE')) return;
-	const entry = await oldChannel.guild.fetchAuditLogs({ type: entry1.action }).then((audit) => audit.entries.first());
-	let fecha = Date.now() - 10000;
-	let user = fecha > entry.createdTimestamp ? 'Bot' : entry.executor.tag;
+
 	oldChannel.guild.roles.cache.forEach((role) => {
 		let oldroleperms = oldChannel.permissionsFor(role).toArray();
 		let newroleperms = newChannel.permissionsFor(role).toArray();
@@ -23,26 +17,24 @@ module.exports = async (client, oldChannel, newChannel) => {
 		if (langcode === 'es') {
 			if (nuevoperm[0] && permremoved[0])
 				return logs_channel.send(
-					`${user} ha cambiado los permisos del rol \`${role.name}\` en el canal <#${oldChannel.id}>, se le ha añadido: \`${nuevoperm.join(
+					`Los permisos del rol \`${role.name}\` en el canal <#${oldChannel.id}> han cambiado, se le han añadido: \`${nuevoperm.join(
 						', '
-					)}\`. Se le ha removido: \`${permremoved.join(', ')}\``
+					)}\`. Se le han removido: \`${permremoved.join(', ')}\``
 				);
 			else if (permremoved[0])
-				return logs_channel.send(
-					`${user} ha cambiado los permisos del rol \`${role.name}\` en el canal <#${oldChannel.id}>, se le ha removido: \`${permremoved.join(', ')}\``
-				);
+				return logs_channel.send(`Los permisos del rol \`${role.name}\` en el canal <#${oldChannel.id}> han cambiado, se le han removido: \`${permremoved.join(', ')}\``);
 			else if (nuevoperm[0])
-				return logs_channel.send(`${user} ha cambiado los permisos del rol \`${role.name}\` en el canal <#${oldChannel.id}>, se le ha añadido: \`${nuevoperm.join(', ')}\``);
+				return logs_channel.send(`Los permisos del rol \`${role.name}\` en el canal <#${oldChannel.id}> han cambiado, se le ha añadido: \`${nuevoperm.join(', ')}\``);
 		} else if (langcode === 'en')
 			if (nuevoperm[0] && permremoved[0])
 				return logs_channel.send(
-					`${user} has updated \`${role.name}\` role permissions in the channel <#${oldChannel.id}>, added: \`${nuevoperm.join(', ')}\`. Removed: \`${permremoved.join(
+					`The permissions of the role \`${role.name}\` in the channel <#${oldChannel.id}> were changed, added: \`${nuevoperm.join(', ')}\`. Removed: \`${permremoved.join(
 						', '
 					)}\` `
 				);
 			else if (permremoved[0])
-				return logs_channel.send(`${user} has updated \`${role.name}\` role permissions in the channel <#${oldChannel.id}>, removed: \`${permremoved.join(', ')}\``);
+				return logs_channel.send(`The permissions of the role \`${role.name}\` in the channel <#${oldChannel.id}> were changed, removed: \`${permremoved.join(', ')}\``);
 			else if (nuevoperm[0])
-				return logs_channel.send(`${user} has updated \`${role.name}\` role permissions in the channel <#${oldChannel.id}>, added: \`${nuevoperm.join(', ')}\``);
+				return logs_channel.send(`The permissions of the role \`${role.name}\` in the channel <#${oldChannel.id}> were changed, added: \`${nuevoperm.join(', ')}\``);
 	});
 };

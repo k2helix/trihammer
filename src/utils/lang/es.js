@@ -476,7 +476,7 @@ module.exports = {
 		},
 		message: {
 			update: 'Mensaje de {user} editado en {channel}.\nAntes:\n```{old}```Después:\n```{new}```',
-			delete: '{user} ha borrado un mensaje de {author} en {channel}:{content}',
+			delete: 'Mensaje de {author} borrado en {channel}:\n{content}',
 			deleteBulk: {
 				deleted: '{messages} mensajes borrados',
 				showing: 'Mostrando {amount} de {total} caracteres.'
@@ -484,9 +484,9 @@ module.exports = {
 		},
 		member: {
 			update: {
-				role_added: '{user} ha añadido un rol a {member}: {role}',
-				role_removed: '{user} ha quitado un rol a {member}: {role}',
-				nickname: '{user} ha cambiado el apodo de {member} de `{old}` a `{new}`'
+				role_added: 'Rol añadido a {member}: {role}',
+				role_removed: 'Rol removido a {member}: {role}',
+				nickname: 'El apodo de {member} ha cambiado de `{old}` a `{new}`'
 			},
 			remove: function (member) {
 				return `:red_circle: El usuario ${member.user.tag} ha abandonado el servidor, se unió el ${convertDate(member.joinedTimestamp)}`;

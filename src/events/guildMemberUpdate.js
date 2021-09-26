@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 const { ModelServer } = require('../utils/models');
-const { Permissions } = require('discord.js');
 module.exports = async (client, oldMember, newMember) => {
 	const serverConfig = await ModelServer.findOne({ server: oldMember.guild.id }).lean();
 	if (!serverConfig) return;
@@ -10,7 +9,6 @@ module.exports = async (client, oldMember, newMember) => {
 
 	let logs_channel = oldMember.guild.channels.cache.get(serverConfig.memberlogs);
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
-	if (!oldMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
 
 	var Changes = {
 		unknown: 0,
@@ -47,21 +45,14 @@ module.exports = async (client, oldMember, newMember) => {
 	let fecha1 = Date.now() - 10000;
 	switch (change) {
 		case Changes.addedRole:
-			const entry = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_ROLE_UPDATE' }).then((audit) => audit.entries.first());
-			let user = fecha1 > entry.createdTimestamp ? 'Bot' : entry.executor.tag;
-			logs_channel.send(events.member.update.role_added.replaceAll({ '{user}': user, '{member}': `${newMember.user.tag} (${newMember.id})`, '{role}': role.name }));
+			logs_channel.send(events.member.update.role_added.replaceAll({ '{member}': `${newMember.user.tag} (${newMember.id})`, '{role}': role.name }));
 			break;
 		case Changes.removedRole:
-			const entry2 = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_ROLE_UPDATE' }).then((audit) => audit.entries.first());
-			let user2 = fecha1 > entry2.createdTimestamp ? 'Bot' : entry2.executor.tag;
-			logs_channel.send(events.member.update.role_removed.replaceAll({ '{user}': user2, '{member}': `${newMember.user.tag} (${newMember.id})`, '{role}': role2.name }));
+			logs_channel.send(events.member.update.role_removed.replaceAll({ '{member}': `${newMember.user.tag} (${newMember.id})`, '{role}': role2.name }));
 			break;
 		case Changes.nickname:
-			const entry3 = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_UPDATE' }).then((audit) => audit.entries.first());
-			let user3 = fecha1 > entry3.createdTimestamp ? 'Bot' : entry3.executor.tag;
 			logs_channel.send(
 				events.member.update.nickname.replaceAll({
-					'{user}': user3,
 					'{member}': `${newMember.user.tag} (${newMember.user.id})`,
 					'{new}': newMember.displayName,
 					'{old}': oldMember.displayName

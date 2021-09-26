@@ -1,4 +1,5 @@
 const { ModelServer } = require('../../utils/models');
+const { Permissions } = require('discord.js');
 module.exports = {
 	name: 'voicelogs',
 	description: 'Set the voice logs',
@@ -7,7 +8,6 @@ module.exports = {
 	example: 'voicelogs #channel',
 	aliases: ['voice-logs'],
 	type: 3,
-	myPerms: [false, 'VIEW_AUDIT_LOG'],
 	async execute(client, message, args) {
 		let channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
 		if (!channel) return;
@@ -15,8 +15,7 @@ module.exports = {
 		let langcode = serverConfig.lang;
 		let { config } = require(`../../utils/lang/${langcode}`);
 
-		let permiso =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
+		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
 		if (!permiso) return message.channel.send(config.admin_perm);
 		if (args[0] === 'disable') {
 			serverConfig.voicelogs = 'none';
