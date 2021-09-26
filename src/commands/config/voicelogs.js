@@ -8,7 +8,6 @@ module.exports = {
 	example: 'voicelogs #channel',
 	aliases: ['voice-logs'],
 	type: 3,
-	myPerms: [false, 'VIEW_AUDIT_LOG'],
 	async execute(client, message, args) {
 		let channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
 		if (!channel) return;

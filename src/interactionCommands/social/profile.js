@@ -31,9 +31,10 @@ module.exports = {
 	async execute(client, interaction) {
 		interaction.deferReply();
 		let user = interaction.options.getUser('user') || interaction.user;
+		if (user.bot) return interaction.editReply({ content: 'Bots do not have profile!', ephemeral: true });
 
 		let global = await ModelUsers.findOne({ id: user.id }).lean();
-		if (!global) return interaction.reply({ content: '404', ephemeral: true });
+		if (!global) return interaction.editReply({ content: '404 User not found (send some messages and try again)', ephemeral: true });
 
 		const xp = global.globalxp;
 		const canvas = createCanvas(442, 330);

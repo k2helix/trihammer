@@ -483,7 +483,7 @@ module.exports = {
 		},
 		message: {
 			update: 'Message from {user} edited in {channel}.\nBefore edit:\n```{old}```\nAfter edit:\n```{new}```',
-			delete: '{user} has deleted a message from {author} in {channel}:{content}',
+			delete: 'A message from {author} was deleted in {channel}:\n{content}',
 			deleteBulk: {
 				deleted: '{messages} were deleted',
 				showing: 'Showing {amount} of {total} characters.'
@@ -491,9 +491,9 @@ module.exports = {
 		},
 		member: {
 			update: {
-				role_added: '{user} has added a role to {member}: {role}',
-				role_removed: '{user} has removed a role to {member}: {role}',
-				nickname: "{user} ha cambiado changed {member}'s nickname from `{old}` to `{new}`"
+				role_added: 'A role was added to {member}: {role}',
+				role_removed: 'A role was removed to {member}: {role}',
+				nickname: 'The nickname of {member} changed from `{old}` to `{new}`'
 			},
 			remove: function (member) {
 				return `:red_circle: ${member.user.tag} has left the server, joined at ${convertDate(member.joinedTimestamp)}`;

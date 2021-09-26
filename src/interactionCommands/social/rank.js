@@ -23,20 +23,12 @@ module.exports = {
 	async execute(client, interaction) {
 		interaction.deferReply();
 		let user = interaction.options.getUser('user') || interaction.user;
-		if (user.bot) return;
+		if (user.bot) return interaction.editReply({ content: 'Bots do not have rank!', ephemeral: true });
 
 		let local = await ModelRank.findOne({ id: user.id, server: interaction.guildId }).lean();
-		if (!local) {
-			let newRankModel = new ModelRank({
-				id: user.id,
-				server: interaction.guildId,
-				nivel: 1,
-				xp: 0
-			});
-			await newRankModel.save();
-			local = newRankModel;
-		}
+		if (!local) return interaction.editReply({ content: '404 User not found (send some messages and try again)', ephemeral: true });
 		let gl = await ModelUsers.findOne({ id: user.id }).lean();
+		if (!gl) return interaction.editReply({ content: '404 User not found (send some messages and try again)', ephemeral: true });
 		let url = gl.rimage;
 		if (url === 'https://github.com/discordjs/guide/blob/master/code-samples/popular-topics/canvas/12/wallpaper.jpg?raw=true')
 			url = 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png';
