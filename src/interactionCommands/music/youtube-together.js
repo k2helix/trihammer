@@ -1,4 +1,4 @@
-const Permissions = require('discord.js');
+const { Permissions } = require('discord.js');
 module.exports = {
 	name: 'youtube-together',
 	description: 'Watch YouTube with friends!',
