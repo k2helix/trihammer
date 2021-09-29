@@ -18,7 +18,7 @@ module.exports = {
 		const members = interaction.member.voice.channel.members.filter((m) => !m.user.bot).size;
 		// eslint-disable-next-line curly
 		if (members > 2) {
-			if(djRole && !interaction.member.roles.cache.has(djRole.id)) return interaction.reply({ content: music.need_dj.stop, ephemeral: true });
+			if (djRole && !interaction.member.roles.cache.has(djRole.id)) return interaction.reply({ content: music.need_dj.stop, ephemeral: true });
 		}
 
 		serverQueue.songs = [];

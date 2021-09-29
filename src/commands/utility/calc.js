@@ -16,6 +16,6 @@ module.exports = {
 			return;
 		}
 		if (resp === Infinity) resp = ':ok_hand:';
-		message.channel.send(resp);
+		message.channel.send(resp.toString());
 	}
 };
