@@ -63,6 +63,7 @@ module.exports = {
 	ESdesc: 'Juega tic tac toe con un amigo',
 	aliases: ['3enraya', 'tresenraya'],
 	type: 7,
+	myPerms: [true, 'MANAGE_MESSAGES', 'VIEW_CHANNEL', 'SEND_MESSAGES'],
 	async execute(client, interaction, guildConf) {
 		let { util } = require(`../../utils/lang/${guildConf.lang}.js`);
 		const opponent = interaction.options.getUser('user');

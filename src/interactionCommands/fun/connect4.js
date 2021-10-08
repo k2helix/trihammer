@@ -13,11 +13,9 @@ function verifyWin(bd) {
 
 	for (let r = 0; r < 6; r++) for (let c = 0; c < 4; c++) if (checkLine(bd[r][c], bd[r][c + 1], bd[r][c + 2], bd[r][c + 3])) return bd[r][c];
 
-	for (let r = 0; r < 3; r++)
-		for (let c = 0; c < 4; c++) if (checkLine(bd[r][c], bd[r + 1][c + 1], bd[r + 2][c + 2], bd[r + 3][c + 3])) return bd[r][c];
+	for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) if (checkLine(bd[r][c], bd[r + 1][c + 1], bd[r + 2][c + 2], bd[r + 3][c + 3])) return bd[r][c];
 
-	for (let r = 3; r < 6; r++)
-		for (let c = 0; c < 4; c++) if (checkLine(bd[r][c], bd[r - 1][c + 1], bd[r - 2][c + 2], bd[r - 3][c + 3])) return bd[r][c];
+	for (let r = 3; r < 6; r++) for (let c = 0; c < 4; c++) if (checkLine(bd[r][c], bd[r - 1][c + 1], bd[r - 2][c + 2], bd[r - 3][c + 3])) return bd[r][c];
 
 	return null;
 }
@@ -67,18 +65,16 @@ module.exports = {
 	example: 'connect4 @user',
 	aliases: ['connectfour', 'connect-four', 'c4'],
 	type: 7,
-	myPerms: [true, 'MANAGE_MESSAGES'],
+	myPerms: [true, 'MANAGE_MESSAGES', 'VIEW_CHANNEL', 'SEND_MESSAGES'],
 	async execute(client, interaction, guildConf) {
 		let { util } = require(`../../utils/lang/${guildConf.lang}.js`);
 		const opponent = interaction.options.getUser('user');
 		if (!opponent) return interaction.reply({ content: util.invalid_user, ephemeral: true });
 
-		if (c4db.has(`${interaction.user.id}&${opponent.id}`))
-			return interaction.reply({ content: 'Seems like you are already playing', ephemeral: true });
+		if (c4db.has(`${interaction.user.id}&${opponent.id}`)) return interaction.reply({ content: 'Seems like you are already playing', ephemeral: true });
 
 		if (opponent.bot) return interaction.reply({ content: `<@${interaction.user.id}>, ` + util.connect4.bot, ephemeral: true });
-		if (opponent.id === interaction.user.id && opponent.id !== '461279654158925825')
-			return interaction.reply({ content: util.invalid_user, ephemeral: true });
+		if (opponent.id === interaction.user.id && opponent.id !== '461279654158925825') return interaction.reply({ content: util.invalid_user, ephemeral: true });
 		interaction.channel.send(`<@${opponent.id}>` + util.connect4.challenge);
 		interaction.reply({ content: util.connect4.waiting });
 		const verification = await verify(interaction.channel, opponent);
