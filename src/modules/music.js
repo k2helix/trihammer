@@ -1,5 +1,6 @@
 const { ModelServer } = require('../utils/models');
 const playdl = require('play-dl');
+const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const { array_move } = require('../utils/functions');
 
@@ -56,7 +57,13 @@ async function play(guild, song) {
 	// response.pipe(ttsStream);
 
 	// let stream = concatStreams([ttsStream, ytStream]);
-	let { stream } = await playdl.stream(song.url);
+	let stream;
+	try {
+		stream = (await playdl.stream(song.url)).stream;
+	} catch (err) {
+		console.log('Tried with play-dl, got error ' + err.message);
+		stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
+	}
 	let currentType = StreamType.Arbitrary;
 	// eslint-disable-next-line curly
 	if (song.seek !== 0) {
