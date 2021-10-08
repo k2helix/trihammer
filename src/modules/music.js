@@ -1,5 +1,5 @@
 const { ModelServer } = require('../utils/models');
-const ytdl = require('ytdl-core');
+const playdl = require('play-dl');
 const Discord = require('discord.js');
 const { array_move } = require('../utils/functions');
 
@@ -56,7 +56,7 @@ async function play(guild, song) {
 	// response.pipe(ttsStream);
 
 	// let stream = concatStreams([ttsStream, ytStream]);
-	let stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
+	let { stream } = await playdl.stream(song.url);
 	let currentType = StreamType.Arbitrary;
 	// eslint-disable-next-line curly
 	if (song.seek !== 0) {
@@ -95,7 +95,7 @@ async function play(guild, song) {
 		.setDescription(`[${song.title}](${song.url})`)
 		.setColor('RANDOM')
 		.addField(music.play.now_playing.channel, song.channel, true)
-		.addField(music.play.now_playing.duration, song.duration, true)
+		.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
 		.addField(music.play.now_playing.requested_by, `<@${song.requested}>`, true)
 		.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
 	return serverQueue.textChannel.send({ embeds: [embed] });
@@ -119,7 +119,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 		durationObject: video.duration,
 		channel: video.channel.title,
 		url: `https://www.youtube.com/watch?v=${video.id}`,
-		requested: message.type !== null ? message.user.id : message.author.id,
+		requested: message.user?.id || message.author.id,
 		seek: seek ? seek : 0,
 		skip: []
 	};

@@ -226,7 +226,7 @@ module.exports = {
 		cancel_select: 'Escribe "cancel" si no quieres seleccionar ninguna canción',
 		type_a_number: 'Pon un número para escuchar la canción',
 		cancel: 'No hubo respuesta. Cancelando...',
-		seek: 'Saltado a {time} correctamente',
+		seek: 'Saltando a {time}...',
 		seek_cancelled: 'El video finaliza antes de llegar ahí.',
 		skip: {
 			already_voted: 'Ya has votado para saltar ({votes})',

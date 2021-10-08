@@ -5,7 +5,7 @@ module.exports = {
 	ESdesc: 'Mira youtube con amigos!',
 	aliases: ['yt', 'yttogether', 'youtube'],
 	type: 6,
-	myPerms: [true, 'CREATE_INSTANT_INVITE'],
+	myPerms: [true, 'CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'SEND_MESSAGES'],
 	async execute(client, interaction, guildConf) {
 		const { music } = require(`../../utils/lang/${guildConf.lang}`);
 		const voiceChannel = interaction.member.voice.channel;
