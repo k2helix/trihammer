@@ -1,5 +1,6 @@
 module.exports = (client) => {
 	console.log(`el bot ha sido iniciado para ${client.guilds.cache.size} servidores y ${client.users.cache.size} usuarios`);
+	client.channels.cache.get('640548372574371852').send('[Ready] El bot ha sido iniciado correctamente.');
 
 	require('../modules/reminders').check(client);
 
