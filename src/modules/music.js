@@ -62,7 +62,11 @@ async function play(guild, song) {
 		stream = (await playdl.stream(song.url)).stream;
 	} catch (err) {
 		console.log('Tried with play-dl, got error ' + err.message);
-		stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
+		try {
+			stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
+		} catch (error) {
+			console.log('An error ocurred with ytdl-core' + error.message);
+		}
 	}
 	let currentType = StreamType.Arbitrary;
 	// eslint-disable-next-line curly
@@ -75,6 +79,7 @@ async function play(guild, song) {
 		currentType = StreamType.Raw;
 		stream = stream.pipe(seekStream);
 	}
+	if (!stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
 	const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
 	const player = createAudioPlayer();
 	player.play(resource);
