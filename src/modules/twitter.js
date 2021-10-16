@@ -39,15 +39,6 @@ async function checkTweets(client) {
 	try {
 		const stream = T.stream('statuses/filter', { follow: ids });
 		// const stream = T.stream('statuses/filter', { follow: ['1273009744022822918', '2206903392', '1143818663038017536'] }); //1143818663038017536 alt id
-
-		stream.on('connect', () => {
-			console.log('Connecting Twitter => Discord program');
-		});
-
-		stream.on('connected', () => {
-			console.log('Twitter => Discord program is running');
-		});
-
 		stream.on('tweet', async (tweet) => {
 			// eslint-disable-next-line curly
 			if (tweet.user.screen_name === 'Rezero_official' || tweet.user.screen_name === 'TutoShelter') {
@@ -93,10 +84,6 @@ async function checkTweets(client) {
 					.indexOf(tweet.user.screen_name.toLowerCase());
 				client.channels.cache.get(model.twitter[pos].channel).send(`${rt} https://twitter.com/${owner}/status/${tweet.id_str}`);
 			});
-		});
-
-		stream.on('disconnect', (msg) => {
-			console.log(`[STREAM] - Disconnect => ${msg}`);
 		});
 	} catch (err) {
 		console.log('Tried getting the stream from twit, returned error: ' + err.message);
