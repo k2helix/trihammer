@@ -35,7 +35,7 @@ module.exports = {
 				)}:F>\n**Roles**: ${member.roles.cache
 					.sort((b, a) => a.position - b.position || a.id - b.id)
 					.map((r) => `${r}`)
-					.join(' ')}`
+					.join(' ')}`.slice(0, 1000)
 			);
 
 		interaction.reply({ embeds: [info_embed], ephemeral: interaction.isContextMenu() });
