@@ -11,7 +11,7 @@ module.exports = {
 	async execute(client, message, args) {
 		message.guild.members.fetch(args[0]).catch((error) => error);
 		let userNotFetched = message.mentions.users.first() || client.users.cache.get(args[0]);
-		if (!userNotFetched) user = args[0] ? await client.users.fetch(args[0]) : message.author;
+		if (!userNotFetched) userNotFetched = args[0] ? await client.users.fetch(args[0]) : message.author;
 
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		let langcode = serverConfig.lang;
