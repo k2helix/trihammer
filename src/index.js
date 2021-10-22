@@ -31,7 +31,7 @@ client.commands = new Discord.Collection();
 client.interactionCommands = new Discord.Collection();
 client.config = { prefix: 't-', admins: ['461279654158925825', '638693695839010836'] };
 
-require('./modules/twitter').checkTweets(client);
+// require('./modules/twitter').checkTweets(client);
 
 // const array = ['Mod', 'xp', 'Utilidad', 'Kawaii', 'config', 'Music'];
 const array = ['config', 'development', 'fun', 'information', 'moderation', 'music', 'social', 'utility'];
