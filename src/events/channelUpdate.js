@@ -1,6 +1,6 @@
 const { ModelServer } = require('../utils/models');
 module.exports = async (client, oldChannel, newChannel) => {
-	if (oldChannel.type === 'dm') return;
+	if (oldChannel.type === 'DM') return;
 	const serverConfig = await ModelServer.findOne({ server: oldChannel.guild.id }).lean();
 	if (!serverConfig) return;
 	let langcode = serverConfig.lang;

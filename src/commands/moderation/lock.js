@@ -21,7 +21,7 @@ module.exports = {
 
 		let role = message.guild.roles.cache.get(args[0]) || message.guild.roles.cache.find((r) => r.name === '@everyone');
 
-		message.channel.permissionOverwrite.create(
+		message.channel.permissionOverwrites.create(
 			role,
 			{
 				SEND_MESSAGES: false
