@@ -67,4 +67,4 @@ process.on('unhandledRejection', (error) => {
 	captureException(error);
 });
 
-client.login(process.env.TOKEN_BETA);
+client.login(process.env.TOKEN);
