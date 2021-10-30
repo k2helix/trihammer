@@ -20,7 +20,7 @@ module.exports = {
 
 		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
 
-		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || (await client.users.fetch(args[0]));
+		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 		if (!user)
 			try {
 				user = await client.users.fetch(args[0]);
@@ -58,8 +58,8 @@ module.exports = {
 						let rol = message.guild.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
 						if (!rol) activo = 'No';
 						if (member) activo = member.roles.cache.has(rol.id) ? yes : 'No';
+						else activo = 'No';
 					} else activo = mutes.active ? yes : 'No';
-
 					break;
 				case 'ban':
 					let banusers = await message.guild.fetchBans();
