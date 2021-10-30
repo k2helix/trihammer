@@ -23,7 +23,7 @@ module.exports = {
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || (await client.users.fetch(args[0]));
 		if (!user) return message.channel.send(mod.need_id);
 
-		let member = message.guild.member(user.id);
+		let member = message.guild.members.cache.get(user.id);
 		const datos = await ModelInfrs.find({ server: message.guild.id, id: user.id });
 
 		if (!datos[0]) return message.channel.send(mod.infrs_404);
