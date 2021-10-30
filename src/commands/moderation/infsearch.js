@@ -21,7 +21,12 @@ module.exports = {
 		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
 
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || (await client.users.fetch(args[0]));
-		if (!user) return message.channel.send(mod.need_id);
+		if (!user)
+			try {
+				user = await client.users.fetch(args[0]);
+			} catch (err) {
+				return message.channel.send(mod.need_id);
+			}
 
 		let member = message.guild.members.cache.get(user.id);
 		const datos = await ModelInfrs.find({ server: message.guild.id, id: user.id });
