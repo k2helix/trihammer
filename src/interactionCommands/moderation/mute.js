@@ -41,13 +41,13 @@ module.exports = {
 			message.guild.channels.cache.forEach((channel) => {
 				switch (channel.type) {
 					case 'GUILD_TEXT':
-						channel.permissionOverwrite.create(mutedRole, {
+						channel.permissionOverwrites.create(mutedRole, {
 							SEND_MESSAGES: false,
 							ADD_REACTIONS: false
 						});
 						break;
 					case 'GUILD_VOICE':
-						channel.permissionOverwrite.create(mutedRole, {
+						channel.permissionOverwrites.create(mutedRole, {
 							CONNECT: false,
 							SPEAK: false
 						});

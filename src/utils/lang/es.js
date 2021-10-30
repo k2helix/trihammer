@@ -472,7 +472,7 @@ module.exports = {
 				none: 'Un rol ha sido actualizado: `{role}`'
 			},
 			delete: '{user} ha borrado un rol: {role}',
-			create: '{user} ha creadp un rol: {role}'
+			create: '{user} ha creado un rol: {role}'
 		},
 		message: {
 			update: 'Mensaje de {user} editado en {channel}.\nAntes:\n```{old}```Después:\n```{new}```',
@@ -501,8 +501,8 @@ module.exports = {
 				removed: '{user} ha cambiado los permisos del rol `{role}` en el canal {channel}, se le ha removido: `{perms}`',
 				both: '{user} ha cambiado los permisos del rol `{role}` en el canal {channel}, se le ha añadido: `{added}`. Se le ha removido `{removed}`'
 			},
-			delete: '{user} ha borrado un canal de tipo {channel}: {name}',
-			create: '{user} ha creado un canal de tipo {channel}: {name}'
+			delete: 'Un canal de tipo {channel} ha sido borrado: {name}',
+			create: 'Un canal de tipo {channel} ha sido creado: {name}'
 		}
 	}
 };

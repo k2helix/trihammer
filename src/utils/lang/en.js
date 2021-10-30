@@ -508,8 +508,8 @@ module.exports = {
 				removed: '{user} has updated `{role}` role permissions in {channel}, removed: `{perms}`',
 				both: '{user} has updated `{role}` role permissions in {channel}, added: `{added}` . Removed: `{removed}`'
 			},
-			delete: '{user} has deleted a {channel} channel: {name}',
-			create: '{user} has created a {channel} channel: {name}'
+			delete: 'A {channel} channel has been deleted: {name}',
+			create: 'A {channel} channel has been created: {name}'
 		}
 	}
 };
