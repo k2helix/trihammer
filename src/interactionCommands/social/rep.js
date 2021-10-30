@@ -8,6 +8,7 @@ module.exports = {
 	type: 5,
 	async execute(client, interaction, guildConf) {
 		let user = interaction.options.getUser('user');
+		if (user.bot) return;
 		let { xp } = require(`../../utils/lang/${guildConf.lang}.js`);
 		let author = await ModelUsers.findOne({ id: interaction.user.id });
 		// if (args[0] && args[0] === 'reset') {

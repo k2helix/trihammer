@@ -34,8 +34,7 @@ module.exports = {
 			Object.keys(images).forEach(function (key) {
 				if (Number(key) > 19) return;
 				var val = images[key];
-				if (val.attribs)
-					urls.push({ name: val.attribs['data-pt'], img: val.attribs['data-ou'], site: val.attribs['data-st'], site_url: val.attribs['data-ru'] });
+				if (val.attribs) urls.push({ name: val.attribs['data-pt'], img: val.attribs['data-ou'], site: val.attribs['data-st'], site_url: val.attribs['data-ru'] });
 			});
 
 			let image = urls[0];
@@ -53,10 +52,7 @@ module.exports = {
 				.setImage(image.img)
 				.setColor('RANDOM')
 
-				.setFooter(
-					util.image.footer + `${findWithAttr(urls, 'img', image.img) + 1}/${urls.length}`,
-					'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
-				);
+				.setFooter(util.image.footer + `${findWithAttr(urls, 'img', image.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
 			interaction.reply({ embeds: [embed], components: [row] });
 			let msg = await interaction.fetchReply();
 			let url;
@@ -74,10 +70,7 @@ module.exports = {
 						embed = new MessageEmbed(msg.embeds[0])
 							.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 							.setImage(newUrl.img)
-							.setFooter(
-								util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
-								'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
-							);
+							.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
 						reaction.update({ embeds: [embed] });
 						break;
 					case 'left':
@@ -85,10 +78,7 @@ module.exports = {
 						embed = new MessageEmbed(msg.embeds[0])
 							.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 							.setImage(newUrl.img)
-							.setFooter(
-								util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
-								'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
-							);
+							.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
 						reaction.update({ embeds: [embed] });
 						break;
 					case 'right':
@@ -96,10 +86,7 @@ module.exports = {
 						embed = new MessageEmbed(msg.embeds[0])
 							.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 							.setImage(newUrl.img)
-							.setFooter(
-								util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
-								'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
-							);
+							.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
 						reaction.update({ embeds: [embed] });
 						break;
 					case 'dobleright':
@@ -107,10 +94,7 @@ module.exports = {
 						embed = new MessageEmbed(msg.embeds[0])
 							.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 							.setImage(newUrl.img)
-							.setFooter(
-								util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
-								'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
-							);
+							.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
 						reaction.update({ embeds: [embed] });
 						break;
 					case 'crossx':

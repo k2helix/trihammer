@@ -9,11 +9,11 @@ module.exports = {
 	aliases: ['cmd'],
 	type: 0,
 	async execute(client, message, args) {
-		let commandName = args.join(' ');
-		if (!commandName) return message.channel.send(util.command.not_found);
 		let serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		const langcode = serverConfig.lang;
 		let { util } = require(`../../utils/lang/${langcode}.js`);
+		let commandName = args.join(' ');
+		if (!commandName) return message.channel.send(util.command.not_found);
 		let command = client.commands.get(commandName) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
 		if (!command) return message.channel.send(util.command.not_found);
 		let embed = new MessageEmbed()

@@ -132,7 +132,7 @@ module.exports = {
 			.addField(util.manga.chapters, data.chapters, true)
 			.addField(util.manga.author, data.authors, true)
 			.addField(util.manga.published, data.published, true)
-			.addField(util.manga.genre, data.genres.join(', '), true)
+			.addField(util.manga.genre, data.genres.join(', ') || 'No', true)
 			.addField(util.manga.status, data.status, true)
 			.addField(util.manga.ranking, data.ranked, true)
 			.addField(util.manga.popularity, data.popularity, true);
