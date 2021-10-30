@@ -1063,15 +1063,15 @@ module.exports = [
 		description: 'Convert units to other units',
 		options: [
 			{
-				name: 'base-unit',
-				type: 'STRING',
-				description: 'The base unit (p.e, cm)',
-				required: true
-			},
-			{
 				name: 'amount',
 				type: 'STRING',
 				description: 'The amount of base unit you want to convert',
+				required: true
+			},
+			{
+				name: 'base-unit',
+				type: 'STRING',
+				description: 'The base unit (p.e, cm)',
 				required: true
 			},
 			{

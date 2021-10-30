@@ -70,7 +70,7 @@ module.exports = {
 		}
 
 		const chosenHorses = shuffle(horses).slice(0, 6);
-		await message.channel.send(`<@${message.author.id}>, ` + `${util.horse_race.choose_horse} ${chosenHorses.map((horse, i) => `**${i + 1}.** ${horse.name}`).join('\n')}`);
+		message.reply(`<@${message.author.id}>, ` + `${util.horse_race.choose_horse}\n${chosenHorses.map((horse, i) => `**${i + 1}.** ${horse.name}`).join('\n')}`);
 		const filter = (res) => {
 			if (res.author.id !== message.author.id) return false;
 			const num = Number.parseInt(res.content, 10);
@@ -82,7 +82,7 @@ module.exports = {
 			max: 1,
 			time: 30000
 		});
-		if (!msgs.size) return message.channel.send(`<@${message.author.id}>, ` + util.horse_race.no_bets);
+		if (!msgs.size) return message.channel.send({ content: `<@${message.author.id}>, ` + util.horse_race.no_bets, ephemeral: true });
 		const pick = chosenHorses[Number.parseInt(msgs.first().content, 10) - 1];
 		let results = [];
 		for (const horse of chosenHorses)
@@ -94,6 +94,9 @@ module.exports = {
 		results = results.sort((a, b) => a.time - b.time);
 		const leaderboard = await generateLeaderboard(chosenHorses, results);
 		const win = results[0].name === pick.name;
-		return message.channel.send(`<@${message.author.id}>, ` + win ? util.horse_race.win : util.horse_race.lose, { files: [leaderboard] });
+		return message.channel.send({
+			content: `<@${message.author.id}>, ` + (win ? util.horse_race.win : util.horse_race.lose),
+			files: [leaderboard]
+		});
 	}
 };

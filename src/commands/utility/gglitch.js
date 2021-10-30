@@ -45,7 +45,7 @@ module.exports = {
 				return message.channel.send(err.message);
 			});
 		const attachment = new MessageAttachment(body, 'glitch.gif');
-		message.channel.send(`Glitched gif:`, attachment);
+		message.channel.send({ content: `Glitched gif:`, files: [attachment] });
 		msg.delete();
 	}
 };

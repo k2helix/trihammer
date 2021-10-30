@@ -12,6 +12,7 @@ module.exports = {
 	type: 5,
 	async execute(client, message, args) {
 		let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+		if (user.bot) return;
 		let serverConfig = await ModelServer.findOne({ server: message.guild.id });
 		let langcode = serverConfig.lang;
 		let prefix = serverConfig.prefix;
