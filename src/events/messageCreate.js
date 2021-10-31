@@ -55,20 +55,21 @@ module.exports = async (client, message) => {
 
 	if (!command) return;
 
-	// if (command.myPerms) {
-	// 	let perms = command.myPerms.slice(1);
+	if (command.myPerms) {
+		let permsString = command.myPerms.slice(1);
+		let permsBitfield = permsString.map((p) => Discord.Permissions.FLAGS[p]);
 
-	// 	switch (command.myPerms[0]) {
-	// 		case true:
-	// 			if (!message.channel.permissionsFor(message.guild.me).has(perms))
-	// 				return message.channel.send(other.need_perm.channel.replace('{perms}', perms.map((perm) => `\`${perm}\``).join(', ')));
+		switch (command.myPerms[0]) {
+			case true:
+				if (!message.channel.permissionsFor(message.guild.me).has(permsBitfield))
+					return message.channel.send(other.need_perm.channel.replace('{perms}', permsString.map((perm) => `\`${perm}\``).join(', ')));
 
-	// 			break;
-	// 		default:
-	// 			if (!message.guild.me.permissions.has(perms))
-	// 				return message.channel.send(other.need_perm.guild.replace('{perms}', perms.map((perm) => `\`${perm}\``).join(', ')));
-	// 	}
-	// }
+				break;
+			default:
+				if (!message.guild.me.permissions.has(permsBitfield))
+					return message.channel.send(other.need_perm.guild.replace('{perms}', permsString.map((perm) => `\`${perm}\``).join(', ')));
+		}
+	}
 
 	if (command.cooldown) {
 		if (!cooldowns.has(command.name)) cooldowns.set(command.name, new Discord.Collection());

@@ -51,21 +51,22 @@ module.exports = async (client, interaction) => {
 		if (command.type === 3 || command.type === 2) return interaction.reply({ content: 'Moderation and configuration commands are not available yet', ephemeral: true });
 
 		if (command.myPerms) {
-			let perms = command.myPerms.slice(1);
+			let permsString = command.myPerms.slice(1);
+			let permsBitfield = permsString.map((p) => Discord.Permissions.FLAGS[p]);
 
 			switch (command.myPerms[0]) {
 				case true:
-					if (!interaction.channel.permissionsFor(interaction.guild.me).has(Discord.Permissions.FLAGS[perms]))
+					if (!interaction.channel.permissionsFor(interaction.guild.me).has(permsBitfield))
 						return interaction.reply({
-							content: other.need_perm.channel.replace('{perms}', perms.map((perm) => `\`${perm}\``).join(', ')),
+							content: other.need_perm.channel.replace('{perms}', permsString.map((perm) => `\`${perm}\``).join(', ')),
 							ephemeral: true
 						});
 
 					break;
 				default:
-					if (!interaction.guild.me.permissions.has(Discord.Permissions.FLAGS[perms]))
+					if (!interaction.guild.me.permissions.has(permsBitfield))
 						return interaction.reply({
-							content: other.need_perm.guild.replace('{perms}', perms.map((perm) => `\`${perm}\``).join(', ')),
+							content: other.need_perm.guild.replace('{perms}', permsString.map((perm) => `\`${perm}\``).join(', ')),
 							ephemeral: true
 						});
 			}
