@@ -183,7 +183,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 			.setTitle(music.play.added_to_queue.title)
 			.setDescription(music.play.added_to_queue.description.replace('{song}', `[${song.title}](${song.url})`))
 			.addField(music.play.added_to_queue.channel, song.channel, true)
-			.addField(music.play.added_to_queue.duration, song.duration, true)
+			.addField(music.play.added_to_queue.duration, song.duration || 'Unknown', true)
 			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
 		return serverQueue.textChannel.send({ embeds: [embed] });
 	}
