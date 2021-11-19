@@ -6,7 +6,7 @@ module.exports = {
 	usage: 'volume set <volume>',
 	example: 'volume set 6',
 	aliases: ['v'],
-	cooldown: 10,
+	cooldown: 3,
 	type: 6,
 	execute(client, interaction, guildConf) {
 		const serverQueue = queue.get(interaction.guildId);
@@ -21,7 +21,7 @@ module.exports = {
 		const djRole = interaction.guild.roles.cache.find((role) => role.name === 'DJ');
 		if (djRole && !interaction.member.roles.cache.has(djRole.id)) return interaction.reply({ content: music.need_dj.volume, ephemeral: true });
 
-		if (parseFloat(newVolume) > 10) return interaction.reply({ content: 'No.', ephemeral: true });
+		if (parseFloat(newVolume) > 5) return interaction.reply({ content: 'No.', ephemeral: true });
 
 		serverQueue.volume = parseFloat(newVolume);
 		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(parseFloat(newVolume) / 5);
