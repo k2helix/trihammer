@@ -17,7 +17,7 @@ module.exports = {
 		if (!message.member.voice.channel) return;
 
 		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
-		if (djRole && message.member.roles.cache.has(djRole.id)) return serverQueue.connection.dispatcher.end();
+		if (djRole && message.member.roles.cache.has(djRole.id)) return serverQueue.audioPlayer.stop();
 
 		const members = message.member.voice.channel.members.filter((m) => !m.user.bot).size,
 			required = Math.floor(members / 2),
