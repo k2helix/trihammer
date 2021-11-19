@@ -6,6 +6,7 @@ module.exports = {
 	usage: 'volume set <volume>',
 	example: 'volume set 6',
 	aliases: ['v'],
+	cooldown: 10,
 	type: 6,
 	execute(client, interaction, guildConf) {
 		const serverQueue = queue.get(interaction.guildId);
