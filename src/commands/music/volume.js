@@ -7,6 +7,7 @@ module.exports = {
 	usage: 'volume set <volume>',
 	example: 'volume set 6',
 	aliases: ['v'],
+	cooldown: 10,
 	type: 6,
 	async execute(client, message, args) {
 		const serverQueue = queue.get(message.guild.id);
