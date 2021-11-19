@@ -7,7 +7,7 @@ module.exports = {
 	usage: 'volume set <volume>',
 	example: 'volume set 6',
 	aliases: ['v'],
-	cooldown: 10,
+	cooldown: 3,
 	type: 6,
 	async execute(client, message, args) {
 		const serverQueue = queue.get(message.guild.id);
@@ -21,10 +21,9 @@ module.exports = {
 		if (!args[1] || args[0] !== 'set') return await message.channel.send(`Volume: **${serverQueue.volume}**.`);
 
 		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
-
 		if (djRole && !message.member.roles.cache.has(djRole.id)) return message.channel.send(music.need_dj.volume);
 
-		if (parseFloat(args[1]) > 10) return message.channel.send('NO');
+		if (parseFloat(args[1]) > 5) return message.channel.send('NO');
 
 		serverQueue.volume = args[1];
 		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(args[1] / 5);
