@@ -21,7 +21,7 @@ const prism = require('prism-media');
 
 const queue = new Map();
 const YouTube = require('simple-youtube-api');
-const youtube = new YouTube('AIzaSyDiUAFTalh5zCnHGIDMfdzlMfzPaQQn09k');
+const youtube = new YouTube(process.env.GOOGLE_API_KEY);
 
 async function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
