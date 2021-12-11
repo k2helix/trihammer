@@ -14,7 +14,8 @@ If you want to self host the bot, then edit .env.example with all your credentia
 - If you don't want to use the top.gg api, just remove it from the guildCreate and guildDelete events and from the rep command.
 - If you are not using Heroku, you can remove its api key from .env and delete the Procfile file.
 - If you want to add more slash commands, edit the commands.js file in the root directory and deploy them with t-deploy. \
-I'm a bit lazy and some things are very improvable, I'm conscious
+
+I'm a bit lazy and some things are very improvable, I'm conscious.
 
 ## Issues
 If you find any issue, please open an issue and describe it, I'll check what I can do!
