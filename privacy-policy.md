@@ -9,5 +9,5 @@ We don't store the content of any message, we just use it when it is sent if it 
 Information we store:
 - User ID, to identify users in our database.
 - When someone sends a message, we store that that person has sent a message in a certain server. This is used for the xp/activity system.
-- Information provided in commands that need to be stored, such as the profile description of a user or the reason of a ban.
+- Information provided in commands that needs to be stored, such as the profile description of a user or the reason of a ban.
 - Guild configuration: language, prefix, logs channels, administrator roles... 
