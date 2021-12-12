@@ -38,7 +38,7 @@ module.exports = async (client, guild) => {
 			memberlogs: 'none',
 			serverlogs: 'none',
 			infrlogs: 'none',
-			prefix: 't-',
+			prefix: config.default_prefix,
 			lang: 'en',
 			autorole: 'none',
 			antispam: false
