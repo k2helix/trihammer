@@ -16,7 +16,7 @@ module.exports = async (client, interaction) => {
 			memberlogs: 'none',
 			serverlogs: 'none',
 			infrlogs: 'none',
-			prefix: 't-',
+			prefix: require('../../config.json').default_prefix,
 			lang: 'en',
 			autorole: 'none',
 			antispam: false
