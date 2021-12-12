@@ -472,7 +472,7 @@ module.exports = {
 				none: 'Un rol ha sido actualizado: `{role}`'
 			},
 			delete: '{user} ha borrado un rol: {role}',
-			create: '{user} ha creado un rol: {role}'
+			create: '{user} ha creado un nuevo rol: {role}'
 		},
 		message: {
 			update: 'Mensaje de {user} editado en {channel}.\nAntes:\n```{old}```Después:\n```{new}```',
