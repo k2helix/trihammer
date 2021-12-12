@@ -1,3 +1,4 @@
+const config = require('../../../config.json');
 function convertDate(ms) {
 	let date = new Date(ms),
 		months = {
@@ -342,8 +343,7 @@ module.exports = {
 		nsfw: 'Este canal no es NSFW, usa el comando en uno que lo sea',
 		invite: {
 			title: '¡Invítame a tu servidor!',
-			description:
-				'Un bot útil e interactivo que se esfuerza por hacer de tu servidor un lugar mejor.\n> [Invitación recomendada](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot%20applications.commands)\n> [Invitación sin permisos](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=0&scope=bot%20applications.commands)\n Si necesitas ayuda, no dudes en pasarte por el [servidor de soporte](https://discord.gg/EjG6XZs) y preguntar alli.'
+			description: `Un bot útil e interactivo que se esfuerza por hacer de tu servidor un lugar mejor.\n> [Invitación recomendada](${config.invite_link})\n> [Invitación sin permisos](${config.invite_link_without_permissions})\n Si necesitas ayuda, no dudes en pasarte por el [servidor de soporte](${config.support_server_invite}) y preguntar alli.`
 		},
 		horse_race: {
 			choose_horse: '**escoge un caballo al que apostar:** _(Escribe el número)_',

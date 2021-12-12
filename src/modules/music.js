@@ -68,37 +68,42 @@ async function play(guild, song) {
 			console.log('An error ocurred with ytdl-core' + error.message);
 		}
 	}
-	let currentType = StreamType.Arbitrary;
-	// eslint-disable-next-line curly
-	if (song.seek !== 0) {
-		const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
-		let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
-		let seekStream = new prism.FFmpeg({
-			args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
-		});
-		currentType = StreamType.Raw;
-		stream = stream.pipe(seekStream);
-	}
-	if (!stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
-	const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
-	const player = createAudioPlayer();
-	player.play(resource);
-	serverQueue.audioPlayer = player;
-	player.on('stateChange', (oldState, newState) => {
-		if (oldState.status == 'playing' && newState.status == 'idle') {
-			if (serverQueue.loop === true) {
-				serverQueue.songs.push(serverQueue.songs.shift());
-				serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
-			} else serverQueue.songs.shift();
-			if (!serverQueue.songs[0]) {
-				serverQueue.connection.destroy();
-				return queue.delete(serverQueue.textChannel.guild.id);
-			}
-			play(guild, serverQueue.songs[0]);
+	try {
+		let currentType = StreamType.Arbitrary;
+		// eslint-disable-next-line curly
+		if (song.seek !== 0) {
+			const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
+			let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
+			let seekStream = new prism.FFmpeg({
+				args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
+			});
+			currentType = StreamType.Raw;
+			stream = stream.pipe(seekStream);
 		}
-	});
-	serverQueue.connection.subscribe(player);
-	serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
+		if (!stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
+		const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
+		const player = createAudioPlayer();
+		player.play(resource);
+		serverQueue.audioPlayer = player;
+		player.on('stateChange', (oldState, newState) => {
+			if (oldState.status == 'playing' && newState.status == 'idle') {
+				if (serverQueue.loop === true) {
+					serverQueue.songs.push(serverQueue.songs.shift());
+					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
+				} else serverQueue.songs.shift();
+				if (!serverQueue.songs[0]) {
+					serverQueue.connection.destroy();
+					return queue.delete(serverQueue.textChannel.guild.id);
+				}
+				play(guild, serverQueue.songs[0]);
+			}
+		});
+		serverQueue.connection.subscribe(player);
+		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
+	} catch (error) {
+		console.error(error);
+		return serverQueue.textChannel.send('An error ocurred when executing this command: ', error.message);
+	}
 
 	if (song.seek > 0) return;
 

@@ -1,7 +1,13 @@
 require('dotenv').config();
+const config = require('../config.json');
+if (!config.credentials.dotenv)
+	Object.keys(config.credentials).forEach((key) => {
+		if (key === 'dotenv') return;
+		process.env[key] = config.credentials[key];
+	});
 
 const { init, captureException } = require('@sentry/node');
-init({ dsn: process.env.SENTRY_DSN });
+if (config.use_sentry) init({ dsn: process.env.SENTRY_DSN });
 
 const mongoose = require(`mongoose`);
 mongoose.connect(process.env.MONGO_URI, {
@@ -29,14 +35,14 @@ const intents = [
 const client = new Discord.Client({ allowedMentions: { parse: ['users', 'roles'], repliedUser: true }, intents: intents });
 client.commands = new Discord.Collection();
 client.interactionCommands = new Discord.Collection();
-client.config = { prefix: 't-', admins: ['461279654158925825', '638693695839010836'] };
+client.config = { prefix: config.default_prefix, admins: config.admininstrators };
 
 // require('./modules/twitter').checkTweets(client);
 
 // const array = ['Mod', 'xp', 'Utilidad', 'Kawaii', 'config', 'Music'];
 const array = ['config', 'development', 'fun', 'information', 'moderation', 'music', 'social', 'utility'];
 
-array.some((arr) => {
+array.forEach((arr) => {
 	const commandFiles = fs.readdirSync('./src/commands/' + arr).filter((file) => file.endsWith('.js'));
 	for (const file of commandFiles) {
 		const command = require(`./commands/${arr}/${file}`);
@@ -63,8 +69,8 @@ fs.readdir('./src/events/', (err, files) => {
 
 process.on('unhandledRejection', (error) => {
 	console.error(error);
-	client.channels.cache.get('640548372574371852').send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
-	captureException(error);
+	client.channels.cache.get(config.logs_channel).send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
+	if (config.use_sentry) captureException(error);
 });
 
 client.login(process.env.TOKEN);

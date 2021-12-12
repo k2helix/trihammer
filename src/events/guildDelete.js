@@ -1,8 +1,9 @@
 const request = require('node-superfetch');
+const config = require('../../config.json');
 module.exports = async (client, guild) => {
 	if (!guild.name) return;
-	let server = client.channels.cache.get('640548372574371852');
-	server.send(`Me he salido del servidor ${guild.name}. Ahora estoy en ${client.guilds.cache.size} servidores.`);
+	let server = client.channels.cache.get(config.logs_channel);
+	server.send(config.strings.server_joined.replaceAll({ '{{guild}}': `${guild.name} (${guild.id})`, '{{guildcount}}': client.guilds.cache.size }));
 	await request.post('https://top.gg/api/bots/stats', {
 		headers: {
 			'Content-Type': 'application/json',
