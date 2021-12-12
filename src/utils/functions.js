@@ -1,11 +1,4 @@
-const {
-	hiraganaDigraphs,
-	hiraganaMonographs,
-	katakanaMonographs,
-	katakanaDigraphs,
-	katakanaHalfwidthsCombined,
-	katakanaHalfwidths
-} = require('./objects');
+const { hiraganaDigraphs, hiraganaMonographs, katakanaMonographs, katakanaDigraphs, katakanaHalfwidthsCombined, katakanaHalfwidths } = require('./objects');
 const { MessageEmbed } = require('discord.js');
 function bulkReplace(str, regex, map) {
 	if (arguments.length === 2) {
@@ -212,8 +205,7 @@ function prinsjoto(message) {
 			message.channel.send('G2 está mamadísimo', {
 				files: [
 					{
-						attachment:
-							'https://cdn.discordapp.com/attachments/418590211803578391/612048235728732161/Goga-ganado-Rainbow-Six-Siege_1219688028_133861_1440x600.png',
+						attachment: 'https://cdn.discordapp.com/attachments/418590211803578391/612048235728732161/Goga-ganado-Rainbow-Six-Siege_1219688028_133861_1440x600.png',
 						name: 'G2mamadisimo' + '.png'
 					}
 				]
