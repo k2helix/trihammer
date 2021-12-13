@@ -8,20 +8,19 @@ function setCharAt(str, index, chr) {
 }
 
 function Time_convertor(ms) {
-	let horas = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	let minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-	let segundos = Math.floor((ms % (1000 * 60)) / 1000);
+	let hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	let minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+	let seconds = Math.floor((ms % (1000 * 60)) / 1000);
 
-	let final2 = '';
-	if (segundos < 10) segundos = '0' + segundos;
-	if (minutos < 10) minutos = '0' + minutos;
-	if (horas < 10) horas = '0' + horas;
-	if (horas < 1) {
-		if (segundos > 0) final2 += segundos > 1 ? `${minutos}:${segundos}` : `${minutos}:${segundos}`;
-		if (horas > 1) if (segundos > 0) final2 += segundos > 1 ? `${horas}:${minutos}:${segundos}` : `${horas}:${minutos}:${segundos}`;
-
-		return final2;
-	}
+	let obj = { hours: hours, minutes: minutes, seconds: seconds };
+	let array = Object.keys(obj);
+	let arr = [];
+	array.forEach((period) => {
+		let value = obj[period];
+		if (!value && period !== 'minutes') return;
+		arr.push((value < 10 ? '0' + value : value).toString());
+	});
+	return arr.join(':');
 }
 
 module.exports = {

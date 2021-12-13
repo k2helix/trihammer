@@ -29,7 +29,7 @@ async function play(guild, song) {
 	if (!song) {
 		serverQueue.voiceChannel.connection?.destroy();
 		queue.delete(guild.id);
-		return;
+		return console.log('Queue deleted because there was no song');
 	}
 
 	let musicC = await ModelServer.findOne({ server: serverQueue.textChannel.guild.id }).lean();
@@ -93,6 +93,7 @@ async function play(guild, song) {
 				} else serverQueue.songs.shift();
 				if (!serverQueue.songs[0]) {
 					serverQueue.connection.destroy();
+					console.log('Queue deleted on stateChange');
 					return queue.delete(serverQueue.textChannel.guild.id);
 				}
 				play(guild, serverQueue.songs[0]);
@@ -122,17 +123,23 @@ async function play(guild, song) {
 async function handleVideo(video, message, voiceChannel, playlist = false, seek) {
 	// if (message.options) message.type = 'interaction';
 	const serverQueue = queue.get(message.guildId);
-	let string = '';
-	for (let t of Object.values(video.duration)) {
-		if (!t) continue;
-		if (t < 10) t = '0' + t;
-		string = string + `:${t}`;
+	function humanize(object) {
+		let arr = [];
+		let keys = Object.keys(object);
+		keys.forEach((key) => {
+			let index = keys.indexOf(key);
+			let value = object[key];
+			if (key !== 'minutes' && !value && !(keys.some((v) => keys.indexOf(v) > index && object[v]) && keys.some((v) => keys.indexOf(v) < index && object[v]))) return;
+			if (value < 10) value = '0' + value;
+			arr.push(value.toString());
+		});
+		return arr.join(':');
 	}
 
 	const song = {
 		id: video.id,
 		title: video.title,
-		duration: string.slice(1),
+		duration: humanize(video.duration),
 		durationObject: video.duration,
 		channel: video.channel.title,
 		url: `https://www.youtube.com/watch?v=${video.id}`,
