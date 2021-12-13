@@ -129,7 +129,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 		keys.forEach((key) => {
 			let index = keys.indexOf(key);
 			let value = object[key];
-			if (key !== 'minutes' && !value && !(keys.some((v) => keys.indexOf(v) > index && object[v]) && keys.some((v) => keys.indexOf(v) < index && object[v]))) return;
+			if (key !== 'minutes' && !value && index !== keys.length - 1 && !keys.some((v) => keys.indexOf(v) < index && object[v])) return;
 			if (value < 10) value = '0' + value;
 			arr.push(value.toString());
 		});
