@@ -24,6 +24,7 @@ const YouTube = require('simple-youtube-api');
 const youtube = new YouTube(process.env.GOOGLE_API_KEY);
 
 async function play(guild, song) {
+	console.log(song);
 	const serverQueue = queue.get(guild.id);
 
 	if (!song) {
@@ -64,7 +65,7 @@ async function play(guild, song) {
 		try {
 			stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
 		} catch (error) {
-			console.log('An error ocurred with ytdl-core' + error.message);
+			console.log('An error ocurred with ytdl-core ' + error.message);
 		}
 	}
 	try {
@@ -101,7 +102,7 @@ async function play(guild, song) {
 		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
 	} catch (error) {
 		console.error(error);
-		return serverQueue.textChannel.send('An error ocurred when executing this command: ', error.message);
+		return serverQueue.textChannel.send('An error ocurred when executing this command: ' + error.message);
 	}
 
 	if (song.seek > 0) return;
