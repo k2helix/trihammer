@@ -215,6 +215,7 @@ module.exports = {
 			yt_dm: 'The user was notified in DM'
 		},
 		no_vc: 'You are not in a voice channel',
+		wrong_vc: 'You are not in my voice channel',
 		no_queue: "There isn't any song in the queue",
 		lyrics_name: 'You need to type the name of the song',
 		not_found: 'Nothing could be found',

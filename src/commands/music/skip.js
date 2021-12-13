@@ -14,7 +14,6 @@ module.exports = {
 
 		const serverQueue = queue.get(message.guild.id);
 		if (!serverQueue) return;
-		if (!message.member.voice.channel) return;
 
 		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
 		if (djRole && message.member.roles.cache.has(djRole.id)) return serverQueue.audioPlayer.stop();
@@ -22,6 +21,10 @@ module.exports = {
 		const members = message.member.voice.channel.members.filter((m) => !m.user.bot).size,
 			required = Math.floor(members / 2),
 			skips = serverQueue.songs[0].skip;
+		if (skips.length >= required) {
+			serverQueue.audioPlayer.stop();
+			return message.reply({ content: music.skip.skipping });
+		}
 		if (skips.includes(message.author.id)) return message.channel.send(music.skip.already_voted.replace('{votes}', `${skips.length}/${required}`));
 
 		skips.push(message.author.id);

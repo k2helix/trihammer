@@ -21,6 +21,7 @@ module.exports = {
 
 		const searchString = args.slice(0).join(' ');
 		if (!voiceChannel) return await message.channel.send(music.no_vc);
+		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send(music.wrong_vc);
 
 		const videos = await youtube.searchVideos(searchString, 10).catch(() => false);
 		if (typeof videos === 'boolean' || videos.length < 1) return await message.channel.send(music.not_found);

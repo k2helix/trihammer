@@ -57,7 +57,7 @@
     "strings": {
         "ready": "[Ready] El bot ha sido iniciado correctamente para {{guilds}} servidores.",
         "ready_legacy": "el bot ha sido iniciado para {{guilds}} servidores y {{users}} usuarios",
-        "server_joined": "Me he unido al servidor {{guild}}, que tiene {{membercount}} miembros. Ahora estoy en ${guildcount} servidores.",
+        "server_joined": "Me he unido al servidor {{guild}}, que tiene {{membercount}} miembros. Ahora estoy en {{guildcount}} servidores.",
         "server_left": "Me he salido del servidor {{guild}}. Ahora estoy en {{guildcount}} servidores."
     }
 }

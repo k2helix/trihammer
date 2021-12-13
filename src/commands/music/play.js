@@ -23,6 +23,7 @@ module.exports = {
 		const { music } = require(`../../utils/lang/${langcode}.js`);
 
 		if (!voiceChannel) return message.channel.send(music.no_vc);
+		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send(music.wrong_vc);
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
 			const playlist = await youtube.getPlaylist(url);

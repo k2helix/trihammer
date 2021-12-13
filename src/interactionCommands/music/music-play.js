@@ -21,6 +21,7 @@ module.exports = {
 		const voiceChannel = interaction.member.voice.channel;
 
 		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
+		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
 			const playlist = await youtube.getPlaylist(url);
