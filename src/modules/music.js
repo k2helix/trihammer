@@ -24,11 +24,10 @@ const YouTube = require('simple-youtube-api');
 const youtube = new YouTube(process.env.GOOGLE_API_KEY);
 
 async function play(guild, song) {
-	console.log(song);
 	const serverQueue = queue.get(guild.id);
 
 	if (!song) {
-		serverQueue.voiceChannel.connection?.destroy();
+		serverQueue.connection?.destroy();
 		queue.delete(guild.id);
 	}
 
@@ -91,31 +90,31 @@ async function play(guild, song) {
 					serverQueue.songs.push(serverQueue.songs.shift());
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
-				// if (!serverQueue.songs[0]) {
-				// 	serverQueue.connection.destroy();
-				// 	return queue.delete(serverQueue.textChannel.guild.id);
-				// }
+				if (!serverQueue.songs[0]) {
+					serverQueue.connection.destroy();
+					return queue.delete(serverQueue.textChannel.guild.id);
+				}
 				play(guild, serverQueue.songs[0]);
 			}
 		});
 		serverQueue.connection.subscribe(player);
 		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
+
+		if (song.seek > 0) return;
+
+		var embed = new Discord.MessageEmbed()
+			.setTitle(music.play.now_playing.title)
+			.setDescription(`[${song.title}](${song.url})`)
+			.setColor('RANDOM')
+			.addField(music.play.now_playing.channel, song.channel, true)
+			.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
+			.addField(music.play.now_playing.requested_by, `<@${song.requested}>`, true)
+			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
+		return serverQueue.textChannel.send({ embeds: [embed] });
 	} catch (error) {
 		console.error(error);
 		return serverQueue.textChannel.send('An error ocurred when executing this command: ' + error.message);
 	}
-
-	if (song.seek > 0) return;
-
-	var embed = new Discord.MessageEmbed()
-		.setTitle(music.play.now_playing.title)
-		.setDescription(`[${song.title}](${song.url})`)
-		.setColor('RANDOM')
-		.addField(music.play.now_playing.channel, song.channel, true)
-		.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
-		.addField(music.play.now_playing.requested_by, `<@${song.requested}>`, true)
-		.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
-	return serverQueue.textChannel.send({ embeds: [embed] });
 	// });
 }
 
