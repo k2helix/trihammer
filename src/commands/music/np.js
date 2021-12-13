@@ -17,7 +17,7 @@ function Time_convertor(ms) {
 	let arr = [];
 	array.forEach((period) => {
 		let value = obj[period];
-		if (!value && period !== 'minutes') return;
+		if (!value && period === 'hours') return;
 		arr.push((value < 10 ? '0' + value : value).toString());
 	});
 	return arr.join(':');
