@@ -29,7 +29,6 @@ async function play(guild, song) {
 	if (!song) {
 		serverQueue.voiceChannel.connection?.destroy();
 		queue.delete(guild.id);
-		return console.log('Queue deleted because there was no song');
 	}
 
 	let musicC = await ModelServer.findOne({ server: serverQueue.textChannel.guild.id }).lean();
@@ -91,11 +90,10 @@ async function play(guild, song) {
 					serverQueue.songs.push(serverQueue.songs.shift());
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
-				if (!serverQueue.songs[0]) {
-					serverQueue.connection.destroy();
-					console.log('Queue deleted on stateChange');
-					return queue.delete(serverQueue.textChannel.guild.id);
-				}
+				// if (!serverQueue.songs[0]) {
+				// 	serverQueue.connection.destroy();
+				// 	return queue.delete(serverQueue.textChannel.guild.id);
+				// }
 				play(guild, serverQueue.songs[0]);
 			}
 		});

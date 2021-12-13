@@ -17,6 +17,7 @@ module.exports = {
 
 		const searchString = interaction.options.getString('song');
 		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
+		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
 
 		const videos = await youtube.searchVideos(searchString, 10).catch(() => false);
 		if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });

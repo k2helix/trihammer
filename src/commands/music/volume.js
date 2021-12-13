@@ -18,14 +18,14 @@ module.exports = {
 		if (!message.member.voice.channel) return await message.channel.send(music.no_vc);
 
 		if (!serverQueue) return await message.channel.send(music.no_queue);
-		if (!args[1] || args[0] !== 'set') return await message.channel.send(`Volume: **${serverQueue.volume}**.`);
+		if (!args[0]) return await message.channel.send(`Volume: **${serverQueue.volume}**.`);
 
 		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
 		if (djRole && !message.member.roles.cache.has(djRole.id)) return message.channel.send(music.need_dj.volume);
 
-		if (parseFloat(args[1]) > 5) return message.channel.send('NO');
+		if (parseFloat(args[0]) > 5) return message.channel.send('NO');
 
-		serverQueue.volume = args[1];
-		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(args[1] / 5);
+		serverQueue.volume = args[0];
+		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(args[0] / 5);
 	}
 };
