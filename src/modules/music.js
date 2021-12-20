@@ -99,22 +99,22 @@ async function play(guild, song) {
 		});
 		serverQueue.connection.subscribe(player);
 		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
-
-		if (song.seek > 0) return;
-
-		var embed = new Discord.MessageEmbed()
-			.setTitle(music.play.now_playing.title)
-			.setDescription(`[${song.title}](${song.url})`)
-			.setColor('RANDOM')
-			.addField(music.play.now_playing.channel, song.channel, true)
-			.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
-			.addField(music.play.now_playing.requested_by, `<@${song.requested}>`, true)
-			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
-		return serverQueue.textChannel.send({ embeds: [embed] });
 	} catch (error) {
 		console.error(error);
 		return serverQueue.textChannel.send('An error ocurred when executing this command: ' + error.message);
 	}
+
+	if (song.seek > 0) return;
+
+	var embed = new Discord.MessageEmbed()
+		.setTitle(music.play.now_playing.title)
+		.setDescription(`[${song.title}](${song.url})`)
+		.setColor('RANDOM')
+		.addField(music.play.now_playing.channel, song.channel, true)
+		.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
+		.addField(music.play.now_playing.requested_by, `<@${song.requested}>`, true)
+		.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
+	return serverQueue.textChannel.send({ embeds: [embed] });
 	// });
 }
 
