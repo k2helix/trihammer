@@ -185,8 +185,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 		let lang = musicC.lang;
 		let { music } = require(`../utils/lang/${lang}.js`);
 		if (seek) {
-			let durationInSeconds = song.durationObject.minutes * 60 + song.durationObject.seconds;
-			if (song.seek > durationInSeconds) return serverQueue.textChannel.send(music.seek_cancelled);
+			if (song.seek > song.durationInSec) return serverQueue.textChannel.send(music.seek_cancelled);
 			array_move(serverQueue.songs, serverQueue.songs.length - 1, 1);
 			serverQueue.audioPlayer.stop();
 			return;
