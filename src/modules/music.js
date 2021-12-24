@@ -1,11 +1,16 @@
 const { ModelServer } = require('../utils/models');
 const playdl = require('play-dl');
-const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const { array_move } = require('../utils/functions');
 
 const { StreamType, createAudioPlayer, createAudioResource, joinVoiceChannel } = require('@discordjs/voice');
-const prism = require('prism-media');
+// const prism = require('prism-media');
+function swap(array, x, y) {
+	var b = array[x];
+	array[x] = array[y];
+	array[y] = b;
+	return array;
+}
 // var googleTTS = require('google-tts-api');
 // const https = require('https');
 
@@ -20,8 +25,6 @@ const prism = require('prism-media');
 // 	}, new PassThrough());
 
 const queue = new Map();
-const YouTube = require('simple-youtube-api');
-const youtube = new YouTube(process.env.GOOGLE_API_KEY);
 
 async function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
@@ -58,27 +61,24 @@ async function play(guild, song) {
 	// let stream = concatStreams([ttsStream, ytStream]);
 	let stream;
 	try {
-		stream = (await playdl.stream(song.url)).stream;
+		if (song.seek > 0) stream = (await playdl.stream(song.url, { seek: song.seek, seekMode: 'precise' })).stream;
+		else stream = (await playdl.stream(song.url)).stream;
 	} catch (err) {
 		console.log('Tried with play-dl, got error ' + err.message);
-		try {
-			stream = ytdl(song.url, { quality: 'highestaudio', filter: 'audioonly' });
-		} catch (error) {
-			console.log('An error ocurred with ytdl-core ' + error.message);
-		}
+		return serverQueue.textChannel.send('An error ocurred while executing this command (is the video age restricted?): ' + err.message);
 	}
 	try {
 		let currentType = StreamType.Arbitrary;
 		// eslint-disable-next-line curly
-		if (song.seek !== 0) {
-			const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
-			let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
-			let seekStream = new prism.FFmpeg({
-				args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
-			});
-			currentType = StreamType.Raw;
-			stream = stream.pipe(seekStream);
-		}
+		// if (song.seek !== 0) {
+		// 	const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
+		// 	let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
+		// 	let seekStream = new prism.FFmpeg({
+		// 		args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
+		// 	});
+		// 	currentType = StreamType.Raw;
+		// 	stream = stream.pipe(seekStream);
+		// }
 		if (!stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
 		const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
 		const player = createAudioPlayer();
@@ -86,14 +86,15 @@ async function play(guild, song) {
 		serverQueue.audioPlayer = player;
 		player.on('stateChange', (oldState, newState) => {
 			if (oldState.status == 'playing' && newState.status == 'idle') {
-				if (serverQueue.loop === true) {
-					serverQueue.songs.push(serverQueue.songs.shift());
-					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
-				} else serverQueue.songs.shift();
 				if (!serverQueue.songs[0]) {
 					serverQueue.connection.destroy();
 					return queue.delete(serverQueue.textChannel.guild.id);
 				}
+				if (serverQueue.loop === true) {
+					serverQueue.songs.push(serverQueue.songs.shift());
+					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
+				} else serverQueue.songs.shift();
+				if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
 				play(guild, serverQueue.songs[0]);
 			}
 		});
@@ -121,25 +122,25 @@ async function play(guild, song) {
 async function handleVideo(video, message, voiceChannel, playlist = false, seek) {
 	// if (message.options) message.type = 'interaction';
 	const serverQueue = queue.get(message.guildId);
-	function humanize(object) {
-		let arr = [];
-		let keys = Object.keys(object);
-		keys.forEach((key) => {
-			let index = keys.indexOf(key);
-			let value = object[key];
-			if (key !== 'minutes' && !value && index !== keys.length - 1 && !keys.some((v) => keys.indexOf(v) < index && object[v])) return;
-			if (value < 10) value = '0' + value;
-			arr.push(value.toString());
-		});
-		return arr.join(':');
-	}
+	// function humanize(object) {
+	// 	let arr = [];
+	// 	let keys = Object.keys(object);
+	// 	keys.forEach((key) => {
+	// 		let index = keys.indexOf(key);
+	// 		let value = object[key];
+	// 		if (key !== 'minutes' && !value && index !== keys.length - 1 && !keys.some((v) => keys.indexOf(v) < index && object[v])) return;
+	// 		if (value < 10) value = '0' + value;
+	// 		arr.push(value.toString());
+	// 	});
+	// 	return arr.join(':');
+	// }
 
 	const song = {
 		id: video.id,
 		title: video.title,
-		duration: humanize(video.duration),
-		durationObject: video.duration,
-		channel: video.channel.title,
+		duration: video.durationRaw,
+		durationInSec: video.durationInSec,
+		channel: video.channel.name,
 		url: `https://www.youtube.com/watch?v=${video.id}`,
 		requested: message.user?.id || message.author.id,
 		seek: seek ? seek : 0,
@@ -153,7 +154,9 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 			audioPlayer: null,
 			songs: [],
 			volume: 1,
-			playing: true
+			playing: true,
+			loop: false,
+			shuffle: false
 		};
 		queue.set(message.guildId, queueConstruct);
 
@@ -200,6 +203,6 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 	return;
 }
 
-module.exports = { play, handleVideo, queue, youtube };
+module.exports = { play, handleVideo, queue };
 
 //https://discord.com/channels/222078108977594368/852128888128929802/881447711352684585

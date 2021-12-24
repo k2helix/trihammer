@@ -1,11 +1,11 @@
 const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 module.exports = {
-	name: 'loop',
-	description: 'Put the queue in loop',
-	ESdesc: 'Pon la cola en loop',
-	usage: 'loop',
-	example: 'loop',
+	name: 'shuffle',
+	description: 'Put the queue in shuffle mode',
+	ESdesc: 'Pon la cola en modo aleatorio',
+	usage: 'shuffle',
+	example: 'shuffle',
 	aliases: ['l'],
 	type: 6,
 	async execute(client, message) {
@@ -16,9 +16,9 @@ module.exports = {
 
 		if (!message.member.voice.channel) return await message.channel.send(music.no_vc);
 		if (!serverQueue) return await message.channel.send(music.no_queue);
-		serverQueue.loop = !serverQueue.loop;
+		serverQueue.shuffle = !serverQueue.shuffle;
 		// queue.set(message.guild.id, serverQueue);
-		if (serverQueue.loop) return await message.channel.send(music.loop.enabled);
-		else return await message.channel.send(music.loop.disabled);
+		if (serverQueue.shuffle) return await message.channel.send(music.shuffle.enabled);
+		else return await message.channel.send(music.shuffle.disabled);
 	}
 };

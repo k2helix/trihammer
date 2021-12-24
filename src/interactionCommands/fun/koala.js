@@ -10,8 +10,7 @@ module.exports = {
 	myPerms: [true, 'ATTACH_FILES'],
 	async execute(client, interaction, guildConf) {
 		let { other } = require(`../../utils/lang/${guildConf.lang}`);
-		if (!interaction.member.permissions.has(Permissions.FLAGS.ATTACH_FILES))
-			return interaction.reply({ content: other.need_perm.attach_files, ephemeral: true });
+		if (!interaction.member.permissions.has(Permissions.FLAGS.ATTACH_FILES)) return interaction.reply({ content: other.need_perm.attach_files, ephemeral: true });
 		const { body } = await request.get('https://some-random-api.ml/img/koala');
 		interaction.reply({
 			files: [

@@ -1,4 +1,4 @@
-const { youtube } = require('../../modules/music');
+const play = require('play-dl');
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { handleVideo } = require('../../modules/music');
 
@@ -19,7 +19,7 @@ module.exports = {
 		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
 		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
 
-		const videos = await youtube.searchVideos(searchString, 10).catch(() => false);
+		const videos = await play.search(searchString, { limit: 10 }).catch(() => false);
 		if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
 
 		interaction.deferReply();
@@ -51,9 +51,9 @@ module.exports = {
 			return msg.delete();
 		}
 
-		const actualVideo = await youtube.getVideoByID(selected.values[0]);
+		const actualVideo = await play.video_info(selected.values[0]);
 
-		await handleVideo(actualVideo, interaction, voiceChannel);
-		return interaction.editReply({ content: music.play.added_to_queue.description.replace('{song}', `**${actualVideo.title}**`), ephemeral: true });
+		await handleVideo(actualVideo.video_details, interaction, voiceChannel);
+		return interaction.editReply({ content: music.play.added_to_queue.description.replace('{song}', `**${actualVideo.video_details.title}**`), ephemeral: true });
 	}
 };
