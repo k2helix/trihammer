@@ -73,4 +73,4 @@ process.on('unhandledRejection', (error) => {
 	if (config.use_sentry) captureException(error);
 });
 
-client.login(process.env.TOKEN_BETA);
+client.login(process.env.TOKEN);
