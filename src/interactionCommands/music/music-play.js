@@ -48,7 +48,7 @@ module.exports = {
 						}
 						return;
 					} else {
-						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 });
+						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 }).catch(() => false);
 						if (typeof searched === 'boolean' || searched.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
 						handleVideo(searched[0], interaction, voiceChannel);
 						return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${searched[0].title}**`), ephemeral: true });
@@ -66,7 +66,7 @@ module.exports = {
 
 			return interaction.reply(music.playlist.replace('{playlist}', playlist.title));
 		} else {
-			let video = await play.search(searchString, { limit: 1 });
+			let video = await play.search(searchString, { limit: 1 }).catch(() => false);
 			if (typeof video === 'boolean' || video.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
 			handleVideo(video[0], interaction, voiceChannel);
 			return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${video[0].title}**`), ephemeral: true });
