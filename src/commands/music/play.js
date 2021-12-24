@@ -71,9 +71,14 @@ module.exports = {
 
 			return message.channel.send(music.playlist.replace('{playlist}', playlist.title));
 		} else {
-			let video = await play.search(searchString, { limit: 1 }).catch(() => false);
-			if (typeof video === 'boolean' || video.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
-			handleVideo(video[0], message, voiceChannel);
+			let video;
+			if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
+			else {
+				let videos = await play.search(searchString, { limit: 1 }).catch(() => false);
+				if (typeof videos === 'boolean' || videos.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
+				video = videos[0];
+			}
+			handleVideo(video, message, voiceChannel);
 		}
 	}
 };
