@@ -209,7 +209,7 @@ module.exports = {
 			playlist_deleted: `Playlist \`{pl}\` borrada`,
 			playlist_songs: 'Canciones de la playlist',
 			no_playlists: 'El usuario proporcionado no tiene playlists',
-			added_to_queue: 'La playlist **{name}** de **{owner}** fue añadida a la cola correctamente'
+			added_to_queue: 'La playlist **{name}** de **{owner}** está siendo añadida a la cola'
 		},
 		ytt: {
 			yttogether: 'Click aquí para empezar **YouTube Together** en ',

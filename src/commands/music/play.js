@@ -43,14 +43,15 @@ module.exports = {
 							)
 							.setColor('RANDOM')
 							.setThumbnail(spot.thumbnail.url);
+						message.channel.send({ embeds: [playlistEmbed] });
 						let songs = spot.page(1);
 						for (let index = 0; index < songs.length; index++) {
 							const track = songs[index];
 							let searched = await play.search(`${track.artists[0]?.name} ${track.name}`, { limit: 1 }).catch(() => false);
-							if (typeof videos === 'boolean' || searched.length < 1) return;
+							if (typeof videos === 'boolean' || searched.length < 1) continue;
 							handleVideo(searched[0], message, voiceChannel, true);
 						}
-						return message.channel.send({ embeds: [playlistEmbed] });
+						return;
 					} else {
 						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 });
 						if (typeof searched === 'boolean' || searched.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });

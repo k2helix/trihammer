@@ -216,7 +216,7 @@ module.exports = {
 			playlist_deleted: `Playlist \`{pl}\` deleted`,
 			playlist_songs: 'Playlist songs',
 			no_playlists: 'The given uses does not have playlists',
-			added_to_queue: 'The playlist **{name}** by **{owner}** was successfully added to queue'
+			added_to_queue: 'The playlist **{name}** by **{owner}** is being added to queue'
 		},
 		ytt: {
 			yttogether: 'Click here to start **YouTube Together** in ',
