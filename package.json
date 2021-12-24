@@ -1,6 +1,6 @@
 {
   "name": "trihammer",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "main": "index.js",
   "engines": {
     "node": "16.8.0",
