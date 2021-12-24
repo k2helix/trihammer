@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const { array_move } = require('../utils/functions');
 
 const { StreamType, createAudioPlayer, createAudioResource, joinVoiceChannel } = require('@discordjs/voice');
-// const prism = require('prism-media');
+const prism = require('prism-media');
 function swap(array, x, y) {
 	var b = array[x];
 	array[x] = array[y];
@@ -61,24 +61,22 @@ async function play(guild, song) {
 	// let stream = concatStreams([ttsStream, ytStream]);
 	let stream;
 	try {
-		if (song.seek > 0) stream = (await playdl.stream(song.url, { seek: song.seek, seekMode: 'precise' })).stream;
-		else stream = (await playdl.stream(song.url)).stream;
+		stream = (await playdl.stream(song.url)).stream;
 	} catch (err) {
 		console.log('Tried with play-dl, got error ' + err.message);
 		return serverQueue.textChannel.send('An error ocurred while executing this command (is the video age restricted?): ' + err.message);
 	}
 	try {
 		let currentType = StreamType.Arbitrary;
-		// eslint-disable-next-line curly
-		// if (song.seek !== 0) {
-		// 	const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
-		// 	let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
-		// 	let seekStream = new prism.FFmpeg({
-		// 		args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
-		// 	});
-		// 	currentType = StreamType.Raw;
-		// 	stream = stream.pipe(seekStream);
-		// }
+		if (song.seek !== 0) {
+			const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
+			let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
+			let seekStream = new prism.FFmpeg({
+				args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
+			});
+			currentType = StreamType.Raw;
+			stream = stream.pipe(seekStream);
+		}
 		if (!stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
 		const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
 		const player = createAudioPlayer();

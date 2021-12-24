@@ -66,9 +66,14 @@ module.exports = {
 
 			return interaction.reply(music.playlist.replace('{playlist}', playlist.title));
 		} else {
-			let video = await play.search(searchString, { limit: 1 }).catch(() => false);
-			if (typeof video === 'boolean' || video.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
-			handleVideo(video[0], interaction, voiceChannel);
+			let video;
+			if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
+			else {
+				let videos = await play.search(searchString, { limit: 1 }).catch(() => false);
+				if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
+				video = videos[0];
+			}
+			handleVideo(video, interaction, voiceChannel);
 			return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${video[0].title}**`), ephemeral: true });
 		}
 	}
