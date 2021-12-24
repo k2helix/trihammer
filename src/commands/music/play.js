@@ -48,8 +48,7 @@ module.exports = {
 						for (let index = 0; index < songs.length; index++) {
 							const track = songs[index];
 							let searched = await play.search(`${track.artists[0]?.name} ${track.name}`, { limit: 1 }).catch(() => false);
-							if (typeof videos === 'boolean' || searched.length < 1) continue;
-							handleVideo(searched[0], message, voiceChannel, true);
+							if (searched[0]) handleVideo(searched[0], message, voiceChannel, true);
 						}
 						return;
 					} else {
