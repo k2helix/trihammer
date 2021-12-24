@@ -53,7 +53,7 @@ module.exports = {
 						}
 						return;
 					} else {
-						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 });
+						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 }).catch(() => false);
 						if (typeof searched === 'boolean' || searched.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
 						return handleVideo(searched[0], message, voiceChannel);
 					}
@@ -71,7 +71,7 @@ module.exports = {
 
 			return message.channel.send(music.playlist.replace('{playlist}', playlist.title));
 		} else {
-			let video = await play.search(searchString, { limit: 1 });
+			let video = await play.search(searchString, { limit: 1 }).catch(() => false);
 			if (typeof video === 'boolean' || video.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
 			handleVideo(video[0], message, voiceChannel);
 		}
