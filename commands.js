@@ -807,6 +807,11 @@ module.exports = [
 				name: 'loop',
 				description: 'Loop the whole queue',
 				type: 'SUB_COMMAND'
+			},
+			{
+				name: 'shuffle',
+				description: 'Shuffle mode (random)',
+				type: 'SUB_COMMAND'
 			}
 		]
 	},
@@ -1339,6 +1344,30 @@ module.exports = [
 				type: 'USER',
 				description: 'The user you want to unmute',
 				required: true
+			}
+		]
+	},
+	{
+		name: 'timeout',
+		description: 'Times this member guild out (0 to clear the timeout)',
+		options: [
+			{
+				name: 'user',
+				type: 'USER',
+				description: 'The user you want to time out',
+				required: true
+			},
+			{
+				name: 'duration',
+				type: 'STRING',
+				description: 'The duration of the time out, for example 1h (0 to clear the timeout)',
+				required: true
+			},
+			{
+				name: 'reason',
+				type: 'STRING',
+				description: 'The reason for your time out',
+				required: false
 			}
 		]
 	},

@@ -1,6 +1,6 @@
 const { queue } = require('../../modules/music');
 const { handleVideo } = require('../../modules/music');
-const { youtube } = require('../../modules/music');
+const play = require('play-dl');
 
 module.exports = {
 	name: 'seek',
@@ -22,11 +22,11 @@ module.exports = {
 		const minutes = parseInt(array[1]) * 60 || 0;
 		// let hours = array[2] ? array[2] * 60 * 60 : 0
 
-		const all = Math.floor(seconds + minutes /*+ Number(hours)*/);
+		let all = Math.floor(seconds + minutes /*+ Number(hours)*/);
 		if (isNaN(all)) return;
-		if (all === 0) return message.channel.send('you lazy');
+		if (all === 0) all = 1;
 		const url = serverQueue.songs[0].url;
-		const video = await youtube.getVideo(url);
-		handleVideo(video, message, voiceChannel, false, all);
+		const video = await play.video_info(url);
+		handleVideo(video.video_details, message, voiceChannel, false, all);
 	}
 };

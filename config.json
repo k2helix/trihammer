@@ -3,6 +3,7 @@
     "default_prefix": "t-",
     "logs_channel": "640548372574371852",
     "use_sentry": true,
+	"spotify_api": true,
     "top.gg": true,
     "credentials": {
         "dotenv": true

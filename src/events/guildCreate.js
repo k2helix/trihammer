@@ -8,8 +8,8 @@ module.exports = async (client, guild) => {
 		server.send(
 			config.strings.server_joined.replaceAll({
 				'{{guild}}': `${guild.name} (${guild.id})`,
-				'{{guildcount}}': client.guilds.cache.size,
-				'{{membercount}}': guild.members.cache.size
+				'{{membercount}}': guild.memberCount,
+				'{{guildcount}}': client.guilds.cache.size
 			})
 		);
 	}, 30000);

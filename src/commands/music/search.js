@@ -1,9 +1,7 @@
-const { youtube } = require('../../modules/music');
-
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { ModelServer } = require('../../utils/models');
 const { handleVideo } = require('../../modules/music');
-
+const play = require('play-dl');
 module.exports = {
 	name: 'search',
 	description: 'Search a song',
@@ -17,14 +15,23 @@ module.exports = {
 		const voiceChannel = message.member.voice.channel;
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		let langcode = serverConfig.lang;
-		const { music } = require(`../../utils/lang/${langcode}`);
+		const { music, util } = require(`../../utils/lang/${langcode}`);
 
-		const searchString = args.slice(0).join(' ');
-		if (!voiceChannel) return await message.channel.send(music.no_vc);
-		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send(music.wrong_vc);
+		const searchString = args.join(' ');
+		if (!voiceChannel) return message.channel.send({ content: music.no_vc });
+		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send({ content: music.wrong_vc });
 
-		const videos = await youtube.searchVideos(searchString, 10).catch(() => false);
-		if (typeof videos === 'boolean' || videos.length < 1) return await message.channel.send(music.not_found);
+		const videos = await play.search(searchString, { limit: 10 }).catch(() => false);
+		if (typeof videos === 'boolean' || videos.length < 1) return message.channel.send({ content: music.not_found });
+
+		let options = [];
+		for (let index = 0; index < videos.length; index++) {
+			const element = videos[index];
+			options.push({ label: `${index + 1}- ${element.title}`.slice(0, 99), value: element.id });
+		}
+		const row = new MessageActionRow().addComponents(
+			new MessageSelectMenu().setCustomId('music-search').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+		);
 
 		let songIndex = 0;
 		const embed = new MessageEmbed()
@@ -33,27 +40,20 @@ module.exports = {
 			.setFooter(music.cancel_select)
 			.setDescription(`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`)
 			.setTimestamp();
-		await message.channel.send({ embeds: [embed] });
+		let msg = await message.channel.send({ embeds: [embed], components: [row] });
+		const filter = (int) => int.customId === 'music-search' && int.user.id === message.author.id;
+		let selected;
+		try {
+			selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+			msg.delete();
+		} catch (error) {
+			if (message.replied || message.deferred) message.editchannel.send({ content: music.cancel });
+			else message.channel.send({ content: music.cancel });
+			return msg.delete();
+		}
 
-		let filter = (msg) => msg.author.id === message.author.id;
-		const response = await message.channel
-			.awaitMessages({
-				filter,
-				max: 1,
-				time: 20000,
-				errors: ['time']
-			})
-			.catch(() => false);
+		const actualVideo = await play.video_info(selected.values[0]);
 
-		if (typeof response === 'boolean') return await message.channel.send(music.cancel);
-		else if (response.first().content === 'cancel') return await message.channel.send('Ok');
-		else if (isNaN(response.first().content)) return await message.channel.send(music.must_be_number);
-		else if (response.first().content < 1 || response.first().content > 10) return await message.channel.send(music.must_be_number);
-
-		const videoIndex = parseInt(response.first().content);
-		const video = videos[videoIndex - 1];
-		const actualVideo = await youtube.getVideoByID(video.id);
-
-		return await handleVideo(actualVideo, message, voiceChannel);
+		await handleVideo(actualVideo.video_details, message, voiceChannel);
 	}
 };

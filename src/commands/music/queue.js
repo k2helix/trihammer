@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { queue } = require('../../modules/music');
 const { ModelServer } = require('../../utils/models');
 
@@ -24,6 +24,15 @@ module.exports = {
 		let amplifiedPage = (page - 1) * 10;
 		const selectedPortion = serverQueue.songs.slice(amplifiedPage, amplifiedEnd);
 		if (!selectedPortion || selectedPortion.length < 1) return await message.channel.send(music.no_queue);
+		const row = new MessageActionRow().addComponents([
+			new MessageButton().setCustomId('voteskip').setEmoji('882675796341321798').setStyle('PRIMARY'),
+			new MessageButton().setCustomId('loop').setEmoji('882674902304448582').setStyle('PRIMARY'),
+			new MessageButton().setCustomId('shuffle').setEmoji('923956906006052914').setStyle('PRIMARY'),
+			// new MessageButton().setCustomId('volume-down').setEmoji('882677475350564945').setStyle('PRIMARY'),
+			// new MessageButton().setCustomId('volume-up').setEmoji('882677486553530429').setStyle('PRIMARY'),
+			new MessageButton().setCustomId('stop').setEmoji('882674312094568528').setStyle('DANGER'),
+			new MessageButton().setCustomId('crossx').setEmoji('882639143874723932').setStyle('SECONDARY')
+		]);
 
 		const embed = new MessageEmbed()
 			.setTitle(music.queue_songs)
@@ -35,6 +44,21 @@ module.exports = {
 			)
 			.setFooter(music.queue_page.replaceAll({ '{number}': page, '{total}': Math.floor(serverQueue.songs.length / 10) + 1 }))
 			.setTimestamp();
-		return await message.channel.send({ embeds: [embed] });
+		if (serverQueue.shuffle) embed.addField('Shuffle', music.shuffle.enabled);
+		if (serverQueue.loop) embed.addField('Loop', music.loop.enabled);
+
+		let msg = await message.channel.send({ embeds: [embed], components: [row] });
+
+		const collector = msg.createMessageComponentCollector({ time: 60000 });
+		collector.on('collect', (reaction) => {
+			if (reaction.customId === 'crossx')
+				if (reaction.user.id !== message.author.id) return;
+				else return reaction.update({ components: [] });
+
+			client.interactionCommands.get(reaction.customId).execute(client, reaction, serverConfig);
+		});
+		collector.on('end', () => {
+			msg.edit({ components: [] });
+		});
 	}
 };

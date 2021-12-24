@@ -35,35 +35,7 @@ module.exports = {
 		let langcode = serverConfig.lang;
 		const { music } = require(`../../utils/lang/${langcode}`);
 		if (!serverQueue) return message.channel.send(music.no_queue);
-		let durationMs = 0,
-			a = 7;
-
-		for (let t of Object.values(serverQueue.songs[0].durationObject)) {
-			switch (a) {
-				case 7:
-					durationMs += t * 7 * 86400000;
-					break;
-				case 6:
-					durationMs += t * 365 * 86400000;
-					break;
-				case 5:
-					durationMs += t * 30 * 86400000;
-					break;
-				case 4:
-					durationMs += t * 86400000;
-					break;
-				case 3:
-					durationMs += t * 3600000;
-					break;
-				case 2:
-					durationMs += t * 60000;
-					break;
-				case 1:
-					durationMs += t * 1000;
-					break;
-			}
-			a--;
-		}
+		let durationMs = serverQueue.songs[0].durationInSec * 1000;
 
 		let seek = serverQueue.songs[0].seek;
 		let now = Time_convertor(serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000));

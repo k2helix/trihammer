@@ -142,7 +142,12 @@ module.exports = {
 		infraction_created: '**{infr}**\nUsuario: `{user}`\nModerador: `{mod}`\nID: `{id}`\nTiempo: `{time}`\nRazón: `{reason}`',
 		modinf: 'Infracción {infr} modificada.',
 		mkick: '{count} usuarios fueron expulsados',
-		mban: '{count} usuarios fueron baneados'
+		mban: '{count} usuarios fueron baneados',
+		timeout: {
+			clear: 'El timeout de {member} fue removido',
+			timeout: '{member} recibió un timeout de {duration}. Razón: {reason}',
+			time: 'La duración no debe ser superior a 28 días.'
+		}
 	},
 	welcome: {
 		wcolor: 'Ok, {color} establecido como color de texto de bienvenida.',
@@ -181,6 +186,10 @@ module.exports = {
 			enabled: '🔁 Loop activado',
 			disabled: '🔁 Loop desactivado'
 		},
+		shuffle: {
+			enabled: '🔀 Modo aleatorio activado',
+			disabled: '🔀 Modo aleatorio desactivado'
+		},
 		playlists: {
 			titles: {
 				recent: 'Playlists recientes',
@@ -199,7 +208,8 @@ module.exports = {
 			type_to_remove: 'Escribe el número de la playlist que deseas borrar',
 			playlist_deleted: `Playlist \`{pl}\` borrada`,
 			playlist_songs: 'Canciones de la playlist',
-			no_playlists: 'El usuario proporcionado no tiene playlists'
+			no_playlists: 'El usuario proporcionado no tiene playlists',
+			added_to_queue: 'La playlist **{name}** de **{owner}** fue añadida a la cola correctamente'
 		},
 		ytt: {
 			yttogether: 'Click aquí para empezar **YouTube Together** en ',

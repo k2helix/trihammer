@@ -27,6 +27,7 @@ module.exports = {
 			const row = new MessageActionRow().addComponents([
 				new MessageButton().setCustomId('voteskip').setEmoji('882675796341321798').setStyle('PRIMARY'),
 				new MessageButton().setCustomId('loop').setEmoji('882674902304448582').setStyle('PRIMARY'),
+				new MessageButton().setCustomId('shuffle').setEmoji('923956906006052914').setStyle('PRIMARY'),
 				// new MessageButton().setCustomId('volume-down').setEmoji('882677475350564945').setStyle('PRIMARY'),
 				// new MessageButton().setCustomId('volume-up').setEmoji('882677486553530429').setStyle('PRIMARY'),
 				new MessageButton().setCustomId('stop').setEmoji('882674312094568528').setStyle('DANGER'),
@@ -42,6 +43,8 @@ module.exports = {
 				)
 				.setFooter(music.queue_page.replaceAll({ '{number}': page, '{total}': Math.floor(serverQueue.songs.length / 10) + 1 }))
 				.setTimestamp();
+			if (serverQueue.shuffle) view_embed.addField('Shuffle', music.shuffle.enabled);
+			if (serverQueue.loop) view_embed.addField('Loop', music.loop.enabled);
 			interaction.reply({ embeds: [view_embed], components: [row] });
 			let msg = await interaction.fetchReply();
 			const collector = msg.createMessageComponentCollector({ time: 60000 });
@@ -66,6 +69,7 @@ module.exports = {
 				forceskip: 'forceskip',
 				stop: 'stop',
 				loop: 'loop',
+				shuffle: 'shuffle',
 				volume: 'volume'
 			};
 			client.interactionCommands.get(names[interaction.options.data[0].name]).execute(client, interaction, guildConf);

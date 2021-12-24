@@ -12,8 +12,7 @@ module.exports = {
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		let { mod, config } = require(`../../utils/lang/${serverConfig.lang}`);
 
-		let permiso =
-			serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
+		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
 		let adminperms =
 			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
 

@@ -149,7 +149,12 @@ module.exports = {
 		infraction_created: '**{infr}**\nUser: `{user}`\nModerator: `{mod}`\nID: `{id}`\nTime: `{time}`\nReason: `{reason}`',
 		modinf: 'Infraction {infr} modified.',
 		mkick: '{count} users were kicked',
-		mban: '{count} users were banned'
+		mban: '{count} users were banned',
+		timeout: {
+			clear: "{member}'s timeout was cleared",
+			timeout: '{member} was timed out for {duration}. Reason: {reason}',
+			time: 'The duration should not be higher than 28 days'
+		}
 	},
 	welcome: {
 		wcolor: 'Ok, {color} set as welcome text color.',
@@ -188,6 +193,10 @@ module.exports = {
 			enabled: '🔁 Loop enabled',
 			disabled: '🔁 Loop disabled'
 		},
+		shuffle: {
+			enabled: '🔀 Shuffle enabled',
+			disabled: '🔀 Shuffle disabled'
+		},
 		playlists: {
 			titles: {
 				recent: 'Recent playlists',
@@ -206,7 +215,8 @@ module.exports = {
 			type_to_remove: 'Type the number of the playlist you want to delete',
 			playlist_deleted: `Playlist \`{pl}\` deleted`,
 			playlist_songs: 'Playlist songs',
-			no_playlists: 'The given uses does not have playlists'
+			no_playlists: 'The given uses does not have playlists',
+			added_to_queue: 'The playlist **{name}** by **{owner}** was successfully added to queue'
 		},
 		ytt: {
 			yttogether: 'Click here to start **YouTube Together** in ',

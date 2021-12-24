@@ -1,6 +1,6 @@
 const { queue } = require('../../modules/music');
 const { handleVideo } = require('../../modules/music');
-const { youtube } = require('../../modules/music');
+const play = require('play-dl')
 
 module.exports = {
 	name: 'seek',
@@ -28,8 +28,8 @@ module.exports = {
 		if (isNaN(all)) return interaction.reply({ content: 'Invalid timestamp', ephemeral: true });
 		if (all === 0) all = 1;
 		const url = serverQueue.songs[0].url;
-		const video = await youtube.getVideo(url);
-		handleVideo(video, interaction, voiceChannel, false, all);
+		const video = await play.video_info(url);
+		handleVideo(video.video_details, interaction, voiceChannel, false, all);
 		interaction.reply({ content: music.seek.replace('{time}', interaction.options.getString('timestamp')) });
 	}
 };

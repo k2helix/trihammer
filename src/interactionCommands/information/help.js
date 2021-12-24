@@ -18,12 +18,12 @@ module.exports = {
 	example: 'help',
 	aliases: ['commands'],
 	type: 0,
-	async execute(client, message) {
-		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
+	async execute(client, interaction) {
+		const serverConfig = await ModelServer.findOne({ server: interaction.guild.id }).lean();
 		let langcode = serverConfig.lang;
 		let { util } = require(`../../utils/lang/${langcode}.js`);
 		let prefix = serverConfig.prefix;
-		let help_embed = new Discord.MessageEmbed();
+		let help_embed = new Discord.interactionEmbed();
 		help_embed.setTitle(util.help.title);
 		help_embed.setDescription(util.help.description.replace('{prefix}', prefix));
 		help_embed.setColor(`RANDOM`);
@@ -97,6 +97,6 @@ module.exports = {
 
 		help_embed.setFooter(client.commands.size + util.help.footer);
 
-		message.channel.send({ embeds: [help_embed] });
+		interaction.reply({ embeds: [help_embed] });
 	}
 };
