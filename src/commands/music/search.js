@@ -21,8 +21,11 @@ module.exports = {
 		if (!voiceChannel) return message.channel.send({ content: music.no_vc });
 		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send({ content: music.wrong_vc });
 
-		const videos = await play.search(searchString, { limit: 10 }).catch(() => false);
-		if (typeof videos === 'boolean' || videos.length < 1) return message.channel.send({ content: music.not_found });
+		const videos = await play.search(searchString, { limit: 10 }).catch((err) => {
+			console.error(err);
+			return message.channel.send(music.error_nothing_found + err.message);
+		});
+		if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ content: music.not_found });
 
 		let options = [];
 		for (let index = 0; index < videos.length; index++) {
@@ -47,8 +50,7 @@ module.exports = {
 			selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
 			msg.delete();
 		} catch (error) {
-			if (message.replied || message.deferred) message.editchannel.send({ content: music.cancel });
-			else message.channel.send({ content: music.cancel });
+			message.channel.send({ content: music.cancel });
 			return msg.delete();
 		}
 

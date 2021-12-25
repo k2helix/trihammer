@@ -229,6 +229,9 @@ module.exports = {
 		no_queue: "There isn't any song in the queue",
 		lyrics_name: 'You need to type the name of the song',
 		not_found: 'Nothing could be found',
+		error_nothing_found: 'There was an error while searching for that video: ',
+		error_stream:
+			'There was an error when attempting to play that video (is the video age restricted?). If this continues to happen please report it to the support server (invite link in the `invite` command).\n',
 		length: 'Lyrics are too long',
 		now_playing: '**🎶 Now playing:**',
 		requested_by: 'Requested by:',

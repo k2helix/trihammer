@@ -52,7 +52,10 @@ module.exports = {
 						}
 						return;
 					} else {
-						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 }).catch(() => false);
+						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
+							console.error(err);
+							return message.channel.send(music.error_nothing_found + err.message);
+						});
 						if (typeof searched === 'boolean' || searched.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
 						return handleVideo(searched[0], message, voiceChannel);
 					}
@@ -73,8 +76,11 @@ module.exports = {
 			let video;
 			if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
 			else {
-				let videos = await play.search(searchString, { limit: 1 }).catch(() => false);
-				if (typeof videos === 'boolean' || videos.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
+				let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
+					console.error(err);
+					return message.channel.send(music.error_nothing_found + err.message);
+				});
+				if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ content: music.not_found });
 				video = videos[0];
 			}
 			handleVideo(video, message, voiceChannel);

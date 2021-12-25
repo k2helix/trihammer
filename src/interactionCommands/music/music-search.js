@@ -19,7 +19,10 @@ module.exports = {
 		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
 		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
 
-		const videos = await play.search(searchString, { limit: 10 }).catch(() => false);
+		const videos = await play.search(searchString, { limit: 10 }).catch((err) => {
+			console.error(err);
+			return interaction.reply(music.error_nothing_found + err.message);
+		});
 		if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
 
 		interaction.deferReply();

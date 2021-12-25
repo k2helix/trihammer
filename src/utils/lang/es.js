@@ -222,6 +222,9 @@ module.exports = {
 		no_queue: 'No hay ninguna canción en la cola',
 		lyrics_name: 'Debes poner el nombre de la canción',
 		not_found: 'No se ha encontrado nada.',
+		error_nothing_found: 'Ocurrió un error al buscar ese vídeo: ',
+		error_stream:
+			'Ocurrió un error al intentar reproducir ese vídeo (¿tiene el vídeo restricción de edad?). Si esto sigue pasando, por favor repórtalo al servidor de soporte (invitación en el comando `invite`).\n',
 		length: 'La letra es demasiado larga',
 		now_playing: '**🎶 Sonando ahora:**',
 		requested_by: 'Pedida por:',
