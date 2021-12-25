@@ -84,14 +84,14 @@ async function play(guild, song) {
 		serverQueue.audioPlayer = player;
 		player.on('stateChange', (oldState, newState) => {
 			if (oldState.status == 'playing' && newState.status == 'idle') {
-				if (!serverQueue.songs[0]) {
-					serverQueue.connection.destroy();
-					return queue.delete(serverQueue.textChannel.guild.id);
-				}
 				if (serverQueue.loop === true) {
 					serverQueue.songs.push(serverQueue.songs.shift());
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
+				if (!serverQueue.songs[0]) {
+					serverQueue.connection.destroy();
+					return queue.delete(serverQueue.textChannel.guild.id);
+				}
 				if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
 				play(guild, serverQueue.songs[0]);
 			}
