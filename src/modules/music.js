@@ -3,8 +3,9 @@ const playdl = require('play-dl');
 const Discord = require('discord.js');
 const { array_move } = require('../utils/functions');
 
+// eslint-disable-next-line no-unused-vars
 const { StreamType, createAudioPlayer, createAudioResource, joinVoiceChannel } = require('@discordjs/voice');
-const prism = require('prism-media');
+// const prism = require('prism-media');
 function swap(array, x, y) {
 	var b = array[x];
 	array[x] = array[y];
@@ -59,26 +60,27 @@ async function play(guild, song) {
 	// response.pipe(ttsStream);
 
 	// let stream = concatStreams([ttsStream, ytStream]);
-	let stream;
+	let source;
 	try {
-		stream = (await playdl.stream(song.url)).stream;
+		if (song.seek !== 0) source = await playdl.stream(song.url, { seek: song.seek, seekMode: 'precise' });
+		else source = await playdl.stream(song.url);
 	} catch (err) {
 		console.log('Tried with play-dl, got error ' + err.message);
 		return serverQueue.textChannel.send('An error ocurred while executing this command (is the video age restricted?): ' + err.message);
 	}
 	try {
-		let currentType = StreamType.Arbitrary;
-		if (song.seek !== 0) {
-			const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
-			let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
-			let seekStream = new prism.FFmpeg({
-				args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
-			});
-			currentType = StreamType.Raw;
-			stream = stream.pipe(seekStream);
-		}
-		if (!stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
-		const resource = createAudioResource(stream, { inputType: currentType, inlineVolume: true });
+		// let currentType = StreamType.Arbitrary;
+		// if (song.seek !== 0) {
+		// 	const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
+		// 	let hhmmss = new Date(song.seek * 1000).toISOString().slice(11, 19);
+		// 	let seekStream = new prism.FFmpeg({
+		// 		args: ['-ss', hhmmss, ...FFMPEG_ARGUMENTS]
+		// 	});
+		// 	currentType = StreamType.Raw;
+		// 	stream = stream.pipe(seekStream);
+		// }
+		if (!source?.stream) return serverQueue.textChannel.send('An error ocurred when getting the stream');
+		const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
 		const player = createAudioPlayer();
 		player.play(resource);
 		serverQueue.audioPlayer = player;
@@ -154,7 +156,8 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 			volume: 1,
 			playing: true,
 			loop: false,
-			shuffle: false
+			shuffle: false,
+			leaveTimeout: null
 		};
 		queue.set(message.guildId, queueConstruct);
 

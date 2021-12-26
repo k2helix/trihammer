@@ -227,6 +227,7 @@ module.exports = {
 		no_vc: 'You are not in a voice channel',
 		wrong_vc: 'You are not in my voice channel',
 		no_queue: "There isn't any song in the queue",
+		leave_timeout: 'I left the channel because there was nobody listening to me :(',
 		lyrics_name: 'You need to type the name of the song',
 		not_found: 'Nothing could be found',
 		error_nothing_found: 'There was an error while searching for that video: ',
