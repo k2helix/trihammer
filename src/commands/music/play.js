@@ -81,7 +81,7 @@ module.exports = {
 					return message.channel.send(music.error_nothing_found + err.message);
 				});
 				if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ content: music.not_found });
-				video = videos[0];
+				video = (await play.video_info(videos[0].id)).video_details;
 			}
 			handleVideo(video, message, voiceChannel);
 		}

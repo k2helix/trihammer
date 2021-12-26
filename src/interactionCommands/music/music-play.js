@@ -76,7 +76,7 @@ module.exports = {
 					return interaction.reply(music.error_nothing_found + err.message);
 				});
 				if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
-				video = videos[0];
+				video = (await play.video_info(videos[0].id)).video_details;
 			}
 			handleVideo(video, interaction, voiceChannel);
 			return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${video[0].title}**`), ephemeral: true });

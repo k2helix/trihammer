@@ -220,6 +220,7 @@ module.exports = {
 		no_vc: 'No estás en un canal de voz',
 		wrong_vc: 'No estás en el mi canal de voz.',
 		no_queue: 'No hay ninguna canción en la cola',
+		leave_timeout: 'He abandonado el canal de voz porque nadie me estaba escuchando :(',
 		lyrics_name: 'Debes poner el nombre de la canción',
 		not_found: 'No se ha encontrado nada.',
 		error_nothing_found: 'Ocurrió un error al buscar ese vídeo: ',
