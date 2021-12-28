@@ -1,0 +1,29 @@
+{
+    "admininstrators": ["admin-id1", "admin-id2"],
+    "default_prefix": "t-",
+    "logs_channel": "id of the channel where the logs will be sent",
+    "use_sentry": true, //if you want to use sentry for error handling
+    "spotify_api": true, //if you want to be able to use spotify api for music (read README.md)
+    "top.gg": true, //if you are going to use top.gg for guildCreate and guildDelete events and the rep command
+    "credentials": {
+        "dotenv": true, //if your tokens and api keys are in the .env file, if you want them in this file, set it to false.
+        "CREDENTIAL_NAME": "credential", //just put your credentials here if dotenv is set to false
+        "GOOGLE_API_KEY": "your-api-key",
+        "...": "..."
+    },
+    //these 3 are for the invite command
+    "invite_link": "https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot%20applications.commands",
+    "invite_link_without_permissions": "https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=0&scope=bot%20applications.commands",
+    "support_server_invite": "https://discord.gg/invite",
+    "activities": [
+        ["activity", "TYPE"],
+		["my soul", "WATCHING"],
+		["your beats", "LISTENING"]
+	],
+    "strings": {
+        "ready": "Bot ready: {{guilds}} servers and {{users}} users (in cache).",
+        "server_joined": "I joined {{guild}}. It has {{membercount}} members. Now I'm in {{guildcount}} servers.",
+        "server_left": "I left {{guild}}. Now I'm in {{guildcount}} servers."
+    }
+}
+//remember to remove the //comments, else it won't work
