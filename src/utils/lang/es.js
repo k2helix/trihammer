@@ -110,6 +110,7 @@ module.exports = {
 	},
 	mod: {
 		need_id: 'Necesito saber a quién quieres sancionar',
+		not_moderatable: 'El usuario que has seleccionado no es superior a mí. Comprueba sus permisos, si tiene un rol superior...',
 		yes: 'Sí',
 		i_cant: 'No puedo {action} a este usuario.',
 		infraction_md: 'Has sido {action} en {server}. Razón: {reason}',
@@ -146,6 +147,7 @@ module.exports = {
 		timeout: {
 			clear: 'El timeout de {member} fue removido',
 			timeout: '{member} recibió un timeout de {duration}. Razón: {reason}',
+			already_timed_out: 'Ese usuario ya tiene un timeout. Si quieres removérselo, usa el mismo comando poniendo la duración a 0.',
 			time: 'La duración no debe ser superior a 28 días.'
 		}
 	},

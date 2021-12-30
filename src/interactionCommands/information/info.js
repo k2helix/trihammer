@@ -16,7 +16,7 @@ module.exports = {
 		let member = interaction.guild.members.cache.get(user.id);
 		let avatar = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 });
 		let info_embed = new MessageEmbed()
-			.setAuthor(user.tag, avatar)
+			.setAuthor({ name: user.tag, iconURL: avatar })
 			.setColor(user.accentColor?.toString(16) || 'RANDOM')
 			.setThumbnail(avatar)
 			.setDescription(`<@${user.id}>`)

@@ -14,14 +14,9 @@ module.exports = {
 	type: 2,
 	execute(client, interaction, guildConf) {
 		const { config } = require(`../../utils/lang/${guildConf.lang}.js`);
-		let permiso =
-			guildConf.modrole !== 'none'
-				? interaction.member.roles.cache.has(guildConf.modrole)
-				: interaction.member.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS);
+		let permiso = guildConf.modrole !== 'none' ? interaction.member.roles.cache.has(guildConf.modrole) : interaction.member.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS);
 		let adminperms =
-			guildConf.adminrole !== 'none'
-				? interaction.member.roles.cache.has(guildConf.adminrole)
-				: interaction.member.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS);
+			guildConf.adminrole !== 'none' ? interaction.member.roles.cache.has(guildConf.adminrole) : interaction.member.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS);
 		if (!permiso && !adminperms) return interaction.reply({ content: config.mod_perm, ephemeral: true });
 		interaction.reply({ content: ':thumbsup:', ephemeral: true });
 

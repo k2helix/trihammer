@@ -20,12 +20,13 @@ module.exports = {
 			duration = interaction.options.getString('duration');
 
 		let member = interaction.guild.members.cache.get(user.id);
+		if (!member.moderatable) return interaction.reply(mod.not_moderatable);
 
 		if (duration.startsWith('0')) {
 			let unmuteEmbed = new MessageEmbed().setColor('RANDOM').setDescription(mod.timeout.clear.replace('{member}', user.tag));
 			member.timeout(null, (reason || 'No reason') + ` | by ${interaction.user.tag}`);
 			return interaction.reply({ embeds: [unmuteEmbed] });
-		}
+		} else if (member.isCommunicationDisabled()) return interaction.reply({ content: mod.timeout.already_timed_out, ephemeral: true });
 
 		let time = functions.Convert(duration);
 		if (!time) return interaction.reply({ content: mod.time_404, ephemeral: true });
