@@ -51,7 +51,10 @@ module.exports = {
 				.setImage(image.img)
 				.setColor('RANDOM')
 
-				.setFooter(util.image.footer + `${findWithAttr(urls, 'img', image.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
+				.setFooter({
+					text: util.image.footer + `${findWithAttr(urls, 'img', image.img) + 1}/${urls.length}`,
+					iconURL: 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
+				});
 			message.channel.send({ embeds: [embed] }).then((msg) => {
 				msg.react('⏮️');
 				msg.react('⬅️');
@@ -72,7 +75,10 @@ module.exports = {
 							embed = new MessageEmbed(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
-								.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
+								.setFooter({
+									text: util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
+									iconURL: 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
+								});
 							msg.edit({ embeds: [embed] });
 							break;
 						case '⬅️':
@@ -80,7 +86,10 @@ module.exports = {
 							embed = new MessageEmbed(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
-								.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
+								.setFooter({
+									text: util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
+									iconURL: 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
+								});
 							msg.edit({ embeds: [embed] });
 							break;
 						case '➡️':
@@ -88,7 +97,10 @@ module.exports = {
 							embed = new MessageEmbed(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
-								.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
+								.setFooter({
+									text: util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
+									iconURL: 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
+								});
 							msg.edit({ embeds: [embed] });
 							break;
 						case '⏭️':
@@ -96,7 +108,10 @@ module.exports = {
 							embed = new MessageEmbed(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
-								.setFooter(util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`, 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1');
+								.setFooter({
+									text: util.image.footer + `${findWithAttr(urls, 'img', newUrl.img) + 1}/${urls.length}`,
+									iconURL: 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
+								});
 							msg.edit({ embeds: [embed] });
 							break;
 					}

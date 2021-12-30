@@ -19,13 +19,14 @@ module.exports = {
 			time = functions.Convert(args[1]),
 			reason = args.slice(2).join(' ') || 'No reason';
 		if (!member) return message.channel.send(mod.need_id);
+		if (!member.moderatable) return message.channel.send(mod.not_moderatable);
 		if (!args[1]) return message.channel.send(mod.time_404);
 
 		if (args[1].startsWith('0')) {
 			let unmuteEmbed = new MessageEmbed().setColor('RANDOM').setDescription(mod.timeout.clear.replace('{member}', member.user.tag));
 			member.timeout(null, (reason || 'No reason') + ` | by ${message.author.tag}`);
 			return message.channel.send({ embeds: [unmuteEmbed] });
-		}
+		} else if (member.isCommunicationDisabled()) return message.channel.send({ content: mod.timeout.already_timed_out, ephemeral: true });
 
 		if (!time) return message.channel.send(mod.time_404);
 		if (time.tiempo >= 2419200000) return message.channel.send({ content: mod.timeout.time });

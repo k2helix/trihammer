@@ -117,6 +117,7 @@ module.exports = {
 	},
 	mod: {
 		need_id: 'I need to know who you want to sanction',
+		not_moderatable: 'The user you selected is not moderatable by me. Check their permissions, whether they have a higher role...',
 		yes: 'Yes',
 		i_cant: "I can't {action} this user.",
 		infraction_md: 'You have been {action} in {server}. Reason: {reason}',
@@ -151,8 +152,9 @@ module.exports = {
 		mkick: '{count} users were kicked',
 		mban: '{count} users were banned',
 		timeout: {
-			clear: "{member}'s timeout was cleared",
+			clear: "{member}'s time-out was cleared",
 			timeout: '{member} was timed out for {duration}. Reason: {reason}',
+			already_timed_out: 'That member is already timed out. If you want to clear the timeout, use the same command and set the duration to 0.',
 			time: 'The duration should not be higher than 28 days'
 		}
 	},
