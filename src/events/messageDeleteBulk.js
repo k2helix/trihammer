@@ -22,6 +22,6 @@ module.exports = async (client, messages) => {
 	const embed = new MessageEmbed()
 		.setTitle(events.message.deleteBulk.deleted.replace('{messages}', messages.size))
 		.setDescription(`\`\`\`css\n${array.join('\n').slice(0, 2000)}\`\`\``)
-		.setFooter(events.message.deleteBulk.showing.replaceAll(obj));
+		.setFooter({ text: events.message.deleteBulk.showing.replaceAll(obj) });
 	logs_channel.send({ embeds: [embed] });
 };

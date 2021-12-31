@@ -24,7 +24,7 @@ module.exports = {
 		let embed = new MessageEmbed();
 		if (interaction.options.getString('title')) embed.setTitle(interaction.options.getString('title'));
 		if (interaction.options.getString('description')) embed.setDescription(interaction.options.getString('description'));
-		if (interaction.options.getString('footer')) embed.setFooter(interaction.options.getString('footer'));
+		if (interaction.options.getString('footer')) embed.setFooter({ text: interaction.options.getString('footer') });
 		if (interaction.options.getString('thumbnail')) embed.setThumbnail(interaction.options.getString('thumbnail'));
 		if (interaction.options.getString('image')) embed.setImage(interaction.options.getString('image'));
 		if (interaction.options.getString('color')) embed.setColor(interaction.options.getString('color'));

@@ -14,6 +14,7 @@ module.exports = async (client, oldState, newState) => {
 	if (queue.get(oldState.guild.id)) {
 		let serverQueue = queue.get(oldState.guild.id);
 		if (!newChannel) {
+			if (serverQueue.leaveTimeout) return;
 			let members = oldChannel.members;
 			if (members.has(client.user.id) && members.size < 2)
 				serverQueue.leaveTimeout = setTimeout(() => {
@@ -22,7 +23,11 @@ module.exports = async (client, oldState, newState) => {
 					queue.delete(oldState.guild.id);
 					serverQueue.textChannel.send(music.leave_timeout);
 				}, 60000);
-		} else if (newChannel.members.has(client.user.id) && serverQueue.leaveTimeout) clearTimeout(serverQueue.leaveTimeout);
+		} else if (newChannel.members.has(client.user.id) && serverQueue.leaveTimeout)
+			if (serverQueue.songs.length > 0) {
+				clearTimeout(serverQueue.leaveTimeout);
+				serverQueue.leaveTimeout = null;
+			}
 	}
 
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;

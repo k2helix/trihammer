@@ -31,7 +31,7 @@ module.exports = {
 			.addField(util.map.city, res[0].city || 'No')
 			.addField(util.map.zipcode, res[0].zipcode || 'No')
 			.addField(util.map.street, res[0].streetName || 'No')
-			.setFooter('1/' + res.length)
+			.setFooter({ text: '1/' + res.length })
 			.setImage(`https://open.mapquestapi.com/staticmap/v5/map?locations=${res[0].latitude},${res[0].longitude}&size=600,400&key=${process.env.MAPQUEST_API_KEY}&zoom=5`);
 		let msg = await message.channel.send({ embeds: [embed] });
 
@@ -53,7 +53,7 @@ module.exports = {
 					embed = new MessageEmbed(msg.embeds[0])
 						.setDescription(util.map.found(res, current + 1 > res.length ? 1 : current + 1))
 						.setImage(`https://open.mapquestapi.com/staticmap/v5/map?locations=${next.latitude},${next.longitude}&size=600,400&key=${process.env.MAPQUEST_API_KEY}&zoom=5`)
-						.setFooter(`${current + 1 > res.length ? 1 : current + 1}/${res.length}`);
+						.setFooter({ text: `${current + 1 > res.length ? 1 : current + 1}/${res.length}` });
 
 					embed.fields[0].value = next.country || 'No';
 					embed.fields[1].value = next.state || 'No';
@@ -68,7 +68,7 @@ module.exports = {
 						.setImage(
 							`https://open.mapquestapi.com/staticmap/v5/map?locations=${previous.latitude},${previous.longitude}&size=600,400&key=${process.env.MAPQUEST_API_KEY}&zoom=5`
 						)
-						.setFooter(`${current - 1 < 1 ? res.length : current - 1}/${res.length}`);
+						.setFooter({ text: `${current - 1 < 1 ? res.length : current - 1}/${res.length}` });
 
 					embed.fields[0].value = previous.country || 'No';
 					embed.fields[1].value = previous.state || 'No';

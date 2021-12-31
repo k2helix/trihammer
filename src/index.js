@@ -35,7 +35,7 @@ const intents = [
 const client = new Discord.Client({ allowedMentions: { parse: ['users', 'roles'], repliedUser: true }, intents: intents });
 client.commands = new Discord.Collection();
 client.interactionCommands = new Discord.Collection();
-client.config = { prefix: config.default_prefix, admins: config.admininstrators };
+client.config = { prefix: config.default_prefix, admins: config.administrators };
 
 // require('./modules/twitter').checkTweets(client);
 

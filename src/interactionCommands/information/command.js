@@ -23,7 +23,7 @@ module.exports = {
 			.addField(util.command.fields.usage, command.usage ? command.usage : command.name, true)
 			.addField(util.command.fields.example, command.example ? command.example : command.name, true)
 			.addField(util.command.fields.alias, command.aliases ? command.aliases.join(', ') : 'No', false)
-			.setFooter(util.command.footer);
+			.setFooter({ text: util.command.footer });
 
 		message.channel.send({ embeds: [embed] });
 	}

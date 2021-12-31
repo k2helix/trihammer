@@ -42,7 +42,7 @@ module.exports = {
 					music.now_playing
 				}\n${serverQueue.songs[0].title} - [${serverQueue.songs[0].duration}](https://www.youtube.com/watch?v=${serverQueue.songs[0].id})`
 			)
-			.setFooter(music.queue_page.replaceAll({ '{number}': page, '{total}': Math.floor(serverQueue.songs.length / 10) + 1 }))
+			.setFooter({ text: music.queue_page.replaceAll({ '{number}': page, '{total}': Math.floor(serverQueue.songs.length / 10) + 1 }) })
 			.setTimestamp();
 		if (serverQueue.shuffle) embed.addField('Shuffle', music.shuffle.enabled);
 		if (serverQueue.loop) embed.addField('Loop', music.loop.enabled);

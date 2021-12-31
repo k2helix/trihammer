@@ -23,7 +23,7 @@ module.exports = {
 			skips = serverQueue.songs[0].skip;
 		if (skips.length >= required) {
 			serverQueue.audioPlayer.stop();
-			return message.reply({ content: music.skip.skipping });
+			return message.channel.send({ content: music.skip.skipping });
 		}
 		if (skips.includes(message.author.id)) return message.channel.send(music.skip.already_voted.replace('{votes}', `${skips.length}/${required}`));
 
