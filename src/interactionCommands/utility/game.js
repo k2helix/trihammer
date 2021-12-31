@@ -110,7 +110,7 @@ module.exports = {
 				.addField(util.game.price, price)
 				.addField(util.game.publishers, data.publishers.join(', ') || 'No')
 
-				.setFooter('Steam Store');
+				.setFooter({ text: 'Steam Store' });
 			interaction.editReply({ embeds: [embed] });
 			interaction.message?.delete();
 		} else
@@ -137,7 +137,7 @@ module.exports = {
 							.addField(util.game.publishers, data.publishers.join(', ') || 'No', false)
 							.addField('DLCs', `${steamDLCs[0] ? steamDLCs.join('\n') : 'No'}${data.dlc.length > 3 ? `\n${data.dlc.length - 3} more...` : ''}`, false)
 
-							.setFooter('Steam Store');
+							.setFooter({ text: 'Steam Store' });
 						interaction.editReply({ embeds: [embed] });
 						interaction.message?.delete();
 					}

@@ -1,5 +1,5 @@
 {
-    "admininstrators": ["admin-id1", "admin-id2"],
+    "administrators": ["admin-id1", "admin-id2"],
     "default_prefix": "t-",
     "logs_channel": "id of the channel where the logs will be sent",
     "use_sentry": true, //if you want to use sentry for error handling

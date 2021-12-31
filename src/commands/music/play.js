@@ -72,18 +72,21 @@ module.exports = {
 			});
 
 			return message.channel.send(music.playlist.replace('{playlist}', playlist.title));
-		} else {
-			let video;
-			if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
-			else {
-				let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
-					console.error(err);
-					return message.channel.send(music.error_nothing_found + err.message);
-				});
-				if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ content: music.not_found });
-				video = (await play.video_info(videos[0].id)).video_details;
+		} else
+			try {
+				let video;
+				if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
+				else {
+					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
+						console.error(err);
+						return message.channel.send(music.error_nothing_found + err.message);
+					});
+					if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ content: music.not_found });
+					video = (await play.video_info(videos[0].id)).video_details;
+				}
+				handleVideo(video, message, voiceChannel);
+			} catch (err) {
+				message.channel.send(`An error ocurred: ` + err.message);
 			}
-			handleVideo(video, message, voiceChannel);
-		}
 	}
 };

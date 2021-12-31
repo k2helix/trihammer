@@ -154,14 +154,14 @@ module.exports = {
 			.addField(util.anime.episodes, data.episodes, true)
 			.addField(util.anime.status, data.status, true)
 			.addField(util.anime.aired, data.aired, true)
-			.addField(util.anime.genre, data.genres.join(', '), true)
-			.addField(util.anime.studio, data.studios.join(', '), true)
+			.addField(util.anime.genre, data.genres?.join(', ') || 'No', true)
+			.addField(util.anime.studio, data.studios?.join(', ') || 'No', true)
 			.addField(util.anime.source, data.source, true)
 			.addField(util.anime.duration, data.duration, true)
 			.addField(util.anime.ranking, data.ranked, true)
 			.addField(util.anime.popularity, data.popularity, true)
 
-			.setFooter(util.anime.footer);
+			.setFooter({ text: util.anime.footer });
 
 		interaction.editReply({ embeds: [embed] });
 	}

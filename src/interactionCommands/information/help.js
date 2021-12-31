@@ -95,7 +95,7 @@ module.exports = {
 			true
 		);
 
-		help_embed.setFooter(client.commands.size + util.help.footer);
+		help_embed.setFooter({ text: client.commands.size + util.help.footer });
 
 		interaction.reply({ embeds: [help_embed] });
 	}

@@ -66,6 +66,7 @@ async function play(guild, song) {
 		else source = await playdl.stream(song.url);
 	} catch (err) {
 		console.log('Tried with play-dl, got error ' + err.message);
+		console.error(err);
 		return serverQueue.textChannel.send('An error ocurred while executing this command (is the video age restricted?): ' + err.message);
 	}
 	try {
@@ -86,16 +87,19 @@ async function play(guild, song) {
 		serverQueue.audioPlayer = player;
 		player.on('stateChange', (oldState, newState) => {
 			if (oldState.status == 'playing' && newState.status == 'idle') {
-				if (serverQueue.loop === true) {
+				if (serverQueue.loop) {
 					serverQueue.songs.push(serverQueue.songs.shift());
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
-				if (!serverQueue.songs[0]) {
-					serverQueue.connection.destroy();
-					return queue.delete(serverQueue.textChannel.guild.id);
+				if (!serverQueue.songs[0])
+					serverQueue.leaveTimeout = setTimeout(() => {
+						serverQueue.connection.destroy();
+						return queue.delete(serverQueue.textChannel.guild.id);
+					}, 30000);
+				else {
+					if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
+					play(guild, serverQueue.songs[0]);
 				}
-				if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
-				play(guild, serverQueue.songs[0]);
 			}
 		});
 		serverQueue.connection.subscribe(player);
@@ -190,6 +194,12 @@ async function handleVideo(video, message, voiceChannel, playlist = false, seek)
 			array_move(serverQueue.songs, serverQueue.songs.length - 1, 1);
 			serverQueue.audioPlayer.stop();
 			return;
+		}
+		if (serverQueue.leaveTimeout) {
+			clearTimeout(serverQueue.leaveTimeout);
+			serverQueue.leaveTimeout = null;
+			if (!playlist) return play(serverQueue.textChannel.guild, song);
+			else play(serverQueue.textChannel.guild, serverQueue.songs[0]);
 		}
 		if (playlist) return;
 		var embed = new Discord.MessageEmbed()

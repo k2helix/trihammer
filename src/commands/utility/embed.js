@@ -62,7 +62,7 @@ module.exports = {
 							break;
 						case 'footer':
 							let footer = cmd.slice(obj[y] + y.length, end);
-							customEmbed.setFooter(footer);
+							customEmbed.setFooter({ text: footer });
 							break;
 						case 'thumbnail':
 							let thumbnail = cmd.slice(obj[y] + y.length, end);

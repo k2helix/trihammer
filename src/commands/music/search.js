@@ -40,7 +40,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setTitle(music.song_select)
 			.setColor('#1423aa')
-			.setFooter(music.cancel_select)
+			.setFooter({ text: music.cancel_select })
 			.setDescription(`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`)
 			.setTimestamp();
 		let msg = await message.channel.send({ embeds: [embed], components: [row] });

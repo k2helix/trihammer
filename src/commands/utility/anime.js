@@ -214,7 +214,7 @@ module.exports = {
 			.addField(util.anime.ranking, data.ranked, true)
 			.addField(util.anime.popularity, data.popularity, true)
 
-			.setFooter(util.anime.footer);
+			.setFooter({ text: util.anime.footer });
 
 		message.channel.send({ embeds: [embed] });
 	}
