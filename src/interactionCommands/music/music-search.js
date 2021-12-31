@@ -29,7 +29,7 @@ module.exports = {
 		let options = [];
 		for (let index = 0; index < videos.length; index++) {
 			const element = videos[index];
-			options.push({ label: `${index + 1}- ${element.title}`.slice(0, 99), value: element.id });
+			options.push({ label: `${index + 1}- ${element.title}`.slice(0, 99), value: index.toString() });
 		}
 		const row = new MessageActionRow().addComponents(
 			new MessageSelectMenu().setCustomId('music-search').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
@@ -40,7 +40,7 @@ module.exports = {
 			.setTitle(music.song_select)
 			.setColor('#1423aa')
 			.setFooter({ text: music.cancel_select })
-			.setDescription(`${videos.map((video2) => `**${++songIndex} -** [${video2.title}](${video2.url})`).join('\n')} \n${music.type_a_number}`)
+			.setDescription(`${videos.map((v) => `**${++songIndex} -** [${v.title}](${v.url}) - ${v.durationRaw}`).join('\n')} \n${music.type_a_number}`)
 			.setTimestamp();
 		let msg = await interaction.channel.send({ embeds: [embed], components: [row] });
 		const filter = (int) => int.customId === 'music-search' && int.user.id === interaction.user.id;
@@ -54,9 +54,9 @@ module.exports = {
 			return msg.delete();
 		}
 
-		const actualVideo = await play.video_info(selected.values[0]);
+		const actualVideo = videos[selected.values[0]];
 
-		await handleVideo(actualVideo.video_details, interaction, voiceChannel);
-		return interaction.editReply({ content: music.play.added_to_queue.description.replace('{song}', `**${actualVideo.video_details.title}**`), ephemeral: true });
+		await handleVideo(actualVideo, interaction, voiceChannel);
+		return interaction.editReply({ content: music.play.added_to_queue.description.replace('{song}', `**${actualVideo.title}**`), ephemeral: true });
 	}
 };
