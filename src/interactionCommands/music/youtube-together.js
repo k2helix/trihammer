@@ -13,7 +13,7 @@ module.exports = {
 		if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE))
 			return interaction.reply({ content: 'I need `CREATE_INSTANT_INVITE` permission', ephemeral: true });
 
-		let invite = await voiceChannel.createInvite({ targetApplication: '755600276941176913', targetType: 2 });
+		let invite = await voiceChannel.createInvite({ targetApplication: '880218394199220334', targetType: 2 });
 		if (!invite) return interaction.reply({ content: '❌ | Could not start **YouTube Together**!', ephemeral: true });
 
 		if (interaction.isContextMenu()) {

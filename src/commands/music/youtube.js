@@ -16,7 +16,7 @@ module.exports = {
 		if (!voiceChannel) return await message.channel.send(music.no_vc);
 		if (!voiceChannel.permissionsFor(message.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE)) return message.channel.send('I need `CREATE_INSTANT_INVITE` permission');
 
-		let invite = await voiceChannel.createInvite({ targetApplication: '755600276941176913', targetType: 2 });
+		let invite = await voiceChannel.createInvite({ targetApplication: '880218394199220334', targetType: 2 });
 		message.reply({ content: music.ytt.yttogether + `${voiceChannel.name}: https://discord.gg/${invite.code}` });
 	}
 };
