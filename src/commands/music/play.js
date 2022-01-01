@@ -23,12 +23,13 @@ module.exports = {
 
 		const searchString = args.join(' ');
 		if (!searchString) return message.channel.send({ content: music.invalid_song });
-		const url = searchString.replace(/<(.+)>/g, '$1');
+
+		let type = await play.validate(searchString);
 
 		if (!voiceChannel) return message.channel.send({ content: music.no_vc });
 		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send({ content: music.wrong_vc });
 		if (require('../../../config.json').spotify_api)
-			if (searchString.toLowerCase().includes('spotify'))
+			if (type.startsWith('sp'))
 				try {
 					if (play.is_expired()) await play.refreshToken();
 					let spot = await play.spotify(searchString);
@@ -64,18 +65,18 @@ module.exports = {
 					return message.channel.send('An error occurred: ' + err.message);
 				}
 
-		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
-			const playlist = await play.playlist_info(url, { incomplete: true });
+		if (type === 'yt_playlist') {
+			const playlist = await play.playlist_info(searchString, { incomplete: true });
 			const videos = playlist.videos;
 			videos.forEach(async (video) => {
 				await handleVideo(video, message, voiceChannel, true);
 			});
 
 			return message.channel.send(music.playlist.replace('{playlist}', playlist.title));
-		} else
+		} else {
+			let video;
 			try {
-				let video;
-				if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
+				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
 				else {
 					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
 						console.error(err);
@@ -86,7 +87,9 @@ module.exports = {
 				}
 				handleVideo(video, message, voiceChannel);
 			} catch (err) {
-				message.channel.send(`An error ocurred: ` + err.message);
+				message.channel.send('An error occurred: ' + err.message);
+				console.error(err);
 			}
+		}
 	}
 };

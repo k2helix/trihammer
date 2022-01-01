@@ -16,15 +16,15 @@ module.exports = {
 		if (interaction.isContextMenu()) message = await interaction.channel.messages.fetch(interaction.options.get('message').value);
 		const searchString = interaction.options.getString('song') || message.content;
 		if (!searchString) return interaction.reply({ content: music.invalid_song, ephemeral: true });
-		const url = searchString.replace(/<(.+)>/g, '$1');
 
+		let type = (await play.validate(searchString)).toString();
 		const voiceChannel = interaction.member.voice.channel;
 
 		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
 		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
 
 		if (require('../../../config.json').spotify_api)
-			if (searchString.toLowerCase().includes('spotify'))
+			if (type.startsWith('sp'))
 				try {
 					if (play.is_expired()) await play.refreshToken();
 					let spot = await play.spotify(searchString);
@@ -59,8 +59,8 @@ module.exports = {
 					console.error(err);
 					return interaction.reply('An error occurred: ' + err.message);
 				}
-		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
-			const playlist = await play.playlist_info(url, { incomplete: true });
+		if (type === 'yt_playlist') {
+			const playlist = await play.playlist_info(searchString, { incomplete: true });
 			const videos = playlist.videos;
 			videos.forEach(async (video) => {
 				await handleVideo(video, interaction, voiceChannel, true);
@@ -69,17 +69,22 @@ module.exports = {
 			return interaction.reply(music.playlist.replace('{playlist}', playlist.title));
 		} else {
 			let video;
-			if (searchString.startsWith('https://')) video = (await play.video_info(searchString)).video_details;
-			else {
-				let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
-					console.error(err);
-					return interaction.reply(music.error_nothing_found + err.message);
-				});
-				if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
-				video = (await play.video_info(videos[0].id)).video_details;
+			try {
+				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
+				else {
+					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
+						console.error(err);
+						return interaction.reply(music.error_nothing_found + err.message);
+					});
+					if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
+					video = (await play.video_info(videos[0].id)).video_details;
+				}
+				handleVideo(video, interaction, voiceChannel);
+				return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${video[0].title}**`), ephemeral: true });
+			} catch (err) {
+				message.channel.send('An error occurred: ' + err.message);
+				console.error(err);
 			}
-			handleVideo(video, interaction, voiceChannel);
-			return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${video[0].title}**`), ephemeral: true });
 		}
 	}
 };
