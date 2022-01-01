@@ -32,7 +32,7 @@ module.exports = {
 		const serverQueue = queue.get(interaction.guildId);
 		const { music } = require(`../../utils/lang/${guildConf.lang}`);
 
-		if (!serverQueue) return interaction.reply({ content: music.no_queue, ephemeral: true });
+		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ content: music.no_queue, ephemeral: true });
 		let durationMs = serverQueue.songs[0].durationInSec * 1000;
 
 		let seek = serverQueue.songs[0].seek;

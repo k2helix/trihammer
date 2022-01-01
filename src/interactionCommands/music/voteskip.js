@@ -10,7 +10,7 @@ module.exports = {
 		if (!interaction.member.voice.channel) return interaction.reply({ content: music.no_vc, ephemeral: true });
 
 		const serverQueue = queue.get(interaction.guildId);
-		if (!serverQueue) return interaction.reply({ content: music.no_queue, ephemeral: true });
+		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ content: music.no_queue, ephemeral: true });
 
 		const members = interaction.member.voice.channel.members.filter((m) => !m.user.bot).size,
 			required = Math.floor(members / 2),

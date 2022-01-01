@@ -15,7 +15,7 @@ module.exports = {
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		let langcode = serverConfig.lang;
 		const { music } = require(`../../utils/lang/${langcode}`);
-		if (!serverQueue) return await message.channel.send(music.no_queue);
+		if (!serverQueue || serverQueue?.leaveTimeout) return await message.channel.send(music.no_queue);
 
 		let pageNumber = args[0] > 0 ? args[0] : 1;
 

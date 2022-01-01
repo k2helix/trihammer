@@ -10,7 +10,7 @@ module.exports = {
 		const serverQueue = queue.get(message.guild.id);
 		let langcode = serverConfig.lang;
 		const { music } = require(`../../utils/lang/${langcode}`);
-		if (serverQueue && serverQueue.playing) {
+		if (serverQueue && serverQueue.playing && !serverQueue.leaveTimeout) {
 			serverQueue.playing = false;
 			serverQueue.audioPlayer.pause();
 			return message.channel.send('⏸');

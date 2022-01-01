@@ -16,12 +16,13 @@ module.exports = {
 		if (!voiceChannel) return await message.channel.send(music.no_vc);
 		if (!serverQueue) return await message.channel.send(music.no_queue);
 
-		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
+		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 
 		if (djRole && !message.member.roles.cache.has(djRole.id) && message.member.id !== serverQueue.songs[0].requested) return message.channel.send(music.need_dj.stop);
 
 		serverQueue.songs = [];
 		serverQueue.connection.destroy();
+		if (serverQueue.leaveTimeout) clearTimeout(serverQueue.leaveTimeout);
 		queue.delete(message.guild.id);
 	}
 };

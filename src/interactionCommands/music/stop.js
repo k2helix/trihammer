@@ -23,6 +23,7 @@ module.exports = {
 
 		serverQueue.songs = [];
 		serverQueue.connection.destroy();
+		if (serverQueue.leaveTimeout) clearTimeout(serverQueue.leaveTimeout);
 		queue.delete(interaction.guildId);
 		interaction.reply('See you next time!');
 	}

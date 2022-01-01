@@ -13,12 +13,12 @@ module.exports = {
 		const { music } = require(`../../utils/lang/${guildConf.lang}`);
 
 		if (!interaction.member.voice.channel) return interaction.reply({ content: music.no_vc, ephemeral: true });
-		if (!serverQueue) return interaction.reply({ content: music.no_queue, ephemeral: true });
+		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ content: music.no_queue, ephemeral: true });
 
 		let newVolume = interaction.options.getString('value');
 		if (!newVolume) return interaction.reply({ content: `Volume: **${serverQueue.volume}**.`, ephemeral: true });
 
-		const djRole = interaction.guild.roles.cache.find((role) => role.name === 'DJ');
+		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		if (djRole && !interaction.member.roles.cache.has(djRole.id)) return interaction.reply({ content: music.need_dj.volume, ephemeral: true });
 
 		if (parseFloat(newVolume) > 5) return interaction.reply({ content: 'No.', ephemeral: true });

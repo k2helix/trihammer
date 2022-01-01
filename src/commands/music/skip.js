@@ -13,9 +13,9 @@ module.exports = {
 		if (!message.member.voice.channel) return await message.channel.send(music.no_vc);
 
 		const serverQueue = queue.get(message.guild.id);
-		if (!serverQueue) return;
+		if (!serverQueue || serverQueue?.leaveTimeout) return;
 
-		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
+		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		if (djRole && message.member.roles.cache.has(djRole.id)) return serverQueue.audioPlayer.stop();
 
 		const members = message.member.voice.channel.members.filter((m) => !m.user.bot).size,
