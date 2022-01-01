@@ -11,7 +11,7 @@ module.exports = {
 		if (!interaction.member.voice.channel) return interaction.reply({ content: music.no_vc, ephemeral: true });
 
 		const serverQueue = queue.get(interaction.guildId);
-		if (!serverQueue) return interaction.reply({ content: music.no_queue, ephemeral: true });
+		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ content: music.no_queue, ephemeral: true });
 
 		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission =

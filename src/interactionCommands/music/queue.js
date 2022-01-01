@@ -15,7 +15,7 @@ module.exports = {
 		const { music } = require(`../../utils/lang/${guildConf.lang}`);
 
 		if (interaction.options.data[0].name === 'view') {
-			if (!serverQueue) return interaction.reply({ content: music.no_queue, ephemeral: true });
+			if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ content: music.no_queue, ephemeral: true });
 			let pageNumber = parseInt(interaction.options.get('page')?.value) || 0;
 
 			const page = parseInt(pageNumber) || 1,

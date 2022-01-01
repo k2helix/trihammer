@@ -7,7 +7,7 @@ module.exports = {
 	execute(client, interaction, guildConf) {
 		const serverQueue = queue.get(interaction.guildId);
 		const { music } = require(`../../utils/lang/${guildConf.lang}`);
-		if (serverQueue && !serverQueue.playing) {
+		if (serverQueue && !serverQueue.playing && !serverQueue.leaveTimeout) {
 			serverQueue.playing = true;
 			serverQueue.audioPlayer.unpause();
 			return interaction.reply({ content: '▶', ephemeral: true });

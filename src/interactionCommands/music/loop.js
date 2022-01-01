@@ -21,13 +21,15 @@ module.exports = {
 			msg.embeds[0].fields = [
 				{
 					name: 'Loop',
-					value: serverQueue.loop ? music.loop.enabled : music.loop.disabled
+					value: serverQueue.loop ? music.loop.enabled : music.loop.disabled,
+					inline: true
 				}
 			];
 			if (serverQueue.loop)
 				msg.embeds[0].fields.push({
 					name: 'Shuffle',
-					value: serverQueue.Shuffle ? music.Shuffle.enabled : music.Shuffle.disabled
+					value: serverQueue.Shuffle ? music.Shuffle.enabled : music.Shuffle.disabled,
+					inline: true
 				});
 			msg.edit({ embeds: [new MessageEmbed(msg.embeds[0])] });
 		}

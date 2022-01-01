@@ -17,10 +17,10 @@ module.exports = {
 
 		if (!message.member.voice.channel) return await message.channel.send(music.no_vc);
 
-		if (!serverQueue) return await message.channel.send(music.no_queue);
+		if (!serverQueue || serverQueue?.leaveTimeout) return await message.channel.send(music.no_queue);
 		if (!args[0]) return await message.channel.send(`Volume: **${serverQueue.volume}**.`);
 
-		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
+		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		if (djRole && !message.member.roles.cache.has(djRole.id)) return message.channel.send(music.need_dj.volume);
 
 		if (parseFloat(args[0]) > 5) return message.channel.send('NO');

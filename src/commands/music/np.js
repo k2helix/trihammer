@@ -34,7 +34,7 @@ module.exports = {
 		const serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
 		let langcode = serverConfig.lang;
 		const { music } = require(`../../utils/lang/${langcode}`);
-		if (!serverQueue) return message.channel.send(music.no_queue);
+		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send(music.no_queue);
 		let durationMs = serverQueue.songs[0].durationInSec * 1000;
 
 		let seek = serverQueue.songs[0].seek;

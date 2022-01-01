@@ -12,7 +12,7 @@ module.exports = {
 	type: 6,
 	async execute(client, message, args) {
 		const serverQueue = queue.get(message.guild.id);
-		if (!serverQueue) return;
+		if (!serverQueue || serverQueue?.leaveTimeout) return;
 		const voiceChannel = message.member.voice.channel;
 		if (!voiceChannel) return;
 
@@ -24,9 +24,8 @@ module.exports = {
 
 		let all = Math.floor(seconds + minutes /*+ Number(hours)*/);
 		if (isNaN(all)) return;
-		if (all === 0) all = 1;
-		const url = serverQueue.songs[0].url;
-		const video = await play.video_info(url);
+		if (all === 0) all = 0.05;
+		const video = await play.video_info(serverQueue.songs[0].url);
 		handleVideo(video.video_details, message, voiceChannel, false, all);
 	}
 };

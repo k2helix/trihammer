@@ -21,7 +21,7 @@ module.exports = {
 		const song = serverQueue.songs[index];
 		if (!song) return interaction.reply({ content: music.song_404, ephemeral: true });
 
-		const djRole = interaction.guild.roles.cache.find((role) => role.name === 'DJ');
+		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 
 		if (djRole && !interaction.member.roles.cache.has(djRole.id)) return interaction.reply({ content: music.need_dj.remove, ephemeral: true });
 		if (interaction.member.id !== serverQueue.songs[index].requested) return interaction.reply({ content: music.need_dj.remove, ephemeral: true });

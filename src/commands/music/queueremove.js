@@ -24,7 +24,7 @@ module.exports = {
 		const song = serverQueue.songs[index];
 		if (!song) return await message.channel.send(music.song_404);
 
-		const djRole = message.guild.roles.cache.find((role) => role.name === 'DJ');
+		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 
 		if (djRole && !message.member.roles.cache.has(djRole.id) && message.member.id !== serverQueue.songs[index].requested) return message.channel.send(music.need_dj.remove);
 
