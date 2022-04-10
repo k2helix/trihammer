@@ -1,0 +1,170 @@
+import { wordList } from './objects';
+import translate from '@vitalets/google-translate-api';
+import { hiraganaDigraphs, hiraganaMonographs, katakanaDigraphs, katakanaHalfwidths, katakanaHalfwidthsCombined, katakanaMonographs } from './objects';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import ExtendedClient from '../structures/Client';
+//@ts-ignore
+function bulkReplace(str: string, regex, map?) {
+	if (arguments.length === 2) {
+		map = regex;
+		regex = new RegExp(Object.keys(map).join('|'), 'ig');
+	}
+
+	return str.replace(regex, function (all) {
+		if (all in map) return map[all];
+
+		return all;
+	});
+}
+
+function fromKana(str: string) {
+	str = bulkReplace(str, katakanaHalfwidthsCombined);
+	str = bulkReplace(str, katakanaHalfwidths);
+	str = bulkReplace(str, hiraganaDigraphs);
+	str = bulkReplace(str, katakanaDigraphs);
+	str = bulkReplace(str, hiraganaMonographs);
+	str = bulkReplace(str, katakanaMonographs);
+
+	str = str.replace(/[っッ]C/g, 'TC').replace(/[っッ](.)/g, '$1$1');
+
+	str = str.replace(/[NM]'([^YAEIOU]|$)/g, 'N$1');
+
+	str = str.replace(/Aー/g, 'Ā');
+	str = str.replace(/Iー/g, 'Ī');
+	str = str.replace(/Uー/g, 'Ū');
+	str = str.replace(/Eー/g, 'Ē');
+	str = str.replace(/Oー/g, 'Ō');
+
+	return str;
+}
+
+function digitalTime(ms: number) {
+	const date = new Date(ms),
+		year = date.getFullYear().toString(),
+		month = (date.getMonth() + 1).toString(),
+		day = date.getDate().toString(),
+		hour = date.getHours().toString().padStart(2, '0'),
+		minute = date.getMinutes().toString().padStart(2, '0'),
+		second = date.getSeconds().toString().padStart(2, '0');
+
+	return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+}
+
+function array_move(arr: unknown[], old_index: number, new_index: number) {
+	if (new_index >= arr.length) {
+		let k = new_index - arr.length + 1;
+		while (k--) arr.push(undefined);
+	}
+	arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+	return arr; // for testing
+}
+
+function prinsjoto(message: Message) {
+	if (message.guild!.id === '603833979996602391') {
+		if (message.content.toLowerCase().includes('feo')) message.react('618038981942050826');
+
+		if (message.content.toLowerCase().includes('fbi'))
+			message.channel.send({
+				content: 'FBI OPEN UP!!!!!!!!',
+				files: [
+					{
+						attachment: 'https://media1.tenor.com/images/e683152889dc703c77ce5bada1e89705/tenor.gif?itemid=11500735',
+						name: 'fbi' + '.gif'
+					}
+				]
+			});
+
+		if (message.content.toLowerCase().includes('papelera'))
+			message.channel.send({
+				content: 'esto es una papelera japoniense no es nada especial pero es japoniense la gente tira cosas no tienen sentimientos pobre papelera acuérdate de ella',
+				files: [
+					{
+						attachment: 'https://i.imgur.com/mgNoaIl.png',
+						name: 'papelera' + '.png'
+					}
+				]
+			});
+
+		if (message.content.toLowerCase().includes('puta'))
+			message.channel.send({
+				files: [
+					{
+						attachment: 'https://cdn.discordapp.com/attachments/487962590887149603/673603357545332758/sketch-1580669947883.png',
+						name: 'puta.png'
+					}
+				]
+			});
+
+		if (message.content.toLowerCase().includes('g2'))
+			message.channel.send({
+				content: 'G2 está mamadísimo',
+				files: [
+					{
+						attachment: 'https://cdn.discordapp.com/attachments/418590211803578391/612048235728732161/Goga-ganado-Rainbow-Six-Siege_1219688028_133861_1440x600.png',
+						name: 'G2mamadisimo' + '.png'
+					}
+				]
+			});
+
+		if (message.content.toLowerCase().includes('puto'))
+			message.channel.send({
+				files: [
+					{
+						attachment: 'https://i.imgur.com/9Pvl5bA.png',
+						name: 'puto' + '.png'
+					}
+				]
+			});
+	}
+}
+function wordOfTheDay(client: ExtendedClient, channel: TextChannel) {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const Dictionary = require('japaneasy');
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const schedule = require('node-schedule');
+	const dict = new Dictionary({
+		dictionary: 'spanish',
+		language: null,
+		method: 'word',
+		encode: 'UTF-8',
+		mirror: 'usa',
+		timeout: 500
+	});
+
+	const rule = new schedule.RecurrenceRule();
+	rule.hour = 12;
+	rule.minute = 0;
+
+	schedule.scheduleJob(rule, function () {
+		translate(wordList[Math.floor(Math.random() * wordList.length)], { from: 'en', to: 'ja' }).then((res) => {
+			//@ts-ignore
+			dict(encodeURI(res.text)).then(async function (result) {
+				do {
+					res = await translate(wordList[Math.floor(Math.random() * wordList.length)], { from: 'en', to: 'ja' });
+					result = await dict(encodeURI(res.text));
+				} while (result[0] === 'No items were found; try another query.');
+
+				const wordData = result[0];
+				const pronunciation = wordData.pronunciation ? wordData.pronunciation : res.text;
+
+				const embed = new MessageEmbed()
+					.setTitle('Palabra del día')
+					.setColor('RANDOM')
+					.setDescription(`La palabra de hoy es... **${res.text}**.`)
+					.addField('Traducción:', `${wordData.english[0]}`)
+					.addField('Pronunciación:', pronunciation + ` (${fromKana(pronunciation).toLowerCase()})`);
+				channel.send({ embeds: [embed] });
+				(client.channels.cache.get('860655239278624797') as TextChannel)?.send({ embeds: [embed] });
+			});
+		});
+	});
+}
+
+function swap(array: unknown[], x: number, y: number) {
+	const b = array[x];
+	array[x] = array[y];
+	array[y] = b;
+	return array;
+}
+
+export { bulkReplace, array_move, prinsjoto, wordOfTheDay, digitalTime, fromKana, swap };
