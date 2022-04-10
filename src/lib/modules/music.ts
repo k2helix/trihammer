@@ -3,7 +3,7 @@ import { ModelServer, Server } from '../utils/models';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { Guild, Interaction, Message, MessageEmbed, TextChannel, VoiceChannel } from 'discord.js';
 import { array_move } from '../utils/functions';
-import { DiscordGatewayAdapterCreator, VoiceConnection, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
+import { DiscordGatewayAdapterCreator, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import LanguageFile from '../structures/interfaces/LanguageFile';
 // const prism = require('prism-media');
 
@@ -33,7 +33,7 @@ async function play(guild: Guild, song: Song) {
 	if (!serverQueue) return;
 
 	if (!song) {
-		serverQueue.connection?.destroy();
+		getVoiceConnection(serverQueue.voiceChannel.guildId)?.destroy();
 		queue.delete(guild.id);
 	}
 
@@ -87,7 +87,6 @@ async function play(guild: Guild, song: Song) {
 		const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
 		const player = createAudioPlayer();
 		player.play(resource);
-		serverQueue.audioPlayer = player;
 		player.on<'stateChange'>('stateChange', async (oldState, newState) => {
 			if (oldState.status == 'playing' && newState.status == 'idle') {
 				if (serverQueue.autoplay)
@@ -121,7 +120,7 @@ async function play(guild: Guild, song: Song) {
 				} else serverQueue.songs.shift();
 				if (!serverQueue.songs[0])
 					serverQueue.leaveTimeout = setTimeout(() => {
-						serverQueue.connection!.destroy();
+						getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
 						return queue.delete(serverQueue.textChannel.guild.id);
 					}, 30000);
 				else {
@@ -130,9 +129,9 @@ async function play(guild: Guild, song: Song) {
 				}
 			}
 		});
-		serverQueue.connection!.subscribe(player);
+		getVoiceConnection(serverQueue.voiceChannel.guildId)!.subscribe(player);
 		// @ts-ignore
-		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
+		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
 	} catch (error) {
 		if (!(error instanceof Error)) throw new Error('Unexpected non-error thrown');
 		console.error(error);
@@ -154,7 +153,6 @@ async function play(guild: Guild, song: Song) {
 async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceChannel, playlist = false, seek: number) {
 	// if (message.options) message.type = 'interaction';
 	const serverQueue = queue.get(message.guildId!);
-	if (!serverQueue) return;
 	// function humanize(object) {
 	// 	let arr = [];
 	// 	let keys = Object.keys(object);
@@ -185,8 +183,6 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 		const queueConstruct: Queue = {
 			textChannel: message.channel! as TextChannel,
 			voiceChannel: voiceChannel,
-			connection: null,
-			audioPlayer: null,
 			songs: [],
 			volume: 1,
 			playing: true,
@@ -200,14 +196,13 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 		queueConstruct.songs.push(song);
 
 		try {
-			const connection: VoiceConnection = joinVoiceChannel({
+			joinVoiceChannel({
 				channelId: voiceChannel.id,
 				guildId: message.guild!.id,
-				adapterCreator: message.guild!.voiceAdapterCreator as DiscordGatewayAdapterCreator
+				adapterCreator: message.guild!.voiceAdapterCreator as DiscordGatewayAdapterCreator,
+				selfDeaf: true
 			});
-			queueConstruct.connection = connection;
 
-			voiceChannel.guild.me!.voice.setDeaf(true).catch(() => undefined);
 			play(message.guild!, queueConstruct.songs[0]);
 		} catch (error) {
 			console.error(`I could not join the voice channel: ${error}`);
@@ -224,7 +219,8 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 		if (seek) {
 			if (song.seek > Number(song.durationInSec)) return serverQueue.textChannel.send(music.seek_cancelled);
 			array_move(serverQueue.songs, serverQueue.songs.length - 1, 1);
-			serverQueue.audioPlayer!.stop();
+			// @ts-ignore
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return;
 		}
 		if (serverQueue.leaveTimeout) {

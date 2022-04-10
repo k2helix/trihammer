@@ -107,7 +107,7 @@ export default new MessageCommand({
 						.join('\n')
 				);
 			mainMessage.edit({ embeds: [editedEmbed] });
-			i.reply({ embeds: [ client.blueEmbed(util.horse_race.selected) ], ephemeral: true });
+			i.reply({ embeds: [client.blueEmbed(util.horse_race.selected)], ephemeral: true });
 		});
 		//@ts-ignore
 		collector.on('end', (collected) => {
@@ -134,7 +134,7 @@ export default new MessageCommand({
 
 				let finalEmbed = new MessageEmbed()
 					.setColor('YELLOW')
-					.setDescription(util.horse_race.win.replace('{users}', winners.map((winner) => `<@${winner.user}>`).join(', ') || 'no winners :('))
+					.setDescription(util.horse_race.win.replace('{users}', winners.map((winner) => `<@${winner.user}>`).join(', ') || results[0].name))
 					.setImage('attachment://leaderboard.png');
 				return mainMessage.edit({ embeds: [finalEmbed], files: [leaderboard] });
 			}, 5000);

@@ -16,7 +16,7 @@ module.exports = {
 			required = Math.floor(members / 2),
 			skips = serverQueue.songs[0].skip;
 		if (skips.length >= required) {
-			serverQueue.audioPlayer.stop();
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return interaction.reply({ content: music.skip.skipping });
 		}
 		// eslint-disable-next-line prettier/prettier
@@ -24,7 +24,7 @@ module.exports = {
 
 		skips.push(interaction.user.id);
 		if (skips.length >= required) {
-			serverQueue.audioPlayer.stop();
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return interaction.reply({ content: music.skip.skipping });
 		} else return interaction.reply({ content: music.skip.voting.replace('{votes}', `${skips.length}/${required}`), ephemeral: true });
 	}

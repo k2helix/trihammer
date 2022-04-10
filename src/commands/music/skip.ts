@@ -16,20 +16,20 @@ module.exports = {
 		if (!serverQueue || serverQueue?.leaveTimeout) return;
 
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
-		if (djRole && message.member.roles.cache.has(djRole.id)) return serverQueue.audioPlayer.stop();
+		if (djRole && message.member.roles.cache.has(djRole.id)) return getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 
 		const members = message.member.voice.channel.members.filter((m) => !m.user.bot).size,
 			required = Math.floor(members / 2),
 			skips = serverQueue.songs[0].skip;
 		if (skips.length >= required) {
-			serverQueue.audioPlayer.stop();
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return message.channel.send({ content: music.skip.skipping });
 		}
 		if (skips.includes(message.author.id)) return message.channel.send(music.skip.already_voted.replace('{votes}', `${skips.length}/${required}`));
 
 		skips.push(message.author.id);
 		if (skips.length >= required) {
-			serverQueue.audioPlayer.stop();
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return await message.channel.send(music.skip.skipping);
 		} else return await message.channel.send(music.skip.voting.replace('{votes}', `${skips.length}/${required}`));
 	}

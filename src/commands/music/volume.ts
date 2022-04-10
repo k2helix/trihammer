@@ -26,6 +26,6 @@ module.exports = {
 		if (parseFloat(args[0]) > 5) return message.channel.send('NO');
 
 		serverQueue.volume = args[0];
-		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(args[0] / 5);
+		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource.volume.setVolumeLogarithmic(args[0] / 5);
 	}
 };

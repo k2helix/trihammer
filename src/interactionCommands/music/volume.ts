@@ -24,7 +24,7 @@ module.exports = {
 		if (parseFloat(newVolume) > 5) return interaction.reply({ content: 'No.', ephemeral: true });
 
 		serverQueue.volume = parseFloat(newVolume);
-		serverQueue.audioPlayer.state.resource.volume.setVolumeLogarithmic(parseFloat(newVolume) / 5);
+		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource.volume.setVolumeLogarithmic(parseFloat(newVolume) / 5);
 		interaction.reply(`New volume: ${newVolume}`);
 	}
 };

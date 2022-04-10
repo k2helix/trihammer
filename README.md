@@ -1,6 +1,6 @@
 # Trihammer
 
-A Discord bot with a lot of commands and now open-sourced!
+A Discord bot with a lot of commands and now open source!
 
 ## Installation
 

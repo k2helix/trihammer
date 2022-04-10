@@ -1,3 +1,4 @@
+import { getVoiceConnection } from '@discordjs/voice';
 import Discord from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -37,9 +38,11 @@ export default new MessageCommand({
 
 		let seek = serverQueue.songs[0].seek;
 		//@ts-ignore
-		let now = Time_convertor(serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000));
-		//@ts-ignore
-		let porcentaje = Math.floor(((serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000)) / durationMs) * 100);
+		let now = Time_convertor(getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.playbackDuration + Number(seek * 1000));
+		let porcentaje = Math.floor(
+			//@ts-ignore
+			((getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.playbackDuration + Number(seek * 1000)) / durationMs) * 100
+		);
 		let index = Math.floor(porcentaje / 10);
 		let string = '▬▬▬▬▬▬▬▬▬▬';
 		let position = setCharAt(string, index, ':radio_button:');
@@ -49,7 +52,7 @@ export default new MessageCommand({
 			.setDescription(`**[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`)
 			.setThumbnail(`https://img.youtube.com/vi/${serverQueue.songs[0].id}/hqdefault.jpg`)
 			.addField(`${now} / ${serverQueue.songs[0].duration} (${porcentaje}%)`, position, true)
-			.addField(music.play.now_playing.requested_by, `<@${serverQueue.songs[0].requested}>`, true);
+			.addField(music.play.now_playing.requested_by, `<@${serverQueue.songs[0].requested === 'Autoplay' ? 'Autoplay' : `<@${serverQueue.songs[0].requested}>`}>`, true);
 		message.channel.send({ embeds: [embed] });
 	}
 });

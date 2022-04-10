@@ -36,8 +36,8 @@ module.exports = {
 		let durationMs = serverQueue.songs[0].durationInSec * 1000;
 
 		let seek = serverQueue.songs[0].seek;
-		let now = Time_convertor(serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000));
-		let porcentaje = Math.floor(((serverQueue.audioPlayer.state.playbackDuration + Number(seek * 1000)) / durationMs) * 100);
+		let now = Time_convertor(getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.playbackDuration + Number(seek * 1000));
+		let porcentaje = Math.floor(((getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.playbackDuration + Number(seek * 1000)) / durationMs) * 100);
 		let index = Math.floor(porcentaje / 10);
 		let string = '▬▬▬▬▬▬▬▬▬▬';
 		let position = setCharAt(string, index, ':radio_button:');

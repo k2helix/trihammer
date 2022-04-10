@@ -13,7 +13,7 @@ export default new MessageCommand({
 		if (!message.member!.voice.channel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		serverQueue.autoplay = !serverQueue.autoplay;
-		// queue.set(message.guild.id, serverQueue);
+
 		if (serverQueue.autoplay) return message.channel.send({ embeds: [client.blueEmbed(music.autoplay.enabled)] });
 		else return message.channel.send({ embeds: [client.blueEmbed(music.autoplay.disabled)] });
 	}

@@ -4,6 +4,7 @@ import ExtendedClient from '../lib/structures/Client';
 import { VoiceState } from 'discord.js';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
 import { Queue } from '../lib/structures/interfaces/MusicInterfaces';
+import { getVoiceConnection } from '@discordjs/voice';
 export default async (client: ExtendedClient, oldState: VoiceState, newState: VoiceState) => {
 	const serverConfig: Server = await ModelServer.findOne({ server: oldState.guild.id }).lean();
 	if (!serverConfig) return;
@@ -22,7 +23,7 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 			if (members.has(client.user!.id) && members.size < 2)
 				serverQueue.leaveTimeout = setTimeout(() => {
 					serverQueue.songs = [];
-					serverQueue.connection!.destroy();
+					getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();
 					queue.delete(oldState.guild.id);
 					serverQueue.textChannel.send(music.leave_timeout);
 				}, 60000);

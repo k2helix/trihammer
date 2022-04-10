@@ -9,7 +9,7 @@ module.exports = {
 		const { music } = require(`../../lib/utils/lang/${guildConf.lang}`);
 		if (serverQueue && serverQueue.playing && !serverQueue.leaveTimeout) {
 			serverQueue.playing = false;
-			serverQueue.audioPlayer.pause();
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.pause();
 			return interaction.reply({ content: '⏸' });
 		}
 		return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
