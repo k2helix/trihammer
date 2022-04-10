@@ -19,7 +19,7 @@ module.exports = {
 			interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) ||
 			interaction.member.id === serverQueue.songs[0].requested;
 		if (permission) {
-			serverQueue.audioPlayer.stop();
+			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return interaction.reply(music.skip.skipping);
 		} else return interaction.reply(xp.no_perms);
 	}

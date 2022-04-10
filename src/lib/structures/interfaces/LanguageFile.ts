@@ -251,6 +251,8 @@ export default interface LanguageFile {
 		horse_race: {
 			title: string;
 			description: string;
+			selected: string;
+			started: string;
 			list: string;
 			no_bets: string;
 			win: string;

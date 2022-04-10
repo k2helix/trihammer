@@ -1,3 +1,4 @@
+import { getVoiceConnection } from '@discordjs/voice';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -24,7 +25,7 @@ export default new MessageCommand({
 			return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
 
 		serverQueue.songs = [];
-		serverQueue.connection!.destroy();
+		getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();
 		if (serverQueue.leaveTimeout) clearTimeout(serverQueue.leaveTimeout);
 		queue.delete(message.guild.id);
 	}

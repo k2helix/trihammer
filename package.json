@@ -1,6 +1,6 @@
 {
   "name": "trihammer",
-  "version": "1.7.0",
+  "version": "2.0",
   "main": "src/index.ts",
   "engines": {
     "node": "17.7.1",
@@ -27,11 +27,10 @@
     "megadb": "^3.4.0",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.11.15",
-    "node-fetch": "^2.6.1",
     "node-geocoder": "^3.27.0",
     "node-schedule": "^2.0.0",
     "node-superfetch": "^0.2.3",
-    "play-dl": "^1.9.1",
+    "play-dl": "^1.9.4",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
   },

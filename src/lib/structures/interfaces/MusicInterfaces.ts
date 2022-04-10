@@ -1,4 +1,3 @@
-import { AudioPlayer, VoiceConnection } from '@discordjs/voice';
 import { TextChannel, VoiceChannel } from 'discord.js';
 
 interface Song {
@@ -18,8 +17,6 @@ interface Song {
 interface Queue {
 	textChannel: TextChannel;
 	voiceChannel: VoiceChannel;
-	connection: VoiceConnection | null;
-	audioPlayer: AudioPlayer | null;
 	songs: Song[];
 	volume: number;
 	playing: boolean;
