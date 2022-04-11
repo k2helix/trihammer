@@ -1,6 +1,6 @@
 # Trihammer
 
-**This branch is in active development and thus should not be used! Only some things will work as more than half of the files have not been rewritten yet.**
+**This branch is in active development and thus should not be used! Only some things will work as more than half of the files have not been rewritten yet.** \
 A Discord bot with a lot of commands and now open source!
 
 ## Installation
