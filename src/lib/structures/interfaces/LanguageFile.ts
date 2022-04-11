@@ -97,6 +97,8 @@ export default interface LanguageFile {
 			enabled: string;
 			disabled: string;
 		};
+		pause: string;
+		resume: string;
 		playlists: {
 			titles: {
 				recent: string;
@@ -143,6 +145,7 @@ export default interface LanguageFile {
 		must_be_number: string;
 		cannot_remove: string;
 		song_removed: string;
+		song_removed_and_sliced: string;
 		song_404: string;
 		invalid_song: string;
 		song_select: string;
@@ -157,6 +160,8 @@ export default interface LanguageFile {
 			voting: string;
 		};
 		volume: string;
+		too_much: string;
+		skipto_restricted: string;
 		play: {
 			added_to_queue: {
 				title: string;

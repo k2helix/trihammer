@@ -1,31 +1,31 @@
-const { queue } = require('../../lib/modules/music');
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import { getVoiceConnection } from '@discordjs/voice';
+import { queue } from '../../lib/modules/music';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'volume',
 	description: 'Set the volume to x',
-	ESdesc: 'Establece el volumen a x',
-	usage: 'volume set <volume>',
-	example: 'volume set 6',
 	aliases: ['v'],
 	cooldown: 3,
-	type: 6,
-	async execute(client, message, args) {
-		const serverQueue = queue.get(message.guild.id);
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
-				const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+	category: 'music',
+	required_args: [{ index: 0, type: 'number', name: 'volume', optional: true }],
+	async execute(client, message, args, guildConf) {
+		const serverQueue = queue.get(message.guild!.id);
+		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		if (!message.member.voice.channel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
+		if (!message.member!.voice.channel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 
-		if (!serverQueue || serverQueue?.leaveTimeout) return await message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
-		if (!args[0]) return await message.channel.send(`Volume: **${serverQueue.volume}**.`);
+		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
+		if (!args[0]) return message.channel.send({ embeds: [client.blackEmbed(`Volume: **${serverQueue.volume}**.`)] });
 
-		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
-		if (djRole && !message.member.roles.cache.has(djRole.id)) return message.channel.send(music.need_dj.volume);
+		const djRole = message.guild!.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
+		if (djRole && !message.member!.roles.cache.has(djRole.id)) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.volume)] });
 
-		if (parseFloat(args[0]) > 5) return message.channel.send('NO');
+		if (parseFloat(args[0]) > 5) return message.channel.send({ embeds: [client.redEmbed(music.too_much)] });
 
-		serverQueue.volume = args[0];
-		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource.volume.setVolumeLogarithmic(args[0] / 5);
+		serverQueue.volume = parseInt(args[0]);
+		// @ts-ignore
+		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource.volume.setVolumeLogarithmic(parseInt(args[0]) / 5);
+		message.channel.send({ embeds: [client.blueEmbed(music.volume.replace('{volume}', args[0]))] });
 	}
-};
+});

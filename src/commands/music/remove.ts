@@ -6,6 +6,10 @@ export default new MessageCommand({
 	description: 'Remove a song from the queue',
 	aliases: ['queueremove', 'songremove', 'remove', 'rm', 'deletesong'],
 	category: 'music',
+	required_args: [
+		{ index: 0, type: 'number', name: 'song_id' },
+		{ index: 1, type: 'string', name: 'slice', optional: true }
+	],
 	async execute(client, message, args, guildConf) {
 		const serverQueue = queue.get(message.guild!.id);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
@@ -27,6 +31,10 @@ export default new MessageCommand({
 		if (djRole && !message.member!.roles.cache.has(djRole.id) && message.member!.id !== serverQueue.songs[index].requested)
 			return message.channel.send({ embeds: [client.redEmbed(music.need_dj.remove)] });
 
+		if (args[1] === 'slice') {
+			serverQueue.songs = serverQueue.songs.slice(0, index);
+			return message.channel.send({ embeds: [client.orangeEmbed(music.song_removed_and_sliced)] });
+		}
 		message.channel.send({ embeds: [client.orangeEmbed(music.song_removed.replace('{song}', serverQueue.songs[Math.floor(parseInt(args[0]) - 1)].title))] });
 		serverQueue.songs.splice(index, 1);
 	}

@@ -183,6 +183,8 @@ export const music = {
 		enabled: '⏭️ Autoplay activado',
 		disabled: '⏭️ Autoplay desactivado'
 	},
+	pause: '⏸ Reproducción pausada (ayuda por favor)',
+	resume: '▶ Reproducción continuada',
 	playlists: {
 		titles: {
 			recent: 'Playlists recientes',
@@ -202,7 +204,7 @@ export const music = {
 		playlist_deleted: `Playlist \`{pl}\` borrada`,
 		playlist_songs: 'Canciones de la playlist',
 		no_playlists: 'El usuario proporcionado no tiene playlists',
-		added_to_queue: 'La playlist **{name}** de **{owner}** está siendo añadida a la cola'
+		added_to_queue: 'La playlist está siendo añadida a la cola'
 	},
 	ytt: {
 		yttogether: 'Click aquí para empezar **YouTube Together** en ',
@@ -230,6 +232,7 @@ export const music = {
 	must_be_number: 'Tienes que envíar un número',
 	cannot_remove: 'No puedes borrar esa canción',
 	song_removed: '**{song}** ha sido removida de la cola',
+	song_removed_and_sliced: 'Se ha borrado a partir de esa canción de la cola',
 	song_404: 'La cola no tiene ninguna canción con ese número',
 	invalid_song: 'Canción invalida, cancelando.',
 	song_select: '__**Selección de canciones**__',
@@ -244,6 +247,8 @@ export const music = {
 		voting: '¿Saltando? {votes}'
 	},
 	volume: 'Puse el volumen a {volume}',
+	too_much: 'El volumen máximo es de 5',
+	skipto_restricted: 'Solamente puedes usar este comando si hay menos de 4 personas en llamada o tienes un rol llamado **DJ**',
 	play: {
 		added_to_queue: {
 			title: '__Añadido a la cola__',

@@ -8,6 +8,7 @@ export default new MessageCommand({
 	description: 'View the currently queued songs',
 	aliases: ['q'],
 	category: 'music',
+	required_args: [{ index: 0, type: 'number', name: 'page', optional: true }],
 	async execute(client, message, args, guildConf) {
 		const serverQueue = queue.get(message.guild!.id);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;

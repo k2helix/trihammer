@@ -1,4 +1,4 @@
-import { TextChannel, VoiceChannel } from 'discord.js';
+import { TextBasedChannel, VoiceBasedChannel } from 'discord.js';
 
 interface Song {
 	id: string;
@@ -15,8 +15,8 @@ interface Song {
 	skip: string[];
 }
 interface Queue {
-	textChannel: TextChannel;
-	voiceChannel: VoiceChannel;
+	textChannel: TextBasedChannel;
+	voiceChannel: VoiceBasedChannel;
 	songs: Song[];
 	volume: number;
 	playing: boolean;
