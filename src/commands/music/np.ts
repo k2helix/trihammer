@@ -19,7 +19,7 @@ function Time_convertor(ms: number) {
 	let arr: string[] = [];
 	array.forEach((period) => {
 		let value = obj[period as 'hours' | 'minutes' | 'seconds'];
-		if (!value && period === 'hours') return;
+		if (value === '0' && period === 'hours') return;
 		arr.push(parseInt(value) < 10 ? '0' + value : value);
 	});
 	return arr.join(':');
@@ -52,7 +52,7 @@ export default new MessageCommand({
 			.setDescription(`**[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`)
 			.setThumbnail(`https://img.youtube.com/vi/${serverQueue.songs[0].id}/hqdefault.jpg`)
 			.addField(`${now} / ${serverQueue.songs[0].duration} (${porcentaje}%)`, position, true)
-			.addField(music.play.now_playing.requested_by, `<@${serverQueue.songs[0].requested === 'Autoplay' ? 'Autoplay' : `<@${serverQueue.songs[0].requested}>`}>`, true);
+			.addField(music.play.now_playing.requested_by, `${serverQueue.songs[0].requested === 'Autoplay' ? 'Autoplay' : `<@${serverQueue.songs[0].requested}>`}`, true);
 		message.channel.send({ embeds: [embed] });
 	}
 });
