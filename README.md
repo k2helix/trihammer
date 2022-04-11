@@ -1,5 +1,6 @@
 # Trihammer
 
+**This branch is in active development and thus should not be used! Only some things will work as more than half of the files have not been rewritten yet.**
 A Discord bot with a lot of commands and now open source!
 
 ## Installation
@@ -8,7 +9,7 @@ If you want to self host the bot, then edit .env.example and config.json.example
 If you want to use the spotify api for music commands, read and follow [this guide](https://github.com/play-dl/play-dl/tree/9d24008a2be6e1d72af9af06fcb072ac5cd99a42/instructions#spotify).
 - First, download the code manually or do it with git: `git clone https://github.com/k2helix/trihammer.git && cd trihammer`
 - Now you will have to install the required packages: `npm install --legacy-peer-deps`
-- Run it by using `node index.js` or `npm start`
+- Run it by using `tsc && node dist/src/index.js` or `npm start`
 
 If for some reason attachments of some command stop working, renew the url with the assets in the assets folder.
 ### Notes

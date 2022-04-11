@@ -14,7 +14,7 @@ export default new MessageCommand({
 			serverQueue.playing = false;
 			// @ts-ignore
 			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player!.pause();
-			return message.channel.send({ embeds: [client.blueEmbed('⏸')] });
+			return message.channel.send({ embeds: [client.blueEmbed(music.pause)] });
 		}
 		return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 	}

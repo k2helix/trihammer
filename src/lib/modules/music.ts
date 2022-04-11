@@ -1,7 +1,7 @@
 import { Queue, Song } from '../structures/interfaces/MusicInterfaces';
 import { ModelServer, Server } from '../utils/models';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
-import { Guild, Interaction, Message, MessageEmbed, TextChannel, VoiceChannel } from 'discord.js';
+import { Guild, Interaction, Message, MessageEmbed, TextBasedChannel, VoiceBasedChannel } from 'discord.js';
 import { array_move } from '../utils/functions';
 import { DiscordGatewayAdapterCreator, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import LanguageFile from '../structures/interfaces/LanguageFile';
@@ -31,6 +31,7 @@ const queue: Map<string, Queue> = new Map();
 async function play(guild: Guild, song: Song) {
 	const serverQueue = queue.get(guild.id);
 	if (!serverQueue) return;
+	if (serverQueue.textChannel.type === 'DM') return;
 
 	if (!song) {
 		getVoiceConnection(serverQueue.voiceChannel.guildId)?.destroy();
@@ -121,7 +122,7 @@ async function play(guild: Guild, song: Song) {
 				if (!serverQueue.songs[0])
 					serverQueue.leaveTimeout = setTimeout(() => {
 						getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
-						return queue.delete(serverQueue.textChannel.guild.id);
+						return queue.delete(serverQueue.voiceChannel.guildId);
 					}, 30000);
 				else {
 					if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
@@ -150,8 +151,9 @@ async function play(guild: Guild, song: Song) {
 	// });
 }
 
-async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceChannel, playlist = false, seek: number) {
+async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceBasedChannel, playlist = false, seek: number) {
 	// if (message.options) message.type = 'interaction';
+	if (message.channel!.type === 'DM') return;
 	const serverQueue = queue.get(message.guildId!);
 	// function humanize(object) {
 	// 	let arr = [];
@@ -181,7 +183,7 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 	};
 	if (!serverQueue) {
 		const queueConstruct: Queue = {
-			textChannel: message.channel! as TextChannel,
+			textChannel: message.channel! as TextBasedChannel,
 			voiceChannel: voiceChannel,
 			songs: [],
 			volume: 1,
@@ -210,6 +212,7 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 			return message.channel!.send(`Error: ${error}`);
 		}
 	} else {
+		if (serverQueue.textChannel.type === 'DM') return;
 		serverQueue.songs.push(song);
 		const musicC: Server = await ModelServer.findOne({
 			server: serverQueue.textChannel.guild.id

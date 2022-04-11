@@ -4,7 +4,7 @@ We have a minimum-collection policy. Aside from essential data required to keep 
 
 ## Data stored
 
-We don't share data with any third party, only with our database service provider ([MongoDB](https://mongodb.com)) \
+We don't share data with any third party, we only store it on our database service provider ([MongoDB](https://mongodb.com)) \
 We don't store the content of any message, we just use it when it is sent if it is a command. \
 Information we store:
 - User ID, to identify users in our database.

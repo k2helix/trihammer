@@ -1,20 +1,21 @@
-const { queue } = require('../../lib/modules/music');
-const { handleVideo } = require('../../lib/modules/music');
-const play = require('play-dl');
+import { handleVideo, queue } from '../../lib/modules/music';
+import play from 'play-dl';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
-module.exports = {
+export default new MessageCommand({
 	name: 'seek',
-	description: 'Jump to a part of the song',
-	ESdesc: 'Salta a una parte de la canción',
-	usage: 'seek <mm:ss>',
-	example: 'seek 59\nseek 1:45',
+	description: 'Jump to a part of the song (only MM:SS)',
 	aliases: ['jumpto'],
-	type: 6,
-	async execute(client, message, args) {
-		const serverQueue = queue.get(message.guild.id);
-		if (!serverQueue || serverQueue?.leaveTimeout) return;
-		const voiceChannel = message.member.voice.channel;
-		if (!voiceChannel) return;
+	category: 'music',
+	required_args: [{ index: 0, type: 'string', name: 'timestamp' }],
+	async execute(client, message, args, guildConf) {
+		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		const serverQueue = queue.get(message.guild!.id);
+		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
+		const voiceChannel = message.member!.voice.channel;
+		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 
 		const array = args.join(' ').split(':').reverse();
 
@@ -27,5 +28,7 @@ module.exports = {
 		if (all === 0) all = 0.05;
 		const video = await play.video_info(serverQueue.songs[0].url);
 		handleVideo(video.video_details, message, voiceChannel, false, all);
+
+		message.channel.send({ embeds: [client.blueEmbed(music.seek.replace('{time}', args.join(' ')))] });
 	}
-};
+});

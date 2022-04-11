@@ -187,6 +187,8 @@ export const music = {
 		enabled: '⏭️ Autoplay enabled',
 		disabled: '⏭️ Autoplay disabled'
 	},
+	pause: '⏸ Playback paused',
+	resume: '▶ Playback resumed',
 	playlists: {
 		titles: {
 			recent: 'Recent playlists',
@@ -206,7 +208,7 @@ export const music = {
 		playlist_deleted: `Playlist \`{pl}\` deleted`,
 		playlist_songs: 'Playlist songs',
 		no_playlists: 'The given uses does not have playlists',
-		added_to_queue: 'The playlist **{name}** by **{owner}** is being added to queue'
+		added_to_queue: 'The playlist is being added to the queue'
 	},
 	ytt: {
 		yttogether: 'Click here to start **YouTube Together** in ',
@@ -234,6 +236,7 @@ export const music = {
 	must_be_number: 'You must type a number',
 	cannot_remove: 'You cannot delete that song',
 	song_removed: '**{song}** has been removed from the queue',
+	song_removed_and_sliced: 'The songs from that song to the end where removed from the queue',
 	song_404: "There isn't a song with that number in the queue",
 	invalid_song: 'Invalid song, cancelling.',
 	song_select: '__**Song Selection**__',
@@ -248,6 +251,8 @@ export const music = {
 		voting: '¿Skipping? {votes}'
 	},
 	volume: 'I set the volume to {volume}',
+	too_much: 'The maximum volume is 5',
+	skipto_restricted: 'You can only use this command if you are less than 4 persons in the call or you have a role called **DJ**',
 	play: {
 		added_to_queue: {
 			title: '__Added to the queue',

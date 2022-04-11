@@ -1,95 +1,78 @@
-/* eslint-disable no-case-declarations */
-const play = require('play-dl');
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
+import config from '../../../config.json';
+import { handleVideo } from '../../lib/modules/music';
+import { TextChannel } from 'discord.js';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
-const { ModelServer } = require('../../lib/utils/models');
-const { handleVideo } = require('../../lib/modules/music');
-const { MessageEmbed } = require('discord.js');
-
-module.exports = {
+export default new MessageCommand({
 	name: 'play',
 	description: 'Add a song to the queue',
-	ESdesc: 'Añade una canción a la cola',
-	usage: 'play <song or url>',
-	example: 'play Liar Mask',
 	aliases: ['p'],
-	type: 6,
-	myPerms: [false, 'CONNECT', 'SPEAK'],
-	async execute(client, message, args) {
-		const voiceChannel = message.member.voice.channel;
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
+	category: 'music',
+	client_perms: ['CONNECT', 'SPEAK'],
+	required_args: [{ index: 0, type: 'string', name: 'query' }],
+	async execute(client, message, args, guildConf) {
+		if (!message.guild || !message.member) return;
 
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		const voiceChannel = message.member.voice.channel;
+		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 
 		const searchString = args.join(' ');
-		if (!searchString) return message.channel.send({ content: music.invalid_song });
+		if (!searchString) return message.channel.send({ embeds: [client.redEmbed(music.invalid_song)] });
 
 		let type = await play.validate(searchString);
 
-		if (!voiceChannel) return message.channel.send({ content: music.no_vc });
-		if (message.guild.me.voice.channel && message.guild.me.voice.channelId !== voiceChannel.id) return message.channel.send({ content: music.wrong_vc });
-		if (require('../../../config.json').spotify_api)
-			if (type.startsWith('sp'))
+		if (message.guild.me!.voice.channel && message.guild.me!.voice.channelId !== voiceChannel.id) return message.channel.send({ embeds: [client.redEmbed(music.wrong_vc)] });
+		if (config.spotify_api)
+			if (type.toString().startsWith('sp'))
 				try {
 					if (play.is_expired()) await play.refreshToken();
 					let spot = await play.spotify(searchString);
 					if (spot.type !== 'track') {
-						let playlistEmbed = new MessageEmbed()
-							.setTitle(music.play.added_to_queue.title)
-							.setDescription(
-								music.playlists.added_to_queue.replaceAll({
-									'{name}': `[${spot.name}](${spot.url})`,
-									'{owner}': spot.owner.name
-								})
-							)
-							.setColor('RANDOM')
-							.setThumbnail(spot.thumbnail.url);
-						message.channel.send({ embeds: [playlistEmbed] });
-						let songs = spot.page(1);
+						message.channel.send({ embeds: [client.blueEmbed(music.playlists.added_to_queue)] });
+						let songs = (spot as SpotifyPlaylist | SpotifyAlbum).page(1);
+						if (!songs) return message.channel.send({ embeds: [client.redEmbed(music.error_nothing_found + 'unknown')] });
 						for (let index = 0; index < songs.length; index++) {
 							const track = songs[index];
 							let searched = await play.search(`${track.artists[0]?.name} ${track.name}`, { limit: 1 }).catch(() => false);
-							if (searched[0]) handleVideo(searched[0], message, voiceChannel, true);
+							if (typeof searched !== 'boolean' && searched[0]) handleVideo(searched[0], message, voiceChannel, true, 0);
 						}
 						return;
 					} else {
-						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
-							console.error(err);
-							return message.channel.send(music.error_nothing_found + err.message);
-						});
-						if (typeof searched === 'boolean' || searched.length < 1) return message.channel.send({ content: music.not_found, ephemeral: true });
-						return handleVideo(searched[0], message, voiceChannel);
+						let searched = (await play.search(`${(spot as SpotifyTrack).artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
+							return client.catchError(err, message.channel as TextChannel);
+						})) as YouTubeVideo[];
+						if (typeof searched === 'boolean' || searched.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
+						return handleVideo((searched as YouTubeVideo[])[0], message, voiceChannel, false, 0);
 					}
 				} catch (err) {
-					console.error(err);
-					return message.channel.send('An error occurred: ' + err.message);
+					return client.catchError(err, message.channel as TextChannel);
 				}
 
 		if (type === 'yt_playlist') {
 			const playlist = await play.playlist_info(searchString, { incomplete: true });
-			const videos = playlist.videos;
+			const videos = await playlist.all_videos();
 			videos.forEach(async (video) => {
-				await handleVideo(video, message, voiceChannel, true);
+				await handleVideo(video, message, voiceChannel, true, 0);
 			});
-
-			return message.channel.send(music.playlist.replace('{playlist}', playlist.title));
+			return message.channel.send({ embeds: [client.blueEmbed(music.playlist.replace('{playlist}', playlist.title!))] });
 		} else {
 			let video;
 			try {
 				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
 				else {
-					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
-						console.error(err);
-						return message.channel.send(music.error_nothing_found + err.message);
-					});
-					if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ content: music.not_found });
-					video = (await play.video_info(videos[0].id)).video_details;
+					let videos = (await play.search(searchString, { limit: 1 }).catch((err) => {
+						return client.catchError(err, message.channel as TextChannel);
+					})) as YouTubeVideo[];
+					if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
+					video = (await play.video_info((videos as YouTubeVideo[])[0].id!)).video_details;
 				}
-				handleVideo(video, message, voiceChannel);
+				handleVideo(video, message, voiceChannel, false, 0);
 			} catch (err) {
-				message.channel.send('An error occurred: ' + err.message);
-				console.error(err);
+				client.catchError(err, message.channel as TextChannel);
 			}
 		}
 	}
-};
+});

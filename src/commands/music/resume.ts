@@ -13,7 +13,7 @@ export default new MessageCommand({
 			serverQueue.playing = true;
 			// @ts-ignore
 			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player!.unpause();
-			return message.channel.send({ embeds: [client.blueEmbed('▶')] });
+			return message.channel.send({ embeds: [client.blueEmbed(music.resume)] });
 		}
 		return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 	}
