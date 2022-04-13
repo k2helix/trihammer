@@ -1,6 +1,6 @@
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';
-
+import { MessageEmbed } from 'discord.js';
 export default new MessageCommand({
 	name: 'dog',
 	description: 'Random dog image',
