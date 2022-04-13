@@ -1,22 +1,14 @@
-const request = require('node-superfetch');
-const { Permissions } = require('discord.js');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import request from 'node-superfetch';
+
+export default new MessageCommand({
 	name: 'fox',
 	description: 'Random fox image',
-	ESdesc: 'Imagen aleatoria de un zorro',
-	usage: 'fox',
-	example: 'fox',
-	type: -1,
-	myPerms: [true, 'ATTACH_FILES'],
-	async execute(client, message) {
-		if (!message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES)) return;
+	category: 'fun',
+	required_perms: ['ATTACH_FILES'],
+	client_perms: ['ATTACH_FILES'],
+	async execute(_client, message) {
 		const { body } = await request.get('https://randomfox.ca/floof/');
-		message.channel.send({
-			files: [
-				{
-					attachment: body.image
-				}
-			]
-		});
+		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { image: string }[])[0].image)] });
 	}
-};
+});

@@ -1,14 +1,20 @@
+import MessageCommand from '../../lib/structures/MessageCommand';
+
 const blankEmoji = '⚪️';
 const playerOneEmoji = '🔴';
 const playerTwoEmoji = '🟡';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require('megadb');
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { GuildMember, Message, TextBasedChannel } from 'discord.js';
 let c4db = new db.crearDB('connect4');
 const nums = [':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:'];
-function checkLine(a, b, c, d) {
+type board = [(string | null)[], (string | null)[], (string | null)[], (string | null)[], (string | null)[], (string | null)[], (string | null)[]];
+function checkLine(a: string | null, b: string | null, c: string | null, d: string | null) {
 	return a !== null && a === b && a === c && a === d;
 }
 
-function verifyWin(bd) {
+function verifyWin(bd: board) {
 	for (let r = 0; r < 3; r++) for (let c = 0; c < 7; c++) if (checkLine(bd[r][c], bd[r + 1][c], bd[r + 2][c], bd[r + 3][c])) return bd[r][c];
 
 	for (let r = 0; r < 6; r++) for (let c = 0; c < 4; c++) if (checkLine(bd[r][c], bd[r][c + 1], bd[r][c + 2], bd[r][c + 3])) return bd[r][c];
@@ -24,10 +30,10 @@ function generateBoard() {
 	const arr = [];
 	for (let i = 0; i < 6; i++) arr.push([null, null, null, null, null, null, null]);
 
-	return arr;
+	return arr as board;
 }
 
-function displayBoard(board) {
+function displayBoard(board: board) {
 	return board
 		.map((row) =>
 			row
@@ -40,8 +46,8 @@ function displayBoard(board) {
 		)
 		.join('\n');
 }
-async function verify(channel, user, { time = 30000, yes = ['yes'], no = ['no'] } = {}) {
-	const filter = (res) => {
+async function verify(channel: TextBasedChannel, user: GuildMember, { time = 30000, yes = ['yes'], no = ['no'] } = {}) {
+	const filter = (res: Message) => {
 		const value = res.content.toLowerCase();
 		return (user ? res.author.id === user.id : true) && (yes.includes(value) || no.includes(value));
 	};
@@ -51,30 +57,24 @@ async function verify(channel, user, { time = 30000, yes = ['yes'], no = ['no'] 
 		time
 	});
 	if (!verify.size) return 0;
-	const choice = verify.first().content.toLowerCase();
+	const choice = verify.first()!.content.toLowerCase();
 	if (yes.includes(choice)) return true;
 	if (no.includes(choice)) return false;
 	return false;
 }
 
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+export default new MessageCommand({
 	name: 'connect4',
 	description: 'Play connect 4 with a friend',
-	ESdesc: 'Juega conecta 4 con un amigo',
-	usage: 'connect4 <friend>',
-	example: 'connect4 @user',
 	aliases: ['connectfour', 'connect-four', 'c4'],
-	type: 7,
-	myPerms: [true, 'MANAGE_MESSAGES'],
-	async execute(client, message, args) {
-		const opponent = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+	category: 'fun',
+	client_perms: ['MANAGE_MESSAGES'],
+	async execute(client, message, args, guildConf) {
+		const opponent = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]);
 		if (!opponent) return;
 
-		if (c4db.has(`${message.author.id}&${opponent.user.id}`)) return message.channel.send('Seems like you are already playing.');
-		let serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
-		const langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
+		if (c4db.has(`${message.author.id}&${opponent.user.id}`)) return message.channel.send({ embeds: [client.redEmbed('Seems like you are already playing.')] });
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		if (opponent.user.bot) return message.channel.send(`<@${message.author.id}>, ` + util.connect4.bot);
 		if (opponent.id === message.author.id && opponent.id !== '461279654158925825') return;
@@ -99,7 +99,7 @@ module.exports = {
 				mensaje.edit(`${user}` + util.connect4.column + `\n${displayBoard(board)}\n${nums.join('')}`);
 			}
 
-			const filter = (res) => {
+			const filter = (res: Message) => {
 				if (res.author.id !== user.id) return false;
 				const choice = res.content;
 				if (choice.toLowerCase() === 'end') return true;
@@ -123,7 +123,7 @@ module.exports = {
 					continue;
 				}
 			}
-			const choice = turn.first().content;
+			const choice = turn.first()!.content;
 			if (choice.toLowerCase() === 'end') {
 				winner = userTurn ? opponent : message.author;
 				break;
@@ -134,15 +134,17 @@ module.exports = {
 			if (verifyWin(board)) winner = userTurn ? message.author : opponent;
 			if (lastTurnTimeout) lastTurnTimeout = false;
 			userTurn = !userTurn;
-			turn.first().delete();
+			turn.first()!.delete();
 		}
 
 		// eslint-disable-next-line prettier/prettier
-		if (winner === 'time') return message.channel.send('Partida finalizada por inactividad') && c4db.delete(`${message.author.id}&${opponent.user.id}`);
-		message.channel.send(winner ? util.connect4.win + `${winner}!` : util.connect4.draw);
-		let msgDB = await c4db.obtener(`${message.author.id}&${opponent.user.id}`);
-		let msg = await message.channel.messages.fetch(msgDB);
-		msg.edit(`${displayBoard(board)}\n${nums.join('')}`);
+		if (winner === 'time') message.channel.send(util.connect4.inactivity);
+		else {
+			message.channel.send(winner ? util.connect4.win + `${winner}!` : util.connect4.draw);
+			let msgDB = await c4db.obtener(`${message.author.id}&${opponent.user.id}`);
+			let msg = await message.channel.messages.fetch(msgDB);
+			msg.edit(`${displayBoard(board)}\n${nums.join('')}`);
+		}
 		c4db.delete(`${message.author.id}&${opponent.user.id}`);
 	}
-};
+});

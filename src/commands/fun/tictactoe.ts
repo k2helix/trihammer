@@ -1,22 +1,28 @@
-const playerOneEmoji = '❌';
-const playerTwoEmoji = '🔵';
-const blankEmoji = '<:blank:848220685709213717>';
+import { GuildMember, Message, TextBasedChannel } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
 
-function displayBoard(board) {
+const player1Emoji = '❌';
+const player2Emoji = '🔵';
+const noEmoji = '<:blank:848220685709213717>';
+
+type board = [(string | null)[], (string | null)[], (string | null)[]];
+
+function displayBoard(board: board) {
 	return board
 		.map((row) =>
 			row
 				.map((piece) => {
-					if (piece === 'user') return playerOneEmoji;
-					if (piece === 'oppo') return playerTwoEmoji;
-					return blankEmoji;
+					if (piece === 'user') return player1Emoji;
+					if (piece === 'oppo') return player2Emoji;
+					return noEmoji;
 				})
 				.join('')
 		)
 		.join('\n');
 }
-async function verify(channel, user, { time = 30000, yes = ['yes'], no = ['no'] } = {}) {
-	const filter = (res) => {
+async function verify(channel: TextBasedChannel, user: GuildMember, { time = 30000, yes = ['yes'], no = ['no'] } = {}) {
+	const filter = (res: Message) => {
 		const value = res.content.toLowerCase();
 		return (user ? res.author.id === user.id : true) && (yes.includes(value) || no.includes(value));
 	};
@@ -26,13 +32,13 @@ async function verify(channel, user, { time = 30000, yes = ['yes'], no = ['no'] 
 		time
 	});
 	if (!verify.size) return 0;
-	const choice = verify.first().content.toLowerCase();
+	const choice = verify.first()!.content.toLowerCase();
 	if (yes.includes(choice)) return true;
 	if (no.includes(choice)) return false;
 	return false;
 }
-function checkWinner(board) {
-	const allEqual = (arr) => arr.every((v) => v === arr[0]);
+function checkWinner(board: board) {
+	const allEqual = (arr: (null | string)[]) => arr.every((v) => v === arr[0]);
 	for (let index = 0; index < board.length; index++) {
 		const column = board[index];
 		if (allEqual(column)) return column[0];
@@ -45,7 +51,7 @@ function checkWinner(board) {
 	if (board[0][2] === board[1][1] && board[0][2] === board[2][0]) return board[0][2];
 	return null;
 }
-function checkDraw(board) {
+function checkDraw(board: board) {
 	let completedColumns = [];
 	for (let index = 0; index < board.length; index++) {
 		const column = board[index];
@@ -54,23 +60,20 @@ function checkDraw(board) {
 	}
 	return null;
 }
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require('megadb');
 let tttdb = new db.crearDB('tictactoe');
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+export default new MessageCommand({
 	name: 'tictactoe',
 	description: 'Play tic tac toe with a friend',
-	ESdesc: 'Juega tic tac toe con un amigo',
 	aliases: ['3enraya', 'tresenraya'],
-	type: 7,
-	async execute(client, message, args) {
-		const opponent = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+	category: 'fun',
+	async execute(client, message, args, guildConf) {
+		const opponent = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]);
 		if (!opponent) return;
 
-		if (tttdb.has(`${message.author.id}&${opponent.user.id}`)) return message.channel.send('Seems like you are already playing.');
-		let serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
-		const langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
+		if (tttdb.has(`${message.author.id}&${opponent.user.id}`)) return message.channel.send({ embeds: [client.redEmbed('Seems like you are already playing.')] });
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		if (opponent.user.bot) return message.channel.send(`<@${message.author.id}>, ` + util.connect4.bot);
 		if (opponent.id === message.author.id && opponent.id !== '461279654158925825') return;
@@ -78,7 +81,7 @@ module.exports = {
 		const verification = await verify(message.channel, opponent);
 		if (!verification) return message.channel.send(util.connect4.unverified);
 
-		let board = [
+		let board: board = [
 			[null, null, null],
 			[null, null, null],
 			[null, null, null]
@@ -93,7 +96,7 @@ module.exports = {
 		while (!winner) {
 			if (turn === 'user') user = message.member;
 			else user = opponent;
-			const filter = (res) => res.author.id === user.id;
+			const filter = (res: Message) => res.author.id === user!.id;
 			const response = await message.channel.awaitMessages({
 				filter,
 				max: 1,
@@ -104,9 +107,9 @@ module.exports = {
 				winner = turn === 'user' ? 'oppo' : 'user';
 				return message.channel.send(winner);
 			}
-			let move = response.first().content.split(' ');
-			let column = move[0] - 1;
-			let row = move[1] - 1;
+			let move = response.first()!.content.split(' ');
+			let column = parseInt(move[0]) - 1;
+			let row = parseInt(move[1]) - 1;
 			if (!board[column]) continue;
 			if (board[column][row] === undefined) continue;
 			if (board[column][row]) continue;
@@ -118,10 +121,10 @@ module.exports = {
 			if (!winner) winner = checkDraw(board);
 			if (winner) {
 				if (winner === 'draw') message.channel.send(util.connect4.draw);
-				else message.channel.send(`${util.connect4.win}${winner === 'oppo' ? opponent.username : message.author.username}` + '!');
+				else message.channel.send(`${util.connect4.win}${winner === 'oppo' ? opponent.user.username : message.author.username}` + '!');
 				tttdb.delete(`${message.author.id}&${opponent.id}`);
 			}
-			response.first().delete();
+			response.first()!.delete();
 		}
 	}
-};
+});
