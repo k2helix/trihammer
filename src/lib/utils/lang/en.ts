@@ -390,6 +390,9 @@ export const util = {
 		footer: ' commands.'
 	},
 	invalid_user: 'You did not provide a valid user',
+	similar_commands: 'Hmmph, it seems that you have tried to use a command.\nPress the button with the number of the desired command or X if it is none of them.',
+	command_selected: 'Command executed 👍',
+	none_selected: 'Understood, closing interaction',
 	game: {
 		release: 'Release Date:',
 		genres: 'Genres:',

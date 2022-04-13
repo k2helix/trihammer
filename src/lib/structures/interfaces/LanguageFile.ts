@@ -279,6 +279,9 @@ export default interface LanguageFile {
 			footer: string;
 		};
 		invalid_user: string;
+		similar_commands: string;
+		command_selected: string;
+		none_selected: string;
 		game: {
 			release: string;
 			genres: string;

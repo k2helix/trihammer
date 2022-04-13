@@ -1,7 +1,8 @@
-import { Collection, GuildChannel, Message, Permissions, TextChannel } from 'discord.js';
+import { ButtonInteraction, Collection, GuildChannel, Message, MessageActionRow, MessageButton, Permissions, TextChannel } from 'discord.js';
 import ManageActivity from '../lib/modules/experience';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
+import { compareTwoStrings } from '../lib/utils/functions';
 
 const cooldowns = new Collection();
 
@@ -9,8 +10,7 @@ import { ModelServer, Server } from '../lib/utils/models';
 
 export default async (client: ExtendedClient, message: Message) => {
 	if (!client.application?.owner) await client.application?.fetch();
-	if (message.author.bot) return;
-	if (!message.guild || !message.member) return;
+	if (message.author.bot || !message.guild || !message.member) return;
 
 	let serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
 	if (!serverConfig) {
@@ -42,21 +42,60 @@ export default async (client: ExtendedClient, message: Message) => {
 
 	// require('../lib/utils/functions').prinsjoto(message);
 
-	if (message.content.match(`^<@(!)?${client.user!.id}>`)) return message.channel.send(other.mention.split('{prefix}').join(prefix));
+	if (message.content.match(`^<@(!)?${client.user!.id}>`)) return message.channel.send({ embeds: [client.orangeEmbed(other.mention.split('{prefix}').join(prefix))] });
 
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (!message.content.startsWith(prefix)) return;
 
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift()!.toLowerCase();
 
-	const command = client.commands.get(commandName) ?? client.commands.find((cmd) => Boolean(cmd.aliases?.includes(commandName)));
-	if (!command) return;
+	let command = client.commands.get(commandName) ?? client.commands.find((cmd) => Boolean(cmd.aliases?.includes(commandName)));
+	if (!command) {
+		const scores = client.commands
+			.map(({ name, aliases }) => {
+				if (!name) return { name: 'unknown', score: 0 };
+
+				const base = { name, score: compareTwoStrings(name, commandName) };
+				if (!aliases) return base;
+
+				const bestAlias = aliases.map((alias) => ({ name: alias, score: compareTwoStrings(alias, commandName) })).sort((a, b) => b.score - a.score)[0];
+				if (!bestAlias) return base;
+
+				return bestAlias?.score > base.score ? bestAlias : base;
+			})
+			.sort((a, b) => b.score - a.score);
+		let possibleMatches = scores.filter((sc) => sc.score > 0.75);
+		if (possibleMatches.length > 0) {
+			let buttons = [];
+			possibleMatches.slice(0, 4).forEach((match) => {
+				buttons.push(new MessageButton().setCustomId(match.name).setLabel(match.name).setStyle('SECONDARY'));
+			});
+			buttons.push(new MessageButton().setCustomId('crossx').setEmoji('882639143874723932').setStyle('DANGER'));
+			const row = new MessageActionRow().addComponents(buttons);
+			let sentMessage = await message.channel.send({ embeds: [client.orangeEmbed(util.similar_commands)], components: [row] });
+
+			const filter = (int: ButtonInteraction) => int.user.id === message.author.id;
+			try {
+				let selected = await sentMessage.awaitMessageComponent({ filter, time: 15000, componentType: 'BUTTON' });
+				if (selected.customId === 'crossx') {
+					sentMessage.delete();
+					return selected.reply({ embeds: [client.blackEmbed(util.none_selected)], ephemeral: true });
+				}
+				command = client.commands.get(selected.customId) ?? client.commands.find((cmd) => Boolean(cmd.aliases?.includes(selected.customId)));
+				selected.reply({ embeds: [client.blackEmbed(util.command_selected)], ephemeral: true });
+				sentMessage.delete();
+			} catch (error) {
+				return sentMessage.delete();
+			}
+		} else return;
+	}
 
 	//quitar los ? cuando acabe
+	if (!command) return;
 	if (command.client_perms?.length > 0) {
 		const permsBitfield = Permissions.resolve(command.client_perms);
 		if (!message.guild.me!.permissions.has(permsBitfield))
-			return message.channel.send(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')));
+			return message.channel.send({ embeds: [client.redEmbed(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')))] });
 	}
 
 	if (command.required_roles?.length > 0)
@@ -64,12 +103,13 @@ export default async (client: ExtendedClient, message: Message) => {
 			let perms = command.required_roles.includes('MODERATOR')
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
 				: message.member.roles.cache.has(serverConfig.adminrole);
-			if (!perms) return message.channel.send(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm);
+			if (!perms) return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 		}
 
 	if (command.required_perms?.length > 0) {
 		const permsBitfield = Permissions.resolve(command.required_perms);
-		if (!message.member?.permissions.has(permsBitfield)) return message.channel.send(config.required_perms + `\`${command.required_perms.join(', ')}\``);
+		if (!message.member?.permissions.has(permsBitfield))
+			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 	}
 
 	if (command.required_args?.length > 0) {
@@ -116,7 +156,7 @@ export default async (client: ExtendedClient, message: Message) => {
 			}
 		});
 
-		if (requiredArgs.length > 0) return message.channel.send({ embeds: [client.redEmbed(config.required_args + requiredArgs.join(', '))] });
+		if (requiredArgs.length > 0) return message.channel.send({ embeds: [client.redEmbed(config.required_args + requiredArgs.map((a) => `\`${a}\``).join(', '))] });
 	}
 
 	if (command.cooldown > 0) {
@@ -131,7 +171,7 @@ export default async (client: ExtendedClient, message: Message) => {
 
 			if (now < expirationTime) {
 				const timeLeft = (expirationTime - now) / 1000;
-				return message.channel.send(`<@${message.author.id}>, ` + util.cooldown(timeLeft.toFixed(1), command.name));
+				return message.channel.send({ embeds: [client.redEmbed(`<@${message.author.id}>, ` + util.cooldown(timeLeft.toFixed(1), command.name))] });
 			}
 		}
 		timestamps.set(message.author.id, now);
@@ -145,10 +185,10 @@ export default async (client: ExtendedClient, message: Message) => {
 			if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
 			const cmdObj = {
 				'{user}': message.author.tag,
-				'{command}': command.name,
+				'{command}': command!.name,
 				'{channel}': `<#${message.channel.id}>`
 			};
-			return logs_channel.send(client.replaceEach(config.command_used, cmdObj));
+			return logs_channel.send({ embeds: [client.orangeEmbed(client.replaceEach(config.command_used, cmdObj))] });
 		}, 1000);
 	} catch (error) {
 		client.catchError(error, message.channel as TextChannel);

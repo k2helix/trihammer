@@ -27,7 +27,7 @@ export default new MessageCommand({
 		if (skips.length >= required) {
 			// @ts-ignore
 			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
-			return message.channel.send({ embeds: [client.blueEmbed(music.skip.skipping)] });
+			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.skipping)] });
 		}
 		if (skips.includes(message.author.id))
 			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.already_voted.replace('{votes}', `${skips.length}/${required}`))] });
@@ -36,7 +36,7 @@ export default new MessageCommand({
 		if (skips.length >= required) {
 			// @ts-ignore
 			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
-			return message.channel.send({ embeds: [client.blueEmbed(music.skip.skipping)] });
+			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.skipping)] });
 		} else return message.channel.send({ embeds: [client.orangeEmbed(music.skip.already_voted.replace('{votes}', `${skips.length}/${required}`))] });
 	}
 });

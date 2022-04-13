@@ -748,7 +748,15 @@ export default [
 			{
 				name: 'forceskip',
 				description: 'Skip to the next song in queue (permission needed)',
-				type: 'SUB_COMMAND'
+				type: 'SUB_COMMAND',
+				options: [
+					{
+						name: 'to',
+						type: 'STRING',
+						description: 'The song you want to skip to',
+						required: false
+					}
+				]
 			},
 			{
 				name: 'stop',

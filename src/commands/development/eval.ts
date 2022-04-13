@@ -10,7 +10,7 @@ module.exports = {
 	example: 'only admin',
 	type: -1,
 	execute(client, message, args) {
-		if (!client.config.admins.includes(message.author.id)) return;
+		if (!client.config.administrators.includes(message.author.id)) return;
 		function clean(text) {
 			if (typeof text === 'string') return text.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203));
 			else return text;
