@@ -1,3 +1,4 @@
+// si va mal copiarlo de master de nuevo; es para testear y evitar el findOne
 import Client from '../structures/Client';
 import { ModelMutes, ModelRemind, ModelTempban, Mutes, Remind, Tempban } from '../utils/models';
 export default function checkTimeouts(client: Client) {
@@ -11,22 +12,13 @@ export default function checkTimeouts(client: Client) {
 
 			if (reminder.expire < Date.now()) {
 				user.send(':alarm_clock: Recordatorio: ' + reminder.reason);
-				const modelo = await ModelRemind.findOne({
-					expire: reminder.expire,
-					id: reminder.id
-				});
-				modelo.active = false;
-				modelo.save();
+				reminder.active = false;
+				// @ts-ignore
+				reminder.save();
 			}
 		}
 		const mutes: Mutes[] = await ModelMutes.find({ active: true });
 		for (const mute of mutes) {
-			const modelo = await ModelMutes.findOne({
-				expire: mute.expire,
-				id: mute.id,
-				server: mute.server
-			});
-
 			const user = client.users.cache.get(mute.id);
 			if (!user) continue;
 
@@ -42,24 +34,21 @@ export default function checkTimeouts(client: Client) {
 			const role = server.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
 			if (!role) continue;
 			if (!member.roles.cache.has(role.id)) {
-				modelo.active = false;
-				modelo.save();
+				mute.active = false;
+				// @ts-ignore
+				mute.save();
 			}
 
 			if (mute.expire < Date.now()) {
 				member.roles.remove(role);
-				modelo.active = false;
-				modelo.save();
+				mute.active = false;
+				// @ts-ignore
+				mute.save();
 			}
 		}
 
 		const tempbans: Tempban[] = await ModelTempban.find({ active: true });
 		for (const tempban of tempbans) {
-			const modelo = await ModelTempban.findOne({
-				expire: tempban.expire,
-				id: tempban.id,
-				server: tempban.server
-			});
 			const user = client.users.cache.get(tempban.id);
 			if (!user) continue;
 
@@ -71,15 +60,17 @@ export default function checkTimeouts(client: Client) {
 
 			const banusers = await server.bans.fetch();
 			if (!banusers.has(user.id)) {
-				modelo.active = false;
-				modelo.save();
+				tempban.active = false;
+				// @ts-ignore
+				tempban.save();
 				continue;
 			}
 
 			if (tempban.expire < Date.now()) {
 				server.members.unban(user.id);
-				modelo.active = false;
-				modelo.save();
+				tempban.active = false;
+				// @ts-ignore
+				tempban.save();
 			}
 		}
 	}, 30000);

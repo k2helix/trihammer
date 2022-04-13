@@ -21,7 +21,7 @@ class ExtendedClient extends Client {
 	catchError<T>(error: T, channel: TextChannel) {
 		if (!(error instanceof Error)) throw new Error('Unexpected non-error thrown');
 		console.error(error);
-		channel.send({ embeds: [this.redEmbed('An unexpected error ocurred: ' + error.message)] });
+		channel.send({ embeds: [this.redEmbed('An unexpected error ocurred:\n' + `\`${error.message}\``)] });
 		(this.channels.cache.get(config.logs_channel) as TextChannel).send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
 		if (config.use_sentry) captureException(error);
 	}

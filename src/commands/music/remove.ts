@@ -4,10 +4,10 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'remove',
 	description: 'Remove a song from the queue',
-	aliases: ['queueremove', 'songremove', 'remove', 'rm', 'deletesong'],
+	aliases: ['queueremove', 'songremove', 'rm', 'deletesong'],
 	category: 'music',
 	required_args: [
-		{ index: 0, type: 'number', name: 'song_id' },
+		{ index: 0, type: 'number', name: 'song id' },
 		{ index: 1, type: 'string', name: 'slice', optional: true }
 	],
 	async execute(client, message, args, guildConf) {
