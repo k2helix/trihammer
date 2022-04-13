@@ -743,7 +743,15 @@ export default [
 			{
 				name: 'voteskip',
 				description: 'Vote to skip to the next song in queue',
-				type: 'SUB_COMMAND'
+				type: 'SUB_COMMAND',
+				options: [
+					{
+						name: 'to',
+						type: 'STRING',
+						description: 'The song you want to skip to',
+						required: false
+					}
+				]
 			},
 			{
 				name: 'forceskip',

@@ -1,22 +1,14 @@
-const request = require('node-superfetch');
-const { Permissions } = require('discord.js');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import request from 'node-superfetch';
+
+export default new MessageCommand({
 	name: 'panda',
 	description: 'Random panda image',
-	ESdesc: 'Imagen aleatoria de un panda',
-	usage: 'panda [red]',
-	example: 'panda red\npanda',
-	type: -1,
-	myPerms: [true, 'ATTACH_FILES'],
-	async execute(client, message, args) {
-		if (!message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES)) return;
+	category: 'fun',
+	required_perms: ['ATTACH_FILES'],
+	client_perms: ['ATTACH_FILES'],
+	async execute(_client, message, args) {
 		const { body } = await request.get(args[0] === 'red' ? 'https://some-random-api.ml/img/red_panda' : 'https://some-random-api.ml/img/panda');
-		message.channel.send({
-			files: [
-				{
-					attachment: body.link
-				}
-			]
-		});
+		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { url: string }[])[0].url)] });
 	}
-};
+});

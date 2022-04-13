@@ -1,27 +1,21 @@
-const { MessageEmbed } = require('discord.js');
-const request = require('node-superfetch');
-
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new MessageCommand({
 	name: 'pat',
 	description: '🖐️',
-	ESdesc: '🖐️',
-	usage: 'pat [user]',
-	example: 'pat @user\npat',
-	type: 7,
-	async execute(client, message, args) {
-		let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
-
-		let serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
-		const langcode = serverConfig.lang;
-		const { kawaii } = require(`../../lib/utils/lang/${langcode}`);
+	category: 'fun',
+	async execute(client, message, args, guildConf) {
+		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member;
+		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let { body } = await request.get('https://nekos.life/api/v2/img/pat');
 		let embed = new MessageEmbed();
-		embed.setTitle(kawaii.pat.replaceAll({ '{author}': message.member.displayName, '{member}': user.displayName }));
+		embed.setTitle(client.replaceEach(kawaii.pat, { '{author}': message.member!.displayName, '{member}': user!.displayName }));
 		embed.setColor('RANDOM');
-		embed.setImage(body.url);
+		embed.setImage((body as { url: string }).url);
 
 		message.channel.send({ embeds: [embed] });
 	}
-};
+});

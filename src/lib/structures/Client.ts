@@ -46,6 +46,10 @@ class ExtendedClient extends Client {
 		return new MessageEmbed().setDescription(string);
 	}
 
+	whiteEmbed(string: string) {
+		return new MessageEmbed().setColor('WHITE').setDescription(string);
+	}
+
 	orangeEmbed(string: string) {
 		return new MessageEmbed().setColor('ORANGE').setDescription(string);
 	}

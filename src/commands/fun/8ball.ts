@@ -1,11 +1,10 @@
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+
+export default new MessageCommand({
 	name: '8ball',
 	description: 'Hecho para mi padre que siempre duda.',
-	ESdesc: 'no me robes el comando gracias',
-	usage: '8ball <question>',
-	example: '8ball soy bueno?',
-	type: -1,
-	execute(client, message, args) {
+	category: 'unknown',
+	execute(_client, message, args) {
 		if (!args[0]) return;
 		let answers = [
 			'No lol',
@@ -18,4 +17,4 @@ module.exports = {
 		];
 		message.channel.send(answers[Math.floor(Math.random() * answers.length)]);
 	}
-};
+});

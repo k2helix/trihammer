@@ -1,25 +1,18 @@
-const request = require('node-superfetch');
-const { Permissions } = require('discord.js');
-module.exports = {
+import { MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'bird',
 	description: 'Bird random image',
-	ESdesc: 'Imagen aleatoria de un pájaro',
-	usage: 'bird',
-	type: -1,
-	myPerms: [true, 'ATTACH_FILES'],
-	async execute(client, message) {
-		if (!message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES)) return;
+	category: 'fun',
+	required_perms: ['ATTACH_FILES'],
+	client_perms: ['ATTACH_FILES'],
+	async execute(_client, message) {
 		const { body } = await request.get('https://shibe.online/api/birds').query({
-			count: 1,
-			urls: true,
-			httpsUrls: true
+			count: '1',
+			urls: 'true',
+			httpsUrls: 'true'
 		});
-		message.channel.send({
-			files: [
-				{
-					attachment: body[0]
-				}
-			]
-		});
+		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as string[])[0])] });
 	}
-};
+});
