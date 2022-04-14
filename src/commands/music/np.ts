@@ -1,5 +1,5 @@
 import { getVoiceConnection } from '@discordjs/voice';
-import Discord from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -47,7 +47,7 @@ export default new MessageCommand({
 		let string = '▬▬▬▬▬▬▬▬▬▬';
 		let position = setCharAt(string, index, ':radio_button:');
 
-		let embed = new Discord.MessageEmbed()
+		let embed = new MessageEmbed()
 			.setTitle(music.now_playing)
 			.setDescription(`**[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`)
 			.setThumbnail(`https://img.youtube.com/vi/${serverQueue.songs[0].id}/hqdefault.jpg`)

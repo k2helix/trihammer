@@ -334,7 +334,7 @@ export const util = {
 	},
 	timezone: 'La hora actual en {country} es {time}',
 	today: {
-		title: 'En un día como hoy...',
+		title: 'En un día como hoy',
 		see_more: '❯ Ver Más'
 	},
 	translate: {
@@ -386,7 +386,7 @@ export const util = {
 		footer: ' comandos.'
 	},
 	invalid_user: 'No has proporcionado un usuario válido',
-	similar_commands: 'Hmmmm, parece que has intentado ejecutar un comando.\nPulsa en el botón con el nombre del comando que quieras usar o X si no es ninguno de estos.',
+	similar_commands: '**Hmmmm, parece que has intentado ejecutar un comando.**\nPulsa en el botón con el nombre del comando que quieras usar o X si no es ninguno de estos.',
 	command_selected: 'Comando ejecutado 👍',
 	none_selected: 'Entendido, cerrando interacción',
 	game: {

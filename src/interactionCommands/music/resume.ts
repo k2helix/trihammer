@@ -1,17 +1,20 @@
-const { queue } = require('../../lib/modules/music');
-module.exports = {
+import { getVoiceConnection } from '@discordjs/voice';
+import { queue } from '../../lib/modules/music';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new Command({
 	name: 'resume',
 	description: 'Resume the current song',
-	ESdesc: 'Quita la pausa de la canción actual',
-	type: 6,
-	execute(client, interaction, guildConf) {
-		const serverQueue = queue.get(interaction.guildId);
-		const { music } = require(`../../lib/utils/lang/${guildConf.lang}`);
+	category: 'music',
+	async execute(client, interaction, guildConf) {
+		const serverQueue = queue.get(interaction.guildId!);
+		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (serverQueue && !serverQueue.playing && !serverQueue.leaveTimeout) {
 			serverQueue.playing = true;
+			// @ts-ignore
 			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.unpause();
-			return interaction.reply({ content: '▶', ephemeral: true });
+			return interaction.reply({ embeds: [client.blueEmbed(music.resume)] });
 		}
 		return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 	}
-};
+});

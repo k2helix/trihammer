@@ -15,7 +15,6 @@ export default new MessageCommand({
 		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		serverQueue.loop = !serverQueue.loop;
 		// queue.set(message.guild.id, serverQueue);
-		if (serverQueue.loop) return message.channel.send({ embeds: [client.blueEmbed(music.loop.enabled)] });
-		else return message.channel.send({ embeds: [client.blueEmbed(music.loop.disabled)] });
+		message.channel.send({ embeds: [client.blueEmbed(serverQueue.loop ? music.loop.enabled : music.loop.disabled)] });
 	}
 });

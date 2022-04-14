@@ -1,19 +1,19 @@
-const { MessageEmbed } = require('discord.js');
-const { queue } = require('../../lib/modules/music');
-module.exports = {
+import Command from '../../lib/structures/Command';
+import { queue } from '../../lib/modules/music';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new Command({
 	name: 'shuffle',
 	description: 'Put the queue in shuffle mode',
-	ESdesc: 'Pon la cola en modo aleatorio',
-	type: 6,
+	category: 'music',
 	async execute(client, interaction, guildConf) {
+		if (!interaction.inCachedGuild()) return;
 		const serverQueue = queue.get(interaction.guildId);
-		const { music } = require(`../../lib/utils/lang/${guildConf.lang}`);
+		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		if (!interaction.member.voice.channel) return interaction.reply({ content: music.no_vc, ephemeral: true });
+		if (!interaction.member.voice.channel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
 		if (!serverQueue) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 		serverQueue.shuffle = !serverQueue.shuffle;
 		// queue.set(interaction.guildId, serverQueue);
-		if (serverQueue.shuffle) return interaction.reply({ content: music.shuffle.enabled, ephemeral: interaction.isButton() });
-		else return interaction.reply({ content: music.shuffle.disabled, ephemeral: interaction.isButton() });
+		interaction.reply({ embeds: [client.blueEmbed(serverQueue.shuffle ? music.shuffle.enabled : music.shuffle.disabled)], ephemeral: interaction.isButton() });
 	}
-};
+});

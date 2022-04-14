@@ -15,13 +15,10 @@ export default async (client: ExtendedClient, message: Message) => {
 	let attachments = [...message.attachments.values()];
 	if (!message.content && !attachments[0]) return;
 
-	let content = `\`\`\`${message.content}\`\`\``;
-	if (attachments[0]) content = `\`\`\`${message.content}\`\`\`\n${attachments[0].url.replace('cdn.discordapp.com', 'media.discordapp.net')}`;
-
 	let obj = {
 		'{author}': message.author.tag,
 		'{channel}': `<#${message.channel.id}>`,
-		'{content}': content
+		'{content}': message.content
 	};
-	logs_channel.send({ embeds: [client.blackEmbed(client.replaceEach(events.message.delete, obj))] });
+	logs_channel.send({ embeds: [client.blackEmbed(client.replaceEach(events.message.delete, obj)).setImage(attachments[0] ? attachments[0].proxyURL : '')] });
 };

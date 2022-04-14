@@ -47,29 +47,30 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		client.interactionCommands.get(names[cmdName])!.execute(client, interaction, guildConf);
 	}
 	if (interaction.isCommand()) {
-		if (interaction.user.bot) return;
+		if (!interaction.inGuild() || interaction.user.bot) return;
 		const command = client.interactionCommands.get(interaction.commandName);
-
 		if (!command) return;
 
-		if (command.client_perms.length > 0) {
+		// quitar los ? cuando acabe
+		if (command.client_perms?.length > 0) {
 			const permsBitfield = Permissions.resolve(command.client_perms);
 			if (!interaction.guild.me!.permissions.has(permsBitfield))
-				return interaction.reply(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')));
+				return interaction.reply({ embeds: [client.redEmbed(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')))] });
 		}
 
-		if (command.required_roles.length > 0)
+		if (command.required_roles?.length > 0)
 			if (interaction.guild.roles.cache.has(guildConf.modrole) && interaction.guild.roles.cache.has(guildConf.adminrole)) {
 				let perms = command.required_roles.includes('MODERATOR')
 					? (interaction.member as GuildMember).roles.cache.hasAny(guildConf.modrole, guildConf.adminrole)
 					: (interaction.member as GuildMember).roles.cache.has(guildConf.adminrole);
-				if (!perms) return interaction.reply({ content: command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm, ephemeral: true });
+				if (!perms)
+					return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
 			}
 
-		if (command.required_perms.length > 0) {
+		if (command.required_perms?.length > 0) {
 			const permsBitfield = Permissions.resolve(command.required_perms);
 			if (!interaction.memberPermissions.has(permsBitfield))
-				return interaction.reply({ content: config.required_perms + `\`${command.required_perms.join(', ')}\``, ephemeral: true });
+				return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `\`${command.required_perms.join(', ')}\``)], ephemeral: true });
 		}
 
 		if (command.cooldown) {
@@ -84,7 +85,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 
 				if (now < expirationTime) {
 					const timeLeft = (expirationTime - now) / 1000;
-					return interaction.reply({ content: `<@${interaction.user.id}>, ` + util.cooldown(timeLeft.toFixed(1), command.name), ephemeral: true });
+					return interaction.reply({ embeds: [client.redEmbed(`<@${interaction.user.id}>, ` + util.cooldown(timeLeft.toFixed(1), command.name))], ephemeral: true });
 				}
 			}
 			timestamps.set(interaction.user.id, now);

@@ -1,90 +1,80 @@
-const play = require('play-dl');
-const { handleVideo } = require('../../lib/modules/music');
-const { MessageEmbed } = require('discord.js');
-module.exports = {
+import Command from '../../lib/structures/Command';
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
+import { handleVideo } from '../../lib/modules/music';
+import { TextChannel } from 'discord.js';
+import config from '../../../config.json';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new Command({
 	name: 'music-play',
 	description: 'Add a song to the queue',
-	ESdesc: 'Añade una canción a la cola',
-	usage: 'play <song or url>',
-	example: 'play Liar Mask',
-	aliases: ['p'],
-	type: 6,
-	myPerms: [false, 'CONNECT', 'SPEAK'],
+	category: 'music',
+	client_perms: ['CONNECT', 'SPEAK'],
 	async execute(client, interaction, guildConf) {
-		const { music } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		let message;
-		if (interaction.isContextMenu()) message = await interaction.channel.messages.fetch(interaction.options.get('message').value);
-		const searchString = interaction.options.getString('song') || message.content;
-		if (!searchString) return interaction.reply({ content: music.invalid_song, ephemeral: true });
+		if (!interaction.inCachedGuild() || (!interaction.isCommand() && !interaction.isContextMenu())) return;
 
-		let type = (await play.validate(searchString)).toString();
+		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		const voiceChannel = interaction.member.voice.channel;
+		if (!voiceChannel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
 
-		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
-		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
+		let searchString;
+		if (interaction.isContextMenu()) searchString = (await interaction.channel!.messages.fetch(interaction.options.get('message')!.value! as string)).content;
+		else searchString = interaction.options.getString('song');
+		if (!searchString) return interaction.reply({ embeds: [client.redEmbed(music.invalid_song)], ephemeral: true });
 
-		if (require('../../../config.json').spotify_api)
-			if (type.startsWith('sp'))
+		let type = await play.validate(searchString);
+
+		if (interaction.guild.me!.voice.channel && interaction.guild.me!.voice.channelId !== voiceChannel.id)
+			return interaction.reply({ embeds: [client.redEmbed(music.wrong_vc)], ephemeral: true });
+		if (config.spotify_api)
+			if (type.toString().startsWith('sp'))
 				try {
 					if (play.is_expired()) await play.refreshToken();
 					let spot = await play.spotify(searchString);
 					if (spot.type !== 'track') {
-						let playlistEmbed = new MessageEmbed()
-							.setTitle(music.play.added_to_queue.title)
-							.setDescription(
-								music.playlists.added_to_queue.replaceAll({
-									'{name}': `[${spot.name}](${spot.url})`,
-									'{owner}': spot.owner.name
-								})
-							)
-							.setThumbnail(spot.thumbnail.url);
-						interaction.reply({ embeds: [playlistEmbed] });
-						let songs = spot.page(1);
+						interaction.reply({ embeds: [client.blueEmbed(music.playlists.added_to_queue)] });
+						let songs = (spot as SpotifyPlaylist | SpotifyAlbum).page(1);
+						if (!songs) return interaction.reply({ embeds: [client.redEmbed(music.error_nothing_found + 'unknown')] });
 						for (let index = 0; index < songs.length; index++) {
 							const track = songs[index];
 							let searched = await play.search(`${track.artists[0]?.name} ${track.name}`, { limit: 1 }).catch(() => false);
-							if (searched[0]) handleVideo(searched[0], message, voiceChannel, true);
+							if (typeof searched !== 'boolean' && searched[0]) handleVideo(searched[0], interaction, voiceChannel, true, 0);
 						}
 						return;
 					} else {
-						let searched = await play.search(`${spot.artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
-							console.error(err);
-							return interaction.reply(music.error_nothing_found + err.message);
-						});
-						if (typeof searched === 'boolean' || searched.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
-						handleVideo(searched[0], interaction, voiceChannel);
-						return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${searched[0].title}**`), ephemeral: true });
+						let searched = (await play.search(`${(spot as SpotifyTrack).artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
+							return client.catchError(err, interaction.channel as TextChannel);
+						})) as YouTubeVideo[];
+						if (typeof searched === 'boolean' || searched.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
+						handleVideo((searched as YouTubeVideo[])[0], interaction, voiceChannel, false, 0);
+						return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${searched[0].title}**`))], ephemeral: true });
 					}
 				} catch (err) {
-					console.error(err);
-					return interaction.reply('An error occurred: ' + err.message);
+					return client.catchError(err, interaction.channel as TextChannel);
 				}
+
 		if (type === 'yt_playlist') {
 			const playlist = await play.playlist_info(searchString, { incomplete: true });
-			const videos = playlist.videos;
+			const videos = await playlist.all_videos();
 			videos.forEach(async (video) => {
-				await handleVideo(video, interaction, voiceChannel, true);
+				await handleVideo(video, interaction, voiceChannel, true, 0);
 			});
-
-			return interaction.reply(music.playlist.replace('{playlist}', playlist.title));
+			return interaction.reply({ embeds: [client.blueEmbed(music.playlist.replace('{playlist}', playlist.title!))] });
 		} else {
 			let video;
 			try {
 				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
 				else {
-					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
-						console.error(err);
-						return interaction.reply(music.error_nothing_found + err.message);
-					});
-					if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
-					video = (await play.video_info(videos[0].id)).video_details;
+					let videos = (await play.search(searchString, { limit: 1 }).catch((err) => {
+						return client.catchError(err, interaction.channel as TextChannel);
+					})) as YouTubeVideo[];
+					if (typeof videos === 'boolean' || videos?.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
+					video = (await play.video_info((videos as YouTubeVideo[])[0].id!)).video_details;
 				}
-				handleVideo(video, interaction, voiceChannel);
-				return interaction.reply({ content: music.play.added_to_queue.description.replace('{song}', `**${video[0].title}**`), ephemeral: true });
+				handleVideo(video, interaction, voiceChannel, false, 0);
+				return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${video.title}**`))], ephemeral: true });
 			} catch (err) {
-				message.channel.send('An error occurred: ' + err.message);
-				console.error(err);
+				client.catchError(err, interaction.channel as TextChannel);
 			}
 		}
 	}
-};
+});

@@ -12,10 +12,7 @@ export default async (client: ExtendedClient, old_message: Message, new_message:
 
 	let { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
-	const args = new_message.content.slice(serverConfig.prefix.length).split(/ +/);
-	const commandName = args.shift()!.toLowerCase();
-
-	if (commandName) client.emit('messageCreate', new_message);
+	if (new_message.content.startsWith(serverConfig.prefix)) client.emit('messageCreate', new_message);
 
 	let logs_channel = old_message.guild.channels.cache.get(serverConfig.messagelogs);
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;

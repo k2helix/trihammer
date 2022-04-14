@@ -9,6 +9,6 @@ export default new MessageCommand({
 	client_perms: ['ATTACH_FILES'],
 	async execute(_client, message) {
 		const { body } = await request.get('https://randomfox.ca/floof/');
-		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { image: string }[])[0].image)] });
+		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { image: string }).image)] });
 	}
 });
