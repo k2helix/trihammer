@@ -9,6 +9,6 @@ export default new MessageCommand({
 	client_perms: ['ATTACH_FILES'],
 	async execute(_client, message) {
 		const { body } = await request.get('https://random-d.uk/api/v1/random');
-		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { url: string }[])[0].url)] });
+		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { url: string }).url)] });
 	}
 });

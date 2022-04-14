@@ -14,7 +14,6 @@ export default new MessageCommand({
 		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		serverQueue.autoplay = !serverQueue.autoplay;
 
-		if (serverQueue.autoplay) return message.channel.send({ embeds: [client.blueEmbed(music.autoplay.enabled)] });
-		else return message.channel.send({ embeds: [client.blueEmbed(music.autoplay.disabled)] });
+		message.channel.send({ embeds: [client.blueEmbed(serverQueue.autoplay ? music.autoplay.enabled : music.autoplay.disabled)] });
 	}
 });

@@ -7,16 +7,14 @@ export default new Command({
 	description: 'Enable or disable the autoplay (will play recommendations)',
 	category: 'music',
 	async execute(client, interaction, guildConf) {
+		if (!interaction.inCachedGuild()) return;
+
 		const serverQueue = queue.get(interaction.guildId!);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		if (!interaction.inCachedGuild()) return;
-
-		if (!interaction.member!.voice.channel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
+		if (!interaction.member.voice.channel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
 		if (!serverQueue) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 		serverQueue.autoplay = !serverQueue.autoplay;
-		// queue.set(message.guild.id, serverQueue);
-		if (serverQueue.autoplay) return interaction.reply({ embeds: [client.blueEmbed(music.autoplay.enabled)] });
-		else return interaction.reply({ embeds: [client.blueEmbed(music.autoplay.disabled)] });
+		interaction.reply({ embeds: [client.blueEmbed(serverQueue.autoplay ? music.autoplay.enabled : music.autoplay.disabled)] });
 	}
 });

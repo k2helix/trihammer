@@ -14,7 +14,6 @@ export default new MessageCommand({
 		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		serverQueue.shuffle = !serverQueue.shuffle;
 		// queue.set(message.guild.id, serverQueue);
-		if (serverQueue.shuffle) return message.channel.send({ embeds: [client.blueEmbed(music.shuffle.enabled)] });
-		else return message.channel.send({ embeds: [client.blueEmbed(music.shuffle.disabled)] });
+		message.channel.send({ embeds: [client.blueEmbed(serverQueue.shuffle ? music.shuffle.enabled : music.shuffle.disabled)] });
 	}
 });

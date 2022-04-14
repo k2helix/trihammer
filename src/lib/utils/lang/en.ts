@@ -338,7 +338,7 @@ export const util = {
 	},
 	timezone: 'The current time in {country} is {time}',
 	today: {
-		title: 'On this day...',
+		title: 'On this day',
 		see_more: '❯ See More'
 	},
 	translate: {
@@ -390,7 +390,7 @@ export const util = {
 		footer: ' commands.'
 	},
 	invalid_user: 'You did not provide a valid user',
-	similar_commands: 'Hmmph, it seems that you have tried to use a command.\nPress the button with the number of the desired command or X if it is none of them.',
+	similar_commands: '**Hmmph, it seems that you have tried to use a command**.\nPress the button with the name of the desired command or X if it is none of them.',
 	command_selected: 'Command executed 👍',
 	none_selected: 'Understood, closing interaction',
 	game: {

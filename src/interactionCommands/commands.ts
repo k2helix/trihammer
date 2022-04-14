@@ -724,6 +724,12 @@ export default [
 						type: 'STRING',
 						description: 'ID (number) of the song to remove',
 						required: true
+					},
+					{
+						name: 'slice',
+						type: 'BOOLEAN',
+						description: 'Whether to remove all songs queued after this one or not.',
+						required: false
 					}
 				]
 			},

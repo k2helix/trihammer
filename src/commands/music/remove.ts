@@ -11,16 +11,16 @@ export default new MessageCommand({
 		{ index: 1, type: 'string', name: 'slice', optional: true }
 	],
 	async execute(client, message, args, guildConf) {
-		const serverQueue = queue.get(message.guild!.id);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		const serverQueue = queue.get(message.guild!.id);
+		if (!serverQueue) return await message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
-		if (!serverQueue) return await message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		if (!args[0]) return message.channel.send({ embeds: [client.redEmbed(music.need_qnumber)] });
 		if (isNaN(parseInt(args[0]))) return message.channel.send({ embeds: [client.redEmbed(music.need_qnumber)] });
-		if (args[0] === '1') return await message.channel.send(music.cannot_remove);
+		if (args[0] === '1') return await message.channel.send({ embeds: [client.redEmbed(music.cannot_remove)] });
 
 		const index = parseInt(args[0]) - 1;
 		const song = serverQueue.songs[index];
@@ -28,8 +28,8 @@ export default new MessageCommand({
 
 		const djRole = message.guild!.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 
-		if (djRole && !message.member!.roles.cache.has(djRole.id) && message.member!.id !== serverQueue.songs[index].requested)
-			return message.channel.send({ embeds: [client.redEmbed(music.need_dj.remove)] });
+		let permission = message.member!.roles.cache.has(djRole ? djRole.id : '') || message.member!.id === serverQueue.songs[0].requested;
+		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.remove)] });
 
 		if (args[1] === 'slice') {
 			serverQueue.songs = serverQueue.songs.slice(0, index);

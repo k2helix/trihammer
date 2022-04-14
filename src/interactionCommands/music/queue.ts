@@ -36,10 +36,9 @@ export default new Command({
 			const view_embed = new MessageEmbed()
 				.setTitle(music.queue_songs)
 				.setDescription(
-					`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) - ${song.duration}`).join('\n')}\n ${
-						music.now_playing
-					}\n${serverQueue.songs[0].title} - [${serverQueue.songs[0].duration}](https://www.youtube.com/watch?v=${serverQueue.songs[0].id})`
+					`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) \`${song.duration}\``).join('\n')}`
 				)
+				.setColor('WHITE')
 				.setFooter({ text: client.replaceEach(music.queue_page, { '{number}': page.toString(), '{total}': (Math.floor(serverQueue.songs.length / 10) + 1).toString() }) })
 				.setTimestamp();
 
@@ -58,7 +57,7 @@ export default new Command({
 			});
 		} else {
 			let currentSongOpt = { view: 'np', seek: 'seek', pause: 'pause', resume: 'resume' };
-			let optName = interaction.options.data[0].options ? (interaction.options.data[0].options[0].name as 'seek' | 'view' | 'pause' | 'resume') : null;
+			let optName = interaction.options.data[0].options ? (interaction.options.data[0].options[0]?.name as 'seek' | 'view' | 'pause' | 'resume') : null;
 			const names = {
 				'current-song': optName ? currentSongOpt[optName] : null,
 				add: interaction.options.getBoolean('confirm-result') ? 'music-search' : 'music-play',

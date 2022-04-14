@@ -14,7 +14,7 @@ If you want to use the spotify api for music commands, read and follow [this gui
 If for some reason attachments of some command stop working, renew the url with the assets in the assets folder.
 ### Notes
 - If you are not using Heroku, you can remove its api key from .env and delete or edit the reset command. Same goes for top.gg and Sentry.
-- If you want to add more slash commands, edit the commands.js file in the root directory and deploy them with t-deploy.
+- If you want to add more slash commands, edit the commands.ts file in src/interactionCommands and deploy them with t-deploy.
 
 I'm a bit lazy and some things are very improvable, I'm conscious.
 

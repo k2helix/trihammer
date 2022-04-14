@@ -1,14 +1,13 @@
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'deploy',
 	description: 'only admin',
-	ESdesc: 'SOLO ADMIN DIJE',
-	usage: 'only admin',
-	example: 'only admin',
-	type: -1,
+	category: 'unknown',
 	async execute(client, message) {
-		if (!client.config.admins.includes(message.author.id)) return;
-		const data = require('../../../commands');
+		if (!client.config.administrators.includes(message.author.id)) return;
+		const data = (await import(`../../interactionCommands/commands`)).default;
+		// @ts-ignore
 		const commands = await client.application?.commands.set(data);
 		console.log(commands);
 	}
-};
+});

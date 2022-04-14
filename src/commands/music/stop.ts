@@ -17,12 +17,11 @@ export default new MessageCommand({
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
-		if (!serverQueue) return await message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
+		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
-
-		if (djRole && !message.member.roles.cache.has(djRole.id) && message.member.id !== serverQueue.songs[0].requested)
-			return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
+		let permission = message.member.roles.cache.has(djRole ? djRole.id : '') || message.member.id === serverQueue.songs[0].requested;
+		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
 
 		serverQueue.songs = [];
 		getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();

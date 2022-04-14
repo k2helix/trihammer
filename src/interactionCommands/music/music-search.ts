@@ -1,31 +1,31 @@
-const play = require('play-dl');
-const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
-const { handleVideo } = require('../../lib/modules/music');
+import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from 'discord.js';
+import { handleVideo } from '../../lib/modules/music';
+import play, { YouTubeVideo } from 'play-dl';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
-module.exports = {
+export default new Command({
 	name: 'music-search',
 	description: 'Search a song',
-	ESdesc: 'Busca una canción',
-	usage: 'search <song or url>',
-	example: 'search paradisus paradoxum',
-	aliases: ['sc'],
-	type: 6,
-	myPerms: [false, 'CONNECT', 'SPEAK'],
+	category: 'music',
+	client_perms: ['CONNECT', 'SPEAK'],
 	async execute(client, interaction, guildConf) {
+		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
+		const { music, util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		const searchString = interaction.options.getString('song')!;
 		const voiceChannel = interaction.member.voice.channel;
-		const { music, util } = require(`../../lib/utils/lang/${guildConf.lang}`);
+		if (!voiceChannel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
+		if (interaction.guild.me!.voice.channel && interaction.guild.me!.voice.channelId !== voiceChannel.id)
+			return interaction.reply({ embeds: [client.redEmbed(music.wrong_vc)], ephemeral: true });
 
-		const searchString = interaction.options.getString('song');
-		if (!voiceChannel) return interaction.reply({ content: music.no_vc, ephemeral: true });
-		if (interaction.guild.me.voice.channel && interaction.guild.me.voice.channelId !== voiceChannel.id) return interaction.reply({ content: music.wrong_vc, ephemeral: true });
-
-		const videos = await play.search(searchString, { limit: 10 }).catch((err) => {
-			console.error(err);
-			return interaction.reply(music.error_nothing_found + err.message);
-		});
-		if (typeof videos === 'boolean' || videos.length < 1) return interaction.reply({ content: music.not_found, ephemeral: true });
+		const videos = (await play.search(searchString, { limit: 10 }).catch((err) => {
+			return client.catchError(err, interaction.channel as TextChannel);
+		})) as YouTubeVideo[];
+		if (typeof videos === 'boolean' || videos?.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 
 		interaction.deferReply();
+
 		let options = [];
 		for (let index = 0; index < videos.length; index++) {
 			const element = videos[index];
@@ -42,21 +42,20 @@ module.exports = {
 			.setFooter({ text: music.cancel_select })
 			.setDescription(`${videos.map((v) => `**${++songIndex} -** [${v.title}](${v.url}) - ${v.durationRaw}`).join('\n')} \n${music.type_a_number}`)
 			.setTimestamp();
-		let msg = await interaction.channel.send({ embeds: [embed], components: [row] });
-		const filter = (int) => int.customId === 'music-search' && int.user.id === interaction.user.id;
+		let msg = await interaction.channel!.send({ embeds: [embed], components: [row] });
+		const filter = (int: SelectMenuInteraction) => int.customId === 'music-search' && int.user.id === interaction.user.id;
 		let selected;
 		try {
 			selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
 			msg.delete();
 		} catch (error) {
-			if (interaction.replied || interaction.deferred) interaction.editReply({ content: music.cancel, ephemeral: true });
-			else interaction.reply({ content: music.cancel, ephemeral: true });
+			if (interaction.replied || interaction.deferred) interaction.editReply({ embeds: [client.redEmbed(music.cancel)] });
+			else interaction.reply({ embeds: [client.redEmbed(music.cancel)], ephemeral: true });
 			return msg.delete();
 		}
-
+		// @ts-ignore
 		const actualVideo = videos[selected.values[0]];
-
-		await handleVideo(actualVideo, interaction, voiceChannel);
-		return interaction.editReply({ content: music.play.added_to_queue.description.replace('{song}', `**${actualVideo.title}**`), ephemeral: true });
+		await handleVideo(actualVideo, interaction, voiceChannel, false, 0);
+		return interaction.editReply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${actualVideo.title}**`))] });
 	}
-};
+});

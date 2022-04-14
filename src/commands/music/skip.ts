@@ -18,10 +18,11 @@ export default new MessageCommand({
 		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
+		let permission = message.member.roles.cache.has(djRole ? djRole.id : '') || message.member.id === serverQueue.songs[0].requested;
 		// @ts-ignore
-		if (djRole && message.member.roles.cache.has(djRole.id)) return getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+		if (permission) return getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 
-		const members = message.member.voice.channel.members.filter((m) => !m.user.bot).size,
+		const members = serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size,
 			required = Math.floor(members / 2),
 			skips = serverQueue.songs[0].skip;
 		if (skips.length >= required) {

@@ -9,6 +9,6 @@ export default new MessageCommand({
 	client_perms: ['ATTACH_FILES'],
 	async execute(_client, message, args) {
 		const { body } = await request.get(args[0] === 'red' ? 'https://some-random-api.ml/img/red_panda' : 'https://some-random-api.ml/img/panda');
-		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { url: string }[])[0].url)] });
+		message.channel.send({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { link: string }).link)] });
 	}
 });
