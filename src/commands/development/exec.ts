@@ -1,17 +1,17 @@
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import cp from 'child_process';
+export default new MessageCommand({
 	name: 'exec',
 	description: 'only admin',
-	ESdesc: 'only admin',
-	type: -1,
+	category: 'unknown',
 	execute(client, message, args) {
-		if (!client.config.admins.includes(message.author.id)) return;
-		const cp = require('child_process');
+		if (!client.config.administrators.includes(message.author.id)) return;
 		const job = cp.exec(args.join(' '));
-		job.stdout.on('data', (data) => {
+		job.stdout!.on('data', (data) => {
 			message.channel.send(`stdout: ${data}`);
 		});
 
-		job.stderr.on('data', (data) => {
+		job.stderr!.on('data', (data) => {
 			message.channel.send(`stderr: ${data}`);
 		});
 
@@ -19,4 +19,4 @@ module.exports = {
 			message.channel.send(`child process exited with code ${code}`);
 		});
 	}
-};
+});

@@ -1,14 +1,15 @@
-let request = require('node-superfetch');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import request from 'node-superfetch';
+export default new MessageCommand({
 	name: 'reset',
 	description: 'Resets the bot',
-	ESdesc: 'Resetea el bot',
 	aliases: ['restart'],
-	type: -1,
+	category: 'unknown',
 	async execute(client, message) {
-		if (!client.config.admins.includes(message.author.id)) return;
+		if (!client.config.administrators.includes(message.author.id)) return;
 		message.channel.send('Restarting...');
 		await request.delete('https://api.heroku.com/apps/trihammer/dynos/worker', {
+			url: 'https://api.heroku.com/apps/trihammer/dynos/worker',
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/vnd.heroku+json; version=3',
@@ -16,4 +17,4 @@ module.exports = {
 			}
 		});
 	}
-};
+});
