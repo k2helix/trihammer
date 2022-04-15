@@ -6,6 +6,7 @@ export default new MessageCommand({
 	description: 'Receive help about some command',
 	aliases: ['cmd'],
 	category: 'information',
+	required_args: [{ index: 0, name: 'command', type: 'string' }],
 	async execute(client, message, args, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 

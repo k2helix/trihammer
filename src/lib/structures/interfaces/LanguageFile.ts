@@ -185,6 +185,10 @@ export default interface LanguageFile {
 	};
 	util: {
 		user: {
+			information: string;
+			server: string;
+			main_info: (user: User) => string;
+			server_specific: (member: GuildMember) => string;
 			createdString: string;
 			created: (user: User) => string;
 			nickname: string;
@@ -198,6 +202,7 @@ export default interface LanguageFile {
 			joined: (user: GuildMember) => string;
 		};
 		server: {
+			main: (guild: Guild, owner: GuildMember) => string;
 			owner: string;
 			createdString: string;
 			members: string;

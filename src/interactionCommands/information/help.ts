@@ -22,12 +22,12 @@ export default new Command({
 		let commands = {
 			info: client.commands.filter((cmd) => cmd.category == 'information'),
 			util: client.commands.filter((cmd) => cmd.category == 'utility'),
-			mod: client.commands.filter((cmd) => cmd.category == 'moderation'),
-			config: client.commands.filter((cmd) => cmd.category == 'configuration'),
 			image_manipulation: client.commands.filter((cmd) => cmd.category == 'image_manipulation'),
 			social: client.commands.filter((cmd) => cmd.category == 'social'),
 			music: client.commands.filter((cmd) => cmd.category == 'music'),
-			fun: client.commands.filter((cmd) => cmd.category == 'fun')
+			fun: client.commands.filter((cmd) => cmd.category == 'fun'),
+			mod: client.commands.filter((cmd) => cmd.category == 'moderation'),
+			config: client.commands.filter((cmd) => cmd.category == 'configuration')
 		};
 
 		let help_embed = new MessageEmbed();
