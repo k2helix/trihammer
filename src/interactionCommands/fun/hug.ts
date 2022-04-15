@@ -1,23 +1,24 @@
-const { MessageEmbed } = require('discord.js');
-const request = require('node-superfetch');
-module.exports = {
-	name: 'hug',
-	description: '🤗',
-	ESdesc: '🤗',
-	usage: 'hug [user]',
-	example: 'hug\nhug @user',
-	type: 7,
-	async execute(client, interaction, guildConf) {
-		let user = interaction.options.getUser('user') || interaction.user;
+import { MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
-		const { kawaii } = require(`../../lib/utils/lang/${guildConf.lang}`);
+export default new Command({
+	name: 'hug',
+	description: '<3',
+	category: 'fun',
+	async execute(client, interaction, guildConf) {
+		if (!interaction.isCommand()) return;
+
+		let user = interaction.options.getUser('user') || interaction.user;
+		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let { body } = await request.get('https://nekos.life/api/v2/img/hug');
 		let embed = new MessageEmbed();
-		embed.setTitle(kawaii.hug.replaceAll({ '{author}': interaction.user.username, '{member}': user.username }));
+		embed.setTitle(client.replaceEach(kawaii.hug, { '{author}': interaction.user.username, '{member}': user.username }));
 		embed.setColor('RANDOM');
-		embed.setImage(body.url);
+		embed.setImage((body as { url: string }).url);
 
 		interaction.reply({ embeds: [embed] });
 	}
-};
+});

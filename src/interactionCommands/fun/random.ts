@@ -1,11 +1,10 @@
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+export default new Command({
 	name: 'random',
 	description: 'Get a random image',
-	ESdesc: 'Imagen random',
-	usage: 'random <animal>',
-	example: 'random duck',
-	type: 7,
+	category: 'fun',
 	execute(client, interaction, guildConf) {
-		client.interactionCommands.get(interaction.options.getString('animal')).execute(client, interaction, guildConf);
+		client.interactionCommands.get((interaction as CommandInteraction).options.getString('animal')!)!.execute(client, interaction, guildConf);
 	}
-};
+});

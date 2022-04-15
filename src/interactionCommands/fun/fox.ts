@@ -1,23 +1,14 @@
-const request = require('node-superfetch');
-const { Permissions } = require('discord.js');
-module.exports = {
+import Command from '../../lib/structures/Command';
+import request from 'node-superfetch';
+import { MessageEmbed } from 'discord.js';
+export default new Command({
 	name: 'fox',
 	description: 'Random fox image',
-	ESdesc: 'Imagen aleatoria de un zorro',
-	usage: 'fox',
-	example: 'fox',
-	type: -1,
-	myPerms: [true, 'ATTACH_FILES'],
-	async execute(client, interaction, guildConf) {
-		let { other } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		if (!interaction.member.permissions.has(Permissions.FLAGS.ATTACH_FILES)) return interaction.reply({ content: other.need_perm.attach_files, ephemeral: true });
+	category: 'fun',
+	required_perms: ['ATTACH_FILES'],
+	client_perms: ['ATTACH_FILES'],
+	async execute(_client, interaction) {
 		const { body } = await request.get('https://randomfox.ca/floof/');
-		interaction.reply({
-			files: [
-				{
-					attachment: body.image
-				}
-			]
-		});
+		interaction.reply({ embeds: [new MessageEmbed().setColor('WHITE').setImage((body as { image: string }).image)] });
 	}
-};
+});

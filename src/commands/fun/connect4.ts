@@ -68,6 +68,7 @@ export default new MessageCommand({
 	description: 'Play connect 4 with a friend',
 	aliases: ['connectfour', 'connect-four', 'c4'],
 	category: 'fun',
+	required_args: [{ index: 0, type: 'user', name: 'user' }],
 	client_perms: ['MANAGE_MESSAGES'],
 	async execute(client, message, args, guildConf) {
 		const opponent = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]);
@@ -76,9 +77,9 @@ export default new MessageCommand({
 		if (c4db.has(`${message.author.id}&${opponent.user.id}`)) return message.channel.send({ embeds: [client.redEmbed('Seems like you are already playing.')] });
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		if (opponent.user.bot) return message.channel.send(`<@${message.author.id}>, ` + util.connect4.bot);
-		if (opponent.id === message.author.id && opponent.id !== '461279654158925825') return;
-		message.channel.send(opponent.user.username + util.connect4.challenge);
+		if (opponent.user.bot) return message.channel.send({ embeds: [client.redEmbed(`<@${message.author.id}>, ` + util.connect4.bot)] });
+		if (opponent.id === message.author.id && opponent.id !== '461279654158925825') return message.channel.send({ embeds: [client.redEmbed(util.invalid_user)] });
+		message.channel.send(`<@${opponent.user.id}>` + util.connect4.challenge);
 		const verification = await verify(message.channel, opponent);
 		if (!verification) return message.channel.send(util.connect4.unverified);
 
@@ -91,12 +92,12 @@ export default new MessageCommand({
 			const user = userTurn ? message.author : opponent;
 			const sign = userTurn ? 'user' : 'oppo';
 			if (!c4db.has(`${message.author.id}&${opponent.user.id}`)) {
-				let mensaje = await message.channel.send(`${user}` + util.connect4.column + `\n${displayBoard(board)}\n${nums.join('')}`);
-				c4db.set(`${message.author.id}&${opponent.user.id}`, mensaje.id);
+				let msg = await message.channel.send(`${user}` + util.connect4.column + `\n${displayBoard(board)}\n${nums.join('')}`);
+				c4db.set(`${message.author.id}&${opponent.user.id}`, msg.id);
 			} else {
-				let mensage = await c4db.obtener(`${message.author.id}&${opponent.user.id}`);
-				let mensaje = await message.channel.messages.fetch(mensage);
-				mensaje.edit(`${user}` + util.connect4.column + `\n${displayBoard(board)}\n${nums.join('')}`);
+				let msg = await c4db.obtener(`${message.author.id}&${opponent.user.id}`);
+				let fetchedMsg = await message.channel.messages.fetch(msg);
+				fetchedMsg.edit(`${user}` + util.connect4.column + `\n${displayBoard(board)}\n${nums.join('')}`);
 			}
 
 			const filter = (res: Message) => {
