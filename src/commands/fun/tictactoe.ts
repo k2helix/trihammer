@@ -67,6 +67,7 @@ export default new MessageCommand({
 	name: 'tictactoe',
 	description: 'Play tic tac toe with a friend',
 	aliases: ['3enraya', 'tresenraya'],
+	required_args: [{ index: 0, type: 'user', name: 'user' }],
 	category: 'fun',
 	async execute(client, message, args, guildConf) {
 		const opponent = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]);
