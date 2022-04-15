@@ -84,6 +84,7 @@ export default new Command({
 
 		const verification = await verify(interaction.channel!, opponent);
 		if (!verification) return interaction.editReply({ embeds: [client.redEmbed(util.connect4.unverified)] });
+		interaction.editReply({ embeds: [client.blueEmbed(util.connect4.success)] });
 
 		let board: board = [
 			[null, null, null],
