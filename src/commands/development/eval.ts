@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { inspect } from 'util';
-const util = require('../../utils/functions');
-const queue = require('../../modules/music');
+const util = require('../../lib/utils/functions');
+const queue = require('../../lib/modules/music');
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'eval',

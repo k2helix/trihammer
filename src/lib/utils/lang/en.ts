@@ -393,6 +393,7 @@ export const util = {
 	similar_commands: '**Hmmph, it seems that you have tried to use a command**.\nPress the button with the name of the desired command or X if it is none of them.',
 	command_selected: 'Command executed 👍',
 	none_selected: 'Understood, closing interaction',
+	about: `A Discord bot with a lot of commands and now open source!\n\n**Trihammer** strives to make your server a better place by having a lot of useful and interactive commands for almost anything you need.\nYou can find its source code here: https://github.com/k2helix/trihammer\n\n> [Recommended invite](${configFile.invite_link})\n> [Invite without perms](${configFile.invite_link_without_permissions})\n\nIf you need help, don't hesitate to join the [support server](${configFile.support_server_invite}) and ask there.\nCurrently serving on **{guilds} servers** and **{members} cached members**.`,
 	game: {
 		release: 'Release Date:',
 		genres: 'Genres:',
@@ -421,9 +422,10 @@ export const util = {
 		not_found: "I couldn't find a command with that name or alias",
 		title: 'Command',
 		fields: {
-			usage: '❯ Usage',
-			example: '❯ Example',
-			alias: '❯ Alias'
+			usage: 'Usage',
+			required_perms: 'Required permissions',
+			required_roles: 'Required roles',
+			alias: 'Alias'
 		},
 		footer: 'The things inside <> are required, while inside [] are optional.'
 	},

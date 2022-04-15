@@ -843,6 +843,10 @@ export default [
 		]
 	},
 	{
+		name: 'about',
+		description: 'Get info about the bot'
+	},
+	{
 		name: 'profile',
 		description: 'Get your profile card',
 		options: [
