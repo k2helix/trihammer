@@ -273,6 +273,20 @@ export const music = {
 
 export const util = {
 	user: {
+		information: '**__Información__**',
+		server: '**__Específico del servidor__**',
+		main_info: function (user) {
+			// eslint-disable-next-line prettier/prettier
+			return `**ID**: ${user.id}\n**Creado**: <t:${Math.floor(user.createdTimestamp / 1000)}:R> **->** <t:${Math.floor(user.createdTimestamp / 1000)}:F>\n**Bot**: ${user.bot ? 'Sí' : 'No'}`;
+		},
+		server_specific: function (member) {
+			return `**Nombre mostrado**: ${member.displayName}\n**Se unió**: <t:${Math.floor(member.joinedTimestamp! / 1000)}:R> **->** <t:${Math.floor(
+				member.joinedTimestamp! / 1000
+			)}:F>\n**Roles**: ${member.roles.cache
+				.sort((b, a) => a.position - b.position)
+				.map((r) => `${r}`)
+				.join(' ')}`.slice(0, 1000);
+		},
 		createdString: '🌐 Creación:',
 		created: function (user) {
 			return `${convertDate(user.createdTimestamp)}. Hace ${T_convertor(Math.floor(Date.now()) - user.createdTimestamp)}`;
@@ -290,10 +304,15 @@ export const util = {
 		}
 	},
 	server: {
-		owner: '👑 Propietario',
-		createdString: '📆 Creación',
-		members: '👥 Miembros',
-		region: '🗺️ Región',
+		main: function (guild, owner) {
+			return `**ID**: ${guild.id}\n**Propietario**: <@${owner.id}> (${owner.user.tag})\n**Creado**: <t:${Math.floor(guild.createdTimestamp / 1000)}:R> -> <t:${Math.floor(
+				guild.createdTimestamp / 1000
+			)}:F>\n**Miembros**: ${guild.memberCount}`;
+		},
+		owner: '__Propietario__',
+		createdString: '__Creación__',
+		members: '__Miembros__',
+		region: '__Región__',
 		created: function (guild) {
 			return `${convertDate(guild.createdTimestamp)}. Hace ${T_convertor(Math.floor(Date.now()) - guild.createdTimestamp)}`;
 		}

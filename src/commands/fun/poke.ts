@@ -6,6 +6,7 @@ export default new MessageCommand({
 	name: 'poke',
 	description: '👉',
 	category: 'fun',
+	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
 	async execute(client, message, args, guildConf) {
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member;
 		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;

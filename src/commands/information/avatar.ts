@@ -5,6 +5,7 @@ export default new MessageCommand({
 	description: 'Get the avatar of someone',
 	aliases: ['icon', 'pfp'],
 	category: 'information',
+	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
 	async execute(client, message, args) {
 		let givenId = message.mentions.users.first()?.id || args[0] || message.author.id;
 		let user = await client.users.fetch(givenId, { force: true });
