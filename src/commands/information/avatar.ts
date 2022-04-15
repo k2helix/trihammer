@@ -1,21 +1,19 @@
-const { MessageEmbed } = require('discord.js');
-
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { MessageEmbed } from 'discord.js';
+export default new MessageCommand({
 	name: 'avatar',
-	description: "Get your avatar (or one user's avatar)",
-	ESdesc: 'Obtén tu avatar (o el de un usuario)',
-	usage: 'avatar [user]',
-	example: 'avatar\navatar @user\navatar 461279654158925825',
+	description: 'Get the avatar of someone',
 	aliases: ['icon', 'pfp'],
-	type: 0,
+	category: 'information',
 	async execute(client, message, args) {
-		let user = message.mentions.users.first() || (await client.users.fetch(args[0] ? args[0] : message.author.id));
+		let givenId = message.mentions.users.first()?.id || args[0] || message.author.id;
+		let user = await client.users.fetch(givenId, { force: true });
 		if (!user) return;
 		let info_embed = new MessageEmbed()
 			.setTitle(`${user.tag}`)
-			.setColor('RANDOM')
+			.setColor(user.hexAccentColor || 'RANDOM')
 			.setDescription(`[Link](${user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })})`)
 			.setImage(user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 }));
 		message.channel.send({ embeds: [info_embed] });
 	}
-};
+});

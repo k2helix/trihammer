@@ -389,6 +389,7 @@ export const util = {
 	similar_commands: '**Hmmmm, parece que has intentado ejecutar un comando.**\nPulsa en el botón con el nombre del comando que quieras usar o X si no es ninguno de estos.',
 	command_selected: 'Comando ejecutado 👍',
 	none_selected: 'Entendido, cerrando interacción',
+	about: `¡Un bot de Discord con muchos comandos y de código abierto!\n\n**Trihammer** se esfuerza por hacer tu servidor un lugar mejor teniendo un montón de comandos útiles e interactivos para casi todo lo que necesites.\nPuedes encontrar el código fuente en: https://github.com/k2helix/trihammer\n\n> [Invitación recomendada](${configFile.invite_link})\n> [Invitación sin permisos](${configFile.invite_link_without_permissions})\n\nSi necesitas ayuda, no dudes en unirte al [servidor de soporte](${configFile.support_server_invite}) y preguntar ahí.\nActualmente sirviendo para **{guilds} servidores** y **{members} miembros en caché**.`,
 	game: {
 		release: 'Fecha de salida:',
 		genres: 'Géneros:',
@@ -417,9 +418,10 @@ export const util = {
 		not_found: 'No pude encontrar un comando con ese nombre o alias',
 		title: 'Comando',
 		fields: {
-			usage: '❯ Uso',
-			example: '❯ Ejemplo de uso',
-			alias: '❯ Alias'
+			usage: 'Uso',
+			required_perms: 'Permisos requeridos',
+			required_roles: 'Roles requeridos',
+			alias: 'Alias'
 		},
 		footer: 'Los campos entre <> son obligatorios, mientras que entre [] son opcionales.'
 	},

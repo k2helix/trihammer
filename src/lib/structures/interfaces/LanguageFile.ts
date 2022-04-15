@@ -282,6 +282,7 @@ export default interface LanguageFile {
 		similar_commands: string;
 		command_selected: string;
 		none_selected: string;
+		about: string;
 		game: {
 			release: string;
 			genres: string;
@@ -311,7 +312,8 @@ export default interface LanguageFile {
 			title: string;
 			fields: {
 				usage: string;
-				example: string;
+				required_perms: string;
+				required_roles: string;
 				alias: string;
 			};
 			footer: string;
