@@ -1,8 +1,11 @@
-const { MessageEmbed } = require('discord.js');
-const request = require('node-superfetch');
-const translate = require('@vitalets/google-translate-api');
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
 
-function monthandday(ms) {
+import { MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import translate from '@vitalets/google-translate-api';
+
+function monthandday(ms: number) {
 	let date = new Date(ms),
 		months = {
 			0: '1',
@@ -18,39 +21,33 @@ function monthandday(ms) {
 			10: '11',
 			11: '12'
 		},
-		month = months[date.getMonth()],
+		month = months[date.getMonth() as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 0],
 		day = date.getDate();
 
 	return `${month}/${day}`;
 }
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+export default new MessageCommand({
 	name: 'today-in-history',
 	description: 'Get information about today in history',
-	ESdesc: 'Obtén información sobre hoy en la historia',
-	usage: 'today-in-history',
-	example: 'today-in-history',
 	aliases: ['todayinhistory', 'today'],
-	type: 0,
-	async execute(client, message) {
+	category: 'information',
+	async execute(_client, message, _args, guildConf) {
 		const date = monthandday(Date.now());
 
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const { text } = await request.get(`http://history.muffinlabs.com/date/${date}`);
-		const body = JSON.parse(text);
+		const body = JSON.parse(text!);
 		const events = body.data.Events;
 		const event = events[Math.floor(Math.random() * events.length)];
-		let translated = await translate(event.text, { from: 'en', to: langcode });
+		let translated = await translate(event.text, { from: 'en', to: guildConf.lang });
 		const embed = new MessageEmbed()
 			.setColor(0x9797ff)
 			.setURL(body.url)
 			.setTitle(`${util.today.title} (${body.date})...`)
 			.setTimestamp()
 			.setDescription(`${event.year}: ${translated.text}`)
-			.addField(util.today.see_more, event.links.map((link) => `[${link.title}](${link.link})`).join('\n'));
+			.addField(util.today.see_more, event.links.map((link: { title: string; link: string }) => `[${link.title}](${link.link})`).join('\n'));
 		message.channel.send({ embeds: [embed] });
 	}
-};
+});

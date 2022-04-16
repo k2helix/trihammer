@@ -5,6 +5,7 @@ import { Guild, Interaction, Message, MessageEmbed, TextBasedChannel, VoiceBased
 import { array_move } from '../utils/functions';
 import { DiscordGatewayAdapterCreator, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import LanguageFile from '../structures/interfaces/LanguageFile';
+import { compareTwoStrings } from '../utils/functions';
 // const prism = require('prism-media');
 
 function swap<T>(array: T[], x: number, y: number) {
@@ -95,9 +96,9 @@ async function play(guild: Guild, song: Song) {
 						let relatedVideos = (await video_info(serverQueue.songs[0].url)).related_videos;
 						let firstVid = (await video_info(relatedVideos[0])).video_details;
 						let i = 0;
-						// if the first recommendation of recommended video by youtube is the one that just ended, get another until this stops happening;
+						// if the first recommendation of recommended video by youtube is the one that just ended or the video title is very similar, get another until this stops happening;
 						do firstVid = (await video_info(relatedVideos[i++])).video_details;
-						while ((await video_info(firstVid.url)).related_videos[0] === serverQueue.songs[0].url);
+						while ((await video_info(firstVid.url)).related_videos[0] === serverQueue.songs[0].url || compareTwoStrings(serverQueue.songs[0].title, firstVid.title!) > 0.8);
 						serverQueue.songs.push({
 							id: firstVid.id!,
 							title: firstVid.title!,

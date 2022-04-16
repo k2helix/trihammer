@@ -246,6 +246,8 @@ export default interface LanguageFile {
 			text_not_found: string;
 		};
 		map: {
+			too_much_zoom: string;
+			too_little_zoom: string;
 			street: string;
 			zipcode: string;
 			city: string;
