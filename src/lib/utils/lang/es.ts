@@ -364,6 +364,8 @@ export const util = {
 		text_not_found: 'No pude encontrar texto en ese mensaje'
 	},
 	map: {
+		too_much_zoom: 'Alcanzaste el zoom máximo permitido',
+		too_little_zoom: 'Alcanzaste el zoom mínimo permitido',
 		street: 'Nombre de la calle',
 		zipcode: 'Código postal',
 		city: 'Ciudad',
