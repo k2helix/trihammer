@@ -22,7 +22,7 @@ export default new MessageCommand({
 	name: 'binary',
 	description: 'Encode or decode binary text',
 	required_args: [
-		{ index: 0, type: 'encode | decode', name: 'action', optional: true },
+		{ index: 0, type: 'encode | decode', name: 'action (encode or decode)', optional: true },
 		{ index: 1, type: 'string', name: 'text' }
 	],
 	category: 'utility',

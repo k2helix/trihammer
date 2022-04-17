@@ -9,15 +9,49 @@
 // }
 
 import request from 'node-superfetch';
-const cheerio = require('cheerio');
-const { matchSorter } = require('match-sorter');
+import cheerio, { CheerioAPI } from 'cheerio';
+import { matchSorter } from 'match-sorter';
 //editado de mal-scraper
-const getFromBorder = ($, t) => {
+interface anime {
+	title: string;
+	picture: string;
+	type: string;
+	episodes: string;
+	status: string;
+	studios: string[];
+	source: string;
+	aired: string;
+	genres: string[];
+	duration: string;
+	score: string;
+	ranked: string;
+	popularity: string;
+	id: number;
+	url: string;
+}
+
+const getFromBorder = ($: CheerioAPI, t: string) => {
 	return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim();
 };
-const parsePage = (data) => {
+const parsePage = (data: Buffer) => {
 	const $ = cheerio.load(data);
-	const result = {};
+	const result: anime = {
+		title: '',
+		picture: '',
+		type: '',
+		episodes: '',
+		status: '',
+		studios: [],
+		source: '',
+		aired: '',
+		genres: [],
+		duration: '',
+		score: '',
+		ranked: '',
+		popularity: '',
+		id: 0,
+		url: ''
+	};
 
 	// We have to do this because MAL sometimes set the english title just below the japanese one
 	// Example:
@@ -27,7 +61,7 @@ const parsePage = (data) => {
 	$('div[itemprop="name"] span').remove();
 
 	result.title = $('.title-name').text();
-	result.picture = $(`img[itemprop="image"]`).attr('data-src');
+	result.picture = $(`img[itemprop="image"]`).attr('data-src')!;
 
 	// Parsing left border.
 	result.type = getFromBorder($, 'Type:');
@@ -53,16 +87,34 @@ async function getInfoFromURL(url: string) {
 	url = encodeURI(url);
 
 	let { body } = await request.get(url);
-	const res = parsePage(body);
+	const res = parsePage(body as Buffer);
 	res.id = +url.split(/\/+/)[3];
 	return res;
 }
 
-async function getResultsFromSearch(keyword) {
+interface Payload {
+	media_type?: string;
+	start_year?: number;
+	aired?: string;
+	score?: string;
+	status?: 'none' | 'finished' | 'currently' | 'not-aired';
+}
+interface SearchResultsDataModel {
+	id: string;
+	type: string;
+	name: string;
+	image_url?: string;
+	thumbnail_url?: string;
+	es_score?: number;
+	payload?: Payload;
+	url: string;
+}
+
+async function getResultsFromSearch(keyword: string) {
 	let { body } = await request.get('https://myanimelist.net/search/prefix.json?type=anime&keyword=' + keyword);
-	const items = [];
-	if (!body.categories) return;
-	body.categories.forEach((elem) => {
+	const items: SearchResultsDataModel[] = [];
+	if (!(body as { categories: { items: SearchResultsDataModel[] }[] }).categories) return;
+	(body as { categories: { items: SearchResultsDataModel[] }[] }).categories.forEach((elem) => {
 		elem.items.forEach((item) => {
 			items.push(item);
 		});
@@ -70,132 +122,66 @@ async function getResultsFromSearch(keyword) {
 	return items;
 }
 
-async function getInfoFromName(name, getBestMatch = true) {
+async function getInfoFromName(name: string, getBestMatch = true) {
 	if (!name || typeof name !== 'string') return;
 
 	let items = await getResultsFromSearch(name);
 
-	if (!items.length) return;
+	if (!items || !items.length) return;
 
 	try {
 		const bestMatch = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
 		const url = bestMatch ? bestMatch.url : items[0].url;
 		const data = await getInfoFromURL(url);
 
-		data.url = url;
+		data!.url = url;
 
 		return data;
 	} catch (e) {
-		/* istanbul ignore next */
 		console.error(e);
 	}
 }
-const { MessageEmbed } = require('discord.js');
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new MessageCommand({
 	name: 'anime',
 	description: 'Search for an anime in myanimelist',
-	ESdesc: 'Busca un anime en myanimelist',
-	usage: 'anime <name> [options]',
-	example: 'anime akame ga kill\nanime re:zero -search\nanime (insert image) -screenshot',
-	type: 1,
-	async execute(client, message, args) {
-		let serverConfig = await ModelServer.findOne({ server: message.guild.id }).lean();
-		const langcode = serverConfig.lang;
-		let { util, music } = require(`../../lib/utils/lang/${langcode}`);
+	category: 'utility',
+	required_args: [{ index: 0, name: 'anime', type: 'string' }],
+	async execute(client, message, args, guildConf) {
+		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let anime = args.join(' ');
 		let data;
 
-		switch (args[args.length - 1]) {
-			case '-search':
-				let index = anime.indexOf('-search');
-				anime = anime.slice(0, index);
+		if (message.content.toLowerCase().includes('-search')) {
+			let results = await getResultsFromSearch(anime);
+			if (!results) return;
+			let options = [];
+			for (let index = 0; index < results.length; index++) {
+				const element = results[index];
+				options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
+			}
+			const row = new MessageActionRow().addComponents(
+				new MessageSelectMenu().setCustomId('anime').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+			);
+			let searchEmbed = new MessageEmbed()
+				.setTitle(util.image.title)
+				.setColor('RANDOM')
+				.setDescription(`${results.map((result) => `**${results!.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}`);
+			let msg = await message.channel.send({ embeds: [searchEmbed], components: [row] });
+			const filter = (int: SelectMenuInteraction) => int.customId === 'anime' && int.user.id === message.author.id;
+			try {
+				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+				data = await getInfoFromURL(`https://myanimelist.net/anime/${selected.values[0]}`);
+				msg.delete();
+			} catch (error) {
+				message.channel.send({ content: music.cancel });
+				return msg.delete();
+			}
+		} else data = await getInfoFromName(anime);
 
-				let results = await getResultsFromSearch(anime);
-				let searchEmbed = new MessageEmbed()
-					.setTitle(util.image.title)
-					.setColor('RANDOM')
-					.setDescription(`${results.map((result) => `**${results.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}\n ${util.anime.type_a_number}`);
-				message.channel.send({ embeds: [searchEmbed] });
-				try {
-					let filter = (msg) => msg.content > 0 && msg.content < 11;
-					var response = await message.channel.awaitMessages({
-						filter,
-						max: 1,
-						time: 10000,
-						errors: ['time']
-					});
-				} catch (err) {
-					console.error(err);
-					return message.channel.send(music.cancel);
-				}
-				const animeIndex = parseInt(response.first().content);
-				data = await getInfoFromURL(results[animeIndex - 1].url);
-				data.url = results[animeIndex - 1].url;
-				break;
-			// case '-screenshot':
-			// 	// eslint-disable-next-line no-inner-declarations
-			// 	function Time_convertor(ms) {
-			// 		let horas = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-			// 		let minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-			// 		let segundos = Math.floor((ms % (1000 * 60)) / 1000);
-
-			// 		let final2 = '';
-			// 		if (segundos < 10) segundos = '0' + segundos;
-			// 		if (minutos < 10) minutos = '0' + minutos;
-			// 		if (horas < 10) horas = '0' + horas;
-
-			// 		if (segundos > 0) final2 += segundos > 1 ? `${minutos}:${segundos}` : `${minutos}:${segundos}`;
-			// 		if (horas > 1) if (segundos > 0) final2 += segundos > 1 ? `${horas}:${minutos}:${segundos}` : `${horas}:${minutos}:${segundos}`;
-
-			// 		return final2;
-			// 	}
-
-			// 	let image = args[0].startsWith('http') ? args[0] : message.attachments.array()[0];
-			// 	if (!image) return message.channel.send(util.anime.screenshot.no_image);
-
-			// 	try {
-			// 		let msg = await message.channel.send(util.loading);
-			// 		let { body } = await request.get(`https://trace.moe/api/search?url=${image === args[0] ? image : image.url}`);
-			// 		let found = body.docs[0];
-			// 		let all = body.docs
-			// 			.filter((anm) => anm.title_romaji !== found.title_romaji)
-			// 			.map((anm) => `[${anm.title_romaji}](https://myanimelist.net/anime/${anm.mal_id})`)
-			// 			.join('\n');
-			// 		let fileUrl = encodeURI(
-			// 			`https://trace.moe/thumbnail.php?anilist_id=${found.anilist_id}&file=${found.filename.replace(/&/g, '%26')}&t=${found.at}&token=${
-			// 				found.tokenthumb
-			// 			}`
-			// 		);
-			// 		let video = encodeURI(`https://media.trace.moe/video/${found.anilist_id}/${found.filename}`);
-			// 		video = replaceAll(video, { '(': '%28', ')': '%29', '&': '%26' }) + `?t=${found.at}&token=${found.tokenthumb}`;
-			// 		let nsfw = found.is_adult ? 'YES 7w7' : 'No 😫';
-
-			// 		let embed = new MessageEmbed()
-			// 			.setTitle(util.image.title)
-			// 			.setColor('RANDOM')
-			// 			.addField('Anime:', `[${found.title_romaji}](https://myanimelist.net/anime/${found.mal_id})`)
-			// 			.addField(util.anime.screenshot.at, Time_convertor(found.at * 1000))
-			// 			.addField(util.anime.screenshot.similarity, (found.similarity * 100).toFixed(1))
-			// 			.addField('Video:', `[Click](${video})`)
-			// 			.addField('NSFW', nsfw)
-			// 			.addField(util.anime.screenshot.more_results, all || 'No')
-			// 			.setImage(fileUrl);
-
-			// 		message.channel.send({ embeds: [embed] });
-			// 		msg.delete();
-			// 	} catch (err) {
-			// 		message.channel.send(err.message);
-			// 		console.error(err);
-			// 	}
-
-			// 	return;
-			default:
-				data = await getInfoFromName(anime);
-				break;
-		}
-
-		if (!data) return message.channel.send(music.not_found);
+		if (!data) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 		let embed = new MessageEmbed()
 
 			.setTitle(data.title)
@@ -218,4 +204,4 @@ module.exports = {
 
 		message.channel.send({ embeds: [embed] });
 	}
-};
+});
