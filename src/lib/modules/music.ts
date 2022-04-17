@@ -96,9 +96,14 @@ async function play(guild: Guild, song: Song) {
 						let relatedVideos = (await video_info(serverQueue.songs[0].url)).related_videos;
 						let firstVid = (await video_info(relatedVideos[0])).video_details;
 						let i = 0;
-						// if the first recommendation of recommended video by youtube is the one that just ended or the video title is very similar, get another until this stops happening;
+						// if the first recommendation of recommended video by youtube is the one that just ended or the video title is very similar or the recommended video is a lot longer than the current one, get another until this stops happening;
 						do firstVid = (await video_info(relatedVideos[i++])).video_details;
-						while ((await video_info(firstVid.url)).related_videos[0] === serverQueue.songs[0].url || compareTwoStrings(serverQueue.songs[0].title, firstVid.title!) > 0.8);
+						while (
+							(await video_info(firstVid.url)).related_videos[0] === serverQueue.songs[0].url ||
+							compareTwoStrings(serverQueue.songs[0].title.toLowerCase(), firstVid.title!.toLowerCase()) > 0.8 ||
+							firstVid.durationInSec - serverQueue.songs[0].durationInSec > 3000
+						);
+						console.log(i);
 						serverQueue.songs.push({
 							id: firstVid.id!,
 							title: firstVid.title!,

@@ -20,7 +20,8 @@ export default new MessageCommand({
 		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
-		let permission = message.member.roles.cache.has(djRole ? djRole.id : '') || message.member.id === serverQueue.songs[0].requested;
+		let permission =
+			message.member.roles.cache.has(djRole ? djRole.id : '') || message.member.id === serverQueue.songs[0].requested || serverQueue.songs[0].requested === 'Autoplay';
 		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
 
 		serverQueue.songs = [];

@@ -4,6 +4,15 @@ import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
 import { compareTwoStrings } from '../lib/utils/functions';
 
+type required_arg = { index: number; name: string; type: string; optional?: boolean };
+
+function moveArgumentsIndex(required_args: required_arg[], arg: required_arg) {
+	let followingArgs = required_args.filter((a) => a.index > arg.index);
+	followingArgs.forEach((a) => {
+		a.index = a.index - 1;
+	});
+}
+
 const cooldowns = new Collection();
 
 import { ModelServer, Server } from '../lib/utils/models';
@@ -112,44 +121,64 @@ export default async (client: ExtendedClient, message: Message) => {
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 	}
 
+	// it would be easy to get the args directly from here instead of in every command, but tbh I prefer just using args to avoid problems
 	if (command.required_args?.length > 0) {
 		let requiredArgs: string[] = [];
-		command.required_args.forEach(async (arg) => {
+		let tmpArgs: required_arg[] = JSON.parse(JSON.stringify(command!.required_args)); // to avoid changing the true command properties, create an array so changes made below only affect the array and not the whole command object
+		tmpArgs.forEach(async (arg) => {
 			let index = arg.index;
 			let type = arg.type;
-
-			if (arg.optional) return;
-			if (!args[index]) return requiredArgs.push(arg.name);
+			if (!args[index] && !arg.optional) return requiredArgs.push(arg.name);
 
 			switch (type) {
 				case 'user': {
 					let user = message.mentions.users.first() || (await client.users.fetch(args[index]).catch(() => undefined));
-					if (!user) requiredArgs.push(arg.name);
+					if (!user) {
+						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+						requiredArgs.push(arg.name);
+					}
+					// else options[arg.name] = user and some edits to the MessageCommand class would make it work like I said above
 					break;
 				}
 				case 'member': {
 					let member = message.mentions.members?.first() || (await message.guild?.members.fetch(args[index]).catch(() => undefined));
-					if (!member) requiredArgs.push(arg.name);
+					if (!member) {
+						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+						requiredArgs.push(arg.name);
+					}
 					break;
 				}
 				case 'channel': {
 					let channel = (message.mentions.channels.first() as GuildChannel) || message.guild?.channels.cache.get(args[index]);
-					if (!channel) requiredArgs.push(arg.name);
+					if (!channel) {
+						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+						requiredArgs.push(arg.name);
+					}
 					break;
 				}
 				case 'role':
 					{
 						let role = message.mentions.roles.first() || message.guild?.roles.cache.get(args[index]) || message.guild?.roles.cache.find((r) => r.name === args[index]);
-						if (!role) requiredArgs.push(arg.name);
+						if (!role) {
+							if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+							requiredArgs.push(arg.name);
+						}
 					}
 					break;
 				case 'number':
-					if (isNaN(parseInt(args[index]))) requiredArgs.push(arg.name);
+					if (isNaN(parseInt(args[index]))) {
+						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+						requiredArgs.push(arg.name);
+					}
 					break;
 				default: {
 					if (type.includes('|')) {
 						let opt = type.split(' | ');
-						if (!opt.some((o) => args[index] === o)) return requiredArgs.push(arg.name);
+						if (!opt.some((o) => args[index] === o)) {
+							console.log(arg);
+							if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+							requiredArgs.push(arg.name);
+						}
 					}
 					break;
 				}
