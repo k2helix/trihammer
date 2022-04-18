@@ -1,13 +1,46 @@
-const request = require('node-superfetch');
-const cheerio = require('cheerio');
-const { matchSorter } = require('match-sorter');
+import request from 'node-superfetch';
+import cheerio, { CheerioAPI } from 'cheerio';
+import { matchSorter } from 'match-sorter';
 //editado de mal-scraper
-const getFromBorder = ($, t) => {
+const getFromBorder = ($: CheerioAPI, t: string) => {
 	return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim();
 };
-const parsePage = (data) => {
+
+interface manga {
+	title: string;
+	picture: string;
+	type: string;
+	volumes: string;
+	status: string;
+	published: string;
+	authors: string;
+	chapters: string;
+	genres: string[];
+	score: string;
+	ranked: string;
+	popularity: string;
+	id: number;
+	url: string;
+}
+
+const parsePage = (data: Buffer) => {
 	const $ = cheerio.load(data);
-	const result = {};
+	const result: manga = {
+		title: '',
+		picture: '',
+		type: '',
+		volumes: '',
+		status: '',
+		genres: [],
+		score: '',
+		ranked: '',
+		popularity: '',
+		id: 0,
+		url: '',
+		published: '',
+		authors: '',
+		chapters: ''
+	};
 
 	// We have to do this because MAL sometimes set the english title just below the japanese one
 	// Example:
@@ -17,7 +50,7 @@ const parsePage = (data) => {
 	$('span[itemprop="name"] span').remove();
 
 	result.title = $('span[itemprop="name"]').first().text();
-	result.picture = $(`img[itemprop="image"][alt="${result.title}"]`).attr('data-src');
+	result.picture = $(`img[itemprop="image"][alt="${result.title}"]`).attr('data-src')!;
 
 	// Parsing left border.
 	result.type = getFromBorder($, 'Type:');
@@ -35,43 +68,60 @@ const parsePage = (data) => {
 
 	return result;
 };
-async function getInfoFromURL(url) {
+async function getInfoFromURL(url: string) {
 	if (!url || typeof url !== 'string' || !url.toLocaleLowerCase().includes('myanimelist')) return;
 
 	url = encodeURI(url);
 
 	let { body } = await request.get(url);
-	const res = parsePage(body);
+	const res = parsePage(body as Buffer);
 	res.id = +url.split(/\/+/)[3];
 	return res;
 }
 
-async function getResultsFromSearch(keyword) {
+interface Payload {
+	media_type?: string;
+	start_year?: number;
+	aired?: string;
+	score?: string;
+	status?: string;
+}
+interface SearchResultsDataModel {
+	id: string;
+	type: string;
+	name: string;
+	image_url?: string;
+	thumbnail_url?: string;
+	es_score?: number;
+	payload?: Payload;
+	url: string;
+}
+
+async function getResultsFromSearch(keyword: string) {
 	let { body } = await request.get('https://myanimelist.net/search/prefix.json?type=manga&keyword=' + keyword);
-	const items = [];
-	if (!body.categories) return;
-	body.categories.forEach((elem) => {
+	const items: SearchResultsDataModel[] = [];
+	if (!(body as { categories: { items: SearchResultsDataModel[] }[] }).categories) return;
+	(body as { categories: { items: SearchResultsDataModel[] }[] }).categories.forEach((elem) => {
 		elem.items.forEach((item) => {
 			items.push(item);
 		});
 	});
-
 	return items;
 }
 
-async function getInfoFromName(name, getBestMatch = true) {
+async function getInfoFromName(name: string, getBestMatch = true) {
 	if (!name || typeof name !== 'string') return;
 
 	let items = await getResultsFromSearch(name);
 
-	if (!items.length) return;
+	if (!items || !items.length) return;
 
 	try {
 		const bestMacth = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
 		const url = bestMacth ? bestMacth.url : items[0].url;
 		const data = await getInfoFromURL(url);
 
-		data.url = url;
+		data!.url = url;
 
 		return data;
 	} catch (e) {
@@ -79,19 +129,17 @@ async function getInfoFromName(name, getBestMatch = true) {
 		console.error(e);
 	}
 }
-const { MessageEmbed } = require('discord.js');
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new MessageCommand({
 	name: 'manga',
 	description: 'Search for a manga in myanimelist',
-	ESdesc: 'Busca un manga en myanimelist',
-	usage: 'manga <search>',
-	example: 'manga akame ga kill\nmanga attack on titan -search',
-	type: 1,
-	async execute(client, message, args) {
-		let serverConfig = await ModelServer.findOne({ server: message.guild.id });
-		const langcode = serverConfig.lang;
-		let { util, music } = require(`../../lib/utils/lang/${langcode}`);
+	category: 'utility',
+	required_args: [{ index: 0, name: 'manga', type: 'string' }],
+	async execute(_client, message, args, guildConf) {
+		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
 		let manga = args.join(' ');
 		let data;
 		if (manga.toLowerCase().includes('-search')) {
@@ -99,25 +147,31 @@ module.exports = {
 			manga = manga.slice(0, index);
 
 			let results = await getResultsFromSearch(manga);
+			if (!results) return;
+
+			let options = [];
+			for (let index = 0; index < results.length; index++) {
+				const element = results[index];
+				options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
+			}
+			const row = new MessageActionRow().addComponents(
+				new MessageSelectMenu().setCustomId('manga').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+			);
+
 			let searchEmbed = new MessageEmbed()
 				.setTitle(util.image.title)
 				.setColor('RANDOM')
-				.setDescription(`${results.map((result) => `**${results.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}\n ${util.anime.type_a_number}`);
-			message.channel.send({ embeds: [searchEmbed] });
+				.setDescription(`${results.map((result) => `**${results!.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}\n ${util.anime.type_a_number}`);
+			let msg = await message.channel.send({ embeds: [searchEmbed], components: [row] });
+			const filter = (int: SelectMenuInteraction) => int.customId === 'manga' && int.user.id === message.author.id;
 			try {
-				let filter = (msg) => msg.content > 0 && msg.content < 11;
-				var response = await message.channel.awaitMessages({
-					filter,
-					max: 1,
-					time: 10000,
-					errors: ['time']
-				});
-			} catch (err) {
-				console.error(err);
-				return message.channel.send(music.cancel);
+				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+				data = await getInfoFromURL(`https://myanimelist.net/manga/${selected.values[0]}`);
+				msg.delete();
+			} catch (error) {
+				message.channel.send({ content: music.cancel });
+				return msg.delete();
 			}
-			const animeIndex = parseInt(response.first().content);
-			data = await getInfoFromURL(results[animeIndex - 1].url);
 		} else data = await getInfoFromName(manga);
 
 		if (!data) return message.channel.send(music.not_found);
@@ -139,4 +193,4 @@ module.exports = {
 
 		message.channel.send({ embeds: [embed] });
 	}
-};
+});

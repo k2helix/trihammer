@@ -10,45 +10,45 @@
 // var ndarray = require('ndarray')
 // var ops = require('ndarray-ops')
 // var through = require('through')
+
+import MessageCommand from '../../lib/structures/MessageCommand';
+
 // const glitch = require('glitch-canvas')
-const request = require('node-superfetch');
-const { MessageAttachment } = require('discord.js');
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import request from 'node-superfetch';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
+export default new MessageCommand({
 	name: 'gglitch',
 	description: 'Glitch a gif',
-	ESdesc: 'Glitchea un gif',
-	usage: 'gglitch [user or gif or url]',
-	example: 'gglitch @user\n gglitch (upload the gif)',
 	aliases: ['gifglitch'],
-	type: 4,
+	category: 'image_manipulation',
+	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
-		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-		let image = user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 });
-		let attachments = [...message.attachments.values()];
-		if (attachments[0]) image = attachments[0].url;
-		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
+		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 
-		let msg = await message.channel.send(util.loading);
+		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (args[0] && args[0].startsWith('http')) image = args[0];
+		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
+
+		let msg = await message.channel.send({ embeds: [client.loadingEmbed()] });
+		// @ts-ignore
 		let { body } = await request
 			.post('https://api.pxlapi.dev/glitch', {
+				url: 'https://api.pxlapi.dev/glitch',
 				headers: { 'Content-Type': 'application/json', Authorization: 'Application ' + process.env.PXL_API_TOKEN },
 				body: JSON.stringify({
 					images: [image],
 					gif: {}
 				})
 			})
-			.catch((err) => {
+			.catch((err: Error) => {
 				return message.channel.send(err.message);
 			});
 		const attachment = new MessageAttachment(body, 'glitch.gif');
-		message.channel.send({ content: `Glitched gif:`, files: [attachment] });
+		message.channel.send({ embeds: [new MessageEmbed().setColor(3092790).setImage('attachment://glitch.gif')], files: [attachment] });
 		msg.delete();
 	}
-};
+});
 // return message.channel.send('Command disabled');
 //     let serverConfig = await client.ModelServer.findOne({server: message.guild.id})
 //     const langcode = serverConfig.lang

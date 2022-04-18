@@ -25,7 +25,7 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 					serverQueue.songs = [];
 					getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();
 					queue.delete(oldState.guild.id);
-					serverQueue.textChannel.send(music.leave_timeout);
+					serverQueue.textChannel.send({ embeds: [client.redEmbed(music.leave_timeout)] });
 				}, 60000);
 		} else if (newChannel.members.has(client.user!.id) && serverQueue.leaveTimeout)
 			if (serverQueue.songs.length > 0) {
@@ -40,10 +40,13 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 	let user = `${newState.member.user.tag} (${newState.id})`;
 
 	if (!oldChannel && newChannel) logs_channel.send({ embeds: [client.blueEmbed(client.replaceEach(events.voice.joined, { '{user}': user, '{channel}': newChannel.name }))] });
-	else if (!newChannel && oldChannel)
+	else if (!newChannel && oldChannel) {
 		logs_channel.send({ embeds: [client.redEmbed(client.replaceEach(events.voice.left, { '{user}': user, '{channel}': oldChannel.name }))] });
-	else if (oldChannel && newChannel)
+		if (newState.member.id === client.user!.id && queue.get(oldState.guild.id)) queue.delete(oldState.guild.id);
+	} else if (oldChannel && newChannel) {
 		logs_channel.send({
 			embeds: [client.orangeEmbed(client.replaceEach(events.voice.moved, { '{user}': user, '{oldChannel}': oldChannel.name, '{newChannel}': newChannel.name }))]
 		});
+		if (newState.member.id === client.user!.id && queue.get(oldState.guild.id)) queue.get(oldState.guild.id)!.voiceChannel = newChannel;
+	}
 };

@@ -42,6 +42,10 @@ class ExtendedClient extends Client {
 		return new MessageEmbed().setColor('#0090ff').setDescription(string);
 	}
 
+	lightBlueEmbed(string: string) {
+		return new MessageEmbed().setColor(5814783).setDescription(string);
+	}
+
 	blackEmbed(string: string) {
 		return new MessageEmbed().setDescription(string);
 	}
@@ -56,6 +60,10 @@ class ExtendedClient extends Client {
 
 	greenEmbed(string: string) {
 		return new MessageEmbed().setColor('GREEN').setDescription(string);
+	}
+
+	loadingEmbed() {
+		return new MessageEmbed().setImage('https://cdn.discordapp.com/attachments/487962590887149603/965625447733923920/loading.gif?size=4096');
 	}
 }
 

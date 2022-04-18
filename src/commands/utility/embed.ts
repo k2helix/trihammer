@@ -51,9 +51,10 @@ export default new MessageCommand({
 				let sorted = Object.keys(indexObject).sort(function (a, b) {
 					return indexObject[b as value] - indexObject[a as value];
 				});
-				console.log(sorted);
+
 				let customEmbed = new MessageEmbed();
 				let contains = sorted.filter((v) => indexObject[v as value] > -1);
+				if (!contains[0]) return message.channel.send({ embeds: [client.redEmbed(mod.embed.how_it_works)] });
 				contains.forEach((y) => {
 					let prop = y as value;
 					let tag = y.replace(':', '');

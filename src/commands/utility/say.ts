@@ -1,18 +1,17 @@
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+
+export default new MessageCommand({
 	name: 'say',
 	description: 'Say something',
-	ESdesc: 'Haz que el bot diga algo',
-	usage: 'say <text>',
-	example: 'say hello',
 	aliases: ['decir'],
-	type: 7,
+	category: 'unknown',
 	execute(client, message, args) {
-		if (message.member.id !== '461279654158925825') return message.channel.send('Owner only');
+		if (!client.config.administrators.includes(message.author.id)) return;
 		let sMessage = args.join(' ');
 		if (!sMessage) return;
 		message.delete().catch((O_o) => {
-			console.log(O_o);
+			console.log(O_o); //grande serafin
 		});
 		message.channel.send(sMessage);
 	}
-};
+});

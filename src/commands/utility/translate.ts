@@ -1,6 +1,10 @@
-const translate = require('@vitalets/google-translate-api');
-let { MessageEmbed } = require('discord.js');
-var langs = {
+import translate from '@vitalets/google-translate-api';
+import { MessageEmbed } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+// eslint-disable-next-line prettier/prettier
+type codelang = 'af' | 'sq' | 'am' | 'ar' | 'hy' | 'az' | 'eu' | 'be' | 'bn' | 'bs' | 'bg' | 'ca' | 'ceb' | 'ny' | 'zh-CN' | 'zh-TW' | 'co' | 'hr' | 'cs' | 'da' | 'nl' | 'en' | 'eo' | 'et' | 'tl' | 'fi' | 'fr' | 'fy' | 'gl' | 'ka' | 'de' | 'el' | 'gu' | 'ht' | 'ha' | 'haw' | 'he' | 'iw' | 'hi' | 'hmn' | 'hu' | 'is' | 'ig' | 'id' | 'ga' | 'it' | 'ja' | 'jw' | 'kn' | 'kk' | 'km' | 'ko' | 'ku' | 'ky' | 'lo' | 'la' | 'lv' | 'lt' | 'lb' | 'mk' | 'mg' | 'ms' | 'ml' | 'mt' | 'mi' | 'mr' | 'mn' | 'my' | 'ne' | 'no' | 'ps' | 'fa' | 'pl' | 'pt' | 'pa' | 'ro' | 'ru' | 'sm' | 'gd' | 'sr' | 'st' | 'sn' | 'sd' | 'si' | 'sk' | 'sl' | 'so' | 'es' | 'su' | 'sw' | 'sv' | 'tg' | 'ta' | 'te' | 'th' | 'tr' | 'uk' | 'ur' | 'uz' | 'vi' | 'cy' | 'xh' | 'yi' | 'yo' | 'zu'
+let langs = {
 	af: 'Afrikaans',
 	sq: 'Albanian',
 	am: 'Amharic',
@@ -107,26 +111,24 @@ var langs = {
 	yo: 'Yoruba',
 	zu: 'Zulu'
 };
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+export default new MessageCommand({
 	name: 'translate',
 	description: 'Translate text to other language',
-	ESdesc: 'Traduce texto a otro idioma',
-	usage: 'translate <lang> <text>',
-	example: 'translate es hello how are you',
 	cooldown: 3,
 	aliases: ['tl'],
-	type: 7,
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
+	category: 'utility',
+	required_args: [
+		{ index: 0, name: 'lang', type: 'string' },
+		{ index: 0, name: 'text', type: 'string', optional: true } // else the list won't work
+	],
+	async execute(_client, message, args, guildConf) {
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		if (!args[0]) return;
 		if (args[0] === 'list') {
-			let all_langs = Object.keys(langs).map((l) => `${l}: ${langs[l]}`);
+			let all_langs = Object.keys(langs).map((l) => `${l}: ${langs[l as codelang]}`);
 			return message.channel.send(`\`\`\`js\n${all_langs.join('\n')}\`\`\``);
 		}
+
 		let lang = args[0];
 		let text = args.slice(1).join(' ');
 		if (!Object.keys(langs).includes(lang)) return message.channel.send(`${util.translate.not_found}`);
@@ -136,8 +138,8 @@ module.exports = {
 		let embed = new MessageEmbed()
 			.setTitle(util.translate.title)
 			.setThumbnail('https://i.pinimg.com/originals/44/10/19/4410197cf5de4fefe413b55860bb617d.png')
-			.addField(`${util.translate.from} ${langs[translated.from.language.iso]}:`, `\`\`\`${text.slice(0, 1000)}\`\`\``, true)
-			.addField(`${util.translate.to} ${langs[lang]}:`, `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, true);
+			.addField(`${util.translate.from} ${langs[translated.from.language.iso as codelang]}:`, `\`\`\`${text.slice(0, 1000)}\`\`\``, true)
+			.addField(`${util.translate.to} ${langs[lang as codelang]}:`, `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, true);
 		message.channel.send({ embeds: [embed] });
 	}
-};
+});

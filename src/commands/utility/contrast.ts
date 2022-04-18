@@ -1,5 +1,5 @@
 import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
-import { MessageAttachment } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';
 function contrast(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
@@ -23,11 +23,13 @@ export default new MessageCommand({
 	client_perms: ['ATTACH_FILES'],
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
-		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-		let image = user.displayAvatarURL({ format: 'png' }).replace('gif', 'png');
-		let attachments = [...message.attachments.values()];
-		if (attachments[0]) image = attachments[0].url;
-		if (user.id === message.author.id && args[0] && args[0].startsWith('http')) image = args[0];
+		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
+
+		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (args[0] && args[0].startsWith('http')) image = args[0];
+		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
+
 		const { body } = await request.get(image);
 		const data = await loadImage(body as Buffer);
 		const canvas = createCanvas(data.width, data.height);
@@ -35,8 +37,14 @@ export default new MessageCommand({
 		ctx.drawImage(data, 0, 0);
 		contrast(ctx, 0, 0, data.width, data.height);
 
-		//MessageAttachement - Discord.js-12.0.0
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'contrast.png');
-		message.channel.send({ files: [attachment] });
+		message.channel.send({
+			embeds: [
+				new MessageEmbed()
+					.setColor(3092790)
+					.setImage('attachment://contrast.png')
+					.setFooter({ text: `${data.width}x${data.height}` })
+			],
+			files: [{ attachment: canvas.toBuffer(), name: 'contrast.png' }]
+		});
 	}
 });

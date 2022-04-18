@@ -1,4 +1,4 @@
-import math from 'mathjs';
+import { unit } from 'mathjs';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 function formatNumber(number: string | number, minimumFractionDigits = 0) {
@@ -25,7 +25,7 @@ export default new MessageCommand({
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (!amount) return message.channel.send({ embeds: [client.redEmbed(util.convert.need.replace('{prefix}', guildConf.prefix))] });
 		try {
-			const value = math.unit(Number(amount), base).toNumber(target);
+			const value = unit(Number(amount), base).toNumber(target);
 
 			let obj = {
 				'{amount}': formatNumber(amount),
