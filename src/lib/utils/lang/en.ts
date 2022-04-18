@@ -129,7 +129,7 @@ export const mod = {
 		embed_code: 'You need to include the JSON code or look at the command example by usig `command embed` (https://phodit.net/embedbuilder/)',
 		create_embed: '\nYou can use `embed help` to see how the command works',
 		how_it_works:
-			'**How to use the EMBED command**\nThe `embed` command can work in two ways, the first, using the embed JSON code (https://phodit.net/embedbuilder/), and the second is separating what you want in the embed with **|** \nAn example would be `embed title: embed title | description: embed description | fields: [{"name": "title of the first field", "value": "value of the first field"}, ...] `\n This is a simple example, you can add many more things to the embed (title, description, fields, footer, thumbnail, image and color). They do not have to be in order, the only thing necessary is that the title comes first, then you can order it as you want. \nThis has been the help for the EMBED command, if you need more help, you can ask the support server ( t-support)'
+			'**How to use the EMBED command**\nThe `embed` command can work in two ways, the first, using the embed JSON code (https://phodit.net/embedbuilder/), and the second is by separating what you want in the embed with **|** \nAn example would be `embed title: embed title | description: embed description | fields: [{"name": "title of the first field", "value": "value of the first field"}, ...] `\n This is a simple example, you can add many more things to the embed (title, description, fields, footer, thumbnail, image and color). They do not have to be in order, you can order it as you want. \nThis has been the help for the EMBED command, if you need more help, you can ask the support server ( t-support)'
 	},
 	user_404: "I couldn't find an user with id {id}",
 	user_infrs: "{user}'s infractions ```ml\nType | Moderator | Reason | Duration | Active? | Date | Infr ID \n ------------------------------------",
@@ -353,7 +353,7 @@ export const util = {
 		}
 	},
 	remind: function (reason, time) {
-		return `Ok, I will remind you \`${reason}\` in ${Convert(time)!.nombre || time}`;
+		return `Ok, I will remind you \`${reason}\` in ${Convert(time)?.nombre || time}`;
 	},
 	timezone: 'The current time in {country} is {time}',
 	today: {

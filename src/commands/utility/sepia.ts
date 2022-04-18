@@ -1,4 +1,4 @@
-function sepia(ctx, x, y, width, height) {
+function sepia(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
 	const data = ctx.getImageData(x, y, width, height);
 	for (let i = 0; i < data.data.length; i += 4) {
 		const brightness = 0.34 * data.data[i] + 0.5 * data.data[i + 1] + 0.16 * data.data[i + 2];
@@ -10,32 +10,39 @@ function sepia(ctx, x, y, width, height) {
 
 	return ctx;
 }
-const { createCanvas, loadImage } = require('canvas');
-const { MessageAttachment } = require('discord.js');
-const request = require('node-superfetch');
-module.exports = {
+import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'sepia',
 	description: 'Sepia an image',
-	ESdesc: 'Pasa a color sepia una imagen',
-	usage: 'sepia [user or image or url]',
-	example: 'sepia @user',
-	type: 4,
-	myPerms: [true, 'ATTACH_FILES'],
+	category: 'image_manipulation',
+	client_perms: ['ATTACH_FILES'],
+	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
-		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-		let image = user.displayAvatarURL({ format: 'png' }).replace('gif', 'png');
-		let attachments = [...message.attachments.values()];
-		if (attachments[0]) image = attachments[0].url;
-		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
+		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
+
+		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (args[0] && args[0].startsWith('http')) image = args[0];
+		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
+
 		const { body } = await request.get(image);
-		const data = await loadImage(body);
+		const data = await loadImage(body as Buffer);
 		const canvas = createCanvas(data.width, data.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(data, 0, 0);
 		sepia(ctx, 0, 0, data.width, data.height);
 
-		//MessageAttachement - Discord.js-12.0.0
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'sepia.png');
-		message.channel.send({ files: [attachment] });
+		message.channel.send({
+			embeds: [
+				new MessageEmbed()
+					.setColor(3092790)
+					.setImage('attachment://sepia.png')
+					.setFooter({ text: `${data.width}x${data.height}` })
+			],
+			files: [{ attachment: canvas.toBuffer(), name: 'sepia.png' }]
+		});
 	}
-};
+});

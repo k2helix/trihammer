@@ -1,4 +1,4 @@
-import math from 'mathjs';
+import { evaluate } from 'mathjs';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'calc',
@@ -9,7 +9,7 @@ export default new MessageCommand({
 	execute(_client, message, args) {
 		let resp;
 		try {
-			resp = math.evaluate(args.join(' ').replace('x', '*'));
+			resp = evaluate(args.join(' ').replace('x', '*'));
 		} catch (e) {
 			return;
 		}

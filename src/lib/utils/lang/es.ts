@@ -125,7 +125,7 @@ export const mod = {
 		embed_code: 'Necesitas incluir el código JSON del embed o mira el ejemplo del comando usando `command embed` (https://phodit.net/embedbuilder/).',
 		create_embed: '\nPara saber cómo usar el comando, puedes usar `embed help`',
 		how_it_works:
-			'**Cómo usar el comando EMBED**\nEl comando `embed` puede funcionar de dos formas, la primera, usando el código JSON del embed (https://phodit.net/embedbuilder/), y la segunda es separando lo que quieras en el embed con **|**\nUn ejemplo sería `embed title: título del embed | description: descripción del embed | fields: [{"name": "título del primer campo", "value": "valor del primer campo" }, ...]`\n Este es un ejemplo sencillo, le puedes añadir muchas más cosas al embed (title, description, fields, footer, thumbnail, image y color). No tienen por qué ir en orden, lo único necesario es que el título sea lo primero, después, puedes ordenarlo como quieras.\nEsta ha sido la ayuda para el comando EMBED, si necesitas más ayuda, puedes preguntar en el servidor de soporte (t-support)'
+			'**Cómo usar el comando EMBED**\nEl comando `embed` puede funcionar de dos formas, la primera, usando el código JSON del embed (https://phodit.net/embedbuilder/), y la segunda es separando lo que quieras en el embed con **|**\nUn ejemplo sería `embed title: título del embed | description: descripción del embed | fields: [{"name": "título del primer campo", "value": "valor del primer campo" }, ...]`\n Este es un ejemplo sencillo, le puedes añadir muchas más cosas al embed (title, description, fields, footer, thumbnail, image y color). No tienen por qué ir en orden, puedes ordenarlo como quieras.\nEsta ha sido la ayuda para el comando EMBED, si necesitas más ayuda, puedes preguntar en el servidor de soporte (t-support)'
 	},
 	user_404: 'No pude encontrar a algún usuario con id {id}',
 	user_infrs: 'Infracciones de {user} ```ml\nTipo | Moderador | Razón | Duración | ¿Activa? | Fecha | Infr ID \n ------------------------------------',
@@ -349,7 +349,7 @@ export const util = {
 		}
 	},
 	remind: function (reason, time) {
-		return `Entendido, te recordaré \`${reason}\` en ${Convert(time)!.nombre || time}`;
+		return `Entendido, te recordaré \`${reason}\` en ${Convert(time)?.nombre || time}`;
 	},
 	timezone: 'La hora actual en {country} es {time}',
 	today: {

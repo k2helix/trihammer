@@ -34,41 +34,53 @@
 // 	}
 // };
 
-const { createCanvas, loadImage } = require('canvas');
-const request = require('node-superfetch');
+import { createCanvas, loadImage } from 'canvas';
+import request from 'node-superfetch';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { MessageEmbed } from 'discord.js';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const glitch = require('glitch-canvas');
 
-module.exports = {
+export default new MessageCommand({
 	name: 'glitch',
 	description: 'Glitch an image',
-	ESdesc: 'Glitchea una imagen',
-	usage: 'glitch [user or image or url]',
-	example: 'glitch\nglitch @user',
 	cooldown: 10,
+	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
+	client_perms: ['ATTACH_FILES'],
 	async execute(client, message, args) {
-		let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
-		let image = user.user.displayAvatarURL({ format: 'jpeg', size: 1024 });
-		let attachments = [...message.attachments.values()];
-		if (attachments[0]) image = attachments[0].url;
-		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
+		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
+
+		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (args[0] && args[0].startsWith('http')) image = args[0];
+		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
 		const { body } = await request.get(image);
-		const data = await loadImage(body);
+		const data = await loadImage(body as Buffer);
+
 		const canvas = createCanvas(data.width < 250 ? 278 : data.width, data.height < 250 ? 278 : data.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(data, 0, 0, canvas.width, canvas.height);
-		const attachment = canvas.toBuffer();
+		const buffer = canvas.toBuffer();
+
 		let seed = Math.floor(Math.random() * 20);
 		let iterations = Math.floor(Math.random() * 20);
 		let amount = Math.floor(Math.random() * 20);
 		let quality = Math.floor(10 + Math.random() * 89);
-		let texto = `Seed ${seed}, ${iterations} iterations, ${amount} amount, ${quality} quality`;
+		let text = `Seed: ${seed} | Iterations: ${iterations} | Amount ${amount} | Quality ${quality}`;
 		glitch({ seed: seed, iterations: iterations, amount: amount, quality: quality })
-			.fromBuffer(attachment)
+			.fromBuffer(buffer)
 			.toBuffer()
-			.then(function (glitchedBuffer) {
+			.then(function (glitchedBuffer: Buffer) {
 				message.channel.send({
-					content: texto,
+					embeds: [
+						new MessageEmbed()
+							.setColor(3092790)
+							.setDescription(text)
+							.setImage('attachment://glitch.jpeg')
+							.setFooter({ text: `${data.width}x${data.height}` })
+					],
 					files: [
 						{
 							attachment: glitchedBuffer,
@@ -77,8 +89,8 @@ module.exports = {
 					]
 				});
 			})
-			.catch((error) => {
-				message.channel.send(`Please, use the command another time (${texto}). ` + error);
+			.catch((error: Error) => {
+				message.channel.send(`Please, use the command another time (${text}). ` + error);
 			});
 	}
-};
+});

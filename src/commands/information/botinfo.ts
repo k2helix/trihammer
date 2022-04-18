@@ -5,7 +5,7 @@ export default new MessageCommand({
 	name: 'botinfo',
 	description: 'Bot info',
 	category: 'information',
-	aliases: ['about', 'invite'],
+	aliases: ['about', 'invite', 'support'],
 	async execute(client, message, _args, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let embed = new MessageEmbed()

@@ -7,8 +7,8 @@ export default new MessageCommand({
 	description: "Let's ChangeIt!",
 	cooldown: 10,
 	category: 'utility',
-	async execute(_client, message) {
-		let msg = await message.channel.send('Loading...');
+	async execute(client, message) {
+		let msg = await message.channel.send({ embeds: [client.loadingEmbed()] });
 		let { text } = await request.get('https://api.scraperapi.com?api_key=d4200ce7de524ce498e47c883cace088&render=true&url=https://www.worldometers.info/');
 
 		let $ = cheerio.load(text!);

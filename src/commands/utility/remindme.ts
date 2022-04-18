@@ -1,68 +1,74 @@
-const { ModelServer, ModelRemind } = require('../../lib/utils/models');
-let { MessageEmbed } = require('discord.js');
+import { ModelRemind, Remind } from '../../lib/utils/models';
+import { MessageEmbed } from 'discord.js';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // let { Convert } = require('../../lib/utils/functions');
 
-function msToTime(ms) {
-	let años = Math.floor(ms / (1000 * 60 * 60 * 24 * 365));
-	let meses = Math.floor((ms % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-	let dias = Math.floor((ms % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-	let horas = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	let minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-	let segundos = Math.floor((ms % (1000 * 60)) / 1000);
+function msToTime(ms: number) {
+	let years = Math.floor(ms / (1000 * 60 * 60 * 24 * 365));
+	let months = Math.floor((ms % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
+	let days = Math.floor((ms % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+	let hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	let minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+	let seconds = Math.floor((ms % (1000 * 60)) / 1000);
 
-	let final1 = '';
-	if (años > 0) final1 += años > 1 ? `${años}y ` : `${años}y `;
-	if (meses > 0) final1 += meses > 1 ? `${meses}mo ` : `${meses}mo `;
-	if (dias > 0) final1 += dias > 1 ? `${dias}d ` : `${dias}d`;
-	if (dias < 1 && horas > 0) final1 += horas > 1 ? `${horas}h ` : `${horas}h  `;
-	if (dias < 1 && minutos > 0) final1 += minutos > 1 ? `${minutos}min ` : `${minutos}min  `;
-	if (dias < 1 && segundos > 0) final1 += segundos > 1 ? `${segundos}s` : `${segundos}s`;
-	return final1;
+	let endString = '';
+	if (years > 0) endString += years > 1 ? `${years}y ` : `${years}y `;
+	if (months > 0) endString += months > 1 ? `${months}mo ` : `${months}mo `;
+	if (days > 0) endString += days > 1 ? `${days}d ` : `${days}d`;
+	if (days < 1 && hours > 0) endString += hours > 1 ? `${hours}h ` : `${hours}h  `;
+	if (days < 1 && minutes > 0) endString += minutes > 1 ? `${minutes}min ` : `${minutes}min  `;
+	if (days < 1 && seconds > 0) endString += seconds > 1 ? `${seconds}s` : `${seconds}s`;
+	return endString;
 }
-module.exports = {
+export default new MessageCommand({
 	name: 'remindme',
 	description: 'Add a reminder',
-	ESdesc: 'Añade un recordatorio',
-	usage: 'remindme [list] <time or date (DD/MM/YYYY)> [reason]',
-	example: 'remindme 1h add a new command\nremindme 05/03/2021 do homework\nremindme list',
 	aliases: ['radd', 'r-add', 'remind'],
-	type: 1,
-	async execute(client, message, args) {
+	category: 'utility',
+	required_args: [
+		{ index: 0, name: 'time', type: 'string' },
+		{ index: 1, name: 'reason', type: 'string', optional: true }
+	],
+	async execute(client, message, args, guildConf) {
 		if (!args[0]) return;
 
 		if (args[0] === 'list') {
-			let reminders = await ModelRemind.find({ id: message.author.id, active: true }).lean();
+			let reminders: Remind[] = await ModelRemind.find({ id: message.author.id, active: true }).lean();
 
 			let embed = new MessageEmbed()
 				.setTitle('Reminders')
 				.setColor('RANDOM')
-				.setDescription(reminders.map((remind) => `**${remind.reason}** - ${msToTime(remind.expire - Date.now())}`).join('\n'));
+				.setDescription(
+					reminders
+						.map((remind) => `**${remind.reason}** - ${msToTime(remind.expire - Date.now())}`)
+						.join('\n')
+						.slice(0, 4000)
+				);
 			return message.channel.send({ embeds: [embed] });
 		}
 
-		let motivo = args.slice(1).join(' ');
-		if (!motivo) motivo = ':v';
+		let reason = args.slice(1).join(' ');
+		if (!reason) reason = ':v';
 
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
+		const { util, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let time_v = Convert(args[0]);
+		let time_v = functions.Convert(args[0]);
 		let ms;
 		if (!time_v) {
 			let date = args[0].split('/');
 			if (date.length < 2) return;
 			let [day, month, year] = date;
-			if (!year) year = new Date(Date.now()).getFullYear();
-			if (date.some((n) => isNaN(n))) return message.channel.send('🤔');
+			if (!year) year = new Date(Date.now()).getFullYear().toString();
+			if (date.some((n) => isNaN(parseInt(n)))) return message.channel.send('🤔');
 			if (year.length !== 4) year = '20' + year;
 
-			let jsDate = new Date(year, month - 1, day);
+			let jsDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
 			ms = jsDate.getTime();
 		} else ms = Date.now() + time_v.tiempo;
-		let remind = new ModelRemind({ id: message.author.id, reason: motivo, active: true, expire: ms });
+		let remind = new ModelRemind({ id: message.author.id, reason: reason, active: true, expire: ms });
 		await remind.save();
 
-		message.channel.send(util.remind(motivo, args[0]));
+		message.channel.send({ embeds: [client.lightBlueEmbed(util.remind(reason, args[0]))] });
 	}
-};
+});

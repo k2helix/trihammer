@@ -1,37 +1,36 @@
-const { MessageEmbed } = require('discord.js');
-const { ModelServer } = require('../../lib/utils/models');
-let { get } = require('node-superfetch');
-module.exports = {
+import { MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { Result } from '../../lib/structures/interfaces/SaucenaoInterfaces';
+export default new MessageCommand({
 	name: 'sauce',
 	description: 'Get the source of an image',
-	ESdesc: 'Obtén la fuente de una imagen',
-	usage: 'sauce [image or url or user]',
-	example: 'sauce @user\nsauce https://...',
 	aliases: ['source'],
-	type: 1,
-	async execute(client, message, args) {
-		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-		let image = user.displayAvatarURL({ format: 'png', size: 1024, dynamic: true });
-		let attachments = [...message.attachments.values()];
-		if (attachments[0]) image = attachments[0].url;
-		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
+	category: 'utility',
+	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
+	async execute(client, message, args, guildConf) {
+		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let langcode = serverConfig.lang;
-		let { util } = require(`../../lib/utils/lang/${langcode}`);
+		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (args[0] && args[0].startsWith('http')) image = args[0];
+		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
-		let { body } = await get(`https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image);
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		let { body } = await request.get(`https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image);
 
 		let embed = new MessageEmbed()
 			.setTitle(util.sauce.title)
-			.setDescription(util.sauce.looks_like(body.results[0]))
+			.setDescription(util.sauce.looks_like((body as { results: Result[] }).results[0]))
 			.addField(util.sauce.more_source, util.sauce.search_sources(image))
 			.setColor('RANDOM')
 
 			.setImage(image);
 		message.channel.send({ embeds: [embed] });
 	}
-};
+});
 
 // x = {
 // 	results: [
