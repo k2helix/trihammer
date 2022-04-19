@@ -474,7 +474,9 @@ export const xp = {
 		show: 'Roles de experiencia',
 		remove: 'Uso incorrecto, leveledroles [remove] <role id> <level>',
 		add: 'Uso incorrecto, leveledroles <role id> <level>',
-		no_roles: 'Este servidor no tiene roles de experiencia'
+		no_roles: 'Este servidor no tiene roles de experiencia',
+		removed: 'Rol borrado de la lista de roles de experiencia satisfactoriamente',
+		added: 'Rol añadido a la lista de roles de experiencia satisfactoriamente'
 	},
 	rep: {
 		cooldown: function (time, prefix) {
@@ -489,7 +491,8 @@ export const xp = {
 	},
 	lvlup: '¡Enhorabuena, {user}, has conseguido el rol {role}! :tada:',
 	no_perms: 'No tienes permiso de usar este comando',
-	need_lvl: 'El nivel debe ser un número'
+	need_lvl: 'El nivel debe ser un número',
+	level_set: 'Establecido el nivel de **{user}** a **{level}**'
 } as LanguageFile['xp'];
 
 export const other = {
