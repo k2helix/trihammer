@@ -1,22 +1,19 @@
 /* eslint-disable no-case-declarations */
-import { ColorResolvable, MessageEmbed, Permissions, TextBasedChannel } from 'discord.js';
+import { ColorResolvable, MessageEmbed, TextBasedChannel } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'embed',
 	description: 'Create an [embed](https://phodit.net/embedbuilder/)',
 	category: 'utility',
+	required_roles: ['MODERATOR'],
+	required_perms: ['MANAGE_WEBHOOKS'],
 	required_args: [
 		{ index: 0, name: 'channel', type: 'channel', optional: true },
 		{ index: 1, name: 'embed', type: 'string' }
 	],
 	async execute(client, message, args, guildConf) {
-		const { config, mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-
-		let perms = guildConf.modrole !== 'none' ? message.member!.roles.cache.has(guildConf.modrole) : message.member!.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS);
-		let adminPerms =
-			guildConf.adminrole !== 'none' ? message.member!.roles.cache.has(guildConf.adminrole) : message.member!.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS);
-		if (!perms && !adminPerms) return message.channel.send({ embeds: [client.redEmbed(config.mod_perm)] });
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		if (args[0] === 'help') return message.channel.send({ embeds: [client.whiteEmbed(mod.embed.how_it_works)] });
 

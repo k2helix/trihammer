@@ -1,15 +1,13 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelUsers } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'descprofile',
 	description: 'Set you profile description',
-	ESdesc: 'Establece tu descripción de perfil',
-	usage: 'profile-desc <description>',
-	example: 'profile-desc I like tomatoes',
-	aliases: ['profile-desc'],
-	type: 5,
-	async execute(client, message, args) {
+	aliases: ['profile-desc', 'profile-description'],
+	category: 'social',
+	required_args: [{ index: 0, name: 'description', type: 'string' }],
+	async execute(client, message, args, guildConf) {
 		let text = args.join(' ');
-		if (!text) return;
 		let global = await ModelUsers.findOne({ id: message.author.id });
 		if (!global) {
 			let newModel = new ModelUsers({
@@ -29,6 +27,6 @@ module.exports = {
 		global.pdesc = text;
 		await global.save();
 
-		message.channel.send('✅');
+		client.commands.get('profile')!.execute(client, message, args, guildConf);
 	}
-};
+});

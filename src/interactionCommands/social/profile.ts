@@ -38,7 +38,7 @@ module.exports = {
 
 			const xp = global.globalxp;
 			const canvas = createCanvas(442, 330);
-			var context = canvas.getContext('2d');
+			let context = canvas.getContext('2d');
 			const ctx = canvas.getContext('2d');
 
 			const background = await loadImage(global.pimage);

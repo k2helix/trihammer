@@ -112,10 +112,15 @@ export default async (client: ExtendedClient, message: Message) => {
 			let perms = command.required_roles.includes('MODERATOR')
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
 				: message.member.roles.cache.has(serverConfig.adminrole);
-			if (!perms) return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
+			if (!perms)
+				if (command.required_perms?.length > 0) {
+					const permsBitfield = Permissions.resolve(command.required_perms);
+					if (!message.member?.permissions.has(permsBitfield))
+						return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
+				} else return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 		}
 
-	if (command.required_perms?.length > 0) {
+	if (command.required_perms?.length > 0 && command.required_roles?.length === 0) {
 		const permsBitfield = Permissions.resolve(command.required_perms);
 		if (!message.member?.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });

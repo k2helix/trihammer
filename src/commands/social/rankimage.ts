@@ -1,13 +1,13 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelUsers } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'rankimage',
 	description: 'Set your [rank image](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/rank-image#images)',
-	ESdesc: 'Establece tu [imagen de rango](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/rank-image#images)',
-	usage: 'rankimage <image>',
-	example: 'rankimage 3',
 	aliases: ['rank-image'],
-	type: 5,
-	async execute(client, message, args) {
+	category: 'social',
+	required_args: [{ index: 0, name: 'image', type: 'string' }],
+	async execute(client, message, args, guildConf) {
+		type image = '1' | '2' | '3' | '4' | '5';
 		let images = {
 			'1': 'https://cdn.discordapp.com/attachments/487962590887149603/716052206356529162/images.png',
 			'2': 'https://cdn.discordapp.com/attachments/487962590887149603/716049978174472233/unknown.png',
@@ -16,7 +16,7 @@ module.exports = {
 			'5': 'https://cdn.discordapp.com/attachments/684154385408065693/715721659486830603/images.png'
 		};
 		let text = args.join(' ');
-		if (!images[text]) return message.channel.send('https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/rank-image#images');
+		if (!images[text as image]) return message.channel.send('https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/rank-image#images');
 		let global = await ModelUsers.findOne({ id: message.author.id });
 		if (!global) {
 			let newModel = new ModelUsers({
@@ -33,9 +33,9 @@ module.exports = {
 			await newModel.save();
 			global = newModel;
 		}
-		global.rimage = images[text];
+		global.rimage = images[text as image];
 		await global.save();
 
-		message.channel.send('✅');
+		client.commands.get('rank')!.execute(client, message, args, guildConf);
 	}
-};
+});

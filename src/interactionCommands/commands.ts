@@ -696,7 +696,7 @@ export default [
 		description: 'Add, remove or view the songs in the current queue',
 		options: [
 			{
-				name: 'add',
+				name: 'play',
 				description: 'Add a song to the queue',
 				type: 'SUB_COMMAND',
 				options: [
@@ -1163,6 +1163,55 @@ export default [
 				type: 'STRING',
 				description: 'The new level of the user',
 				required: true
+			}
+		]
+	},
+	{
+		name: 'leveledroles',
+		description: 'Add, remove or view the leveled roles in the server',
+		options: [
+			{
+				name: 'add',
+				description: 'Add a leveled role',
+				type: 'SUB_COMMAND',
+				options: [
+					{
+						name: 'role',
+						type: 'ROLE',
+						description: 'The role you want to add',
+						required: true
+					},
+					{
+						name: 'level',
+						type: 'STRING',
+						description: 'The level at which you want to give the role',
+						required: true
+					}
+				]
+			},
+			{
+				name: 'remove',
+				description: 'Remove a leveled role',
+				type: 'SUB_COMMAND',
+				options: [
+					{
+						name: 'role',
+						type: 'ROLE',
+						description: 'The role you want to remove from the list',
+						required: true
+					},
+					{
+						name: 'level',
+						type: 'STRING',
+						description: 'The level at which the role is given',
+						required: true
+					}
+				]
+			},
+			{
+				name: 'view',
+				description: 'View the leveled roles list',
+				type: 'SUB_COMMAND'
 			}
 		]
 	},

@@ -167,6 +167,7 @@ function swap(array: unknown[], x: number, y: number) {
 	return array;
 }
 
+// taken from the npm package "string-similarity" developed by aceakash
 function compareTwoStrings(first: string, second: string) {
 	first = first.replace(/\s+/g, '');
 	second = second.replace(/\s+/g, '');

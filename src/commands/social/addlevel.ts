@@ -1,40 +1,44 @@
-const { ModelRank } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelRank } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'addlevel',
-	description: "Set someone's level to x",
-	ESdesc: 'Establece el nivel de alguien a x',
-	usage: 'setlevel <user> <level>',
-	example: 'setlevel @user 12',
+	description: "Set someone's level to the specified",
 	aliases: ['setlevel'],
-	type: 5,
-	async execute(client, message, args) {
-		if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
+	required_args: [
+		{ index: 0, name: 'user', type: 'member' },
+		{ index: 1, name: 'level', type: 'number' }
+	],
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	category: 'social',
+	async execute(client, message, args, guildConf) {
+		const { xp } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let user =
-			message.mentions.members.first() ||
-			message.guild.members.cache.find((m) => m.user.tag === args.slice(0, args.length - 1).join(' ')) ||
-			message.guild.members.cache.get(args[0]);
+			message.mentions.members!.first() ||
+			message.guild!.members.cache.find((m) => m.user.tag === args.slice(0, args.length - 1).join(' ')) ||
+			message.guild!.members.cache.get(args[0]);
 
-		let nivel = args[args.length - 1];
+		let level = args[args.length - 1];
 		if (!user) return;
-		if (user.bot) return message.channel.send('no bots');
+		if (user.user.bot) return;
 
-		if (!nivel) return;
-		if (isNaN(nivel)) return;
-		if (nivel.startsWith('-')) return;
-		let local = await ModelRank.findOne({ id: user.id, server: message.guild.id });
+		if (!level) return;
+		if (level.startsWith('-')) return;
+
+		let local = await ModelRank.findOne({ id: user.id, server: message.guild!.id });
 		if (!local) {
 			let newRankModel = new ModelRank({
 				id: user.id,
-				server: message.guild.id,
-				nivel: 1,
+				server: message.guild!.id,
+				level: 1,
 				xp: 0
 			});
 			await newRankModel.save();
 			local = newRankModel;
 		}
-		local.nivel = nivel;
+		local.level = parseInt(level);
 		await local.save();
-		message.channel.send(':white_check_mark:');
+		message.channel.send({ embeds: [client.blueEmbed(client.replaceEach(xp.level_set, { '{user}': user.user.tag, '{level}': parseInt(level).toString() }))] });
 	}
-};
+});

@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // var googleTTS = require('google-tts-api');
 // const https = require('https');
 // const ytdl = require('ytdl-core');
+
+import MessageCommand from '../../lib/structures/MessageCommand';
 
 // let { PassThrough } = require('stream');
 // let FFmpeg = require('fluent-ffmpeg');
@@ -18,13 +21,10 @@
 // 		return mergedStream;
 // 	}, new PassThrough());
 
-module.exports = {
+export default new MessageCommand({
 	name: 'test',
 	description: 'test',
-	ESdesc: 'test',
-	usage: 'test',
-	example: 'test',
-	type: -1,
+	category: 'unknown',
 	execute(client, message, args) {
 		if (message.author.id !== '461279654158925825') return;
 
@@ -62,4 +62,4 @@ module.exports = {
 		// 		console.error(err);
 		// 	});
 	}
-};
+});

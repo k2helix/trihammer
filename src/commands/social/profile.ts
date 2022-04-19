@@ -1,15 +1,16 @@
-const Discord = require('discord.js');
-const { loadImage, createCanvas } = require('canvas');
-const { ModelUsers } = require('../../lib/utils/models');
+import { MessageAttachment } from 'discord.js';
+import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { ModelUsers, Users } from '../../lib/utils/models';
+import MessageCommand from '../../lib/structures/MessageCommand';
 
-function wrapText(context, text, x, y, maxWidth, lineHeight) {
-	var words = text.split(' ');
-	var line = '';
+function wrapText(context: NodeCanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+	let words = text.split(' ');
+	let line = '';
 
-	for (var n = 0; n < words.length; n++) {
-		var testLine = line + words[n] + ' ';
-		var metrics = context.measureText(testLine);
-		var testWidth = metrics.width;
+	for (let n = 0; n < words.length; n++) {
+		let testLine = line + words[n] + ' ';
+		let metrics = context.measureText(testLine);
+		let testWidth = metrics.width;
 		if (testWidth > maxWidth && n > 0) {
 			context.fillText(line, x, y);
 			line = words[n] + ' ';
@@ -19,23 +20,21 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
 	context.fillText(line, x, y);
 }
 
-module.exports = {
+export default new MessageCommand({
 	name: 'profile',
 	description: 'Get your profile card',
-	ESdesc: 'Obtén tu imagen de perfil',
-	usage: 'profile [user]',
-	example: 'profile\nprofile @user',
 	cooldown: 3,
-	type: 5,
-	myPerms: [true, 'ATTACH_FILES'],
-	async execute(client, message, args) {
-		let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
+	category: 'social',
+	client_perms: ['ATTACH_FILES'],
+	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
+	async execute(_client, message, args) {
+		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member!;
 
-		let global = await ModelUsers.findOne({ id: user.id }).lean();
+		let global = await ModelUsers.findOne({ id: user!.id }).lean();
 		if (!global) return message.channel.send('404');
 
-		let top = await ModelUsers.find({ globalxp: { $gte: 250000 } }).lean();
-		let posicion = (element) => element.id === user.id;
+		let top: Users[] = await ModelUsers.find({ globalxp: { $gte: 300000 } }).lean();
+		let posicion = (element: Users) => element.id === user!.id;
 		let pos =
 			top
 				.sort((a, b) => {
@@ -45,7 +44,7 @@ module.exports = {
 
 		const xp = global.globalxp;
 		const canvas = createCanvas(442, 330);
-		var context = canvas.getContext('2d');
+		let context = canvas.getContext('2d');
 		const ctx = canvas.getContext('2d');
 
 		const background = await loadImage(global.pimage);
@@ -57,9 +56,9 @@ module.exports = {
 		ctx.strokeStyle = '#74037b';
 		ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-		ctx.font = user.user.tag.length < 12 ? '30px sans-serif' : '20px sans-serif';
+		ctx.font = user!.user.tag.length < 12 ? '30px sans-serif' : '20px sans-serif';
 		ctx.fillStyle = '#0e0d0e';
-		ctx.fillText(user.user.tag, 130, 90);
+		ctx.fillText(user!.user.tag, 130, 90);
 
 		ctx.font = '17px sans-serif';
 		ctx.fillStyle = '#0e0d0e';
@@ -81,10 +80,10 @@ module.exports = {
 		context.font = '22px sans-serif';
 		wrapText(canvas.getContext('2d'), global.ptext, 140, 170, 275, 20);
 
-		const avatar = await loadImage(user.user.displayAvatarURL({ format: 'png' }));
+		const avatar = await loadImage(user!.user.displayAvatarURL({ format: 'png' }));
 		ctx.drawImage(avatar, 27, 52, 100, 100);
 
-		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'profile-image.png');
+		const attachment = new MessageAttachment(canvas.toBuffer(), 'profile-image.png');
 		message.channel.send({ files: [attachment] });
 	}
-};
+});

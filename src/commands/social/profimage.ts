@@ -1,13 +1,13 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelUsers } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'profimage',
 	description: 'Set your [profile image](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images)',
-	ESdesc: 'Establece tu [imagen de perfil](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images)',
-	usage: 'profile-image <image>',
-	example: 'profile-image 2',
 	aliases: ['profile-image', 'profileimage'],
-	type: 5,
-	async execute(client, message, args) {
+	required_args: [{ index: 0, name: 'image', type: 'string' }],
+	category: 'social',
+	async execute(client, message, args, guildConf) {
+		type image = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11';
 		let images = {
 			'1': 'https://cdn.discordapp.com/attachments/487962590887149603/716052349851795496/images.png',
 			'2': 'https://cdn.discordapp.com/attachments/487962590887149603/716052326154108980/images.png',
@@ -22,7 +22,7 @@ module.exports = {
 			'11': 'https://cdn.discordapp.com/attachments/588140412036841482/715735868434022460/rabbit-542554_1920.jpg'
 		};
 		let text = args.join(' ');
-		if (!images[text]) return message.channel.send('https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images');
+		if (!images[text as image]) return message.channel.send('https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images');
 		let global = await ModelUsers.findOne({ id: message.author.id });
 		if (!global) {
 			let newModel = new ModelUsers({
@@ -40,9 +40,9 @@ module.exports = {
 			global = newModel;
 			return;
 		}
-		global.pimage = images[text];
+		global.pimage = images[text as image];
 		await global.save();
 
-		message.channel.send('✅');
+		client.commands.get('profile')!.execute(client, message, args, guildConf);
 	}
-};
+});

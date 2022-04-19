@@ -1,15 +1,13 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelUsers } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'textprofile',
 	description: 'Set your profile text',
-	ESdesc: 'Establece tu texto de perfil',
-	usage: 'profile-text <text>',
-	example: 'profile-text Hola muy buenas tardes',
 	aliases: ['proftext', 'textprof', 'profile-text'],
-	type: 5,
-	async execute(client, message, args) {
+	category: 'social',
+	required_args: [{ index: 0, name: 'text', type: 'string' }],
+	async execute(client, message, args, guildConf) {
 		let text = args.join(' ');
-		if (!text) return;
 		let global = await ModelUsers.findOne({ id: message.author.id });
 		if (!global) {
 			let newModel = new ModelUsers({
@@ -23,12 +21,12 @@ module.exports = {
 				cooldown: Date.now(),
 				repcooldown: Date.now()
 			});
-			await newModel.validate();
+			await newModel.save();
 			global = newModel;
 		}
 		global.ptext = text;
 		await global.save();
 
-		message.channel.send('✅');
+		client.commands.get('profile')!.execute(client, message, args, guildConf);
 	}
-};
+});

@@ -65,8 +65,8 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 				local.xp = 0;
 				await local.save();
 			} else {
-				const arr = [...Array(localLean.nivel).keys()];
-				arr.forEach(async (number) => {
+				const previousLevels = [...Array(localLean.nivel).keys()];
+				previousLevels.forEach(async (number) => {
 					const roleInDb: { server: string; level: number; role: string } = await ModelLvlRol.findOne({
 						server: message.guild!.id,
 						level: number

@@ -1,3 +1,5 @@
+import { LvlRol } from "../../lib/utils/models";
+
 const { ModelServer, ModelLvlRol } = require('../../lib/utils/models');
 
 const Discord = require('discord.js');
@@ -12,7 +14,7 @@ module.exports = {
 		let { xp, config } = require(`../../lib/utils/lang/${guildConf.lang}`);
 
 		if (!args[0]) {
-			const roles = await ModelLvlRol.find({ server: message.guild.id });
+			const roles: LvlRol[] = await ModelLvlRol.find({ server: message.guild.id });
 			if (!roles[0]) return message.channel.send(xp.lvlroles.no_roles);
 
 			roles.sort((a, b) => {

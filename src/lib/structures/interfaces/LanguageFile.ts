@@ -353,6 +353,8 @@ export default interface LanguageFile {
 			remove: string;
 			add: string;
 			no_roles: string;
+			removed: string;
+			added: string;
 		};
 		rep: {
 			cooldown: (time: number, prefix: string) => string;
@@ -364,6 +366,7 @@ export default interface LanguageFile {
 		lvlup: string;
 		no_perms: string;
 		need_lvl: string;
+		level_set: string;
 	};
 	other: {
 		need_perm: {

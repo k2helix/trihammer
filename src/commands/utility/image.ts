@@ -36,11 +36,12 @@ export default new MessageCommand({
 			let images = $('div[class="islrtb isv-r"]');
 			let urls: { name: string; img: string; site: string; site_url: string }[] = [];
 
-			Object.keys(images).forEach(function (key) {
-				if (Number(key) > 19) return;
-				let val = images[key as unknown as number];
-				if (val.attribs) urls.push({ name: val.attribs['data-pt'], img: val.attribs['data-ou'], site: val.attribs['data-st'], site_url: val.attribs['data-ru'] });
-			});
+			Object.keys(images)
+				.slice(0, 20)
+				.forEach(function (key) {
+					let val = images[key as unknown as number];
+					if (val.attribs) urls.push({ name: val.attribs['data-pt'], img: val.attribs['data-ou'], site: val.attribs['data-st'], site_url: val.attribs['data-ru'] });
+				});
 
 			let image = urls[0];
 			const row = new MessageActionRow().addComponents([
