@@ -74,7 +74,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		}
 
 		if (command.cooldown) {
-			if (!cooldowns.has(command.name)) cooldowns.set(command.name, new Discord.Collection());
+			if (!cooldowns.has(command.name)) cooldowns.set(command.name, new Collection());
 
 			const now = Date.now();
 			const timestamps = cooldowns.get(command.name) as Collection<string, number>;

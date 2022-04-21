@@ -90,7 +90,6 @@ export default new MessageCommand({
 				});
 				message.channel.send({ embeds: [customEmbed] });
 			} catch (error) {
-				console.error(error);
 				message.channel.send((error as Error).message + mod.embed.create_embed);
 			}
 		}

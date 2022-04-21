@@ -1,33 +1,34 @@
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+import Command from '../../lib/structures/Command';
+import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const NodeGeocoder = require('node-geocoder');
 const options = {
 	provider: 'opencage',
 	apiKey: process.env.OPENCAGE_API_KEY
 };
-module.exports = {
+export default new Command({
 	name: 'location',
 	description: 'Search for an ubication in the map',
-	ESdesc: 'Busca una ubicación en el mapa',
-	usage: 'location <location>',
-	example: 'location mamada station',
-	aliases: ['map', 'whereis', 'ubication'],
-	type: 0,
+	category: 'utility',
 	async execute(client, interaction, guildConf) {
-		let { util, music } = require(`../../lib/utils/lang/${guildConf.lang}`);
+		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const geocoder = NodeGeocoder(options);
-		let location = interaction.options.getString('query');
+		let location = (interaction as CommandInteraction).options.getString('query');
 		const res = await geocoder.geocode(location);
-		if (!res[0]) interaction.reply({ content: music.not_found, ephemeral: true });
+		if (!res[0]) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 
 		const row = new MessageActionRow().addComponents([
 			new MessageButton().setCustomId('left').setEmoji('882626242459861042').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('right').setEmoji('882626290253959258').setStyle('PRIMARY')
+			new MessageButton().setCustomId('right').setEmoji('882626290253959258').setStyle('PRIMARY'),
+			new MessageButton().setCustomId('zoomin').setEmoji('964842455390375957').setStyle('PRIMARY'),
+			new MessageButton().setCustomId('zoomout').setEmoji('964842968815116369').setStyle('PRIMARY')
 		]);
 		let embed = new MessageEmbed()
-			.setTitle(location)
 			.setColor('RANDOM')
 			.setDescription(util.map.found(res, '1'))
+			// @ts-ignore it exists indeed
 			.addField(util.map.country, res[0].country || 'No')
 			.addField(util.map.state, res[0].state || 'No')
 			.addField(util.map.city, res[0].city || 'No')
@@ -38,13 +39,17 @@ module.exports = {
 		interaction.reply({ embeds: [embed], components: [row] });
 		let msg = await interaction.fetchReply();
 
-		const filter = (int) => int.user.id === interaction.user.id;
-		const collector = msg.createMessageComponentCollector({ filter, time: 60000 });
+		const filter = (int: ButtonInteraction) => int.user.id === interaction.user.id;
+		const collector = (msg as Message).createMessageComponentCollector({ filter, time: 60000, componentType: 'BUTTON' });
 		collector.on('collect', async (reaction) => {
-			msg = await interaction.channel.messages.fetch(msg.id);
-			let current = parseInt(msg.embeds[0].footer.text.charAt(0));
+			msg = await interaction.channel!.messages.fetch(msg.id);
+			let current = parseInt(msg.embeds[0].footer!.text.charAt(0));
 			let next = current + 1 > res.length ? res[0] : res[current];
 			let previous = current - 1 < 1 ? res[res.length - 1] : res[current - 2];
+			let currentImage = msg.embeds[0].image!.url;
+			let currentZoom = currentImage.slice(currentImage.indexOf('&zoom=') + 6);
+			let zoomIn = parseInt(currentZoom) + 1,
+				zoomOut = parseInt(currentZoom) - 1;
 			let embed;
 			switch (reaction.customId) {
 				case 'right':
@@ -75,10 +80,20 @@ module.exports = {
 					embed.fields[4].value = previous.streetName || 'No';
 					reaction.update({ embeds: [embed] });
 					break;
+				case 'zoomin':
+					if (zoomIn > 20) return reaction.reply({ embeds: [client.redEmbed(util.map.too_much_zoom)], ephemeral: true });
+					embed = new MessageEmbed(msg.embeds[0]).setImage(currentImage.replace(`&zoom=${currentZoom}`, `&zoom=${zoomIn}`));
+					reaction.update({ embeds: [embed] });
+					break;
+				case 'zoomout':
+					if (zoomOut < 0) return reaction.reply({ embeds: [client.redEmbed(util.map.too_little_zoom)], ephemeral: true });
+					embed = new MessageEmbed(msg.embeds[0]).setImage(currentImage.replace(`&zoom=${currentZoom}`, `&zoom=${zoomOut}`));
+					reaction.update({ embeds: [embed] });
+					break;
 			}
 		});
 		collector.on('end', () => {
-			msg.edit({ components: [] });
+			(msg as Message).edit({ components: [] });
 		});
 	}
-};
+});

@@ -150,6 +150,7 @@ async function play(guild: Guild, song: Song) {
 	const embed = new MessageEmbed()
 		.setTitle(music.play.now_playing.title)
 		.setDescription(`**[${song.title}](${song.url})**\n[${song.channel!.name}](${song.channel!.url})`)
+		.setColor(4494843)
 		.addField(music.play.now_playing.requested_by, `${song.requested === 'Autoplay' ? 'Autoplay' : `<@${song.requested}>`}`, true)
 		.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
 		.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
