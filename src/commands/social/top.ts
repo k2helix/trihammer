@@ -29,7 +29,7 @@ export default new MessageCommand({
 			let usuarios = [];
 			// eslint-disable-next-line no-redeclare
 			for (let x in top.slice(0, 10)) {
-				let user = message.guild!.members.cache.has(top[x].id) ? message.guild!.members.cache.get(top[x].id)!.user.tag : 'User who left the guild (' + top[x].id + ')';
+				let user = message.guild!.members.cache.has(top[x].id) ? message.guild!.members.cache.get(top[x].id)!.user.tag : 'Uncached user (' + top[x].id + ')';
 				usuarios.push(`${parseFloat(x) + 1} - ${user}:\nLevel ${top[x].nivel} ~ XP ${top[x].xp}`);
 			}
 			let lugar = top
