@@ -1,59 +1,54 @@
-import { LvlRol } from "../../lib/utils/models";
-
-const { ModelServer, ModelLvlRol } = require('../../lib/utils/models');
-
-const Discord = require('discord.js');
-module.exports = {
+import { LvlRol, ModelLvlRol } from '../../lib/utils/models';
+import Discord from 'discord.js';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new Command({
 	name: 'leveledroles',
 	description: 'See the leveled roles of the server or add more',
-	ESdesc: 'Mira o añade los roles de niveles',
-	usage: 'leveledroles [remove] <role id> <level>',
-	example: 'leveledroles\nleveledroles 408785106942164992 10\n leveledroles remove 408785106942164992 10',
-	type: 5,
+	category: 'social',
 	async execute(client, interaction, guildConf) {
-		let { xp, config } = require(`../../lib/utils/lang/${guildConf.lang}`);
+		const { xp, config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
 
-		if (!args[0]) {
-			const roles: LvlRol[] = await ModelLvlRol.find({ server: message.guild.id });
-			if (!roles[0]) return message.channel.send(xp.lvlroles.no_roles);
+		if (interaction.options.data[0].name === 'view') {
+			const roles: LvlRol[] = await ModelLvlRol.find({ server: interaction.guild!.id });
+			if (!roles[0]) return interaction.reply({ embeds: [client.redEmbed(xp.lvlroles.no_roles)] });
 
 			roles.sort((a, b) => {
 				return b.level - a.level;
 			});
 
-			const mapa = roles.map((role) => `Level ${role.level}: <@&${role.role}>`).join('\n');
+			const mapped = roles.map((role) => `Level ${role.level}: <@&${role.role}>`).join('\n');
 			const embed = new Discord.MessageEmbed();
 			embed.setTitle(xp.lvlroles.show);
 			embed.setColor('RANDOM');
-			embed.setThumbnail(message.guild.iconURL({ dynamic: true }));
-			embed.setDescription(mapa);
-			message.channel.send({ embeds: [embed] });
+			embed.setThumbnail(interaction.guild!.iconURL({ dynamic: true })!);
+			embed.setDescription(mapped);
+			return interaction.reply({ embeds: [embed] });
 		}
-		if (args[0] === 'remove') {
-			let permiso =
-				serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
-			if (!permiso) return message.channel.send(config.admin_perm);
-			if (!args[1] || !args[2]) return message.channel.send(xp.lvlroles.remove);
+		if (interaction.options.data[0].name === 'remove') {
+			let perms =
+				guildConf.adminrole !== 'none' ? interaction.member.roles.cache.has(guildConf.adminrole) : interaction.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+			if (!perms) return interaction.reply({ embeds: [client.redEmbed(config.admin_perm)] });
 
-			await ModelLvlRol.deleteOne({ server: message.guild.id, role: args[1], level: Number(args[2]) });
-			message.channel.send(':white_check_mark:');
+			await ModelLvlRol.deleteOne({ server: interaction.guild.id, role: interaction.options.getRole('role')!.id, level: parseInt(interaction.options.getString('level')!) });
+			return interaction.reply({ embeds: [client.blueEmbed(xp.lvlroles.removed)] });
 		}
-		if (args[0] && args[0] !== 'remove') {
-			let permiso =
-				serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
-			if (!permiso) return message.channel.send(config.admin_perm);
-			let rol = message.guild.roles.cache.get(args[0]) || message.guild.roles.cache.find((r) => r.name === args[0]);
-			let nivel = args[1];
-			if (!rol || !nivel) return message.channel.send(xp.lvlroles.add);
+		if (interaction.options.data[0].name === 'add') {
+			let perms =
+				guildConf.adminrole !== 'none' ? interaction.member.roles.cache.has(guildConf.adminrole) : interaction.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+			if (!perms) return interaction.reply({ embeds: [client.redEmbed(config.admin_perm)] });
+			let rol = interaction.options.getRole('role')!;
+			let nivel = interaction.options.getString('level');
+			if (!rol || !nivel) return interaction.reply({ embeds: [client.redEmbed(xp.lvlroles.add)] });
 
 			let lvlroles = new ModelLvlRol({
-				server: message.guild.id,
+				server: interaction.guild.id,
 				role: rol.id,
-				level: Number(nivel)
+				level: parseInt(nivel)
 			});
-			await lvlroles.validate();
 			await lvlroles.save();
-			message.channel.send(':white_check_mark:');
+			return interaction.reply({ embeds: [client.blueEmbed(xp.lvlroles.added)] });
 		}
 	}
-};
+});

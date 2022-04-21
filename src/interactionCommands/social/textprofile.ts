@@ -1,14 +1,12 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import { ModelUsers } from '../../lib/utils/models';
+export default new Command({
 	name: 'textprofile',
 	description: 'Set your profile text',
-	ESdesc: 'Establece tu texto de perfil',
-	usage: 'profile-text <text>',
-	example: 'profile-text Hola muy buenas tardes',
-	aliases: ['proftext', 'textprof', 'profile-text'],
-	type: 5,
-	async execute(client, interaction) {
-		let text = interaction.options.getString('text');
+	category: 'social',
+	async execute(client, interaction, guildConf) {
+		let text = (interaction as CommandInteraction).options.getString('text');
 		let global = await ModelUsers.findOne({ id: interaction.user.id });
 		if (!global) {
 			let newModel = new ModelUsers({
@@ -28,6 +26,6 @@ module.exports = {
 		global.ptext = text;
 		await global.save();
 
-		client.interactionCommands.get('profile').execute(client, interaction);
+		client.interactionCommands.get('profile')!.execute(client, interaction, guildConf);
 	}
-};
+});

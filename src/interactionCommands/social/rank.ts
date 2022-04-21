@@ -1,8 +1,9 @@
-const { MessageAttachment } = require('discord.js');
-const { createCanvas, loadImage } = require('canvas');
-const { ModelUsers, ModelRank } = require('../../lib/utils/models');
+import Command from '../../lib/structures/Command';
+import { CommandInteraction, MessageAttachment } from 'discord.js';
+import { Canvas, createCanvas, loadImage } from 'canvas';
+import { ModelRank, ModelUsers, Rank } from '../../lib/utils/models';
 
-const applyText = (canvas, text) => {
+const applyText = (canvas: Canvas, text: string) => {
 	const ctx = canvas.getContext('2d');
 	let fontSize = 70;
 
@@ -11,31 +12,29 @@ const applyText = (canvas, text) => {
 
 	return ctx.font;
 };
-module.exports = {
+
+export default new Command({
 	name: 'rank',
 	description: 'Get your rank card',
-	ESdesc: 'Obtén tu imagen de rango',
-	usage: 'rank [user]',
-	example: 'rank @user\nrank',
 	cooldown: 3,
-	type: 5,
-	myPerms: [true, 'ATTACH_FILES'],
+	category: 'social',
+	client_perms: ['ATTACH_FILES'],
 	execute(client, interaction) {
 		interaction.deferReply().then(async () => {
-			let user = interaction.options.getUser('user') || interaction.user;
-			if (user.bot) return interaction.editReply({ content: 'Bots do not have rank!', ephemeral: false });
+			let user = (interaction as CommandInteraction).options.getUser('user') || interaction.user;
+			if (user.bot) return interaction.editReply({ embeds: [client.redEmbed('Bots do not have profile!')] });
 
 			let local = await ModelRank.findOne({ id: user.id, server: interaction.guildId }).lean();
-			if (!local) return interaction.editReply({ content: '404 User not found (send some messages and try again)', ephemeral: false });
+			if (!local) return interaction.editReply({ embeds: [client.redEmbed('404 User not found in database (send some messages and try again)')] });
 
 			let gl = await ModelUsers.findOne({ id: user.id }).lean();
-			if (!gl) return interaction.editReply({ content: '404 User not found (send some messages and try again)', ephemeral: false });
+			if (!gl) return interaction.editReply({ embeds: [client.redEmbed('404 User not found in database (send some messages and try again)')] });
 
 			let url = gl.rimage;
 			if (url === 'https://github.com/discordjs/guide/blob/master/code-samples/popular-topics/canvas/12/wallpaper.jpg?raw=true')
 				url = 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png';
-			let top = await ModelRank.find({ server: interaction.guildId }).lean();
-			let posicion = (element) => element.id === user.id && element.server === interaction.guildId;
+			let top: Rank[] = await ModelRank.find({ server: interaction.guildId }).lean();
+			let posicion = (element: Rank) => element.id === user.id && element.server === interaction.guildId;
 
 			const xp = local.xp;
 			const nivel = local.nivel;
@@ -100,4 +99,4 @@ module.exports = {
 			interaction.editReply({ files: [attachment] });
 		});
 	}
-};
+});

@@ -1,14 +1,12 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import { ModelUsers } from '../../lib/utils/models';
+export default new Command({
 	name: 'descprofile',
 	description: 'Set you profile description',
-	ESdesc: 'Establece tu descripción de perfil',
-	usage: 'profile-desc <description>',
-	example: 'profile-desc I like tomatoes',
-	aliases: ['profile-desc'],
-	type: 5,
-	async execute(client, interaction) {
-		let text = interaction.options.getString('description');
+	category: 'social',
+	async execute(client, interaction, guildConf) {
+		let text = (interaction as CommandInteraction).options.getString('description');
 		let global = await ModelUsers.findOne({ id: interaction.user.id });
 		if (!global) {
 			let newModel = new ModelUsers({
@@ -28,6 +26,6 @@ module.exports = {
 		global.pdesc = text;
 		await global.save();
 
-		client.interactionCommands.get('profile').execute(client, interaction);
+		client.interactionCommands.get('profile')!.execute(client, interaction, guildConf);
 	}
-};
+});

@@ -1,14 +1,13 @@
-const { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import { ModelUsers } from '../../lib/utils/models';
+export default new Command({
 	name: 'profimage',
 	description: 'Set your [profile image](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images)',
-	ESdesc: 'Establece tu [imagen de perfil](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images)',
-	usage: 'profile-image <image>',
-	example: 'profile-image 2',
-	aliases: ['profile-image', 'profileimage'],
-	type: 5,
-	async execute(client, interaction) {
-		let selected = interaction.options.getString('image');
+	category: 'social',
+	async execute(client, interaction, guildConf) {
+		let selected = (interaction as CommandInteraction).options.getString('image')!;
+		type image = 'pione' | 'pitwo' | 'pithree' | 'pifour' | 'pifive' | 'pisix' | 'piseven' | 'pieight' | 'pinine' | 'piten' | 'pieleven';
 		let images = {
 			pione: 'https://cdn.discordapp.com/attachments/487962590887149603/716052349851795496/images.png',
 			pitwo: 'https://cdn.discordapp.com/attachments/487962590887149603/716052326154108980/images.png',
@@ -22,13 +21,13 @@ module.exports = {
 			piten: 'https://cdn.discordapp.com/attachments/588140412036841482/715735767481319474/animal-1845263_1920.jpg',
 			pieleven: 'https://cdn.discordapp.com/attachments/588140412036841482/715735868434022460/rabbit-542554_1920.jpg'
 		};
-		if (!images[selected]) return interaction.reply('https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/profile-image#images');
+
 		let global = await ModelUsers.findOne({ id: interaction.user.id });
 		if (!global) {
 			let newModel = new ModelUsers({
 				id: interaction.user.id,
 				globalxp: 0,
-				pimage: images[selected],
+				pimage: images[selected as image],
 				rimage: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
 				pdesc: '',
 				ptext: 'Bla bla bla...',
@@ -40,9 +39,9 @@ module.exports = {
 			global = newModel;
 			return;
 		}
-		global.pimage = images[selected];
+		global.pimage = images[selected as image];
 		await global.save();
 
-		client.interactionCommands.get('profile').execute(client, interaction);
+		client.interactionCommands.get('profile')!.execute(client, interaction, guildConf);
 	}
-};
+});

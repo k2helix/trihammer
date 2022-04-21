@@ -1,37 +1,34 @@
-const { ModelRank } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { ModelRank } from '../../lib/utils/models';
+import { CommandInteraction } from 'discord.js';
+export default new Command({
 	name: 'setlevel',
-	description: "Set someone's level to x",
-	ESdesc: 'Establece el nivel de alguien a x',
-	usage: 'setlevel <user> <level>',
-	example: 'setlevel @user 12',
-	aliases: ['addlevel'],
-	type: 5,
+	description: "Set someone's level to the specified",
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	category: 'social',
 	async execute(client, interaction, guildConf) {
-		const { xp } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return interaction.reply({ content: xp.no_perms, ephemeral: true });
-		let user = interaction.options.getUser('user');
-		if (!user) return;
-		if (user.bot) return interaction.reply({ content: 'no bots', ephemeral: true });
+		const { xp } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		let user = (interaction as CommandInteraction).options.getUser('user')!;
+		let level = (interaction as CommandInteraction).options.getString('level')!;
 
-		let nivel = interaction.options.getString('level');
-		if (!nivel) return interaction.reply({ content: xp.need_lvl, ephemeral: true });
-		if (isNaN(nivel)) return interaction.reply({ content: xp.need_lvl, ephemeral: true });
-		if (nivel.startsWith('-')) return interaction.reply({ content: xp.need_lvl, ephemeral: true });
-		let local = await ModelRank.findOne({ id: user.id, server: interaction.guildId });
+		if (user.bot) return interaction.reply('nope');
+		if (level.startsWith('-')) return interaction.reply('nope');
+
+		let local = await ModelRank.findOne({ id: user.id, server: interaction.guild!.id });
 		if (!local) {
 			let newRankModel = new ModelRank({
 				id: user.id,
-				server: interaction.guildId,
-				nivel: 1,
+				server: interaction.guild!.id,
+				level: 1,
 				xp: 0
 			});
 			await newRankModel.save();
 			local = newRankModel;
 		}
-		local.nivel = nivel;
+		local.level = parseInt(level);
 		await local.save();
-		interaction.reply(':white_check_mark:');
+		interaction.reply({ embeds: [client.blueEmbed(client.replaceEach(xp.level_set, { '{user}': user.tag, '{level}': parseInt(level).toString() }))] });
 	}
-};
+});
