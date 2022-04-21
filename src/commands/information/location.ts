@@ -14,10 +14,12 @@ export default new MessageCommand({
 	category: 'utility',
 	required_args: [{ index: 0, name: 'location query', type: 'string' }],
 	async execute(client, message, args, guildConf) {
-		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const geocoder = NodeGeocoder(options);
 		const res = await geocoder.geocode(args.join(' '));
+
+		if (!res[0]) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 
 		const row = new MessageActionRow().addComponents([
 			new MessageButton().setCustomId('left').setEmoji('882626242459861042').setStyle('PRIMARY'),
@@ -27,7 +29,6 @@ export default new MessageCommand({
 		]);
 
 		let embed = new MessageEmbed()
-			.setTitle(args.join(' '))
 			.setColor('RANDOM')
 			.setDescription(util.map.found(res, '1'))
 			// @ts-ignore it exists indeed

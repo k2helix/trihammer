@@ -1,16 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-// let object = {
-// 	0: `Info`,
-// 	1: `Utilidades`,
-// 	2: 'Moderación',
-// 	3: 'Configuración',
-// 	4: 'Manipulación de imágenes',
-// 	5: 'Social',
-// 	6: 'Música',
-// 	7: 'Fun'
-// };
+
 export default new Command({
 	name: 'help',
 	description: 'The help command',
