@@ -1,10 +1,9 @@
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+export default new Command({
 	name: 'edit',
 	description: 'Edit your profile',
-	ESdesc: 'Edita tu perfil',
-	usage: 'edit <something>',
-	example: 'edit profile-image',
-	type: 7,
+	category: 'social',
 	execute(client, interaction, guildConf) {
 		const names = {
 			'profile-image': 'profimage',
@@ -12,6 +11,8 @@ module.exports = {
 			'profile-text': 'textprofile',
 			'rank-image': 'rankimage'
 		};
-		client.interactionCommands.get(names[interaction.options.data[0].name]).execute(client, interaction, guildConf);
+		client.interactionCommands
+			.get(names[(interaction as CommandInteraction).options.data[0].name as 'profile-image' | 'profile-description' | 'profile-text' | 'rank-image'])!
+			.execute(client, interaction, guildConf);
 	}
-};
+});

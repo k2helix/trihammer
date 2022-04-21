@@ -1,15 +1,16 @@
-const Discord = require('discord.js');
-const { loadImage, createCanvas } = require('canvas');
-const { ModelUsers } = require('../../lib/utils/models');
+import { CommandInteraction, MessageAttachment } from 'discord.js';
+import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { ModelUsers } from '../../lib/utils/models';
+import Command from '../../lib/structures/Command';
 
-function wrapText(context, text, x, y, maxWidth, lineHeight) {
-	var words = text.split(' ');
-	var line = '';
+function wrapText(context: NodeCanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+	let words = text.split(' ');
+	let line = '';
 
-	for (var n = 0; n < words.length; n++) {
-		var testLine = line + words[n] + ' ';
-		var metrics = context.measureText(testLine);
-		var testWidth = metrics.width;
+	for (let n = 0; n < words.length; n++) {
+		let testLine = line + words[n] + ' ';
+		let metrics = context.measureText(testLine);
+		let testWidth = metrics.width;
 		if (testWidth > maxWidth && n > 0) {
 			context.fillText(line, x, y);
 			line = words[n] + ' ';
@@ -19,22 +20,19 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
 	context.fillText(line, x, y);
 }
 
-module.exports = {
+export default new Command({
 	name: 'profile',
 	description: 'Get your profile card',
-	ESdesc: 'Obtén tu imagen de perfil',
-	usage: 'profile [user]',
-	example: 'profile\nprofile @user',
 	cooldown: 3,
-	type: 5,
-	myPerms: [true, 'ATTACH_FILES'],
+	category: 'social',
+	client_perms: ['ATTACH_FILES'],
 	execute(client, interaction) {
 		interaction.deferReply().then(async () => {
-			let user = interaction.options.getUser('user') || interaction.user;
-			if (user.bot) return interaction.editReply({ content: 'Bots do not have profile!', ephemeral: false });
+			let user = (interaction as CommandInteraction).options.getUser('user') || interaction.user;
+			if (user.bot) return interaction.editReply({ embeds: [client.redEmbed('Bots do not have profile!')] });
 
 			let global = await ModelUsers.findOne({ id: user.id }).lean();
-			if (!global) return interaction.editReply({ content: '404 User not found (send some messages and try again)', ephemeral: false });
+			if (!global) return interaction.editReply({ embeds: [client.redEmbed('404 User not found in database (send some messages and try again)')] });
 
 			const xp = global.globalxp;
 			const canvas = createCanvas(442, 330);
@@ -77,8 +75,8 @@ module.exports = {
 			const avatar = await loadImage(user.displayAvatarURL({ format: 'png' }));
 			ctx.drawImage(avatar, 27, 52, 100, 100);
 
-			const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'profile-image.png');
+			const attachment = new MessageAttachment(canvas.toBuffer(), 'profile-image.png');
 			interaction.editReply({ files: [attachment] });
 		});
 	}
-};
+});
