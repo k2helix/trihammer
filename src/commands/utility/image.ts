@@ -18,7 +18,6 @@ export default new MessageCommand({
 	cooldown: 3,
 	category: 'utility',
 	required_args: [{ index: 0, name: 'query', type: 'string' }],
-	client_perms: ['ATTACH_FILES'],
 	async execute(_client, message, args, guildConf) {
 		let search = args.join(' ');
 

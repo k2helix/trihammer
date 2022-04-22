@@ -1,19 +1,38 @@
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+
+function decode(text: string) {
+	text = text.replace(/\s+/g, '');
+	text = text.match(/.{1,8}/g)!.join(' ');
+	return text
+		.split(' ')
+		.map((m) => String.fromCharCode(parseInt(m, 2)))
+		.join('');
+}
+
+function encode(string: string, spaces: boolean) {
+	function zeroPad(n: string) {
+		return '00000000'.slice(String(n).length) + n;
+	}
+	return string.replace(/[\s\S]/g, (str) => {
+		string = zeroPad(str.charCodeAt(0).toString(2));
+		return spaces ? `${string} ` : string;
+	});
+}
+
+export default new Command({
 	name: 'binary',
 	description: 'Encode or decode binary text',
-	ESdesc: 'Codifica o decodifica binario',
-	usage: 'binary [decode] <text>',
-	example: 'binary hello how are you\n binary decode 01101000 01101111 01101100 01100001',
-	type: 1,
-	execute(client, interaction) {
-		switch (interaction.options.getString('action')) {
+	category: 'utility',
+	execute(_client, interaction) {
+		switch ((interaction as CommandInteraction).options.getString('action')) {
 			case 'decode_binary':
-				interaction.reply(binary.decode(interaction.options.getString('text')));
+				interaction.reply(decode((interaction as CommandInteraction).options.getString('text')!));
 				break;
 
 			default:
-				interaction.reply(binary.encode(interaction.options.getString('text'), true));
+				interaction.reply(encode((interaction as CommandInteraction).options.getString('text')!, true));
 				break;
 		}
 	}
-};
+});

@@ -1,76 +1,51 @@
-// const request = require('node-superfetch');
-// const { MessageAttachment } = require('discord.js');
-// module.exports = {
-// 	name: 'glitch',
-// 	description: 'Glitch an image',
-// 	ESdesc: 'Glitchea una imagen',
-// 	usage: 'glitch [user or image or url]',
-// 	example: 'glitch\nglitch @user',
-// 	cooldown: 3,
-// 	type: 4,
-// 	myPerms: [true, 'ATTACH_FILES'],
-// 	async execute(client, message, args) {
-// 		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-// 		let image = user.displayAvatarURL({ format: 'png', size: 1024 });
-// 		let attachments = [...message.attachments.values()];
-// 		if (attachments[0]) image = attachments[0].url;
-// 		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
+import { createCanvas, loadImage } from 'canvas';
+import request from 'node-superfetch';
+import Command from '../../lib/structures/Command';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
-// 		let result = await request.post('https://fapi.wrmsr.io/glitch', {
-// 			headers: {
-// 				'Content-Type': 'application/json',
-// 				authorization: 'Bearer ' + process.env.FAPI_API_TOKEN
-// 			},
-// 			body: JSON.stringify({
-// 				images: [image],
-// 				args: {
-// 					iterations: Math.floor(Math.random() * 99) + 1,
-// 					amount: Math.floor(Math.random() * 30) + 1
-// 				}
-// 			})
-// 		});
-// 		const attachment = new MessageAttachment(result.raw, 'glitch.png');
-// 		message.channel.send(`Glitched image`, attachment);
-// 	}
-// };
-
-const { createCanvas, loadImage } = require('canvas');
-const request = require('node-superfetch');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const glitch = require('glitch-canvas');
 
-module.exports = {
+export default new Command({
 	name: 'glitch',
 	description: 'Glitch an image',
-	ESdesc: 'Glitchea una imagen',
-	usage: 'glitch [user or image or url]',
-	example: 'glitch\nglitch @user',
 	cooldown: 10,
+	client_perms: ['ATTACH_FILES'],
 	async execute(client, interaction, guildConf) {
-		let { util } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		let image = interaction.options.getString('image');
-		if (!image) {
-			let user = interaction.options.getUser('user-avatar') || interaction.user;
-			image = user.displayAvatarURL({ format: 'jpeg', size: 1024, dynamic: false });
-		}
-		if (!image.startsWith('http')) return interaction.reply({ content: util.anime.screenshot.no_image, ephemeral: true });
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		let image = (interaction as CommandInteraction).options.getString('image');
+		if (!image)
+			image = ((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+
+		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 
 		const { body } = await request.get(image);
-		const data = await loadImage(body);
+		const data = await loadImage(body as Buffer);
+
 		const canvas = createCanvas(data.width < 250 ? 278 : data.width, data.height < 250 ? 278 : data.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(data, 0, 0, canvas.width, canvas.height);
-		const attachment = canvas.toBuffer();
+		const buffer = canvas.toBuffer();
+
 		let seed = Math.floor(Math.random() * 20);
 		let iterations = Math.floor(Math.random() * 20);
 		let amount = Math.floor(Math.random() * 20);
 		let quality = Math.floor(10 + Math.random() * 89);
-		let texto = `Seed ${seed}, ${iterations} iterations, ${amount} amount, ${quality} quality`;
+		let text = `Seed: ${seed} | Iterations: ${iterations} | Amount ${amount} | Quality ${quality}`;
 		glitch({ seed: seed, iterations: iterations, amount: amount, quality: quality })
-			.fromBuffer(attachment)
+			.fromBuffer(buffer)
 			.toBuffer()
-			.then(function (glitchedBuffer) {
+			.then(function (glitchedBuffer: Buffer) {
 				interaction.reply({
-					content: texto,
+					embeds: [
+						new MessageEmbed()
+							.setColor(3092790)
+							.setDescription(text)
+							.setImage('attachment://glitch.jpeg')
+							.setFooter({ text: `${data.width}x${data.height}` })
+					],
 					files: [
 						{
 							attachment: glitchedBuffer,
@@ -79,8 +54,8 @@ module.exports = {
 					]
 				});
 			})
-			.catch((error) => {
-				interaction.reply(`Please, use the command another time (${texto}). ` + error);
+			.catch((error: Error) => {
+				interaction.reply(`Please, use the command another time (${text}). ` + error);
 			});
 	}
-};
+});

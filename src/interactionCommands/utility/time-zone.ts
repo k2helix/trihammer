@@ -1,60 +1,4 @@
-function areArgsValid(mainString, targetStrings) {
-	if (typeof mainString !== 'string') return false;
-	if (!Array.isArray(targetStrings)) return false;
-	if (!targetStrings.length) return false;
-	if (targetStrings.find((s) => typeof s !== 'string')) return false;
-	return true;
-}
-function compareTwoStrings(first, second) {
-	first = first.replace(/\s+/g, '');
-	second = second.replace(/\s+/g, '');
-
-	if (!first.length && !second.length) return 1; // if both are empty strings
-	if (!first.length || !second.length) return 0; // if only one is empty string
-	if (first === second) return 1; // identical
-	if (first.length === 1 && second.length === 1) return 0; // both are 1-letter strings
-	if (first.length < 2 || second.length < 2) return 0; // if either is a 1-letter string
-
-	let firstBigrams = new Map();
-	for (let i = 0; i < first.length - 1; i++) {
-		const bigram = first.substring(i, i + 2);
-		const count = firstBigrams.has(bigram) ? firstBigrams.get(bigram) + 1 : 1;
-
-		firstBigrams.set(bigram, count);
-	}
-
-	let intersectionSize = 0;
-	for (let i = 0; i < second.length - 1; i++) {
-		const bigram = second.substring(i, i + 2);
-		const count = firstBigrams.has(bigram) ? firstBigrams.get(bigram) : 0;
-
-		if (count > 0) {
-			firstBigrams.set(bigram, count - 1);
-			intersectionSize++;
-		}
-	}
-
-	return (2.0 * intersectionSize) / (first.length + second.length - 2);
-}
-
-function findBestMatch(mainString, targetStrings) {
-	if (!areArgsValid(mainString, targetStrings))
-		throw new Error('Bad arguments: First argument should be a string, second should be an array of strings');
-
-	const ratings = [];
-	let bestMatchIndex = 0;
-
-	for (let i = 0; i < targetStrings.length; i++) {
-		const currentTargetString = targetStrings[i];
-		const currentRating = compareTwoStrings(mainString, currentTargetString);
-		ratings.push({ target: currentTargetString, rating: currentRating });
-		if (currentRating > ratings[bestMatchIndex].rating) bestMatchIndex = i;
-	}
-
-	const bestMatch = ratings[bestMatchIndex];
-
-	return { ratings, bestMatch, bestMatchIndex };
-}
+import { findBestMatch } from '../../lib/utils/functions';
 
 let object = {
 	usa: 'New_York',
@@ -82,26 +26,27 @@ let object = {
 	'puerto rico': 'Puerto_Rico'
 };
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment-timezone');
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { CommandInteraction } from 'discord.js';
 let array = moment.tz.names();
-function firstUpperCase(text, split = ' ') {
+function firstUpperCase(text: string, split: string | RegExp = ' ') {
 	return text
 		.split(split)
 		.map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
 		.join(' ');
 }
-module.exports = {
+export default new Command({
 	name: 'time-zone',
 	description: 'Get information about the time in another time-zone',
-	ESdesc: 'Obtén la hora en otra zona horaria',
-	usage: 'time-zone <zone>',
-	example: 'time-zone puerto rico',
-	aliases: ['timezone'],
-	type: 1,
-	execute(client, interaction, guildConf) {
-		let { util } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		let inputZone = interaction.options.getString('zone').toLowerCase();
-		let zone = object[inputZone] !== undefined ? object[inputZone] : inputZone;
+	category: 'utility',
+	async execute(client, interaction, guildConf) {
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		let inputZone = (interaction as CommandInteraction).options.getString('zone')!.toLowerCase();
+		let zone = object[inputZone as keyof object] !== undefined ? object[inputZone as keyof object] : inputZone;
 		let timeZone = findBestMatch(zone, array).bestMatch.target;
 
 		const time = moment().tz(timeZone).format('h:mm A');
@@ -116,6 +61,6 @@ module.exports = {
 			'{time}': time
 		};
 
-		return interaction.reply(util.timezone.replaceAll(obj));
+		return interaction.reply({ embeds: [client.lightBlueEmbed(client.replaceEach(util.timezone, obj))] });
 	}
-};
+});

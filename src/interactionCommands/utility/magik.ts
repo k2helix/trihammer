@@ -1,4 +1,4 @@
-function distort(ctx, amplitude, x, y, width, height, strideLevel = 4) {
+function distort(ctx: NodeCanvasRenderingContext2D, amplitude: number, x: number, y: number, width: number, height: number, strideLevel = 4) {
 	const data = ctx.getImageData(x, y, width, height);
 	const temp = ctx.getImageData(x, y, width, height);
 	const stride = width * strideLevel;
@@ -19,48 +19,39 @@ function distort(ctx, amplitude, x, y, width, height, strideLevel = 4) {
 
 	return ctx;
 }
-const { createCanvas, loadImage } = require('canvas');
-const { MessageAttachment } = require('discord.js');
-const request = require('node-superfetch');
-module.exports = {
+import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+export default new Command({
 	name: 'magik',
 	description: 'Distort an image',
-	ESdesc: 'Distorsiona una imagen',
-	usage: 'magik [user or image or url]',
-	example: 'magik @user\ndistort',
-	cooldown: 5,
-	type: 4,
-	myPerms: [true, 'ATTACH_FILES'],
+	category: 'image_manipulation',
 	async execute(client, interaction, guildConf) {
-		let { util } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		let image = interaction.options.getString('image');
-		if (!image) {
-			let user = interaction.options.getUser('user-avatar') || interaction.user;
-			image = user.displayAvatarURL({ format: 'png', size: 1024, dynamic: false });
-		}
-		if (!image.startsWith('http')) return interaction.reply({ content: util.anime.screenshot.no_image, ephemeral: true });
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		let image = (interaction as CommandInteraction).options.getString('image');
+		if (!image)
+			image = ((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+
+		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 
 		const { body } = await request.get(image);
-		const data = await loadImage(body);
+		const data = await loadImage(body as Buffer);
 		const canvas = createCanvas(data.width, data.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(data, 0, 0);
-		distort(ctx, 20, 0, 0, data.width, data.height);
+		distort(ctx, data.width * 0.001953125, 0, 0, data.width, data.height);
 
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'magik.png');
-		interaction.reply({ files: [attachment] });
+		interaction.reply({
+			embeds: [
+				new MessageEmbed()
+					.setColor(3092790)
+					.setImage('attachment://magik.png')
+					.setFooter({ text: `${data.width}x${data.height}` })
+			],
+			files: [{ attachment: canvas.toBuffer(), name: 'magik.png' }]
+		});
 	}
-};
-// let msg = await message.channel.send(util.loading);
-// let result = await request.post('https://fapi.wrmsr.io/evalmagik', {
-// 	headers: {
-// 		'Content-Type': 'application/json',
-// 		authorization: 'Bearer ' + process.env.FAPI_API_TOKEN
-// 	},
-// 	body: JSON.stringify({
-// 		images: [image],
-// 		args: {
-// 			text: ['-liquid-rescale', '50%', '-liquid-rescale', '150%']
-// 		}
-// 	})
-// });
+});

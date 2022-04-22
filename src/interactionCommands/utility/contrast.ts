@@ -1,4 +1,4 @@
-function contrast(ctx, x, y, width, height) {
+function contrast(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
 	const data = ctx.getImageData(x, y, width, height);
 	const factor = 259 / 100 + 1;
 	const intercept = 128 * (1 - factor);
@@ -11,36 +11,39 @@ function contrast(ctx, x, y, width, height) {
 
 	return ctx;
 }
-const { createCanvas, loadImage } = require('canvas');
-const { MessageAttachment } = require('discord.js');
-const request = require('node-superfetch');
-
-module.exports = {
+import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import request from 'node-superfetch';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+export default new Command({
 	name: 'contrast',
 	description: 'Contrast an image',
-	ESdesc: 'Contrasta una imagen',
-	usage: 'contrast [user or image or url]',
-	type: 4,
-	myPerms: [true, 'ATTACH_FILES'],
-	example: 'contrast @user\ncontrast https://cdn.discordapp.com/avatars/461279654158925825/eecd8958a698ef79021d27b5d5362bdc.png?size=1024',
+	category: 'image_manipulation',
 	async execute(client, interaction, guildConf) {
-		let { util } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		let image = interaction.options.getString('image');
-		if (!image) {
-			let user = interaction.options.getUser('user-avatar') || interaction.user;
-			image = user.displayAvatarURL({ format: 'jpeg', size: 1024, dynamic: false });
-		}
-		if (!image.startsWith('http')) return interaction.reply({ content: util.anime.screenshot.no_image, ephemeral: true });
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		let image = (interaction as CommandInteraction).options.getString('image');
+		if (!image)
+			image = ((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+
+		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 
 		const { body } = await request.get(image);
-		const data = await loadImage(body);
+		const data = await loadImage(body as Buffer);
 		const canvas = createCanvas(data.width, data.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(data, 0, 0);
 		contrast(ctx, 0, 0, data.width, data.height);
 
-		//MessageAttachement - Discord.js-12.0.0
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'contrast.png');
-		interaction.reply({ files: [attachment] });
+		interaction.reply({
+			embeds: [
+				new MessageEmbed()
+					.setColor(3092790)
+					.setImage('attachment://contrast.png')
+					.setFooter({ text: `${data.width}x${data.height}` })
+			],
+			files: [{ attachment: canvas.toBuffer(), name: 'contrast.png' }]
+		});
 	}
-};
+});
