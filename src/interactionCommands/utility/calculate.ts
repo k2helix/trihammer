@@ -1,20 +1,18 @@
-const math = require('mathjs');
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import { evaluate } from 'mathjs';
+import Command from '../../lib/structures/Command';
+export default new Command({
 	name: 'calculate',
 	description: 'Calculate the given expresion',
-	ESdesc: 'Calcula la expresión dada',
-	usage: 'calc <expr>',
-	example: 'calc 123+34\ncalc 100/50\ncalc 2^2\ncalc 5x23',
-	aliases: ['calcular', 'calculadora', 'calculate', 'calcula', 'calcul'],
-	type: 1,
+	category: 'utility',
 	execute(client, interaction) {
 		let resp;
 		try {
-			resp = math.evaluate(interaction.options.getString('expression').replace('x', '*'));
+			resp = evaluate((interaction as CommandInteraction).options.getString('expression')!.replace('x', '*'));
 		} catch (e) {
 			return;
 		}
 		if (resp === Infinity) resp = ':ok_hand:';
-		interaction.reply(resp.toString());
+		interaction.reply({ embeds: [client.lightBlueEmbed(resp.toString())] });
 	}
-};
+});

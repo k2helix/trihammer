@@ -1,12 +1,12 @@
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+
+export default new Command({
 	name: 'image',
 	description: 'Manipulate an image',
-	ESdesc: 'Manipula una imagen',
-	usage: 'image <action> <image>',
-	example: 'play glitch image:link-to-image',
-	type: 7,
+	category: 'image_manipulation',
 	cooldown: 5,
 	execute(client, interaction, guildConf) {
-		client.interactionCommands.get(interaction.options.data[0].name).execute(client, interaction, guildConf);
+		client.interactionCommands.get((interaction as CommandInteraction).options.data[0].name)!.execute(client, interaction, guildConf);
 	}
-};
+});

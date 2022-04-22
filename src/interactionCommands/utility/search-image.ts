@@ -1,41 +1,44 @@
-const cheerio = require('cheerio');
-const request = require('node-superfetch');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
-function findWithAttr(array, attr, value) {
+import { ButtonInteraction, CommandInteraction, Message } from 'discord.js';
+import Command from '../../lib/structures/Command';
+
+import cheerio from 'cheerio';
+import request from 'node-superfetch';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function findWithAttr(array: any[], attr: string, value: string) {
+	// eslint-disable-next-line no-var
 	for (var i = 0; i < array.length; i += 1) if (array[i][attr] === value) return i;
 
 	return -1;
 }
-module.exports = {
+export default new Command({
 	name: 'search-image',
 	description: 'Search an image in Google',
-	ESdesc: 'Busca una imagen en Google',
-	usage: 'image <search>',
-	example: 'image hotdog',
-	aliases: ['img', 'imgsearch'],
 	cooldown: 3,
-	type: 1,
-	myPerms: [true, 'ATTACH_FILES'],
-	async execute(client, interaction, guildConf) {
-		let search = interaction.options.getString('query');
-		let { util, music } = require(`../../lib/utils/lang/${guildConf.lang}`);
+	category: 'utility',
+	async execute(_client, interaction, guildConf) {
+		let search = (interaction as CommandInteraction).options.getString('query');
+		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		try {
 			let { text } = await request.get(`https://www.google.com/search?q=${search}&tbm=isch&ie=UTF-8&safe=active`, {
+				url: `https://www.google.com/search?q=${search}&tbm=isch&ie=UTF-8&safe=active`,
 				headers: {
 					'User-Agent': 'Mozilla/5.0 (Linux; U; Android 4.1.1; en-gb; Build/KLP) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30',
 					'Content-Type': 'application/json'
 				}
 			});
 
-			let $ = cheerio.load(text);
+			let $ = cheerio.load(text!);
 			let images = $('div[class="islrtb isv-r"]');
-			let urls = [];
+			let urls: { name: string; img: string; site: string; site_url: string }[] = [];
 
-			Object.keys(images).forEach(function (key) {
-				if (Number(key) > 19) return;
-				var val = images[key];
-				if (val.attribs) urls.push({ name: val.attribs['data-pt'], img: val.attribs['data-ou'], site: val.attribs['data-st'], site_url: val.attribs['data-ru'] });
-			});
+			Object.keys(images)
+				.slice(0, 20)
+				.forEach(function (key) {
+					let val = images[key as unknown as number];
+					if (val.attribs) urls.push({ name: val.attribs['data-pt'], img: val.attribs['data-ou'], site: val.attribs['data-st'], site_url: val.attribs['data-ru'] });
+				});
 
 			let image = urls[0];
 			if (!image) interaction.reply({ content: music.not_found, ephemeral: true });
@@ -57,14 +60,14 @@ module.exports = {
 					iconURL: 'https://cdn.discordapp.com/emojis/749389813274378241.png?v=1'
 				});
 			interaction.reply({ embeds: [embed], components: [row] });
-			let msg = await interaction.fetchReply();
+			let msg = (await interaction.fetchReply()) as Message;
 			let url;
 
-			const filter = (int) => int.user.id === interaction.user.id;
-			const collector = msg.createMessageComponentCollector({ filter, time: 60000 });
+			const filter = (int: ButtonInteraction) => int.user.id === interaction.user.id;
+			const collector = msg.createMessageComponentCollector({ filter, time: 60000, componentType: 'BUTTON' });
 			collector.on('collect', async (reaction) => {
 				url = msg.embeds[0].image ? msg.embeds[0].image.url : urls[0].img;
-				msg = await interaction.channel.messages.fetch(msg.id);
+				msg = (await interaction.channel!.messages.fetch(msg.id)) as Message;
 				let newUrl;
 				let embed;
 				switch (reaction.customId) {
@@ -122,7 +125,7 @@ module.exports = {
 			});
 		} catch (err) {
 			console.error(err);
-			interaction.channel.send(music.not_found);
+			interaction.channel!.send(music.not_found);
 		}
 	}
-};
+});

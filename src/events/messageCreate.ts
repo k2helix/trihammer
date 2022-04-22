@@ -180,7 +180,6 @@ export default async (client: ExtendedClient, message: Message) => {
 					if (type.includes('|')) {
 						let opt = type.split(' | ');
 						if (!opt.some((o) => args[index] === o)) {
-							console.log(arg);
 							if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
 							requiredArgs.push(arg.name);
 						}

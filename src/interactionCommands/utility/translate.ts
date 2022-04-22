@@ -1,6 +1,10 @@
-const translate = require('@vitalets/google-translate-api');
-let { MessageEmbed } = require('discord.js');
-var langs = {
+import Command from '../../lib/structures/Command';
+import translate from '@vitalets/google-translate-api';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+// eslint-disable-next-line prettier/prettier
+type codelang = 'af' | 'sq' | 'am' | 'ar' | 'hy' | 'az' | 'eu' | 'be' | 'bn' | 'bs' | 'bg' | 'ca' | 'ceb' | 'ny' | 'zh-CN' | 'zh-TW' | 'co' | 'hr' | 'cs' | 'da' | 'nl' | 'en' | 'eo' | 'et' | 'tl' | 'fi' | 'fr' | 'fy' | 'gl' | 'ka' | 'de' | 'el' | 'gu' | 'ht' | 'ha' | 'haw' | 'he' | 'iw' | 'hi' | 'hmn' | 'hu' | 'is' | 'ig' | 'id' | 'ga' | 'it' | 'ja' | 'jw' | 'kn' | 'kk' | 'km' | 'ko' | 'ku' | 'ky' | 'lo' | 'la' | 'lv' | 'lt' | 'lb' | 'mk' | 'mg' | 'ms' | 'ml' | 'mt' | 'mi' | 'mr' | 'mn' | 'my' | 'ne' | 'no' | 'ps' | 'fa' | 'pl' | 'pt' | 'pa' | 'ro' | 'ru' | 'sm' | 'gd' | 'sr' | 'st' | 'sn' | 'sd' | 'si' | 'sk' | 'sl' | 'so' | 'es' | 'su' | 'sw' | 'sv' | 'tg' | 'ta' | 'te' | 'th' | 'tr' | 'uk' | 'ur' | 'uz' | 'vi' | 'cy' | 'xh' | 'yi' | 'yo' | 'zu';
+let langs = {
 	af: 'Afrikaans',
 	sq: 'Albanian',
 	am: 'Amharic',
@@ -107,37 +111,43 @@ var langs = {
 	yo: 'Yoruba',
 	zu: 'Zulu'
 };
-module.exports = {
+
+// https://discord.com/developers/docs/reference#locales=
+let interactionLocales = {
+	'en-GB': 'en',
+	'en-US': 'en',
+	'es-ES': 'es',
+	'pt-BR': 'pt',
+	'sv-SE': 'sv'
+};
+export default new Command({
 	name: 'translate',
 	description: 'Translate text to other language',
-	ESdesc: 'Traduce texto a otro idioma',
-	usage: 'translate <lang> <text>',
-	example: 'translate es hello how are you',
 	cooldown: 3,
-	aliases: ['tl'],
-	type: 7,
+	category: 'utility',
 	async execute(client, interaction, guildConf) {
-		let { util } = require(`../../lib/utils/lang/${guildConf.lang}`);
+		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let lang = interaction.options.getString('to');
-		let text = interaction.options.getString('text');
+		let lang = (interaction as CommandInteraction).options.getString('to');
+		let text = (interaction as CommandInteraction).options.getString('text');
 		if (interaction.isContextMenu()) {
-			let message = await interaction.channel.messages.fetch(interaction.targetId);
-			lang = guildConf.lang;
+			console.log(interaction.user);
+			let message = await interaction.channel!.messages.fetch(interaction.targetId);
+			lang = interactionLocales[interaction.locale as 'en-GB' | 'en-US' | 'es-ES' | 'pt-BR' | 'sv-SE'] || interaction.locale;
 			text = message.content;
 		}
-		if (!text || !lang) return interaction.reply({ content: util.translate.text_not_found, ephemeral: true });
+		if (!text || !lang) return interaction.reply({ embeds: [client.redEmbed(util.translate.text_not_found)], ephemeral: true });
 		if (lang === 'list') {
-			let all_langs = Object.keys(langs).map((l) => `${l}: ${langs[l]}`);
+			let all_langs = Object.keys(langs).map((l) => `${l}: ${langs[l as codelang]}`);
 			return interaction.reply({ content: `\`\`\`js\n${all_langs.join('\n')}\`\`\``, ephemeral: true });
 		}
-		if (!Object.keys(langs).includes(lang)) return interaction.reply({ content: util.translate.not_found, ephemeral: true });
+		if (!Object.keys(langs).includes(lang)) return interaction.reply({ embeds: [client.redEmbed(util.translate.not_found)], ephemeral: true });
 		let translated = await translate(text, { to: lang });
 		let embed = new MessageEmbed()
 			.setTitle(util.translate.title)
 			.setThumbnail('https://i.pinimg.com/originals/44/10/19/4410197cf5de4fefe413b55860bb617d.png')
-			.addField(`${util.translate.from} ${langs[translated.from.language.iso]}:`, `\`\`\`${text.slice(0, 1000)}\`\`\``, true)
-			.addField(`${util.translate.to} ${langs[lang]}:`, `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, true);
+			.addField(`${util.translate.from} ${langs[translated.from.language.iso as codelang]}:`, `\`\`\`${text.slice(0, 1000)}\`\`\``, true)
+			.addField(`${util.translate.to} ${langs[lang as codelang]}:`, `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, true);
 		interaction.reply({ embeds: [embed], ephemeral: interaction.isContextMenu() });
 	}
-};
+});

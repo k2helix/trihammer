@@ -6,7 +6,7 @@ export default new MessageCommand({
 	aliases: ['calcular', 'calculadora', 'calculate', 'calcula', 'calcul'],
 	category: 'utility',
 	required_args: [{ index: 0, name: 'expression', type: 'string' }],
-	execute(_client, message, args) {
+	execute(client, message, args) {
 		let resp;
 		try {
 			resp = evaluate(args.join(' ').replace('x', '*'));
@@ -14,6 +14,6 @@ export default new MessageCommand({
 			return;
 		}
 		if (resp === Infinity) resp = ':ok_hand:';
-		message.channel.send(resp.toString());
+		message.channel.send({ embeds: [client.lightBlueEmbed(resp.toString())] });
 	}
 });

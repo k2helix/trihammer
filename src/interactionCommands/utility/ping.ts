@@ -1,19 +1,18 @@
-let { ModelUsers } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction, Message } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import { ModelUsers } from '../../lib/utils/models';
+export default new Command({
 	name: 'ping',
 	description: 'Ping!',
-	ESdesc: 'Ping!',
-	usage: 'Ping!',
-	example: 'Ping!',
-	type: 0,
+	category: 'information',
 	async execute(client, interaction) {
 		interaction.reply('Pinging...');
-		let sent = await interaction.fetchReply();
+		let sent = (await interaction.fetchReply()) as Message;
 		let content = `Pong! ${sent.createdTimestamp - interaction.createdTimestamp}ms`;
-		if (interaction.options.getBoolean('advanced')) {
+		if ((interaction as CommandInteraction).options.getBoolean('advanced')) {
 			await ModelUsers.findOne({ id: interaction.user.id });
 			content += `\nMongoDB Ping: ${Date.now() - sent.createdTimestamp}ms\nWebsocket: ${client.ws.ping}`;
 		}
-		interaction.editReply(content);
+		interaction.editReply({ embeds: [client.blackEmbed(content)], content: null });
 	}
-};
+});

@@ -17,9 +17,11 @@ export default new MessageCommand({
 		if (args[0] && args[0].startsWith('http')) image = args[0];
 		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
-		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let { body } = await request.get(`https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image);
+		if (!(body as { results: Result[] }).results || (body as { results: Result[] }).results?.length === 0)
+			return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 
 		let embed = new MessageEmbed()
 			.setTitle(util.sauce.title)
