@@ -1,26 +1,24 @@
-const { ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelServer } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'prefix',
-	description: 'Set the prefix of the server',
-	ESdesc: 'Establece el prefijo del servidor',
-	usage: 'prefix [prefix]',
-	example: 'prefix t/',
+	description: 'Set the server prefix',
 	aliases: ['setprefix'],
-	type: 3,
-	async execute(client, message, args) {
+	category: 'configuration',
+	required_args: [{ index: 0, name: 'prefix', type: 'string' }],
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	async execute(client, message, args, guildConf) {
 		let prefix = args.join(' ');
 		if (!prefix) return;
 		if (prefix.length > 10) return message.channel.send('No.');
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id });
 
-		let langcode = serverConfig.lang;
-		let { config } = require(`../../lib/utils/lang/${langcode}`);
+		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
+		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
-		if (!permiso) return message.channel.send(config.admin_perm);
 		serverConfig.prefix = prefix;
 		serverConfig.save();
-		message.channel.send(config.prefix_set.replace('{prefix}', prefix));
+		message.channel.send({ embeds: [client.blueEmbed(config.prefix_set.replace('{prefix}', prefix))] });
 	}
-};
+});

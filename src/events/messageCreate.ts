@@ -108,7 +108,7 @@ export default async (client: ExtendedClient, message: Message) => {
 	}
 
 	if (command.required_roles?.length > 0)
-		if (message.guild.roles.cache.has(serverConfig.modrole) && message.guild.roles.cache.has(serverConfig.adminrole)) {
+		if (message.guild.roles.cache.hasAll(serverConfig.modrole, serverConfig.adminrole)) {
 			let perms = command.required_roles.includes('MODERATOR')
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
 				: message.member.roles.cache.has(serverConfig.adminrole);
@@ -120,7 +120,7 @@ export default async (client: ExtendedClient, message: Message) => {
 				} else return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 		}
 
-	if (command.required_perms?.length > 0 && command.required_roles?.length === 0) {
+	if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAll(serverConfig.modrole, serverConfig.adminrole))) {
 		const permsBitfield = Permissions.resolve(command.required_perms);
 		if (!message.member?.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
@@ -172,6 +172,12 @@ export default async (client: ExtendedClient, message: Message) => {
 					break;
 				case 'number':
 					if (isNaN(parseInt(args[index]))) {
+						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
+						requiredArgs.push(arg.name);
+					}
+					break;
+				case 'string':
+					if (!args[index]) {
 						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
 						requiredArgs.push(arg.name);
 					}

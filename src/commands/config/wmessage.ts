@@ -1,37 +1,30 @@
-const { ModelWelc, ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import MessageCommand from '../../lib/structures/MessageCommand';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { ModelWelc } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'wmessage',
 	description: 'Set the welcome message',
-	ESdesc: 'Establece el mensaje de bienvenida',
-	usage: 'wmessage <text>',
-	example: 'wmessage Bienvenid@ al servidor',
 	aliases: ['welcome-message', 'welcomemessage'],
-	type: 3,
-	async execute(client, message, args) {
-		let welcomeModel = await ModelWelc.findOne({ server: message.guild.id });
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { config, welcome } = require(`../../lib/utils/lang/${serverConfig.lang}`);
-
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-
-		if (!adminperms) return message.channel.send(config.admin_perm);
+	category: 'configuration',
+	required_args: [{ index: 0, name: 'message', type: 'string' }],
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	async execute(client, message, args, guildConf) {
+		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let msg = args.join(' ');
-		if (!msg) return;
-		// eslint-disable-next-line curly
-		if (!welcomeModel) {
-			welcomeModel = new ModelWelc({
-				server: message.guild.id,
-				canal: 'none',
+		let welcomeModel = await ModelWelc.findOne({ server: message.guild!.id });
+		if (!welcome) {
+			let newModel = new ModelWelc({
+				server: message.guild!.id,
+				canal: 'nonne',
 				color: '#ffffff',
 				image: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
 				text: msg
 			});
+			welcomeModel = newModel;
 		}
-
-		welcome.text = msg;
-		await welcome.save();
-		message.channel.send(welcome.wimage);
+		welcomeModel.text = msg;
+		await welcomeModel.save();
+		message.channel.send({ embeds: [client.blueEmbed(welcome.wmessage)] });
 	}
-};
+});

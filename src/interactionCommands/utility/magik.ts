@@ -42,7 +42,7 @@ export default new Command({
 		const canvas = createCanvas(data.width, data.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(data, 0, 0);
-		distort(ctx, data.width * 0.001953125, 0, 0, data.width, data.height);
+		distort(ctx, data.width * (1 / 75), 0, 0, data.width, data.height);
 
 		interaction.reply({
 			embeds: [
