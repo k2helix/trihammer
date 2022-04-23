@@ -1,70 +1,62 @@
 /* eslint-disable no-case-declarations */
-const { digitalTime } = require('../../lib/utils/functions');
-const { ModelInfrs, ModelTempban, ModelMutes, ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { digitalTime } from '../../lib/utils/functions';
+import { Infrs, ModelInfrs, ModelMutes, ModelTempban } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'infsearch',
 	description: 'Get the infractions of the given user',
-	ESdesc: 'Obtén las infracciones del usuario dado',
-	usage: 'infsearch <user>',
-	example: 'infsearch 714567840581287936',
+	category: 'moderation',
+	required_args: [{ index: 0, name: 'user', type: 'id' }],
+	required_perms: ['MANAGE_MESSAGES'],
+	required_roles: ['MODERATOR'],
 	aliases: ['inf', 'infractions', 'infrs'],
-	type: 2,
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
-
-		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
+	async execute(client, message, args, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 		if (!user)
 			try {
 				user = await client.users.fetch(args[0]);
 			} catch (err) {
-				return message.channel.send(mod.need_id);
+				return message.channel.send({ embeds: [client.redEmbed(mod.need_id)] });
 			}
 
-		let member = message.guild.members.cache.get(user.id);
-		const datos = await ModelInfrs.find({ server: message.guild.id, id: user.id });
+		let member = message.guild!.members.cache.get(user.id!);
+		const datos: Infrs[] = await ModelInfrs.find({ server: message.guildId, id: user.id });
 
 		if (!datos[0]) return message.channel.send(mod.infrs_404);
 		let infr = [];
 		datos.sort((a, b) => {
-			return b.time - a.time;
+			return parseInt(b.time) - parseInt(a.time);
 		});
 
-		for (var x in datos) {
+		for (let x in datos) {
 			let activo;
-			let yes = mod.yes;
-
 			switch (datos[x].tipo) {
 				case 'warn':
-					activo = 'No';
+					activo = mod.no;
 					break;
 				case 'kick':
-					activo = message.guild.members.cache.has(datos[x].id) ? 'No' : yes;
+					activo = message.guild!.members.cache.has(datos[x].id) ? mod.no : mod.yes;
 					break;
 				case 'tempban':
 					let tempban = await ModelTempban.findOne({ key: datos[x].key });
-					activo = tempban.active ? yes : 'No';
+					activo = tempban.active ? mod.yes : mod.no;
 					break;
 				case 'mute':
 					let mutes = await ModelMutes.findOne({ key: datos[x].key });
 					if (!mutes) {
-						let rol = message.guild.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
-						if (!rol) activo = 'No';
-						if (member) activo = member.roles.cache.has(rol.id) ? yes : 'No';
-						else activo = 'No';
-					} else activo = mutes.active ? yes : 'No';
+						let rol = message.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
+						if (!rol) activo = mod.no;
+						else if (member) activo = member.roles.cache.has(rol.id) ? mod.yes : mod.no;
+						else activo = mod.no;
+					} else activo = mutes.active ? mod.yes : mod.no;
 					break;
 				case 'ban':
-					let banusers = await message.guild.bans.fetch();
-					if (!banusers.has(datos[x].id)) activo = 'No';
-					else activo = yes;
+					let banusers = await message.guild!.bans.fetch();
+					if (!banusers.has(datos[x].id)) activo = mod.no;
+					else activo = mod.yes;
 					break;
 			}
 
@@ -76,4 +68,4 @@ module.exports = {
 
 		message.channel.send(`${mod.user_infrs.replace('{user}', user.tag)}\n${infr.join('\n')}\`\`\``);
 	}
-};
+});

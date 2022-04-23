@@ -134,7 +134,16 @@ export const mod = {
 	need_id: 'I need to know who you want to sanction',
 	not_moderatable: 'The user you selected is not moderatable by me. Check their permissions, whether they have a higher role...',
 	yes: 'Yes',
+	no: 'No',
 	i_cant: "I can't {action} this user.",
+	actions: {
+		banned: 'banned',
+		kicked: 'kicked',
+		warned: 'warned',
+		muted: 'muted',
+		unbanned: 'unbanned',
+		unmuted: 'unmuted'
+	},
 	infraction_md: 'You have been {action} in {server}. Reason: {reason}',
 	infraction: '{user} has been {action}. Reason: {reason}',
 	whose_messages: '¿Whose are the messages that you want to delete?',

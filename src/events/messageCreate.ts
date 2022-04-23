@@ -118,7 +118,8 @@ export default async (client: ExtendedClient, message: Message) => {
 					if (!message.member?.permissions.has(permsBitfield))
 						return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 				} else return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
-		}
+		} else if (command.required_perms.length === 0)
+			return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 
 	if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
 		const permsBitfield = Permissions.resolve(command.required_perms);

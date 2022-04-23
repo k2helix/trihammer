@@ -1,43 +1,36 @@
-const { ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import { TextChannel } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'cleanuser',
 	description: 'Deletes the last x messages of the given user',
-	ESdesc: 'Borra los últimos x mensajes del usuario dado',
-	usage: 'cleanuser <user> [amount]',
-	example: 'cleanuser 353696439358193664 10',
 	aliases: ['userclean', 'clean', 'clean-user'],
-	type: 2,
-	myPerms: [true, 'MANAGE_MESSAGES'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { config, mod } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	category: 'moderation',
+	required_args: [
+		{ index: 0, name: 'user', type: 'member' },
+		{ index: 1, name: 'amount', type: 'number', optional: true }
+	],
+	required_perms: ['MANAGE_MESSAGES'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['MANAGE_MESSAGES'],
+	async execute(client, message, args, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
-
-		const user = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-		if (!user) return message.channel.send(mod.whose_messages);
-
-		var amount = args[1];
-		if (!amount) amount = '100';
+		const user = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
+		let amount = parseInt(args[1]) || 100;
 
 		message.channel.messages
 			.fetch({
-				limit: Number(amount) > 100 ? 100 : Number(amount)
+				limit: amount > 100 ? 100 : amount
 			})
 			.then((list) => {
-				const filterBy = user ? user.id : client.user.id;
-				let messageCollection = list.filter((m) => m.author.id === filterBy && Date.now() - 1123200000 < m.createdTimestamp);
+				let messageCollection = list.filter((m) => m.author.id === user.id && Date.now() - 1123200000 < m.createdTimestamp);
 				let messages = [...messageCollection.values()].slice(0, amount);
-				if (!messages || !messages[1]) return message.channel.send(mod.bulkDelete_14d);
-				message.channel.bulkDelete(messages).catch((error) => {
-					console.log(error.stack);
-					message.channel.send('Error: ' + error);
+				if (!messages || !messages[1]) return message.channel.send({ embeds: [client.redEmbed(mod.bulkDelete_14d)] });
+				(message.channel as TextChannel).bulkDelete(messages).catch((error) => {
+					client.catchError(error, message.channel as TextChannel);
 				});
 			});
 		message.delete();
 	}
-};
+});
