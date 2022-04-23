@@ -18,10 +18,10 @@ module.exports = {
 
 		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
 
-		let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+		let member = message.mentions.members.first()! || message.guild.members.cache.get(args[0])!;
 		let reason = args.slice(1).join(' ') || 'No';
 
-		if (!member) return message.channel.send(mod.need_id);
+		if (!member.moder) return 
 
 		let sendDM = !message.content.toLowerCase().includes('-nodm');
 

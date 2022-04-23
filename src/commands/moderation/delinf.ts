@@ -1,23 +1,16 @@
-const { ModelServer, ModelInfrs } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelInfrs } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'delinf',
 	description: 'Delete the infraction with the given id',
-	ESdesc: 'Borra la infracción con la id dada',
-	usage: 'delinf <inf id>',
-	example: 'delinf 23',
-	type: 2,
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
-
-		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
-		if (!permiso) return message.channel.send(config.admin_perm);
-
-		const key = args[0];
-		if (!key) return message.channel.send(':x:');
-
-		await ModelInfrs.deleteOne({ server: message.guild.id, key: key });
-		message.channel.send(mod.delete_infr.replace('{key}', key));
+	category: 'moderation',
+	required_args: [{ index: 0, name: 'infraction id', type: 'string' }],
+	required_roles: ['MODERATOR'],
+	required_perms: ['MANAGE_MESSAGES'],
+	async execute(client, message, args, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		await ModelInfrs.deleteOne({ server: message.guildId, key: args[0] });
+		message.channel.send({ embeds: [client.blueEmbed(mod.delete_infr.replace('{key}', args[0]))] });
 	}
-};
+});

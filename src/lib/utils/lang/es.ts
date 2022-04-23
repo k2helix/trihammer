@@ -128,9 +128,18 @@ export const kawaii = {
 
 export const mod = {
 	need_id: 'Necesito saber a quién quieres sancionar',
-	not_moderatable: 'El usuario que has seleccionado no es superior a mí. Comprueba sus permisos, si tiene un rol superior...',
+	not_moderatable: 'El usuario que has seleccionado no es moderable por mí. Comprueba sus permisos, si tiene un rol superior...',
 	yes: 'Sí',
+	no: 'No',
 	i_cant: 'No puedo {action} a este usuario.',
+	actions: {
+		banned: 'baneado',
+		kicked: 'expulsado',
+		warned: 'advertido',
+		muted: 'muteado',
+		unbanned: 'desbaneado',
+		unmuted: 'desmuteado'
+	},
 	infraction_md: 'Has sido {action} en {server}. Razón: {reason}',
 	infraction: '{user} ha sido {action}. Razón: {reason}',
 	whose_messages: '¿De quién son los mensajes a borrar?',

@@ -69,7 +69,8 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 						if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
 							return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });
 					} else return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
-			}
+			} else if (command.required_perms.length === 0)
+				return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
 
 		if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole))) {
 			const permsBitfield = Permissions.resolve(command.required_perms);

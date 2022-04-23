@@ -48,7 +48,16 @@ export default interface LanguageFile {
 		need_id: string;
 		not_moderatable: string;
 		yes: string;
+		no: string;
 		i_cant: string;
+		actions: {
+			banned: string;
+			kicked: string;
+			warned: string;
+			muted: string;
+			unbanned: string;
+			unmuted: string;
+		};
 		infraction_md: string;
 		infraction: string;
 		whose_messages: string;

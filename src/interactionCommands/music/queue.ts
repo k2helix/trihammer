@@ -60,7 +60,7 @@ export default new Command({
 			let optName = interaction.options.data[0].options ? (interaction.options.data[0].options[0]?.name as 'seek' | 'view' | 'pause' | 'resume') : null;
 			const names = {
 				'current-song': optName ? currentSongOpt[optName] : null,
-				add: interaction.options.getBoolean('confirm-result') ? 'music-search' : 'music-play',
+				play: interaction.options.getBoolean('confirm-result') ? 'music-search' : 'music-play',
 				remove: 'remove',
 				voteskip: 'voteskip',
 				forceskip: 'forceskip',
