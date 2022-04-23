@@ -3,8 +3,22 @@ import { Result } from './SaucenaoInterfaces';
 
 export default interface LanguageFile {
 	config: {
-		channel_set: string;
-		role_set: string;
+		channel_set: {
+			actions: string;
+			infractions: string;
+			members: string;
+			messages: string;
+			server: string;
+			voice: string;
+			welcome: string;
+			disabled: string;
+		};
+		role_set: {
+			admin: string;
+			mod: string;
+			auto: string;
+			disabled: string;
+		};
 		antispam_enabled: string;
 		antispam_disabled: string;
 		prefix_set: string;

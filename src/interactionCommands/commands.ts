@@ -133,7 +133,7 @@ export default [
 							{
 								name: 'image',
 								type: 'STRING',
-								description: 'The new image URL (set to "upload" without " if you want to set the uploaded image)',
+								description: 'The new image URL',
 								required: true
 							}
 						]

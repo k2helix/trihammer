@@ -1,30 +1,29 @@
-const { ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelServer } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'serverlogs',
-	description: 'Set the server logs',
-	ESdesc: 'Establece los logs del servidor',
-	usage: 'serverlogs [channel]',
-	example: 'serverlogs #channel',
+	description: 'Set the server logs channel',
 	aliases: ['server-logs'],
-	type: 3,
-	async execute(client, message, args) {
-		let channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
-		if (!channel) return;
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id });
+	category: 'configuration',
+	required_args: [
+		{ index: 0, name: 'disable', type: 'string', optional: true },
+		{ index: 0, name: 'channel', type: 'channel', optional: true }
+	],
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	async execute(client, message, args, guildConf) {
+		let channel = message.mentions.channels.first() || message.guild!.channels.cache.get(args[0]) || message.channel;
+		if (!channel || channel.type === 'DM') return;
+		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
+		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let langcode = serverConfig.lang;
-		let { config } = require(`../../lib/utils/lang/${langcode}`);
-
-		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
-		if (!permiso) return message.channel.send(config.admin_perm);
 		if (args[0] === 'disable') {
 			serverConfig.serverlogs = 'none';
 			await serverConfig.save();
-			return message.channel.send(':white_check_mark:');
+			return message.channel.send({ embeds: [client.orangeEmbed(config.channel_set.disabled)] });
 		} else serverConfig.serverlogs = channel.id;
-
 		await serverConfig.save();
-		message.channel.send(config.channel_set.replaceAll({ '{channel}': channel.name, '{logs}': 'server' }));
+		message.channel.send({ embeds: [client.blueEmbed(config.channel_set.server.replace('{channel}', channel.name))] });
 	}
-};
+});

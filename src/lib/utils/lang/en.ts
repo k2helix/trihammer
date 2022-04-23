@@ -83,8 +83,22 @@ function Convert(date: string) {
 }
 
 export const config = {
-	channel_set: 'Ok, channel {channel} set as {logs} logs channel.',
-	role_set: 'Ok, role {role} set as {type} role.',
+	channel_set: {
+		actions: 'Channel {channel} set as the actions logs channel.',
+		infractions: 'Channel {channel} set as the infractions logs channel.',
+		members: 'Channel {channel} set as the members logs channel.',
+		messages: 'Channel {channel} set as the messages logs channel.',
+		server: 'Channel {channel} set as the server logs channel.',
+		voice: 'Channel {channel} set as the voice logs channel.',
+		welcome: 'Channel {channel} set as the welcome channel.',
+		disabled: '👍 Logs of that type were disabled'
+	},
+	role_set: {
+		admin: 'Role {role} set as the administrator role\nBe aware that for this to work you have to set a moderator role.',
+		mod: 'Role {role} set as the moderator role.\nBe aware that for this to work you have to set an administrator role.',
+		auto: 'Role {role} set as the auto role',
+		disabled: '👍 Role disabled'
+	},
 	antispam_enabled: 'Ok, AntiSpam system enabled!',
 	antispam_disabled: 'Ok, AntiSpam system disabled.',
 	prefix_set: 'Ok, {prefix} set as new prefix.',
