@@ -16,7 +16,7 @@ export default new MessageCommand({
 		if (!welcome) {
 			let newModel = new ModelWelc({
 				server: message.guild!.id,
-				canal: 'nonne',
+				canal: 'none',
 				color: '#ffffff',
 				image: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
 				text: msg

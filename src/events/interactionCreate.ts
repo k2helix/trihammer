@@ -59,18 +59,22 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		}
 
 		if (command.required_roles?.length > 0)
-			if (interaction.guild.roles.cache.has(guildConf.modrole) && interaction.guild.roles.cache.has(guildConf.adminrole)) {
+			if (interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole)) {
 				let perms = command.required_roles.includes('MODERATOR')
 					? (interaction.member as GuildMember).roles.cache.hasAny(guildConf.modrole, guildConf.adminrole)
 					: (interaction.member as GuildMember).roles.cache.has(guildConf.adminrole);
 				if (!perms)
-					return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
+					if (command.required_perms?.length > 0) {
+						const permsBitfield = Permissions.resolve(command.required_perms);
+						if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
+							return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });
+					} else return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
 			}
 
-		if (command.required_perms?.length > 0) {
+		if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole))) {
 			const permsBitfield = Permissions.resolve(command.required_perms);
-			if (!interaction.memberPermissions.has(permsBitfield))
-				return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `\`${command.required_perms.join(', ')}\``)], ephemeral: true });
+			if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
+				return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });
 		}
 
 		if (command.cooldown) {
@@ -94,16 +98,14 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		try {
 			command.execute(client, interaction, guildConf);
 			if (guildConf.actionslogs === 'none') return;
-			setTimeout(() => {
-				let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);
-				if (!logs_channel || !logs_channel.isText()) return;
-				let cmdObj = {
-					'{user}': interaction.user.tag,
-					'{command}': command.name,
-					'{channel}': `<#${interaction.channelId}>`
-				};
-				return logs_channel.send(client.replaceEach(config.command_used, cmdObj));
-			}, 1000);
+			let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);
+			if (!logs_channel || !logs_channel.isText()) return;
+			let cmdObj = {
+				'{user}': interaction.user.tag,
+				'{command}': command.name,
+				'{channel}': `<#${interaction.channelId}>`
+			};
+			return logs_channel.send(client.replaceEach(config.command_used, cmdObj));
 		} catch (error) {
 			client.catchError(error, interaction.channel as TextChannel);
 		}

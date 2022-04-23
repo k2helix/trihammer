@@ -13,7 +13,7 @@ export default new MessageCommand({
 	required_perms: ['ADMINISTRATOR'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
-		let role = message.guild!.roles.cache.find((r) => r.name === args.join(' ')) || message.guild!.roles.cache.get(args[0]);
+		let role = message.mentions.roles.first() || message.guild!.roles.cache.find((r) => r.name === args.join(' ')) || message.guild!.roles.cache.get(args[0]);
 		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
 		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
