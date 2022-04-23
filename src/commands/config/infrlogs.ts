@@ -13,10 +13,10 @@ export default new MessageCommand({
 	required_perms: ['ADMINISTRATOR'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
-		let channel = message.mentions.channels.first() || message.guild!.channels.cache.get(args[0]) || message.channel;
-		if (!channel || channel.type === 'DM') return;
-		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
 		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		let channel = message.mentions.channels.first() || message.guild!.channels.cache.get(args[0]) || message.channel;
+		if (!channel.isText()) return message.channel.send({ embeds: [client.redEmbed(config.only_text)] });
+		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
 
 		if (args[0] === 'disable') {
 			serverConfig.infrlogs = 'none';
@@ -24,6 +24,6 @@ export default new MessageCommand({
 			return message.channel.send({ embeds: [client.orangeEmbed(config.channel_set.disabled)] });
 		} else serverConfig.infrlogs = channel.id;
 		await serverConfig.save();
-		message.channel.send({ embeds: [client.blueEmbed(config.channel_set.infractions.replace('{channel}', channel.name))] });
+		message.channel.send({ embeds: [client.blueEmbed(config.channel_set.infractions.replace('{channel}', `<#${channel.id}>`))] });
 	}
 });

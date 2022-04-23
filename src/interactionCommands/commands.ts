@@ -43,19 +43,6 @@ export default [
 				]
 			},
 			{
-				name: 'antispam',
-				description: 'Set the antispam feature',
-				type: 'SUB_COMMAND',
-				options: [
-					{
-						name: 'enable',
-						type: 'BOOLEAN',
-						description: 'Whether to enable the antispam feature',
-						required: true
-					}
-				]
-			},
-			{
 				name: 'prefix',
 				description: 'Set the prefix',
 				type: 'SUB_COMMAND',
@@ -81,11 +68,11 @@ export default [
 						choices: [
 							{
 								name: 'Spanish (español)',
-								value: 'lang_es'
+								value: 'es'
 							},
 							{
 								name: 'English',
-								value: 'lang_en'
+								value: 'en'
 							}
 						]
 					}
@@ -137,11 +124,25 @@ export default [
 								required: true
 							}
 						]
+					},
+					{
+						name: 'message',
+						type: 'SUB_COMMAND',
+						description: 'The welcome message',
+						required: false,
+						options: [
+							{
+								name: 'message',
+								type: 'STRING',
+								description: 'The new message',
+								required: true
+							}
+						]
 					}
 				]
 			},
 			{
-				name: 'actions-logs-channel',
+				name: 'actions-logs',
 				description: 'Set the actions logs channel',
 				type: 'SUB_COMMAND',
 				options: [
@@ -154,7 +155,7 @@ export default [
 				]
 			},
 			{
-				name: 'infractions-logs-channel',
+				name: 'infractions-logs',
 				description: 'Set the infractions logs channel',
 				type: 'SUB_COMMAND',
 				options: [
@@ -167,7 +168,7 @@ export default [
 				]
 			},
 			{
-				name: 'members-logs-channel',
+				name: 'members-logs',
 				description: 'Set the members logs channel',
 				type: 'SUB_COMMAND',
 				options: [
@@ -180,7 +181,7 @@ export default [
 				]
 			},
 			{
-				name: 'messages-logs-channel',
+				name: 'messages-logs',
 				description: 'Set the messages logs channel',
 				type: 'SUB_COMMAND',
 				options: [
@@ -193,7 +194,7 @@ export default [
 				]
 			},
 			{
-				name: 'server-logs-channel',
+				name: 'server-logs',
 				description: 'Set the server logs channel',
 				type: 'SUB_COMMAND',
 				options: [
@@ -206,7 +207,7 @@ export default [
 				]
 			},
 			{
-				name: 'voice-logs-channel',
+				name: 'voice-logs',
 				description: 'Set the voice logs channel',
 				type: 'SUB_COMMAND',
 				options: [

@@ -19,6 +19,7 @@ export default interface LanguageFile {
 			auto: string;
 			disabled: string;
 		};
+		only_text: string;
 		antispam_enabled: string;
 		antispam_disabled: string;
 		prefix_set: string;

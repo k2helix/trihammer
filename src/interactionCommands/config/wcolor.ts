@@ -1,33 +1,31 @@
-const { ModelServer, ModelWelc } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { ModelWelc } from '../../lib/utils/models';
+export default new Command({
 	name: 'wcolor',
-	usage: 'wcolor [hexcolor]',
-	aliases: ['welcome-color', 'welcomecolor'],
-	type: 3,
-	async execute(client, message, args) {
-		let welcomeModel = await ModelWelc.findOne({ server: message.guild.id });
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { config, welcome } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	description: 'Set the welcome title color',
+	category: 'configuration',
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	async execute(client, interaction, guildConf) {
+		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		let color = (interaction as CommandInteraction).options.getString('color')!;
+		if (!color.toLowerCase().startsWith('#')) return interaction.reply({ embeds: [client.redEmbed(welcome.hex)] });
 
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-
-		if (!adminperms) return message.channel.send(config.admin_perm);
-
-		let color = args[0];
-		if (!color || !color.toLowerCase().startsWith('#')) return message.channel.send(welcome.hex);
-		// eslint-disable-next-line curly
-		if (!welcomeModel) {
-			welcomeModel = new ModelWelc({
-				server: message.guild.id,
+		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
+		if (!welcome) {
+			let newModel = new ModelWelc({
+				server: interaction.guildId,
 				canal: 'none',
 				color: color,
 				image: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
-				text: `Welcome to ${message.guild.name}`
+				text: `Welcome to ${interaction.guild!.name}`
 			});
+			welcomeModel = newModel;
 		}
 		welcomeModel.color = color;
 		await welcomeModel.save();
-		message.channel.send(welcome.wcolor.replace('{color}', color));
+		interaction.reply({ embeds: [client.blueEmbed(welcome.wcolor.replace('{color}', color))] });
 	}
-};
+});

@@ -108,7 +108,7 @@ export default async (client: ExtendedClient, message: Message) => {
 	}
 
 	if (command.required_roles?.length > 0)
-		if (message.guild.roles.cache.hasAll(serverConfig.modrole, serverConfig.adminrole)) {
+		if (message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)) {
 			let perms = command.required_roles.includes('MODERATOR')
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
 				: message.member.roles.cache.has(serverConfig.adminrole);
@@ -120,7 +120,7 @@ export default async (client: ExtendedClient, message: Message) => {
 				} else return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 		}
 
-	if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAll(serverConfig.modrole, serverConfig.adminrole))) {
+	if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
 		const permsBitfield = Permissions.resolve(command.required_perms);
 		if (!message.member?.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
@@ -134,6 +134,7 @@ export default async (client: ExtendedClient, message: Message) => {
 			let index = arg.index;
 			let type = arg.type;
 			if (!args[index] && !arg.optional) return requiredArgs.push(arg.name);
+			if (args[index] === 'disable') return;
 
 			switch (type) {
 				case 'user': {
@@ -219,16 +220,14 @@ export default async (client: ExtendedClient, message: Message) => {
 	try {
 		command.execute(client, message, args, serverConfig);
 		if (serverConfig.actionslogs === 'none') return;
-		setTimeout(() => {
-			const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
-			if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
-			const cmdObj = {
-				'{user}': message.author.tag,
-				'{command}': command!.name,
-				'{channel}': `<#${message.channel.id}>`
-			};
-			return logs_channel.send({ embeds: [client.orangeEmbed(client.replaceEach(config.command_used, cmdObj))] });
-		}, 1000);
+		const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
+		if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+		const cmdObj = {
+			'{user}': message.author.tag,
+			'{command}': command!.name,
+			'{channel}': `<#${message.channel.id}>`
+		};
+		return logs_channel.send({ embeds: [client.orangeEmbed(client.replaceEach(config.command_used, cmdObj))] });
 	} catch (error) {
 		client.catchError(error, message.channel as TextChannel);
 	}

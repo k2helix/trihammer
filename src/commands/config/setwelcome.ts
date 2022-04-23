@@ -13,11 +13,11 @@ export default new MessageCommand({
 	required_perms: ['ADMINISTRATOR'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
+		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let channel = message.mentions.channels.first() || message.guild!.channels.cache.get(args[0]) || message.channel;
-		if (!channel || channel.type === 'DM') return;
+		if (!channel.isText()) return message.channel.send({ embeds: [client.redEmbed(config.only_text)] });
 
 		let welcome = await ModelWelc.findOne({ server: message.guild!.id });
-		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (args[0] === 'disable') {
 			welcome.canal = 'none';
 			await welcome.save();
@@ -35,6 +35,6 @@ export default new MessageCommand({
 		}
 		welcome.canal = channel.id;
 		await welcome.save();
-		message.channel.send({ embeds: [client.blueEmbed(config.channel_set.welcome.replace('{channel}', channel!.name))] });
+		message.channel.send({ embeds: [client.blueEmbed(config.channel_set.welcome.replace('{channel}', `<#${channel.id}>`))] });
 	}
 });

@@ -94,14 +94,15 @@ export const config = {
 		disabled: '👍 Logs of that type were disabled'
 	},
 	role_set: {
-		admin: 'Role {role} set as the administrator role\nBe aware that for this to work you have to set a moderator role.',
-		mod: 'Role {role} set as the moderator role.\nBe aware that for this to work you have to set an administrator role.',
-		auto: 'Role {role} set as the auto role',
+		admin: 'Role **{role}** set as the administrator role\nBe aware that for this to work you have to set a moderator role.',
+		mod: 'Role **{role}** set as the moderator role.\nBe aware that for this to work you have to set an administrator role.',
+		auto: 'Role **{role}** set as the auto role',
 		disabled: '👍 Role disabled'
 	},
+	only_text: 'The channel you selected is not a text-based channel',
 	antispam_enabled: 'Ok, AntiSpam system enabled!',
 	antispam_disabled: 'Ok, AntiSpam system disabled.',
-	prefix_set: 'Ok, {prefix} set as new prefix.',
+	prefix_set: 'Ok, `{prefix}` set as new prefix.',
 	current_languages: 'Current available languages: `es`, `en`',
 	lang_set: 'Ok, {idioma} set as new language.',
 	admin_perm: 'You need the administrator role to execute this command.',

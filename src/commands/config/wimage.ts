@@ -18,7 +18,7 @@ export default new MessageCommand({
 		if (!welcome) {
 			let newModel = new ModelWelc({
 				server: message.guild!.id,
-				canal: 'nonne',
+				canal: 'none',
 				color: '#ffffff',
 				image: image,
 				text: `Welcome to ${message.guild!.name}`

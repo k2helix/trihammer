@@ -71,7 +71,7 @@ export default new Command({
 				volume: 'volume'
 			};
 			//@ts-ignore
-			client.interactionCommands.get(names[interaction.options.data[0].name]).execute(client, interaction, guildConf);
+			client.interactionCommands.get(names[interaction.options.data[0].name])!.execute(client, interaction, guildConf);
 		}
 	}
 });

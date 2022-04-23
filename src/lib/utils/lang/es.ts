@@ -90,14 +90,15 @@ export const config = {
 		disabled: '👍 Los logs de ese tipo fueron deshabilitados'
 	},
 	role_set: {
-		admin: 'Rol {role} establecido como el rol de administrador.\nTen en cuenta que para que funcione debes seleccionar un rol de moderador.',
-		mod: 'Rol {role} establecido como el rol de moderador.\nTen en cuenta que para que funcione debes seleccionar un rol de administrador.',
-		auto: 'Rol {role} establecido como el autorole',
+		admin: 'Rol **{role}** establecido como el rol de administrador.\nTen en cuenta que para que funcione debes seleccionar un rol de moderador.',
+		mod: 'Rol **{role}** establecido como el rol de moderador.\nTen en cuenta que para que funcione debes seleccionar un rol de administrador.',
+		auto: 'Rol **{role}** establecido como el autorole',
 		disabled: '👍 Rol deshabilitado'
 	},
+	only_text: 'El canal que has seleccionado no es de texto',
 	antispam_enabled: 'Ok, ¡Sistema antispam activado!',
 	antispam_disabled: 'Ok, sistema antispam desactivado.',
-	prefix_set: 'Ok, {prefix} establecido como nuevo prefijo.',
+	prefix_set: 'Ok, `{prefix}` establecido como nuevo prefijo.',
 	current_languages: 'Idiomas disponibles actualmente: `es`, `en`',
 	lang_set: 'Ok, {idioma} establecido como nuevo idioma.',
 	admin_perm: 'Necesitas el rol de administrador para ejecutar el comando.',

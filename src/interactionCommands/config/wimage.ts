@@ -1,36 +1,31 @@
-const { ModelServer, ModelWelc } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { ModelWelc } from '../../lib/utils/models';
+export default new Command({
 	name: 'wimage',
-	description: 'Set the welcome image',
-	ESdesc: 'Establece la imagen de bienvenida',
-	usage: 'wimage <image url>',
-	example: 'wimage https://cdn.discordapp.com/attachments/696027669414019133/731209814004334673/emtsad.png',
-	aliases: ['welcome-image', 'welcomeimage'],
-	type: 3,
-	async execute(client, message, args) {
-		let welcomeModel = await ModelWelc.findOne({ server: message.guild.id });
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { config, welcome } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	description: 'Set the welcome background image',
+	category: 'configuration',
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	async execute(client, interaction, guildConf) {
+		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+		let image = (interaction as CommandInteraction).options.getString('image')!;
+		if (!image.toLowerCase().startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(welcome.hex)] });
 
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-
-		if (!adminperms) return message.channel.send(config.admin_perm);
-		let image = args[0];
-		if (!image || !image.toLowerCase().startsWith('http')) return message.channel.send(welcome.need_url);
-		// eslint-disable-next-line curly
-		if (!welcomeModel) {
-			welcomeModel = new ModelWelc({
-				server: message.guild.id,
+		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
+		if (!welcome) {
+			let newModel = new ModelWelc({
+				server: interaction.guildId,
 				canal: 'none',
 				color: '#ffffff',
 				image: image,
-				text: `Welcome to ${message.guild.name}`
+				text: `Welcome to ${interaction.guild!.name}`
 			});
+			welcomeModel = newModel;
 		}
-
 		welcomeModel.image = image;
 		await welcomeModel.save();
-		message.channel.send(welcome.wimage);
+		interaction.reply({ embeds: [client.blueEmbed(welcome.wimage)] });
 	}
-};
+});

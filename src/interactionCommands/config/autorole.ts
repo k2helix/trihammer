@@ -1,24 +1,20 @@
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { ModelServer } from '../../lib/utils/models';
+import { CommandInteraction } from 'discord.js';
+export default new Command({
 	name: 'autorole',
-	description: 'Set the auto role (the role given to new members)',
-	ESdesc: 'Establece el autorol (el rol dado a nuevos miembros)',
-	usage: 'autorole <role id or name>',
-	example: 'autorole Member',
-	aliases: ['auto-role'],
-	type: 3,
-	myPerms: [false, 'MANAGE_ROLES'],
-	async execute(client, message, args) {
-		let rol = message.guild.roles.cache.find((r) => r.name === args.join(' ')) || message.guild.roles.cache.get(args[0]);
-		if (!rol) return message.channel.send('Error, name or id');
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id });
-		let langcode = serverConfig.lang;
-		let { config } = require(`../../lib/utils/lang/${langcode}`);
-		let permiso =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
-		if (!permiso) return message.channel.send(config.admin_perm);
-		serverConfig.autorole = rol.id;
-		serverConfig.save();
-		message.channel.send(config.role_set.replaceAll({ '{role}': rol.name, '{type}': 'auto' }));
+	description: 'Set the autorole',
+	category: 'configuration',
+	required_perms: ['ADMINISTRATOR'],
+	required_roles: ['ADMINISTRATOR'],
+	async execute(client, interaction, guildConf) {
+		let role = (interaction as CommandInteraction).options.getRole('role')!;
+		const serverConfig = await ModelServer.findOne({ server: interaction.guildId });
+		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+		serverConfig.autorole = role.id;
+		await serverConfig.save();
+		interaction.reply({ embeds: [client.blueEmbed(config.role_set.auto.replace('{role}', role!.name))] });
 	}
-};
+});
