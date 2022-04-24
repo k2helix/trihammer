@@ -30,7 +30,10 @@ export default async (client: ExtendedClient, oldMember: GuildMember, newMember:
 		logs_channel.send({
 			embeds: [
 				client.yellowEmbed(
-					client.replaceEach(events.member.update.role_added, { '{member}': `${newMember.user.tag} (${newMember.id})`, '{role}': addedRoles.map((r) => r.name).join(', ') })
+					client.replaceEach(events.member.update.role_added, {
+						'{member}': `${newMember.user.tag} (${newMember.id})`,
+						'{role}': addedRoles.map((r) => `<@&${r.id}>`).join(', ')
+					})
 				)
 			]
 		});
@@ -40,7 +43,7 @@ export default async (client: ExtendedClient, oldMember: GuildMember, newMember:
 				client.yellowEmbed(
 					client.replaceEach(events.member.update.role_removed, {
 						'{member}': `${newMember.user.tag} (${newMember.id})`,
-						'{role}': removedRoles.map((r) => r.name).join(', ')
+						'{role}': removedRoles.map((r) => `<@&${r.id}>`).join(', ')
 					})
 				)
 			]

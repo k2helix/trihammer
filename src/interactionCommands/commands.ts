@@ -1417,18 +1417,6 @@ export default [
 		]
 	},
 	{
-		name: 'unmute',
-		description: 'Unmute a muted user',
-		options: [
-			{
-				name: 'user',
-				type: 'USER',
-				description: 'The user you want to unmute',
-				required: true
-			}
-		]
-	},
-	{
 		name: 'timeout',
 		description: 'Times this member guild out (0 to clear the timeout)',
 		options: [

@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
 import { ModelServer, Server } from '../lib/utils/models';
+import { MessageEmbed } from 'discord.js';
 export default async (client: ExtendedClient, old_message: Message, new_message: Message) => {
 	if (!old_message.guild || old_message.author.bot) return;
 	if (!old_message.content && !new_message.content) return;

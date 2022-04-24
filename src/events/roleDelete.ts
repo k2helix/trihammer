@@ -10,5 +10,5 @@ export default async (client: ExtendedClient, role: Role) => {
 	let logs_channel = role.guild.channels.cache.get(serverConfig.serverlogs);
 	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
 
-	logs_channel.send({ embeds: [client.redEmbed(client.replaceEach(events.role.delete, { '{role}': role.name }))] });
+	logs_channel.send({ embeds: [client.redEmbed(client.replaceEach(events.role.delete, { '{role}': `<@&${role.id}>` }))] });
 };

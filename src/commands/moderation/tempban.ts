@@ -3,7 +3,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { ModelInfrs, ModelTempban } from '../../lib/utils/models';
 export default new MessageCommand({
 	name: 'tempban',
-	description: 'Ban an user the specified time',
+	description: 'Ban a user the specified time',
 	category: 'moderation',
 	required_args: [
 		{ index: 0, name: 'user', type: 'member' },
@@ -28,7 +28,9 @@ export default new MessageCommand({
 
 		switch (sendDM) {
 			case true:
-				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['banned'], '{server}': message.guild!.name, '{reason}': reason, '{time}': timeString }));
+				member
+					.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['banned'], '{server}': message.guild!.name, '{reason}': reason, '{time}': timeString }))
+					.catch(() => undefined);
 				break;
 
 			case false:

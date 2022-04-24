@@ -1,80 +1,60 @@
-const { ModelServer, ModelInfrs } = require('../../lib/utils/models');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { ModelInfrs } from '../../lib/utils/models';
+import { CommandInteraction } from 'discord.js';
+export default new Command({
 	name: 'mkick',
 	description: 'Kick multiple users in one command',
-	ESdesc: 'Expulsa múltiples usuarios en un comando',
-	usage: 'mkick <users> -r <reason>',
-	example: 'mkick 547523994669023334 618234417407852565 -r Spam',
-	aliases: ['multikick'],
+	category: 'moderation',
+	required_perms: ['KICK_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['KICK_MEMBERS'],
 	cooldown: 5,
-	type: 2,
-	myPerms: [false, 'KICK_MEMBERS'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	execute(client, interaction, guildConf) {
+		interaction.deferReply().then(async () => {
+			const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso =
-			serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
+			let reason = (interaction as CommandInteraction).options.getString('reason')!;
+			let ctt = 0;
+			(interaction as CommandInteraction).options
+				.getString('users')!
+				.split(' ')
+				.forEach(async (id) => {
+					let member = interaction.guild!.members.cache.get(id)!;
+					try {
+						member.kick(`[MKICK] Command used by ${interaction.user.tag} | Reason: ${reason}`);
 
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
+						let infrs = await ModelInfrs.find().lean();
+						let key = infrs.length;
+						let newModel = new ModelInfrs({
+							key: key,
+							id: member.id,
+							server: interaction.guildId,
+							duration: 'N/A',
+							tipo: 'kick',
+							time: `${interaction.createdTimestamp}`,
+							mod: interaction.user.id,
+							reason: reason
+						});
+						await newModel.save();
 
-		let r = args.indexOf('-r');
-		let reason = args.slice(r + 1).join(' ');
-		if (r == -1) return message.channel.send('mkick <users> -r <reason> [md]');
-
-		let ctt = 0;
-		args.slice(0, r).forEach(async (id) => {
-			let member = message.guild.members.cache.get(id);
-
-			let sendDM = !message.content.toLowerCase().includes('-nodm');
-
-			try {
-				switch (sendDM) {
-					case true:
-						member.send(mod.infraction_md.replaceAll({ '{action}': 'kicked', '{server}': message.guild.name, '{reason}': reason }));
-						break;
-
-					case false:
-						reason = reason.slice(0, reason.indexOf('-nodm'));
-						break;
-				}
-
-				member.kick(`[MKICK] Command used by ${message.author.tag} | Reason: ${reason}`);
-
-				let infrs = await ModelInfrs.find().lean();
-				let key = infrs.length;
-				let newModel = new ModelInfrs({
-					key: key,
-					id: member.id,
-					server: message.guild.id,
-					duration: 'N/A',
-					tipo: 'kick',
-					time: `${message.createdTimestamp}`,
-					mod: message.author.id,
-					reason: reason
+						client.emit('infractionCreate', {
+							user: {
+								id: member.id,
+								tag: member.user.tag
+							},
+							type: '👢 KICK',
+							time: 'N/A',
+							mod: interaction.user.tag,
+							reason: reason,
+							guild: interaction.guildId
+						});
+					} catch (err) {
+						return interaction.channel!.send(mod.user_404.replace('{action}', 'kick'));
+					}
+					++ctt;
 				});
-				await newModel.save();
-
-				let infraction = {
-					user: {
-						id: member.id,
-						tag: member.user.tag
-					},
-					type: '👢 KICK',
-					time: 'N/A',
-					mod: message.author.tag,
-					reason: reason,
-					guild: message.guild.id
-				};
-
-				client.emit('infractionCreate', infraction);
-			} catch (err) {
-				return message.channel.send(mod.i_cant.replace('{action}', 'kick'));
-			}
-			++ctt;
+			interaction.editReply({ embeds: [client.orangeEmbed(mod.mkick.replace('{count}', ctt.toString()))] });
 		});
-		message.channel.send(mod.mkick.replace('{count}', ctt));
 	}
-};
+});

@@ -1,65 +1,56 @@
-const { ModelServer, ModelInfrs } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction, User } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { ModelInfrs } from '../../lib/utils/models';
+export default new Command({
 	name: 'forceban',
-	description: 'Ban an user which is not in the server',
-	ESdesc: 'Banea a un usuario que no está en el servidor',
-	usage: 'forceban <user> <reason>',
-	example: 'forceban 714567840581287936 Raid',
-	aliases: ['hackban'],
-	type: 2,
-	myPerms: [false, 'BAN_MEMBERS'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	description: 'Ban a user which is not in the server',
+	category: 'moderation',
+	required_perms: ['BAN_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['BAN_MEMBERS'],
+	async execute(client, interaction, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso =
-			serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
+		let id = (interaction as CommandInteraction).options.getString('user')!;
+		let reason = (interaction as CommandInteraction).options.getString('reason')!;
 
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
-
-		let id = args[0];
-		if (!id) return message.channel.send(mod.need_id);
-
-		let reason = args.slice(1).join(' ') || 'No';
-
-		message.guild.members
-			.ban(id, { reason: `[FORCEBAN] Command used by ${message.author.tag} | Reason: ${reason}` })
+		interaction
+			.guild!.members.ban(id, { reason: `[FORCEBAN] Command used by ${interaction.user.tag} | Reason: ${reason}` })
 			.then(async (user) => {
-				message.channel.send(mod.infraction.replaceAll({ '{user}': user.tag, '{action}': 'forcebanned', '{reason}': reason }));
+				interaction.reply({
+					embeds: [client.blueEmbed(client.replaceEach(mod.infraction, { '{user}': (user as User).tag, '{action}': mod.actions['banned'], '{reason}': reason }))]
+				});
 
 				let infrs = await ModelInfrs.find().lean();
 				let key = infrs.length;
 				let newModel = new ModelInfrs({
 					key: key,
-					id: user.id,
-					server: message.guild.id,
+					id: (user as User).id,
+					server: interaction.guildId!,
 					duration: 'N/A',
 					tipo: 'ban',
-					time: `${message.createdTimestamp}`,
-					mod: message.author.id,
+					time: `${interaction.createdTimestamp}`,
+					mod: interaction.user.id,
 					reason: reason
 				});
 				await newModel.save();
 
-				let infraction = {
+				client.emit('infractionCreate', {
 					user: {
-						id: user.id,
-						tag: user.tag
+						id: (user as User).id,
+						tag: (user as User).tag
 					},
 					type: '🔨 FORCEBAN',
 					time: 'N/A',
-					mod: message.author.tag,
+					mod: interaction.user.tag,
 					reason: reason,
-					guild: message.guild.id
-				};
-
-				client.emit('infractionCreate', infraction);
+					guild: interaction.guildId
+				});
 			})
 			.catch((error) => {
 				console.error(error);
-				message.channel.send(mod.user_404.replace('{id}', id));
+				interaction.reply({ embeds: [client.redEmbed(mod.user_404.replace('{id}', id))] });
 			});
 	}
-};
+});

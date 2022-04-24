@@ -24,7 +24,7 @@ export default new MessageCommand({
 		if (args[1].startsWith('0')) {
 			member.timeout(null, (reason || 'No reason') + ` | by ${message.author.tag}`);
 			return message.channel.send({ embeds: [client.orangeEmbed(mod.timeout.clear.replace('{member}', member.user.tag))] });
-		} else if (member.isCommunicationDisabled()) return message.channel.send({ content: mod.timeout.already_timed_out });
+		} else if (member.isCommunicationDisabled()) return message.channel.send({ embeds: [client.redEmbed(mod.timeout.already_timed_out)] });
 
 		if (time.tiempo >= 2419200000) return message.channel.send({ embeds: [client.redEmbed(mod.timeout.time)] });
 

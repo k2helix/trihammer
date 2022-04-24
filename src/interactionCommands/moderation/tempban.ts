@@ -1,58 +1,45 @@
-const { ModelServer, ModelInfrs, ModelTempban } = require('../../lib/utils/models');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { ModelInfrs, ModelTempban } from '../../lib/utils/models';
+import { CommandInteraction, GuildMember } from 'discord.js';
+export default new Command({
 	name: 'tempban',
-	description: 'Ban an user the specified time',
-	ESdesc: 'Banea a un usuario el tiempo especificado',
-	usage: 'tempban <user> <time> [reason] [dm]',
-	example: 'tempban 598894142554243081 5d Spam -nodm',
-	type: 2,
-	myPerms: [false, 'BAN_MEMBERS'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config, functions } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	description: 'Ban a user the specified time',
+	category: 'moderation',
+	required_perms: ['BAN_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['BAN_MEMBERS'],
+	async execute(client, interaction, guildConf) {
+		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso =
-			serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
+		let member = (interaction as CommandInteraction).options.getMember('user')! as GuildMember;
+		let reason = (interaction as CommandInteraction).options.getString('reason')!;
 
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
+		let timeString = (interaction as CommandInteraction).options.getString('duration') || 'N/A';
+		let time = functions.Convert(timeString);
 
-		let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-		if (!member) return message.channel.send(mod.need_id);
+		if ((interaction as CommandInteraction).options.getBoolean('notify'))
+			member
+				.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['banned'], '{server}': interaction.guild!.name, '{reason}': reason, '{time}': timeString }))
+				.catch(() => undefined);
 
-		let time = functions.Convert(args[1]);
-		if (!time) return message.channel.send(mod.time_404);
-
-		let timeString = args[1];
-		let reason = args.slice(2).join(' ') || 'No';
-
-		let sendDM = !message.content.toLowerCase().includes('-nodm');
-
-		switch (sendDM) {
-			case true:
-				member.send(
-					mod.infraction_md.replaceAll({ '{action}': 'tempbanned', '{server}': message.guild.name, '{reason}': reason, '{time}': timeString })
-				);
-				break;
-
-			case false:
-				reason = reason.slice(0, reason.indexOf('-nodm'));
-				break;
-		}
-		member.ban({ reason: `[TEMPBAN] Command used by ${message.author.tag} | Reason: ${reason} | Time: ${timeString}` });
-		message.channel.send(mod.temp_infr.replaceAll({ '{user}': member.user.tag, '{action}': 'tempbanned', '{reason}': reason, '{time}': timeString }));
+		member.ban({ reason: `[TEMPBAN] Command used by ${interaction.user.tag} | Reason: ${reason} | Time: ${timeString}` });
+		interaction.reply({
+			embeds: [
+				client.orangeEmbed(client.replaceEach(mod.temp_infr, { '{user}': member.user.tag, '{action}': mod.actions['banned'], '{reason}': reason, '{time}': timeString }))
+			]
+		});
 
 		let infrs = await ModelInfrs.find().lean();
 		let key = infrs.length;
 		let newModel = new ModelInfrs({
 			key: key,
 			id: member.id,
-			server: message.guild.id,
+			server: interaction.guildId,
 			duration: timeString,
 			tipo: 'tempban',
-			time: `${message.createdTimestamp}`,
-			mod: message.author.id,
+			time: `${interaction.createdTimestamp}`,
+			mod: interaction.user.id,
 			reason: reason
 		});
 		await newModel.save();
@@ -62,25 +49,23 @@ module.exports = {
 			let newMute = new ModelTempban({
 				key: key,
 				id: member.id,
-				server: message.guild.id,
+				server: interaction.guildId,
 				expire: expiration,
 				active: true
 			});
 			await newMute.save();
 		}
 
-		let infraction = {
+		client.emit('infractionCreate', {
 			user: {
 				id: member.id,
 				tag: member.user.tag
 			},
 			type: '🔨 TEMPBAN',
 			time: timeString,
-			mod: message.author.tag,
+			mod: interaction.user.tag,
 			reason: reason,
-			guild: message.guild.id
-		};
-
-		client.emit('infractionCreate', infraction);
+			guild: interaction.guildId
+		});
 	}
-};
+});

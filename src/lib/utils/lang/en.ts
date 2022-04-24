@@ -155,7 +155,7 @@ export const mod = {
 		how_it_works:
 			'**How to use the EMBED command**\nThe `embed` command can work in two ways, the first, using the embed JSON code (https://phodit.net/embedbuilder/), and the second is by separating what you want in the embed with **|** \nAn example would be `embed title: embed title | description: embed description | fields: [{"name": "title of the first field", "value": "value of the first field"}, ...] `\n This is a simple example, you can add many more things to the embed (title, description, fields, footer, thumbnail, image and color). They do not have to be in order, you can order it as you want. \nThis has been the help for the EMBED command, if you need more help, you can ask the support server ( t-support)'
 	},
-	user_404: "I couldn't find an user with id {id}",
+	user_404: "I couldn't find a user with id {id}",
 	user_infrs: "{user}'s infractions ```ml\nType | Moderator | Reason | Duration | Active? | Date | Infr ID \n ------------------------------------",
 	infrs_404: "The given user doesn't have infractions",
 	channel_lock: 'SEND_MESSAGES permission has been denied for `{role}`',
@@ -165,7 +165,7 @@ export const mod = {
 	time_404: 'You need to type the time.',
 	has_role: '{member} already has the role {role}.',
 	role_added: '{member} received the role {role}.',
-	role_404: "I couldn't find a role with name or id {id}",
+	role_404: "The role you selected does not exist or its position is higher than mine's",
 	has_role_nt: "{member} doesn't have the role {role}",
 	role_removed: '{role} has been removed from {member}',
 	need_reason: 'You need to type the reason of the infraction',

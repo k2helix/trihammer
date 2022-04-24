@@ -1,45 +1,42 @@
-const { MessageEmbed, Permissions } = require('discord.js');
-module.exports = {
+import { CommandInteraction, GuildMember } from 'discord.js';
+import Command from '../../lib/structures/Command';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+export default new Command({
 	name: 'timeout',
 	description: 'Timeout a member',
-	ESdesc: 'Aisla a un usuario temporalmente',
-	usage: 'timeout <member> <duration> [reason]',
-	example: 'timeout @uwu 1h me cae mal',
-	myPerms: [false, 'MODERATE_MEMBERS'],
-	type: 0,
-	execute(client, interaction, guildConf) {
-		let { mod, functions, config } = require(`../../lib/utils/lang/${guildConf.lang}`);
-		let permiso =
-			guildConf.modrole !== 'none' ? interaction.member.roles.cache.has(guildConf.modrole) : interaction.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS);
-		let adminperms =
-			guildConf.adminrole !== 'none' ? interaction.member.roles.cache.has(guildConf.adminrole) : interaction.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS);
-		if (!permiso && !adminperms) return interaction.reply({ content: config.mod_perm, ephemeral: true });
+	category: 'moderation',
+	required_perms: ['MODERATE_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['MODERATE_MEMBERS'],
+	async execute(client, interaction, guildConf) {
+		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let user = interaction.options.getUser('user'),
-			reason = interaction.options.getString('reason'),
-			duration = interaction.options.getString('duration');
+		let member = (interaction as CommandInteraction).options.getMember('user')! as GuildMember,
+			reason = (interaction as CommandInteraction).options.getString('reason') || 'No reason',
+			timeString = (interaction as CommandInteraction).options.getString('duration')!,
+			time = functions.Convert(timeString);
 
-		let member = interaction.guild.members.cache.get(user.id);
-		if (!member.moderatable) return interaction.reply(mod.not_moderatable);
+		if (!member.moderatable) return interaction.reply({ embeds: [client.redEmbed(mod.not_moderatable)], ephemeral: true });
+		if (!time) return interaction.reply({ embeds: [client.redEmbed(mod.time_404)], ephemeral: true });
 
-		if (duration.startsWith('0')) {
-			let unmuteEmbed = new MessageEmbed().setColor('RANDOM').setDescription(mod.timeout.clear.replace('{member}', user.tag));
+		if (timeString.startsWith('0')) {
 			member.timeout(null, (reason || 'No reason') + ` | by ${interaction.user.tag}`);
-			return interaction.reply({ embeds: [unmuteEmbed] });
-		} else if (member.isCommunicationDisabled()) return interaction.reply({ content: mod.timeout.already_timed_out, ephemeral: true });
+			return interaction.reply({ embeds: [client.orangeEmbed(mod.timeout.clear.replace('{member}', member.user.tag))] });
+		} else if (member.isCommunicationDisabled()) return interaction.reply({ embeds: [client.redEmbed(mod.timeout.already_timed_out)], ephemeral: true });
 
-		let time = functions.Convert(duration);
-		if (!time) return interaction.reply({ content: mod.time_404, ephemeral: true });
-		if (time.tiempo >= 2419200000) return interaction.reply({ content: mod.timeout.time, ephemeral: true });
+		if (time.tiempo >= 2419200000) return interaction.reply({ embeds: [client.redEmbed(mod.timeout.time)], ephemeral: true });
 
-		let embed = new MessageEmbed().setColor('RANDOM').setDescription(
-			mod.timeout.timeout.replaceAll({
-				'{member}': member.user.tag,
-				'{duration}': time.nombre,
-				'{reason}': reason || 'No'
-			})
-		);
-		member.timeout(time.tiempo, (reason || 'No reason') + ` | by ${interaction.user.tag}`);
-		interaction.reply({ embeds: [embed] });
+		member.timeout(time.tiempo, reason + ` | by ${interaction.user.tag}`);
+		interaction.reply({
+			embeds: [
+				client.orangeEmbed(
+					client.replaceEach(mod.timeout.timeout, {
+						'{member}': member.user.tag,
+						'{duration}': time.nombre,
+						'{reason}': reason || 'No'
+					})
+				)
+			]
+		});
 	}
-};
+});

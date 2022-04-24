@@ -3,7 +3,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { ModelInfrs, ModelMutes } from '../../lib/utils/models';
 export default new MessageCommand({
 	name: 'mute',
-	description: 'Mute or tempmute an user',
+	description: 'Mute or tempmute a user',
 	category: 'moderation',
 	required_args: [
 		{ index: 0, name: 'user', type: 'member' },
@@ -51,7 +51,9 @@ export default new MessageCommand({
 
 		switch (sendDM) {
 			case true:
-				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['muted'], '{server}': message.guild!.name, '{reason}': reason, '{time}': timeString }));
+				member
+					.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['muted'], '{server}': message.guild!.name, '{reason}': reason, '{time}': timeString }))
+					.catch(() => undefined);
 				break;
 
 			case false:

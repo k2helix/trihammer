@@ -4,7 +4,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { ModelInfrs } from '../../lib/utils/models';
 export default new MessageCommand({
 	name: 'ban',
-	description: 'Ban an user with the given reason',
+	description: 'Ban a user with the given reason',
 	aliases: ['permaban'],
 	category: 'moderation',
 	required_args: [
@@ -25,7 +25,7 @@ export default new MessageCommand({
 
 		switch (sendDM) {
 			case true:
-				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['banned'], '{server}': message.guild!.name, '{reason}': reason }));
+				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['banned'], '{server}': message.guild!.name, '{reason}': reason })).catch(() => undefined);
 				break;
 
 			case false:
