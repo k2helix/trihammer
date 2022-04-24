@@ -4,7 +4,7 @@ import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
 import { compareTwoStrings } from '../lib/utils/functions';
 
-type required_arg = { index: number; name: string; type: string; optional?: boolean };
+type required_arg = { index: number; name: string; type: string; optional?: boolean; ignore?: boolean };
 
 function moveArgumentsIndex(required_args: required_arg[], arg: required_arg) {
 	let followingArgs = required_args.filter((a) => a.index > arg.index);
@@ -135,7 +135,7 @@ export default async (client: ExtendedClient, message: Message) => {
 			let index = arg.index;
 			let type = arg.type;
 			if (!args[index] && !arg.optional) return requiredArgs.push(arg.name);
-			if (args[index] === 'disable') return;
+			if (arg.ignore) return;
 
 			switch (type) {
 				case 'user': {
@@ -165,7 +165,10 @@ export default async (client: ExtendedClient, message: Message) => {
 				}
 				case 'role':
 					{
-						let role = message.mentions.roles.first() || message.guild?.roles.cache.get(args[index]) || message.guild?.roles.cache.find((r) => r.name === args[index]);
+						let role =
+							message.mentions.roles.first() ||
+							message.guild?.roles.cache.get(args[index]) ||
+							message.guild?.roles.cache.find((r) => r.name.toLowerCase() === args[index].toLowerCase());
 						if (!role) {
 							if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
 							requiredArgs.push(arg.name);

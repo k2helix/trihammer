@@ -9,7 +9,7 @@ export default interface MessageCommandOptions {
 	description?: string;
 	cooldown?: number;
 	category?: string;
-	required_args?: { index: number; type: 'user' | 'member' | 'channel' | 'role' | 'string' | 'number' | string; name: string; optional?: boolean }[];
+	required_args?: { index: number; type: 'user' | 'member' | 'channel' | 'role' | 'string' | 'number' | string; name: string; optional?: boolean; ignore?: boolean }[];
 	required_roles?: ('MODERATOR' | 'ADMINISTRATOR')[];
 	required_perms?: PermissionString[];
 	client_perms?: PermissionString[];

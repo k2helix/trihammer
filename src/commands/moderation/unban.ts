@@ -1,33 +1,31 @@
-const { ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'unban',
 	description: 'Unban a banned user',
-	ESdesc: 'Desbanea a un usuario baneado',
-	usage: 'unban <user>',
-	example: 'unban 598894142554243081',
+	category: 'moderation',
+	required_args: [
+		{ index: 0, name: 'user', type: 'string' },
+		{ index: 1, name: 'reason', type: 'string', optional: true }
+	],
+	required_perms: ['BAN_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['BAN_MEMBERS'],
 	aliases: ['desban'],
-	type: 2,
-	myPerms: [false, 'BAN_MEMBERS'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
-
-		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
+	async execute(client, message, args, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let id = args[0];
 		let reason = args.slice(1).join(' ') || 'No';
-		if (!id) return message.channel.send(mod.need_id);
 
-		message.guild.members
-			.unban(id, `[UNBAN] Command used by ${message.author.tag} | Reason: ${reason}`)
+		message
+			.guild!.members.unban(id, `[UNBAN] Command used by ${message.author.tag} | Reason: ${reason}`)
 			.then((user) => {
-				message.channel.send(mod.infraction.replaceAll({ '{user}': user.tag, '{action}': 'unbanned', '{reason}': reason }));
+				message.channel.send({
+					embeds: [client.orangeEmbed(client.replaceEach(mod.infraction, { '{user}': user.tag, '{action}': mod.actions['unbanned'], '{reason}': reason }))]
+				});
 
-				let infraction = {
+				client.emit('infractionCreate', {
 					user: {
 						id: user.id,
 						tag: user.tag
@@ -36,13 +34,11 @@ module.exports = {
 					time: 'N/A',
 					mod: message.author.tag,
 					reason: reason,
-					guild: message.guild.id
-				};
-
-				client.emit('infractionCreate', infraction);
+					guild: message.guildId
+				});
 			})
 			.catch(() => {
-				return message.channel.send(mod.user_404.replace('{id}', id));
+				return message.channel.send({ embeds: [client.redEmbed(mod.user_404.replace('{id}', id))] });
 			});
 	}
-};
+});

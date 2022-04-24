@@ -1,39 +1,37 @@
-const { ModelInfrs, ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import { User } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelInfrs } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'mban',
 	description: 'Ban multiple users in one command',
-	ESdesc: 'Banea múltiples usuarios en un comando',
-	usage: 'mban <users> -r <reason>',
-	example: 'mban 547523994669023334 618234417407852565 -r Raid',
 	cooldown: 5,
 	aliases: ['multiban'],
-	type: 2,
-	myPerms: [false, 'BAN_MEMBERS'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
-
-		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
+	category: 'moderation',
+	required_args: [
+		{ index: 0, name: 'users', type: 'string' },
+		{ index: 1, name: '-r reason', type: 'string' }
+	],
+	required_perms: ['BAN_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['BAN_MEMBERS'],
+	async execute(client, message, args, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let r = args.indexOf('-r');
 		let reason = args.slice(r + 1).join(' ');
 		let ctt = 0;
 		if (r == -1) return message.channel.send('mban <users> -r <reason>');
 		args.slice(0, r).forEach((id) => {
-			message.guild.members
-				.ban(id, { reason: `[MBAN] Command used by ${message.author.tag} | Reason: ${reason}` })
+			message
+				.guild!.members.ban(id, { reason: `[MBAN] Command used by ${message.author.tag} | Reason: ${reason}` })
 				.then(async (user) => {
 					let infrs = await ModelInfrs.find().lean();
 					let key = infrs.length;
 					let newModel = new ModelInfrs({
 						key: key,
-						id: user.id,
-						server: message.guild.id,
+						id: (user as User).id,
+						server: message.guildId,
 						duration: 'N/A',
 						tipo: 'ban',
 						time: `${message.createdTimestamp}`,
@@ -42,25 +40,23 @@ module.exports = {
 					});
 					await newModel.save();
 
-					let infraction = {
+					client.emit('infractionCreate', {
 						user: {
-							id: user.id,
-							tag: user.tag
+							id: (user as User).id,
+							tag: (user as User).tag
 						},
 						type: '🔨 FORCEBAN',
 						time: 'N/A',
 						mod: message.author.tag,
 						reason: reason,
-						guild: message.guild.id
-					};
-
-					client.emit('infractionCreate', infraction);
+						guild: message.guildId
+					});
 				})
 				.catch(() => {
 					return message.channel.send(mod.user_404.replace('{id}', id));
 				});
 			++ctt;
 		});
-		message.channel.send(mod.mban.replace('{count}', ctt));
+		message.channel.send({ embeds: [client.orangeEmbed(mod.mban.replace('{count}', ctt.toString()))] });
 	}
-};
+});

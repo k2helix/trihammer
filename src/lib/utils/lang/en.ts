@@ -145,7 +145,7 @@ export const mod = {
 		unmuted: 'unmuted'
 	},
 	infraction_md: 'You have been {action} in {server}. Reason: {reason}',
-	infraction: '{user} has been {action}. Reason: {reason}',
+	infraction: '**{user}** has been {action}. Reason: {reason}',
 	whose_messages: '¿Whose are the messages that you want to delete?',
 	bulkDelete_14d: 'You can only delete messages that are under 14 days old.',
 	delete_infr: 'Ok, infraction {key} deleted.',
