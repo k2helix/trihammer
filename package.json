@@ -44,7 +44,9 @@
     "typescript": "^4.5.4"
   },
   "scripts": {
-    "start": "npm install --legacy-peer-deps && tsc && node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/src/index.js"
+    "start": "npm install --legacy-peer-deps && node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/src/index.js",
+    "tsc": "./node_modules/typescript/bin/tsc",
+    "postinstall": "npm run tsc"
   },
   "keywords": [
     "discord",
