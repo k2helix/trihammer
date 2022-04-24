@@ -103,13 +103,13 @@ export default async (client: ExtendedClient, message: Message) => {
 	if (!command) return;
 	if (!message.guild.me!.permissions.has('EMBED_LINKS')) return message.channel.send(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
 
-	if (command.client_perms?.length > 0) {
+	if (command.client_perms.length > 0) {
 		const permsBitfield = Permissions.resolve(command.client_perms);
 		if (!message.guild.me!.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')))] });
 	}
 
-	if (command.required_roles?.length > 0)
+	if (command.required_roles.length > 0)
 		if (message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)) {
 			let perms = command.required_roles.includes('MODERATOR')
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
@@ -123,14 +123,14 @@ export default async (client: ExtendedClient, message: Message) => {
 		} else if (command.required_perms.length === 0)
 			return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 
-	if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
+	if (command.required_perms.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
 		const permsBitfield = Permissions.resolve(command.required_perms);
 		if (!message.member?.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 	}
 
 	// it would be easy to get the args directly from here instead of in every command, but tbh I prefer just using args to avoid problems
-	if (command.required_args?.length > 0) {
+	if (command.required_args.length > 0) {
 		let requiredArgs: string[] = [];
 		let tmpArgs: required_arg[] = JSON.parse(JSON.stringify(command!.required_args)); // to avoid changing the true command properties, create an array so changes made below only affect the array and not the whole command object
 		tmpArgs.forEach(async (arg) => {

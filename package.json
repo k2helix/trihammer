@@ -31,6 +31,7 @@
     "node-schedule": "^2.0.0",
     "node-superfetch": "^0.2.3",
     "play-dl": "^1.9.4",
+    "typescript": "^4.5.4",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
   },
@@ -40,13 +41,10 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
-    "prettier": "^2.3.2",
-    "typescript": "^4.5.4"
+    "prettier": "^2.3.2"
   },
   "scripts": {
-    "start": "npm install --legacy-peer-deps && node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/src/index.js",
-    "tsc": "./node_modules/typescript/bin/tsc",
-    "postinstall": "npm run tsc"
+    "start": "npm install --legacy-peer-deps && node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/src/index.js"
   },
   "keywords": [
     "discord",

@@ -131,7 +131,6 @@ export default new Command({
 		let lang = (interaction as CommandInteraction).options.getString('to');
 		let text = (interaction as CommandInteraction).options.getString('text');
 		if (interaction.isContextMenu()) {
-			console.log(interaction.user);
 			let message = await interaction.channel!.messages.fetch(interaction.targetId);
 			lang = interactionLocales[interaction.locale as 'en-GB' | 'en-US' | 'es-ES' | 'pt-BR' | 'sv-SE'] || interaction.locale;
 			text = message.content;
