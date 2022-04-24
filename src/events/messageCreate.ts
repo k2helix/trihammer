@@ -42,7 +42,7 @@ export default async (client: ExtendedClient, message: Message) => {
 		await newGuildModel.save();
 		serverConfig = newGuild;
 	}
-	const prefix = '-';
+	const prefix = serverConfig.prefix;
 	const { config, util, other, xp } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	// require('../utils/methods/spam').check(serverConfig, message);
@@ -101,6 +101,8 @@ export default async (client: ExtendedClient, message: Message) => {
 
 	//quitar los ? cuando acabe
 	if (!command) return;
+	if (!message.guild.me!.permissions.has('EMBED_LINKS')) return message.channel.send(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
+
 	if (command.client_perms?.length > 0) {
 		const permsBitfield = Permissions.resolve(command.client_perms);
 		if (!message.guild.me!.permissions.has(permsBitfield))

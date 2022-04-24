@@ -2,7 +2,7 @@ import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'unmute',
-	description: 'Unmute an user',
+	description: 'Unmute a user',
 	category: 'moderation',
 	required_args: [
 		{ index: 0, name: 'user', type: 'user' },

@@ -3,7 +3,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { ModelInfrs } from '../../lib/utils/models';
 export default new MessageCommand({
 	name: 'warn',
-	description: 'Warn an user',
+	description: 'Warn a user',
 	category: 'moderation',
 	required_args: [
 		{ index: 0, name: 'user', type: 'member' },
@@ -22,7 +22,7 @@ export default new MessageCommand({
 
 		switch (sendDM) {
 			case true:
-				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['warned'], '{server}': message.guild!.name, '{reason}': reason }));
+				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['warned'], '{server}': message.guild!.name, '{reason}': reason })).catch(() => undefined);
 				break;
 
 			case false:

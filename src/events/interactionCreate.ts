@@ -50,6 +50,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		if (!interaction.inGuild() || interaction.user.bot) return;
 		const command = client.interactionCommands.get(interaction.commandName);
 		if (!command) return;
+		if (!interaction.guild.me!.permissions.has('EMBED_LINKS')) return interaction.reply(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
 
 		// quitar los ? cuando acabe
 		if (command.client_perms?.length > 0) {

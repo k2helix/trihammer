@@ -29,7 +29,9 @@ export default new MessageCommand({
 			try {
 				switch (sendDM) {
 					case true:
-						member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['kicked'], '{server}': message.guild!.name, '{reason}': reason }));
+						member
+							.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['kicked'], '{server}': message.guild!.name, '{reason}': reason }))
+							.catch(() => undefined);
 						break;
 
 					case false:

@@ -4,7 +4,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { ModelInfrs } from '../../lib/utils/models';
 export default new MessageCommand({
 	name: 'forceban',
-	description: 'Ban an user which is not in the server',
+	description: 'Ban a user which is not in the server',
 	aliases: ['hackban'],
 	category: 'moderation',
 	required_args: [

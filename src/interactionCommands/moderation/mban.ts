@@ -1,66 +1,60 @@
-const { ModelInfrs, ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import { CommandInteraction, User } from 'discord.js';
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { ModelInfrs } from '../../lib/utils/models';
+export default new Command({
 	name: 'mban',
 	description: 'Ban multiple users in one command',
-	ESdesc: 'Banea múltiples usuarios en un comando',
-	usage: 'mban <users> -r <reason>',
-	example: 'mban 547523994669023334 618234417407852565 -r Raid',
 	cooldown: 5,
-	aliases: ['multiban'],
-	type: 2,
-	myPerms: [false, 'BAN_MEMBERS'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	category: 'moderation',
+	required_perms: ['BAN_MEMBERS'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['BAN_MEMBERS'],
+	execute(client, interaction, guildConf) {
+		interaction.deferReply().then(async () => {
+			const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso =
-			serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
+			let reason = (interaction as CommandInteraction).options.getString('reason')!;
+			let ctt = 0;
+			(interaction as CommandInteraction).options
+				.getString('users')!
+				.split(' ')
+				.forEach((id) => {
+					interaction
+						.guild!.members.ban(id, { reason: `[MBAN] Command used by ${interaction.user.tag} | Reason: ${reason}` })
+						.then(async (user) => {
+							let infrs = await ModelInfrs.find().lean();
+							let key = infrs.length;
+							let newModel = new ModelInfrs({
+								key: key,
+								id: (user as User).id,
+								server: interaction.guildId,
+								duration: 'N/A',
+								tipo: 'ban',
+								time: `${interaction.createdTimestamp}`,
+								mod: interaction.user.id,
+								reason: reason
+							});
+							await newModel.save();
 
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
-
-		let r = args.indexOf('-r');
-		let reason = args.slice(r + 1).join(' ');
-		let ctt = 0;
-		if (r == -1) return message.channel.send('mban <users> -r <reason>');
-		args.slice(0, r).forEach((id) => {
-			message.guild.members
-				.ban(id, { reason: `[MBAN] Command used by ${message.author.tag} | Reason: ${reason}` })
-				.then(async (user) => {
-					let infrs = await ModelInfrs.find().lean();
-					let key = infrs.length;
-					let newModel = new ModelInfrs({
-						key: key,
-						id: user.id,
-						server: message.guild.id,
-						duration: 'N/A',
-						tipo: 'ban',
-						time: `${message.createdTimestamp}`,
-						mod: message.author.id,
-						reason: reason
-					});
-					await newModel.save();
-
-					let infraction = {
-						user: {
-							id: user.id,
-							tag: user.tag
-						},
-						type: '🔨 FORCEBAN',
-						time: 'N/A',
-						mod: message.author.tag,
-						reason: reason,
-						guild: message.guild.id
-					};
-
-					client.emit('infractionCreate', infraction);
-				})
-				.catch(() => {
-					return message.channel.send(mod.user_404.replace('{id}', id));
+							client.emit('infractionCreate', {
+								user: {
+									id: (user as User).id,
+									tag: (user as User).tag
+								},
+								type: '🔨 FORCEBAN',
+								time: 'N/A',
+								mod: interaction.user.tag,
+								reason: reason,
+								guild: interaction.guildId
+							});
+						})
+						.catch(() => {
+							return interaction.channel!.send(mod.user_404.replace('{id}', id));
+						});
+					++ctt;
 				});
-			++ctt;
+			interaction.editReply({ embeds: [client.orangeEmbed(mod.mban.replace('{count}', ctt.toString()))] });
 		});
-		message.channel.send(mod.mban.replace('{count}', ctt));
 	}
-};
+});

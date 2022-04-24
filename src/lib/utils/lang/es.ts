@@ -161,7 +161,7 @@ export const mod = {
 	time_404: 'Necesitas incluir el tiempo que será sancionado',
 	has_role: '{member} ya tiene el rol {role}.',
 	role_added: '{member} recibió el rol {role}',
-	role_404: 'No pude encontrar a un rol con nombre o id {id}',
+	role_404: 'El rol que seleccionaste no existe o es superior al mío',
 	has_role_nt: '{member} no tiene el rol {role}',
 	role_removed: '{role} fue removido de {member}',
 	need_reason: 'Necesitas incluir la razón de la sanción',

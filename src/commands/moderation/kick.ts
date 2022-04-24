@@ -3,7 +3,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { ModelInfrs } from '../../lib/utils/models';
 export default new MessageCommand({
 	name: 'kick',
-	description: 'Kick an user with the specified reason',
+	description: 'Kick a user with the specified reason',
 	aliases: ['expulsar'],
 	category: 'moderation',
 	required_args: [
@@ -24,7 +24,7 @@ export default new MessageCommand({
 
 		switch (sendDM) {
 			case true:
-				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['kicked'], '{server}': message.guild!.name, '{reason}': reason }));
+				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['kicked'], '{server}': message.guild!.name, '{reason}': reason })).catch(() => undefined);
 				break;
 
 			case false:

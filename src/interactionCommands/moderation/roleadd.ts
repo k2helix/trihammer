@@ -1,33 +1,26 @@
-const { ModelServer } = require('../../lib/utils/models');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import Command from '../../lib/structures/Command';
+import { CommandInteraction, GuildMember, Role } from 'discord.js';
+export default new Command({
 	name: 'roleadd',
 	description: 'Add a role to the given user',
-	ESdesc: 'Añade un rol al usuario dado',
-	usage: 'roleadd <user> <role name or id>',
-	example: 'roleadd @user Muted',
-	aliases: ['roles.add', 'addrole'],
-	type: 2,
-	myPerms: [false, 'MANAGE_ROLES'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	category: 'moderation',
+	required_perms: ['MANAGE_ROLES'],
+	required_roles: ['ADMINISTRATOR'],
+	client_perms: ['MANAGE_ROLES'],
+	async execute(client, interaction, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES);
-		if (!permiso) return message.channel.send(config.admin_perm);
+		let member = (interaction as CommandInteraction).options.getMember('user')! as GuildMember;
+		if (!member.manageable) return interaction.reply({ embeds: [client.redEmbed(mod.not_moderatable)], ephemeral: true });
 
-		let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-		if (!member) return message.channel.send(mod.user_404);
-
-		let role =
-			message.guild.roles.cache.get(args[1]) || message.guild.roles.cache.find((r) => r.name.toLowerCase() === args.slice(1).join(' ').toLowerCase());
-		if (!role) return message.channel.send(mod.role_404.replace('{id}', args.slice(1).join(' ')));
-
-		try {
-			member.roles.add(role, `[ADD ROLE] Command used by ${message.author.tag}`);
-			message.channel.send(mod.role_added.replaceAll({ '{member}': member.user.tag, '{role}': role.name }));
-		} catch (error) {
-			message.channel.send(error.message);
-		}
+		let role = (interaction as CommandInteraction).options.getRole('role')! as Role;
+		if (!role || role?.comparePositionTo(interaction.guild!.me!.roles.highest) > 0) return interaction.reply({ embeds: [client.redEmbed(mod.role_404)], ephemeral: true });
+		member.roles
+			.add(role, `[ADD ROLE] Command used by ${interaction.user.tag}`)
+			.then(() => {
+				interaction.reply({ embeds: [client.lightBlueEmbed(client.replaceEach(mod.role_added, { '{member}': member.user.tag, '{role}': role!.name }))] });
+			})
+			.catch((error) => interaction.reply(error.message));
 	}
-};
+});
