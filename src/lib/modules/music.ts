@@ -103,7 +103,6 @@ async function play(guild: Guild, song: Song) {
 							compareTwoStrings(serverQueue.songs[0].title.toLowerCase(), firstVid.title!.toLowerCase()) > 0.8 ||
 							firstVid.durationInSec - serverQueue.songs[0].durationInSec > 3000
 						);
-						console.log(i);
 						serverQueue.songs.push({
 							id: firstVid.id!,
 							title: firstVid.title!,

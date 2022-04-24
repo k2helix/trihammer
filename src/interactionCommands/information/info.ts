@@ -24,6 +24,6 @@ export default new Command({
 			.setImage(user.bannerURL({ dynamic: true, size: 1024 })!);
 		if (member) info_embed.addField(util.user.server, util.user.server_specific(member));
 
-		interaction.reply({ embeds: [info_embed] });
+		interaction.reply({ embeds: [info_embed], ephemeral: interaction.isContextMenu() });
 	}
 });
