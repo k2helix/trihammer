@@ -1,32 +1,33 @@
-const { ModelServer } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+export default new MessageCommand({
 	name: 'roleremove',
-	description: 'Remove a role to the given user',
-	ESdesc: 'Quita un rol al usuario dado',
-	usage: 'roleremove <user> <role name or id>',
-	example: 'roleremove @user Muted',
-	aliases: ['roles.remove', 'removerole'],
-	type: 2,
-	myPerms: [false, 'MANAGE_ROLES'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	description: 'Add a role to the given user',
+	aliases: ['roles.remove', 'removerole', 'rmrole'],
+	category: 'moderation',
+	required_args: [
+		{ index: 0, name: 'user', type: 'member' },
+		{ index: 1, name: 'role', type: 'role', ignore: true }
+	],
+	required_perms: ['MANAGE_ROLES'],
+	required_roles: ['ADMINISTRATOR'],
+	client_perms: ['MANAGE_ROLES'],
+	async execute(client, message, args, guildConf) {
+		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso = serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES);
-		if (!permiso) return message.channel.send(config.admin_perm);
+		let member = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
+		if (!member.manageable) return message.channel.send({ embeds: [client.redEmbed(mod.not_moderatable)] });
 
-		let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-		if (!member) return message.channel.send(mod.user_404.replace('{id}', args[0]));
-
-		let role = message.guild.roles.cache.get(args[1]) || message.guild.roles.cache.find((r) => r.name.toLowerCase() === args.slice(1).join(' ').toLowerCase());
-		if (!role) return message.channel.send(mod.role_404.replace('{id}', args.slice(1).join(' ')));
-
+		let role =
+			message.mentions.roles.first() ||
+			message.guild!.roles.cache.get(args[1]) ||
+			message.guild!.roles.cache.find((r) => r.name.toLowerCase() === args.slice(1).join(' ').toLowerCase());
+		if (!role) return message.channel.send({ embeds: [client.redEmbed(mod.role_404.replace('{id}', args.slice(1).join(' ')))] });
 		member.roles
 			.remove(role, `[REMOVE ROLE] Command used by ${message.author.tag}`)
 			.then(() => {
-				message.channel.send(mod.role_removed.replaceAll({ '{member}': member.user.tag, '{role}': role.name }));
+				message.channel.send({ embeds: [client.lightBlueEmbed(client.replaceEach(mod.role_removed, { '{member}': member.user.tag, '{role}': role!.name }))] });
 			})
 			.catch((error) => message.channel.send(error.message));
 	}
-};
+});

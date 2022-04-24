@@ -1,6 +1,5 @@
 # Trihammer
 
-**This branch is in active development and thus should not be used! Only some things will work as more than half of the files have not been rewritten yet.** \
 A Discord bot with a lot of commands and now open source!
 
 ## Installation
@@ -17,6 +16,10 @@ If for some reason attachments of some command stop working, renew the url with 
 - If you want to add more slash commands, edit the commands.ts file in src/interactionCommands and deploy them with t-deploy.
 
 I'm a bit lazy and some things are very improvable, I'm conscious.
+
+## Useful Links
+- [Discord Server](https://discord.gg/EjG6XZs)
+- [Invite the bot](https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot%20applications.commands)
 
 ## Issues
 If you find any issue, please open an issue and describe it, I'll check what I can do!

@@ -7,7 +7,7 @@ export default new MessageCommand({
 	aliases: ['infraction-logs', 'infrs-logs'],
 	category: 'configuration',
 	required_args: [
-		{ index: 0, name: 'disable', type: 'string', optional: true },
+		{ index: 0, name: 'disable', type: 'string', optional: true, ignore: true },
 		{ index: 0, name: 'channel', type: 'channel', optional: true }
 	],
 	required_perms: ['ADMINISTRATOR'],

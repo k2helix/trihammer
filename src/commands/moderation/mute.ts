@@ -1,58 +1,49 @@
-const { ModelServer, ModelInfrs, ModelMutes } = require('../../lib/utils/models');
-const { Permissions } = require('discord.js');
-module.exports = {
+import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import MessageCommand from '../../lib/structures/MessageCommand';
+import { ModelInfrs, ModelMutes } from '../../lib/utils/models';
+export default new MessageCommand({
 	name: 'mute',
 	description: 'Mute or tempmute an user',
-	ESdesc: 'Mutea o tempmutea a un usuario',
-	usage: 'mute <user> [time] [reason] [md]',
-	example: 'mute 682582417625710592 1h Spam\nmute 682582417625710592 Spam',
+	category: 'moderation',
+	required_args: [
+		{ index: 0, name: 'user', type: 'member' },
+		{ index: 1, name: 'time', type: 'string', optional: true },
+		{ index: 2, name: 'reason', type: 'string', optional: true }
+	],
+	required_perms: ['MANAGE_MESSAGES'],
+	required_roles: ['MODERATOR'],
+	client_perms: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
 	aliases: ['tempmute'],
-	type: 2,
-	myPerms: [false, 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-	async execute(client, message, args) {
-		const serverConfig: Server = await ModelServer.findOne({ server: message.guild.id }).lean();
-		let { mod, config, functions } = require(`../../lib/utils/lang/${serverConfig.lang}`);
+	async execute(client, message, args, guildConf) {
+		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-		let adminperms =
-			serverConfig.adminrole !== 'none' ? message.member.roles.cache.has(serverConfig.adminrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
-
-		if (!permiso && !adminperms) return message.channel.send(config.mod_perm);
-
-		let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-		if (!member) return message.channel.send(mod.need_id);
+		let member = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0]);
 
 		let time = functions.Convert(args[1]);
 		let timeString = time ? args[1] : 'N/A';
 		let reason = (time ? args.slice(2).join(' ') : args.slice(1).join(' ')) || 'No';
 
-		let mutedRole = message.guild.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
+		let mutedRole = message.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
 
 		if (!mutedRole) {
-			mutedRole = await message.guild.roles.create({
-				data: {
-					name: 'Trimuted',
-					color: '123456',
-					position: message.guild.me.roles.highest.position - 1
-				},
+			mutedRole = await message.guild!.roles.create({
+				name: 'Trimuted',
+				color: '#123456',
+				position: message.guild!.me!.roles.highest.position - 1,
 				reason: '[MUTED ROLE] I need it to mute people'
 			});
 
-			message.guild.channels.cache.forEach((channel) => {
-				switch (channel.type) {
-					case 'GUILD_TEXT':
-						channel.permissionOverwrites.create(mutedRole, {
-							SEND_MESSAGES: false,
-							ADD_REACTIONS: false
-						});
-						break;
-					case 'GUILD_VOICE':
-						channel.permissionOverwrites.create(mutedRole, {
-							CONNECT: false,
-							SPEAK: false
-						});
-						break;
-				}
+			message.guild!.channels.cache.forEach((channel) => {
+				if (channel.isText() && !channel.isThread())
+					channel.permissionOverwrites.create(mutedRole!, {
+						SEND_MESSAGES: false,
+						ADD_REACTIONS: false
+					});
+				else if (channel.isVoice())
+					channel.permissionOverwrites.create(mutedRole!, {
+						CONNECT: false,
+						SPEAK: false
+					});
 			});
 		}
 
@@ -60,7 +51,7 @@ module.exports = {
 
 		switch (sendDM) {
 			case true:
-				member.send(mod.infraction_md.replaceAll({ '{action}': 'muted', '{server}': message.guild.name, '{reason}': reason, '{time}': timeString }));
+				member.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['muted'], '{server}': message.guild!.name, '{reason}': reason, '{time}': timeString }));
 				break;
 
 			case false:
@@ -68,14 +59,18 @@ module.exports = {
 				break;
 		}
 		member.roles.add(mutedRole, `[MUTE] Command used by ${message.author.tag}. Reason: ${reason} | Time: ${timeString}`);
-		message.channel.send(mod.temp_infr.replaceAll({ '{user}': member.user.tag, '{action}': 'muted', '{reason}': reason, '{time}': timeString }));
+		message.channel.send({
+			embeds: [
+				client.orangeEmbed(client.replaceEach(mod.temp_infr, { '{user}': member.user.tag, '{action}': mod.actions['muted'], '{reason}': reason, '{time}': timeString }))
+			]
+		});
 
 		let infrs = await ModelInfrs.find().lean();
 		let key = infrs.length;
 		let newModel = new ModelInfrs({
 			key: key,
 			id: member.id,
-			server: message.guild.id,
+			server: message.guildId,
 			duration: timeString,
 			tipo: 'mute',
 			time: `${message.createdTimestamp}`,
@@ -89,14 +84,14 @@ module.exports = {
 			let newMute = new ModelMutes({
 				key: key,
 				id: member.id,
-				server: message.guild.id,
+				server: message.guildId,
 				expire: expiration,
 				active: true
 			});
 			await newMute.save();
 		}
 
-		let infraction = {
+		client.emit('infractionCreate', {
 			user: {
 				id: member.id,
 				tag: member.user.tag
@@ -105,9 +100,7 @@ module.exports = {
 			time: timeString,
 			mod: message.author.tag,
 			reason: reason,
-			guild: message.guild.id
-		};
-
-		client.emit('infractionCreate', infraction);
+			guild: message.guildId
+		});
 	}
-};
+});

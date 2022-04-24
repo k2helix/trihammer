@@ -141,7 +141,7 @@ export const mod = {
 		unmuted: 'desmuteado'
 	},
 	infraction_md: 'Has sido {action} en {server}. Razón: {reason}',
-	infraction: '{user} ha sido {action}. Razón: {reason}',
+	infraction: '**{user}** ha sido {action}. Razón: {reason}',
 	whose_messages: '¿De quién son los mensajes a borrar?',
 	bulkDelete_14d: 'Solo puedes borrar mensajes que son de antes de hace 14 días.',
 	delete_infr: 'Ok, infracción {key} eliminada.',

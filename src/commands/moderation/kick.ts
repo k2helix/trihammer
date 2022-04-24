@@ -19,6 +19,7 @@ export default new MessageCommand({
 		let member = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
 		let reason = args.slice(1).join(' ') || 'No';
 
+		if (!member.moderatable) return message.channel.send({ embeds: [client.redEmbed(mod.not_moderatable)] });
 		let sendDM = !message.content.toLowerCase().includes('-nodm');
 
 		switch (sendDM) {

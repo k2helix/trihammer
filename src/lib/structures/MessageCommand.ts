@@ -10,7 +10,7 @@ class MessageCommand {
 	cooldown: number;
 	category: string;
 	required_roles: ('ADMINISTRATOR' | 'MODERATOR')[];
-	required_args: { index: number; type: 'user' | 'member' | 'channel' | 'role' | 'string' | 'number' | string; name: string; optional?: boolean }[];
+	required_args: { index: number; type: 'user' | 'member' | 'channel' | 'role' | 'string' | 'number' | string; name: string; optional?: boolean; ignore?: boolean }[];
 	required_perms: PermissionString[];
 	client_perms: PermissionString[];
 	execute: (client: Client, message: Message, args: string[], guildConf: GuildConfig) => unknown;

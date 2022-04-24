@@ -7,7 +7,7 @@ export default new MessageCommand({
 	aliases: ['mod-role', 'moderator-role'],
 	category: 'configuration',
 	required_args: [
-		{ index: 0, name: 'disable', type: 'string', optional: true },
+		{ index: 0, name: 'disable', type: 'string', optional: true, ignore: true },
 		{ index: 0, name: 'role', type: 'role' }
 	],
 	required_perms: ['ADMINISTRATOR'],
