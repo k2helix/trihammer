@@ -16,7 +16,7 @@ class Command {
 		this.name = options.name;
 		this.description = options.description || 'No description provided.';
 		this.cooldown = options.cooldown ?? 0;
-		this.category = options.category ?? 'Unknown';
+		this.category = options.category ?? 'unknown';
 
 		this.required_roles = options.required_roles ?? [];
 		this.required_perms = options.required_perms ?? [];

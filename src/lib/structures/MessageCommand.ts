@@ -19,7 +19,7 @@ class MessageCommand {
 		this.aliases = options.aliases ?? [];
 		this.description = options.description || 'No description provided.';
 		this.cooldown = options.cooldown ?? 0;
-		this.category = options.category ?? 'Unknown';
+		this.category = options.category ?? 'unknown';
 
 		this.required_args = options.required_args ?? [];
 		this.required_roles = options.required_roles ?? [];

@@ -52,20 +52,19 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		if (!command) return;
 		if (!interaction.guild.me!.permissions.has('EMBED_LINKS')) return interaction.reply(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
 
-		// quitar los ? cuando acabe
-		if (command.client_perms?.length > 0) {
+		if (command.client_perms.length > 0) {
 			const permsBitfield = Permissions.resolve(command.client_perms);
 			if (!interaction.guild.me!.permissions.has(permsBitfield))
 				return interaction.reply({ embeds: [client.redEmbed(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')))] });
 		}
 
-		if (command.required_roles?.length > 0)
+		if (command.required_roles.length > 0)
 			if (interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole)) {
 				let perms = command.required_roles.includes('MODERATOR')
 					? (interaction.member as GuildMember).roles.cache.hasAny(guildConf.modrole, guildConf.adminrole)
 					: (interaction.member as GuildMember).roles.cache.has(guildConf.adminrole);
 				if (!perms)
-					if (command.required_perms?.length > 0) {
+					if (command.required_perms.length > 0) {
 						const permsBitfield = Permissions.resolve(command.required_perms);
 						if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
 							return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });
@@ -73,7 +72,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 			} else if (command.required_perms.length === 0)
 				return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
 
-		if (command.required_perms?.length > 0 && (command.required_roles?.length === 0 || !interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole))) {
+		if (command.required_perms.length > 0 && (command.required_roles.length === 0 || !interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole))) {
 			const permsBitfield = Permissions.resolve(command.required_perms);
 			if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
 				return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });

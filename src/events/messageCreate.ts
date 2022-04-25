@@ -58,7 +58,7 @@ export default async (client: ExtendedClient, message: Message) => {
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift()!.toLowerCase();
 
-	let command = client.commands.get(commandName) ?? client.commands.find((cmd) => Boolean(cmd.aliases?.includes(commandName)));
+	let command = client.commands.get(commandName) ?? client.commands.find((cmd) => Boolean(cmd.aliases.includes(commandName)));
 	if (!command) {
 		const scores = client.commands
 			.map(({ name, aliases }) => {
@@ -70,7 +70,7 @@ export default async (client: ExtendedClient, message: Message) => {
 				const bestAlias = aliases.map((alias) => ({ name: alias, score: compareTwoStrings(alias, commandName) })).sort((a, b) => b.score - a.score)[0];
 				if (!bestAlias) return base;
 
-				return bestAlias?.score > base.score ? bestAlias : base;
+				return bestAlias.score > base.score ? bestAlias : base;
 			})
 			.sort((a, b) => b.score - a.score);
 		let possibleMatches = scores.filter((sc) => sc.score > 0.75);
@@ -90,7 +90,7 @@ export default async (client: ExtendedClient, message: Message) => {
 					sentMessage.delete();
 					return selected.reply({ embeds: [client.blackEmbed(util.none_selected)], ephemeral: true });
 				}
-				command = client.commands.get(selected.customId) ?? client.commands.find((cmd) => Boolean(cmd.aliases?.includes(selected.customId)));
+				command = client.commands.get(selected.customId) ?? client.commands.find((cmd) => Boolean(cmd.aliases.includes(selected.customId)));
 				selected.reply({ embeds: [client.blackEmbed(util.command_selected)], ephemeral: true });
 				sentMessage.delete();
 			} catch (error) {
@@ -99,7 +99,6 @@ export default async (client: ExtendedClient, message: Message) => {
 		} else return;
 	}
 
-	//quitar los ? cuando acabe
 	if (!command) return;
 	if (!message.guild.me!.permissions.has('EMBED_LINKS')) return message.channel.send(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
 
@@ -115,7 +114,7 @@ export default async (client: ExtendedClient, message: Message) => {
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
 				: message.member.roles.cache.has(serverConfig.adminrole);
 			if (!perms)
-				if (command.required_perms?.length > 0) {
+				if (command.required_perms.length > 0) {
 					const permsBitfield = Permissions.resolve(command.required_perms);
 					if (!message.member?.permissions.has(permsBitfield))
 						return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
@@ -123,7 +122,7 @@ export default async (client: ExtendedClient, message: Message) => {
 		} else if (command.required_perms.length === 0)
 			return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 
-	if (command.required_perms.length > 0 && (command.required_roles?.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
+	if (command.required_perms.length > 0 && (command.required_roles.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
 		const permsBitfield = Permissions.resolve(command.required_perms);
 		if (!message.member?.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
