@@ -39,6 +39,6 @@ export default new MessageCommand({
 			// @ts-ignore
 			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
 			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.skipping)] });
-		} else return message.channel.send({ embeds: [client.orangeEmbed(music.skip.already_voted.replace('{votes}', `${skips.length}/${required}`))] });
+		} else return message.channel.send({ embeds: [client.orangeEmbed(music.skip.voting.replace('{votes}', `${skips.length}/${required}`))] });
 	}
 });
