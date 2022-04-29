@@ -11,7 +11,7 @@ export default async (client: ExtendedClient, messages: Collection<Snowflake, Me
 
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 	let logs_channel = msg.guild.channels.cache.get(serverConfig.messagelogs);
-	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+	if (!logs_channel || !logs_channel.isText()) return;
 
 	if (!msg.content) return;
 	const array: string[] = [];

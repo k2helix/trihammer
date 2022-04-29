@@ -9,7 +9,7 @@ export default async (client: ExtendedClient, oldChannel: GuildChannel, newChann
 
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 	const logs_channel = oldChannel.guild.channels.cache.get(serverConfig.serverlogs);
-	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+	if (!logs_channel || !logs_channel.isText()) return;
 	if (oldChannel.position !== newChannel.position) return;
 	if (oldChannel.parent !== newChannel.parent) return;
 

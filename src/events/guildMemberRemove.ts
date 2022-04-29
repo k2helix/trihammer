@@ -9,7 +9,7 @@ export default async (client: ExtendedClient, member: GuildMember) => {
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	const logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
-	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+	if (!logs_channel || !logs_channel.isText()) return;
 
 	logs_channel.send({ embeds: [client.redEmbed(events.member.remove(member))] });
 

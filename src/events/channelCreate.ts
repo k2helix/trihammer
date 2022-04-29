@@ -9,7 +9,7 @@ export default async (client: ExtendedClient, channel: GuildChannel) => {
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	const logs_channel = channel.guild.channels.cache.get(serverConfig.serverlogs);
-	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+	if (!logs_channel || !logs_channel.isText()) return;
 
 	const mutedR = channel.guild.roles.cache.find((r) => r.name.toLowerCase() == 'trimuted');
 	if (mutedR)

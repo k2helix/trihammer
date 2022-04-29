@@ -569,10 +569,10 @@ export const events = {
 			nickname: 'The nickname of {member} changed from `{old}` to `{new}`'
 		},
 		remove: function (member) {
-			return `:red_circle: ${member.user.tag} has left the server, joined at ${convertDate(member.joinedTimestamp!)}`;
+			return `:red_circle: ${member.user.tag} has left the server, joined at <t:${Math.floor(member.joinedTimestamp! / 1000)}>`;
 		},
 		add: function (user) {
-			return `:green_circle: ${user.tag} has joined the server, created ${T_convertor(Math.floor(Date.now()) - user.createdTimestamp)} ago`;
+			return `:blue_circle: ${user.tag} has joined the server, created <t:${Math.floor(user.createdTimestamp / 1000)}:R>`;
 		}
 	},
 	channel: {

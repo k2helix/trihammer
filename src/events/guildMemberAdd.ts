@@ -34,13 +34,12 @@ export default async (client: ExtendedClient, member: GuildMember) => {
 	}
 	const welcomeConfig: Welc = await ModelWelc.findOne({ server: member.guild.id });
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
-	if (!welcomeConfig) {
-		const logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
-		if (logs_channel && logs_channel.type === 'GUILD_TEXT') logs_channel.send({ embeds: [client.blueEmbed(events.member.add(member.user))] });
-	} else {
+	const logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
+	if (logs_channel && logs_channel.isText()) logs_channel.send({ embeds: [client.blueEmbed(events.member.add(member.user))] });
+
+	if (welcomeConfig) {
 		const canal = welcomeConfig.canal;
 		const welcomechannel = member.guild.channels.cache.get(canal);
-		const logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
 		const text = welcomeConfig.text;
 
 		const canvas = Canvas.createCanvas(1638, 888);
@@ -64,9 +63,6 @@ export default async (client: ExtendedClient, member: GuildMember) => {
 		const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'png' }));
 		ctx.drawImage(avatar, 625, 25, 350, 350);
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
-		if (welcomechannel && welcomechannel.type === 'GUILD_TEXT') {
-			welcomechannel.send({ files: [attachment] });
-			if (logs_channel && logs_channel.type === 'GUILD_TEXT') logs_channel.send({ embeds: [client.blueEmbed(events.member.add(member.user))] });
-		}
+		if (welcomechannel && welcomechannel.isText()) welcomechannel.send({ files: [attachment] });
 	}
 };

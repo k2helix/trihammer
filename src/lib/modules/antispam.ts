@@ -42,7 +42,7 @@
 // 			await newMute.save();
 
 // 			message.channel.send(`<@${message.author.id}>, ` + mod.antispam);
-// 			if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+// 			if (!logs_channel || !logs_channel.isText()) return;
 // 			logs_channel.send(`${message.author.tag}` + mod.antispam);
 // 		});
 // 	}

@@ -226,7 +226,7 @@ export default async (client: ExtendedClient, message: Message) => {
 		command.execute(client, message, args, serverConfig);
 		if (serverConfig.actionslogs === 'none') return;
 		const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
-		if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+		if (!logs_channel || !logs_channel.isText()) return;
 		const cmdObj = {
 			'{user}': message.author.tag,
 			'{command}': command!.name,
