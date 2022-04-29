@@ -34,7 +34,7 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 			}
 	}
 
-	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+	if (!logs_channel || !logs_channel.isText()) return;
 	if (!newState.member || newState.member.user.bot) return;
 
 	let user = `${newState.member.user.tag} (${newState.id})`;

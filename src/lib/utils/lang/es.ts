@@ -565,10 +565,10 @@ export const events = {
 			nickname: 'El apodo de {member} ha cambiado de `{old}` a `{new}`'
 		},
 		remove: function (member) {
-			return `:red_circle: El usuario ${member.user.tag} ha abandonado el servidor, se unió el ${convertDate(member.joinedTimestamp!)}`;
+			return `:red_circle: El usuario ${member.user.tag} ha abandonado el servidor, se unió el <t:${Math.floor(member.joinedTimestamp! / 1000)}>`;
 		},
 		add: function (user) {
-			return `:green_circle: ${user.tag} ha entrado al servidor, creado hace ${T_convertor(Math.floor(Date.now()) - user.createdTimestamp)}`;
+			return `:blue_circle: ${user.tag} ha entrado al servidor, creado <t:${Math.floor(user.createdTimestamp / 1000)}:R>`;
 		}
 	},
 	channel: {

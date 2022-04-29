@@ -14,7 +14,7 @@ module.exports = async (client: ExtendedClient, oldRole: Role, newRole: Role) =>
 	if (!serverConfig) return;
 
 	let logs_channel = oldRole.guild.channels.cache.get(serverConfig.serverlogs);
-	if (!logs_channel || logs_channel.type !== 'GUILD_TEXT') return;
+	if (!logs_channel || !logs_channel.isText()) return;
 
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
