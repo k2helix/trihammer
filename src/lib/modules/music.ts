@@ -120,8 +120,7 @@ async function play(guild: Guild, song: Song) {
 					}
 
 				if (serverQueue.loop) {
-					// @ts-ignore
-					serverQueue.songs.push(serverQueue.songs.shift());
+					serverQueue.songs.push(serverQueue.songs.shift()!);
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
 				if (!serverQueue.songs[0])

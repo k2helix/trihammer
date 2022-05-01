@@ -17,7 +17,6 @@ export default async (client: ExtendedClient, messages: Collection<Snowflake, Me
 	const array: string[] = [];
 	messages.forEach((message) => {
 		if (!message.content) return;
-		if (message.author.bot || message.system) return;
 		array.push(`${message.author.tag} (${message.author.id}): ${message.content}`);
 	});
 	let obj = {

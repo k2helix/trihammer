@@ -25,7 +25,7 @@ export default new MessageCommand({
 
 		serverQueue.volume = parseInt(args[0]);
 		// @ts-ignore
-		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource.volume.setVolumeLogarithmic(parseInt(args[0]) / 5);
+		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource?.volume.setVolumeLogarithmic(parseInt(args[0]) / 5);
 		message.channel.send({ embeds: [client.blueEmbed(music.volume.replace('{volume}', args[0]))] });
 	}
 });

@@ -21,7 +21,10 @@ export default new MessageCommand({
 
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission =
-			message.member.roles.cache.has(djRole ? djRole.id : '') || message.member.id === serverQueue.songs[0].requested || serverQueue.songs[0].requested === 'Autoplay';
+			message.member.roles.cache.has(djRole ? djRole.id : '') ||
+			message.member.id === serverQueue.songs[0].requested ||
+			serverQueue.songs[0].requested === 'Autoplay' ||
+			serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3;
 		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
 
 		serverQueue.songs = [];

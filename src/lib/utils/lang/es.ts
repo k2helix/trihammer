@@ -552,7 +552,7 @@ export const events = {
 		update: 'Mensaje de {user} editado en {channel}',
 		from: 'De:',
 		to: 'A:',
-		delete: 'Mensaje de {author} borrado en {channel}:\n{content}',
+		delete: 'Mensaje de {author} borrado en {channel}:\n```{content}```',
 		deleteBulk: {
 			deleted: '{messages} mensajes borrados',
 			showing: 'Mostrando {amount} de {total} caracteres.'
