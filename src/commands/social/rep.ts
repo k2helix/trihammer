@@ -13,7 +13,6 @@ export default new MessageCommand({
 	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
 	async execute(client, message, args, guildConf) {
 		let user = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
-		if (user.user.bot) return;
 
 		const { xp } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let author = await ModelUsers.findOne({ id: message.author.id });
@@ -40,7 +39,7 @@ export default new MessageCommand({
 				}
 			}
 
-		if (!user) return message.channel.send({ embeds: [client.redEmbed(xp.rep.user)] });
+		if (!user || user?.user.bot) return message.channel.send({ embeds: [client.redEmbed(xp.rep.user)] });
 		let given = await ModelUsers.findOne({ id: user.id });
 		if (author.repcooldown > Date.now()) return message.channel.send({ embeds: [client.redEmbed(xp.rep.cooldown(author.repcooldown - Date.now(), guildConf.prefix))] });
 		else {

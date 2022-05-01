@@ -8,7 +8,6 @@ import { readdir, readdirSync } from 'fs';
 import { captureException, init } from '@sentry/node';
 import MessageCommand from './lib/structures/MessageCommand';
 import Command from './lib/structures/Command';
-if (config.use_sentry) init({ dsn: process.env.SENTRY_DSN });
 
 dotenv.config();
 
@@ -19,6 +18,7 @@ if (!config.credentials.dotenv)
 		process.env[key] = config.credentials[key];
 	});
 
+if (config.use_sentry) init({ dsn: process.env.SENTRY_DSN });
 mongoose.connect(process.env.MONGO_URI!, {
 	socketTimeoutMS: 0,
 	connectTimeoutMS: 0,
@@ -95,9 +95,9 @@ readdir(join(__dirname, 'events'), (err, files) => {
 });
 
 process.on('unhandledRejection', (error: Error) => {
-	console.error(error);
-	(client.channels.cache.get(config.logs_channel) as TextChannel).send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
 	if (config.use_sentry) captureException(error);
+	else console.error(error);
+	(client.channels.cache.get(config.logs_channel) as TextChannel).send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
 });
 
 client.login(process.env.TOKEN);
