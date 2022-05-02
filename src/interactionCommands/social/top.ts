@@ -15,8 +15,8 @@ export default new Command({
 				});
 				let usuarios = [];
 				for (let x in top.slice(0, 10)) {
-					let user = await client.users.fetch(top[x].id);
-					usuarios.push(`${parseFloat(x) + 1} - ${user.tag}:\nGlobal XP ${top[x].globalxp}`);
+					let user = await client.users.fetch(top[x].id).catch(() => undefined);
+					usuarios.push(`${parseFloat(x) + 1} - ${user?.tag || 'Unknown User'}:\nGlobal XP ${top[x].globalxp}`);
 				}
 
 				interaction.editReply(`** - 🏆 Global Rank -  **\n\`\`\`cs\n${usuarios.join('\n')}\`\`\``);

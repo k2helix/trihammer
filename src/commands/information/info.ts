@@ -9,7 +9,7 @@ export default new MessageCommand({
 	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
 	async execute(client, message, args, guildConf) {
 		let givenId = message.mentions.users.first()?.id || args[0] || message.author.id;
-		let user = await client.users.fetch(givenId, { force: true });
+		let user = await client.users.fetch(givenId, { force: true }).catch(() => undefined);
 
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (!user) return message.channel.send({ content: util.invalid_user });

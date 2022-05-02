@@ -9,7 +9,7 @@ export default new Command({
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let givenId = (interaction as CommandInteraction).options.getUser('user')?.id || interaction.user.id;
-		let user = await client.users.fetch(givenId, { force: true });
+		let user = await client.users.fetch(givenId, { force: true }).catch(() => undefined);
 		if (!user) return interaction.reply({ embeds: [client.redEmbed(util.invalid_user)], ephemeral: true });
 
 		let avatar = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 });
