@@ -1,11 +1,11 @@
 // si va mal copiarlo de master de nuevo; es para testear y evitar el findOne
 import Client from '../structures/Client';
-import { ModelMutes, ModelRemind, ModelTempban, Mutes, Remind, Tempban } from '../utils/models';
+import { ModelMutes, ModelRemind, ModelTempban } from '../utils/models';
 export default function checkTimeouts(client: Client) {
 	setInterval(async () => {
-		const reminders: Remind[] = await ModelRemind.find({ active: true });
+		const reminders = await ModelRemind.find({ active: true });
 		for (const reminder of reminders) {
-			const user = client.users.cache.get(reminder.id);
+			const user = await client.users.fetch(reminder.id).catch(() => undefined);
 			if (!user) continue;
 			if (reminder.expire > Date.now()) continue;
 			if (reminder.active === false) continue;
@@ -13,13 +13,12 @@ export default function checkTimeouts(client: Client) {
 			if (reminder.expire < Date.now()) {
 				user.send(':alarm_clock: Recordatorio: ' + reminder.reason);
 				reminder.active = false;
-				// @ts-ignore
 				reminder.save();
 			}
 		}
-		const mutes: Mutes[] = await ModelMutes.find({ active: true });
+		const mutes = await ModelMutes.find({ active: true });
 		for (const mute of mutes) {
-			const user = client.users.cache.get(mute.id);
+			const user = await client.users.fetch(mute.id).catch(() => undefined);
 			if (!user) continue;
 
 			const server = client.guilds.cache.get(mute.server);
@@ -35,21 +34,19 @@ export default function checkTimeouts(client: Client) {
 			if (!role) continue;
 			if (!member.roles.cache.has(role.id)) {
 				mute.active = false;
-				// @ts-ignore
 				mute.save();
 			}
 
 			if (mute.expire < Date.now()) {
 				member.roles.remove(role);
 				mute.active = false;
-				// @ts-ignore
 				mute.save();
 			}
 		}
 
-		const tempbans: Tempban[] = await ModelTempban.find({ active: true });
+		const tempbans = await ModelTempban.find({ active: true });
 		for (const tempban of tempbans) {
-			const user = client.users.cache.get(tempban.id);
+			const user = await client.users.fetch(tempban.id).catch(() => undefined);
 			if (!user) continue;
 
 			const server = client.guilds.cache.get(tempban.server);
@@ -61,7 +58,6 @@ export default function checkTimeouts(client: Client) {
 			const banusers = await server.bans.fetch();
 			if (!banusers.has(user.id)) {
 				tempban.active = false;
-				// @ts-ignore
 				tempban.save();
 				continue;
 			}
@@ -69,7 +65,6 @@ export default function checkTimeouts(client: Client) {
 			if (tempban.expire < Date.now()) {
 				server.members.unban(user.id);
 				tempban.active = false;
-				// @ts-ignore
 				tempban.save();
 			}
 		}

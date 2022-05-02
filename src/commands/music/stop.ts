@@ -23,7 +23,7 @@ export default new MessageCommand({
 		let permission =
 			message.member.roles.cache.has(djRole ? djRole.id : '') ||
 			message.member.id === serverQueue.songs[0].requested ||
-			serverQueue.songs[0].requested === 'Autoplay' ||
+			serverQueue.songs[0]?.requested === 'Autoplay' ||
 			serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3;
 		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
 

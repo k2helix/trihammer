@@ -11,7 +11,7 @@ export default new MessageCommand({
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let givenId = message.mentions.users.first()?.id || args[0] || message.author.id;
-		let user = await client.users.fetch(givenId, { force: true });
+		let user = await client.users.fetch(givenId, { force: true }).catch(() => undefined);
 		if (!user) return;
 
 		let avatar = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 });

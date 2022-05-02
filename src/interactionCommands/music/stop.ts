@@ -20,7 +20,7 @@ export default new Command({
 		let permission =
 			interaction.member.roles.cache.has(djRole ? djRole.id : '') ||
 			interaction.member.id === serverQueue.songs[0].requested ||
-			serverQueue.songs[0].requested === 'Autoplay' ||
+			serverQueue.songs[0]?.requested === 'Autoplay' ||
 			serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3;
 		if (!permission) return interaction.reply({ embeds: [client.redEmbed(music.need_dj.stop)], ephemeral: true });
 

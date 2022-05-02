@@ -53,7 +53,7 @@ export default new Command({
 					break;
 			}
 
-			let modn = datos[x].mod.includes('#') || datos[x].mod.toLowerCase() === 'antispam system' ? null : await client.users.fetch(datos[x].mod);
+			let modn = datos[x].mod.includes('#') || datos[x].mod.toLowerCase() === 'antispam system' ? null : await client.users.fetch(datos[x].mod).catch(() => null);
 			let modname = modn ? modn.tag : datos[x].mod;
 
 			infr.push(`${datos[x].tipo} | ${modname} | ${datos[x].reason} | ${datos[x].duration || 'N/A'} | ${activo} | ${digitalTime(Number(datos[x].time))} | ${datos[x].key}`);
