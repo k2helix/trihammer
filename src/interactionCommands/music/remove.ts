@@ -24,7 +24,7 @@ export default new Command({
 		if (!song) return interaction.reply({ embeds: [client.redEmbed(music.song_404)], ephemeral: true });
 
 		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
-		let permission = interaction.member.roles.cache.has(djRole ? djRole.id : '') || interaction.member.id === serverQueue.songs[0].requested;
+		let permission = interaction.member.roles.cache.has(djRole ? djRole.id : '') || interaction.member.id === song.requested;
 		if (!permission) return interaction.reply({ embeds: [client.redEmbed(music.need_dj.remove)], ephemeral: true });
 
 		if (interaction.options.getBoolean('slice')) {
