@@ -1,6 +1,6 @@
 {
   "name": "trihammer",
-  "version": "2.0",
+  "version": "2.0.1",
   "main": "dist/src/index.js",
   "engines": {
     "node": "17.7.1",

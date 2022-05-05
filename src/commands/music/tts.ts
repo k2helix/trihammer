@@ -15,6 +15,7 @@ export default new MessageCommand({
 	async execute(client, message, args, guildConf) {
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (queue.get(message.guild!.id)) return message.channel.send({ embeds: [client.redEmbed(music.tts.queue)] });
+		if (args.slice(1).join(' ').length > 200) return message.channel.send({ embeds: [client.redEmbed(music.tts.too_long)] });
 
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });

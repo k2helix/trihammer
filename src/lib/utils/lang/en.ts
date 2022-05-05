@@ -215,7 +215,7 @@ export const music = {
 	resume: '▶ Playback resumed',
 	tts: {
 		queue: 'You cannot use this command while there is an active queue',
-		playing: 'Saying the selected text'
+		too_long: 'The text shall be 200 or fewer in length'
 	},
 	playlists: {
 		titles: {
