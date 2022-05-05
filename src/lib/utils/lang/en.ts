@@ -213,6 +213,10 @@ export const music = {
 	},
 	pause: '⏸ Playback paused',
 	resume: '▶ Playback resumed',
+	tts: {
+		queue: 'You cannot use this command while there is an active queue',
+		playing: 'Saying the selected text'
+	},
 	playlists: {
 		titles: {
 			recent: 'Recent playlists',

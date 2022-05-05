@@ -209,6 +209,10 @@ export const music = {
 	},
 	pause: '⏸ Reproducción pausada (ayuda por favor)',
 	resume: '▶ Reproducción continuada',
+	tts: {
+		queue: 'No puedes usar este comando mientras haya una cola activa',
+		playing: 'Diciendo el texto seleccionado'
+	},
 	playlists: {
 		titles: {
 			recent: 'Playlists recientes',
