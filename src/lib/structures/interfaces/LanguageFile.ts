@@ -125,7 +125,7 @@ export default interface LanguageFile {
 		resume: string;
 		tts: {
 			queue: string;
-			playing: string;
+			too_long: string;
 		};
 		playlists: {
 			titles: {

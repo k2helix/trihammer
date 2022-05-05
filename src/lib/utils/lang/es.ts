@@ -211,7 +211,7 @@ export const music = {
 	resume: '▶ Reproducción continuada',
 	tts: {
 		queue: 'No puedes usar este comando mientras haya una cola activa',
-		playing: 'Diciendo el texto seleccionado'
+		too_long: 'El texto debe tener menos de 200 caracteres.'
 	},
 	playlists: {
 		titles: {
