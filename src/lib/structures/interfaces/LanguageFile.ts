@@ -123,6 +123,10 @@ export default interface LanguageFile {
 		};
 		pause: string;
 		resume: string;
+		tts: {
+			queue: string;
+			playing: string;
+		};
 		playlists: {
 			titles: {
 				recent: string;
