@@ -14,10 +14,11 @@ export default new MessageCommand({
 			message.channel.send({ embeds: [client.lightBlueEmbed(randomMembers?.map((m) => `<@${m.id}>`).join(', ') || 'No')] });
 		} else if (args.join(' ').split(' | ').length > 1) {
 			let randomValues = args.join(' ').split(' | ');
-			message.channel.send({ embeds: [client.lightBlueEmbed(randomValues[Math.round(Math.random() * randomValues.length)])] });
+			message.channel.send({ embeds: [client.lightBlueEmbed(randomValues[Math.floor(Math.random() * randomValues.length)])] });
 		} else if (args[0].startsWith('number')) {
 			let [min, max] = args[1].split('-');
-			message.channel.send({ embeds: [client.lightBlueEmbed(Math.floor(Math.random() * (Number(max) - Number(min)) + Number(min)).toString())] });
+			if (isNaN(Number(min)) || isNaN(Number(max))) return;
+			message.channel.send({ embeds: [client.lightBlueEmbed(Math.round(Math.random() * (Number(max) - Number(min)) + Number(min)).toString())] });
 		}
 	}
 });
