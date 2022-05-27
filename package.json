@@ -4,7 +4,7 @@
   "main": "dist/src/index.js",
   "engines": {
     "node": "17.7.1",
-    "npm": "8.5.4"
+    "npm": "8.11.0"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
@@ -30,7 +30,7 @@
     "node-geocoder": "^3.27.0",
     "node-schedule": "^2.0.0",
     "node-superfetch": "^0.2.3",
-    "play-dl": "^1.9.4",
+    "play-dl": "github:AtariTom/play-dl",
     "typescript": "^4.5.4",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
