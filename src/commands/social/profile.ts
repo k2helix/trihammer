@@ -44,7 +44,6 @@ export default new MessageCommand({
 
 		const xp = global.globalxp;
 		const canvas = createCanvas(442, 330);
-		let context = canvas.getContext('2d');
 		const ctx = canvas.getContext('2d');
 
 		const background = await loadImage(global.pimage);
@@ -76,9 +75,9 @@ export default new MessageCommand({
 		ctx.fillStyle = '#ff0007';
 		ctx.fillText(`+${global.rep}rep`, 30, 295);
 
-		context.fillStyle = '#0e0d0e';
-		context.font = '22px sans-serif';
-		wrapText(canvas.getContext('2d'), global.ptext, 140, 170, 275, 20);
+		ctx.fillStyle = '#0e0d0e';
+		ctx.font = '22px sans-serif';
+		wrapText(ctx, global.ptext, 140, 170, 275, 20);
 
 		const avatar = await loadImage(user!.user.displayAvatarURL({ format: 'png' }));
 		ctx.drawImage(avatar, 27, 52, 100, 100);
