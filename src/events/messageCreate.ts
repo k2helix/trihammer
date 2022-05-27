@@ -42,7 +42,7 @@ export default async (client: ExtendedClient, message: Message) => {
 		await newGuildModel.save();
 		serverConfig = newGuild;
 	}
-	const prefix = '-';
+	const prefix = serverConfig.prefix;
 	const { config, util, other, xp } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	// require('../utils/methods/spam').check(serverConfig, message);
