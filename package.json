@@ -30,7 +30,7 @@
     "node-geocoder": "^3.27.0",
     "node-schedule": "^2.0.0",
     "node-superfetch": "^0.2.3",
-    "play-dl": "github:AtariTom/play-dl",
+    "play-dl": "github:k2helix/play-dl-compiled",
     "typescript": "^4.5.4",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
