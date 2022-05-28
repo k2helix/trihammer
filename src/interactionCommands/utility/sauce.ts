@@ -9,14 +9,15 @@ export default new Command({
 	category: 'utility',
 	async execute(client, interaction, guildConf) {
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let image = (interaction as CommandInteraction).options.getString('image');
-		if (!image)
-			image = ((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+		let image =
+			(interaction as CommandInteraction).options.getString('image') ||
+			(interaction as CommandInteraction).options.getAttachment('attachment')?.url ||
+			((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
 
 		if (interaction.isContextMenu()) {
 			let message = await interaction.channel!.messages.fetch(interaction.options.get('message')!.value as string);
 			if (message.embeds[0])
-				if (message.embeds[0].type === 'image') image = message.embeds[0].url;
+				if (message.embeds[0].type === 'image') image = message.embeds[0].url!;
 				else if (message.embeds[0].image) image = message.embeds[0].image.url;
 				else if (message.embeds[0].thumbnail) image = message.embeds[0].thumbnail.url;
 			let attachments = [...message.attachments.values()];

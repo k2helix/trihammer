@@ -10,8 +10,8 @@ export default new Command({
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, interaction, guildConf) {
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let image = (interaction as CommandInteraction).options.getString('image')!;
-		if (!image.toLowerCase().startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(welcome.hex)] });
+		let image = (interaction as CommandInteraction).options.getString('image') || (interaction as CommandInteraction).options.getAttachment('attachment')?.url;
+		if (!image?.toLowerCase().startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(welcome.need_url)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
 		if (!welcome) {

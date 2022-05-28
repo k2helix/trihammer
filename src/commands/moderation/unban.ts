@@ -22,13 +22,13 @@ export default new MessageCommand({
 			.guild!.members.unban(id, `[UNBAN] Command used by ${message.author.tag} | Reason: ${reason}`)
 			.then((user) => {
 				message.channel.send({
-					embeds: [client.orangeEmbed(client.replaceEach(mod.infraction, { '{user}': user.tag, '{action}': mod.actions['unbanned'], '{reason}': reason }))]
+					embeds: [client.orangeEmbed(client.replaceEach(mod.infraction, { '{user}': user!.tag, '{action}': mod.actions['unbanned'], '{reason}': reason }))]
 				});
 
 				client.emit('infractionCreate', {
 					user: {
-						id: user.id,
-						tag: user.tag
+						id: user!.id,
+						tag: user!.tag
 					},
 					type: '🔧 UNBAN',
 					time: 'N/A',

@@ -21,9 +21,10 @@ export default new Command({
 	async execute(client, interaction, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let image = (interaction as CommandInteraction).options.getString('image');
-		if (!image)
-			image = ((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+		let image =
+			(interaction as CommandInteraction).options.getString('image') ||
+			(interaction as CommandInteraction).options.getAttachment('attachment')?.url ||
+			((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
 
 		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 

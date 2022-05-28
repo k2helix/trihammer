@@ -121,7 +121,13 @@ export default [
 								name: 'image',
 								type: 'STRING',
 								description: 'The new image URL',
-								required: true
+								required: false
+							},
+							{
+								name: 'attachment',
+								type: 'ATTACHMENT',
+								description: 'Use this if you want to select the uplaoded file',
+								required: false
 							}
 						]
 					},
@@ -466,6 +472,12 @@ export default [
 						type: 'USER',
 						description: 'The user you want to get the image from',
 						required: false
+					},
+					{
+						name: 'attachment',
+						type: 'ATTACHMENT',
+						description: 'Use this if you want to apply the effect to the uplaoded file',
+						required: false
 					}
 				]
 			},
@@ -484,6 +496,12 @@ export default [
 						name: 'user-avatar',
 						type: 'USER',
 						description: 'The user you want to get the image from',
+						required: false
+					},
+					{
+						name: 'attachment',
+						type: 'ATTACHMENT',
+						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
 				]
@@ -504,6 +522,12 @@ export default [
 						type: 'USER',
 						description: 'The user you want to get the image from',
 						required: false
+					},
+					{
+						name: 'attachment',
+						type: 'ATTACHMENT',
+						description: 'Use this if you want to apply the effect to the uplaoded file',
+						required: false
 					}
 				]
 			},
@@ -522,6 +546,12 @@ export default [
 						name: 'user-avatar',
 						type: 'USER',
 						description: 'The user you want to get the image from',
+						required: false
+					},
+					{
+						name: 'attachment',
+						type: 'ATTACHMENT',
+						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
 				]
@@ -542,6 +572,12 @@ export default [
 						type: 'USER',
 						description: 'The user you want to get the image from',
 						required: false
+					},
+					{
+						name: 'attachment',
+						type: 'ATTACHMENT',
+						description: 'Use this if you want to apply the effect to the uplaoded file',
+						required: false
 					}
 				]
 			},
@@ -560,6 +596,12 @@ export default [
 						name: 'user-avatar',
 						type: 'USER',
 						description: 'The user you want to get the image from',
+						required: false
+					},
+					{
+						name: 'attachment',
+						type: 'ATTACHMENT',
+						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
 				]
@@ -1091,6 +1133,12 @@ export default [
 				name: 'user-avatar',
 				type: 'USER',
 				description: 'The user you want to get the image from',
+				required: false
+			},
+			{
+				name: 'attachment',
+				type: 'ATTACHMENT',
+				description: 'Use this if you want to select the uplaoded file',
 				required: false
 			}
 		]
