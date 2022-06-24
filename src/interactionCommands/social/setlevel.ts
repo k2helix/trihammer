@@ -21,13 +21,13 @@ export default new Command({
 			let newRankModel = new ModelRank({
 				id: user.id,
 				server: interaction.guild!.id,
-				level: 1,
+				nivel: 1,
 				xp: 0
 			});
 			await newRankModel.save();
 			local = newRankModel;
 		}
-		local.level = parseInt(level);
+		local.nivel = parseInt(level);
 		await local.save();
 		interaction.reply({ embeds: [client.blueEmbed(client.replaceEach(xp.level_set, { '{user}': user.tag, '{level}': parseInt(level).toString() }))] });
 	}

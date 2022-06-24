@@ -31,13 +31,13 @@ export default new MessageCommand({
 			let newRankModel = new ModelRank({
 				id: user.id,
 				server: message.guild!.id,
-				level: 1,
+				nivel: 1,
 				xp: 0
 			});
 			await newRankModel.save();
 			local = newRankModel;
 		}
-		local.level = parseInt(level);
+		local.nivel = parseInt(level);
 		await local.save();
 		message.channel.send({ embeds: [client.blueEmbed(client.replaceEach(xp.level_set, { '{user}': user.user.tag, '{level}': parseInt(level).toString() }))] });
 	}
