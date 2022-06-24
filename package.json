@@ -27,7 +27,7 @@
     "megadb": "^3.4.0",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.11.15",
-    "node-geocoder": "^3.27.0",
+    "node-geocoder": "^4.1.0",
     "node-schedule": "^2.0.0",
     "node-superfetch": "^0.2.3",
     "play-dl": "^1.9.5",
