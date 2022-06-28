@@ -19,7 +19,7 @@ function distort(ctx: NodeCanvasRenderingContext2D, amplitude: number, x: number
 
 	return ctx;
 }
-import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { MessageEmbed } from 'discord.js';
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';

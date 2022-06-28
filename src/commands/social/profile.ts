@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { ModelUsers, Users } from '../../lib/utils/models';
 import MessageCommand from '../../lib/structures/MessageCommand';
 

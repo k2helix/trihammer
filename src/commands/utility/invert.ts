@@ -9,7 +9,7 @@ function invert(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: 
 
 	return ctx;
 }
-import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { MessageEmbed } from 'discord.js';
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';
