@@ -21,7 +21,7 @@
     "glitch-canvas": "^1.1.9",
     "japaneasy": "github:Trunks8257/japaneasy",
     "libsodium-wrappers": "^0.7.10",
-    "match-sorter": "^6.3.0",
+    "match-sorter": "^6.3.1",
     "mathjs": "^10.6.2",
     "megadb": "^3.4.0",
     "moment-timezone": "^0.5.33",
