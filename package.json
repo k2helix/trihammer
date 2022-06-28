@@ -12,7 +12,7 @@
     "@sentry/node": "^7.3.0",
     "@vitalets/google-translate-api": "^8.0.0",
     "bufferutil": "^4.0.3",
-    "canvas": "^2.8.0",
+    "canvas": "^2.9.3",
     "cheerio": "^1.0.0-rc.10",
     "child_process": "^1.0.2",
     "discord.js": "^13.8.1",
