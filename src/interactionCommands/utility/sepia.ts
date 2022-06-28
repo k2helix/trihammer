@@ -10,7 +10,7 @@ function sepia(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: n
 
 	return ctx;
 }
-import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import request from 'node-superfetch';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';

@@ -1,5 +1,5 @@
 import { CommandInteraction, MessageAttachment } from 'discord.js';
-import { NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { ModelUsers } from '../../lib/utils/models';
 import Command from '../../lib/structures/Command';
 
