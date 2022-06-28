@@ -24,7 +24,7 @@
     "match-sorter": "^6.3.1",
     "mathjs": "^10.6.2",
     "megadb": "^3.4.0",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.34",
     "mongoose": "^5.13.14",
     "node-geocoder": "^4.1.0",
     "node-schedule": "^2.0.0",
