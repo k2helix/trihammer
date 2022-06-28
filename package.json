@@ -27,7 +27,7 @@
     "moment-timezone": "^0.5.34",
     "mongoose": "^5.13.14",
     "node-geocoder": "^4.1.0",
-    "node-schedule": "^2.0.0",
+    "node-schedule": "^2.1.0",
     "node-superfetch": "^0.2.3",
     "play-dl": "^1.9.5",
     "zlib-sync": "^0.1.7"
