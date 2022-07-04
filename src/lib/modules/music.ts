@@ -123,12 +123,13 @@ async function play(guild: Guild, song: Song) {
 					serverQueue.songs.push(serverQueue.songs.shift()!);
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
-				if (!serverQueue.songs[0])
+				if (!serverQueue.songs[0]) {
+					if (serverQueue.leaveTimeout) return;
 					serverQueue.leaveTimeout = setTimeout(() => {
 						getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
 						return queue.delete(serverQueue.voiceChannel.guildId);
 					}, 30000);
-				else {
+				} else {
 					if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
 					play(guild, serverQueue.songs[0]);
 				}
