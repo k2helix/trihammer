@@ -32,21 +32,19 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 	let member = newState.member!;
 
 	let serverQueue = queue.get(oldState.guild.id);
-	if (serverQueue && serverQueue.voiceChannel.id === oldChannel?.id) {
-		let members = oldChannel!.members;
+	if (serverQueue && serverQueue.voiceChannel.id === (oldChannel || newChannel)!.id)
 		if (!newChannel) {
+			let members = oldChannel!.members;
 			if (member.id === client.user!.id) return queue.delete(oldState.guild.id); // if the bot was disconnected
 			if (serverQueue.leaveTimeout) return;
 			if (members.has(client.user!.id) && members.filter((m) => !m.user.bot).size < 1) setLeaveTimeout(client, serverQueue, music);
-		} else if (newChannel.members.has(client.user!.id) && serverQueue.leaveTimeout && member.id !== client.user!.id) {
-			// if someone joins the channel while the leave timeout is initiated
-			if (serverQueue.songs.length > 0) clearLeaveTimeout(serverQueue);
-		} else if (member.id === client.user!.id && newChannel && oldChannel) {
+		} else if (newChannel.members.has(client.user!.id) && serverQueue.leaveTimeout && member.id !== client.user!.id && serverQueue.songs.length > 0)
+			clearLeaveTimeout(serverQueue);
+		else if (member.id === client.user!.id && newChannel && oldChannel) {
 			serverQueue.voiceChannel = newChannel;
 			if (serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size > 0) clearLeaveTimeout(serverQueue);
 			else if (!serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);
 		}
-	}
 
 	if (!logs_channel || !logs_channel.isText()) return;
 	if (!newState.member || newState.member.user.bot) return;
