@@ -2,7 +2,7 @@ import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { MessageEmbed } from 'discord.js';
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';
-function contrast(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+function contrast(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
 	const data = ctx.getImageData(x, y, width, height);
 	const factor = 259 / 100 + 1;
 	const intercept = 128 * (1 - factor);

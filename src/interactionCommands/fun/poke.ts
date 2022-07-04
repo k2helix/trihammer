@@ -13,11 +13,11 @@ export default new Command({
 		let user = interaction.options.getUser('user') || interaction.user;
 		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let { body } = await request.get('https://nekos.life/api/v2/img/poke');
+		let { body } = await request.get('https://api.nekos.dev/api/v3/images/sfw/gif/poke/');
 		let embed = new MessageEmbed();
 		embed.setTitle(client.replaceEach(kawaii.poke, { '{author}': interaction.user.username, '{member}': user.username }));
 		embed.setColor('RANDOM');
-		embed.setImage((body as { url: string }).url);
+		embed.setImage((body as { data: { response: { url: string } } }).data.response.url);
 
 		interaction.reply({ embeds: [embed] });
 	}

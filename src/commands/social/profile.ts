@@ -3,7 +3,7 @@ import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { ModelUsers, Users } from '../../lib/utils/models';
 import MessageCommand from '../../lib/structures/MessageCommand';
 
-function wrapText(context: NodeCanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
 	let words = text.split(' ');
 	let line = '';
 
