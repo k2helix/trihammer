@@ -1,4 +1,4 @@
-import { Image, NodeCanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, Image, createCanvas, loadImage } from 'canvas';
 
 function formatTime(time: number) {
 	const min = Math.floor(time / 60);
@@ -21,7 +21,7 @@ function shuffle(array: { name: string; minTime: number }[]) {
 function randomRange(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function drawImageWithTint(ctx: NodeCanvasRenderingContext2D, image: Image, color: string, x: number, y: number, width: number, height: number) {
+function drawImageWithTint(ctx: CanvasRenderingContext2D, image: Image, color: string, x: number, y: number, width: number, height: number) {
 	const { fillStyle, globalAlpha } = ctx;
 	ctx.fillStyle = color;
 	ctx.drawImage(image, x, y, width, height);

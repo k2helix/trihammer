@@ -110,7 +110,7 @@ export default new Command({
 			if (!response.size) {
 				tttdb.delete(`${interaction.user.id}&${opponent.id}`);
 				winner = turn === 'user' ? 'oppo' : 'user';
-				return interaction.channel!.send(winner);
+				return interaction.channel!.send(`${util.connect4.win}${winner === 'oppo' ? opponent.username : interaction.user.username}` + '!');
 			}
 			let move = response.first()!.content.split(' ');
 			let column = parseInt(move[0]) - 1;

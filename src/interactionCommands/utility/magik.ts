@@ -1,4 +1,4 @@
-function distort(ctx: NodeCanvasRenderingContext2D, amplitude: number, x: number, y: number, width: number, height: number, strideLevel = 4) {
+function distort(ctx: CanvasRenderingContext2D, amplitude: number, x: number, y: number, width: number, height: number, strideLevel = 4) {
 	const data = ctx.getImageData(x, y, width, height);
 	const temp = ctx.getImageData(x, y, width, height);
 	const stride = width * strideLevel;

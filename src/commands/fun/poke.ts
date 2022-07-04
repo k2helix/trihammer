@@ -11,11 +11,11 @@ export default new MessageCommand({
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member;
 		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let { body } = await request.get('https://nekos.life/api/v2/img/poke');
+		let { body } = await request.get('https://api.nekos.dev/api/v3/images/sfw/gif/poke/');
 		let embed = new MessageEmbed();
 		embed.setTitle(client.replaceEach(kawaii.poke, { '{author}': message.member!.displayName, '{member}': user!.displayName }));
 		embed.setColor('RANDOM');
-		embed.setImage((body as { url: string }).url);
+		embed.setImage((body as { data: { response: { url: string } } }).data.response.url);
 
 		message.channel.send({ embeds: [embed] });
 	}

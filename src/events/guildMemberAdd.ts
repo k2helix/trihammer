@@ -3,7 +3,7 @@ import Canvas from 'canvas';
 import { ModelMutes, ModelServer, ModelWelc, Server, Welc } from '../lib/utils/models';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
-function wrapText(context: Canvas.NodeCanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+function wrapText(context: Canvas.CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
 	const words = text.split(' ');
 	let line = '';
 

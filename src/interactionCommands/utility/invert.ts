@@ -1,4 +1,4 @@
-function invert(ctx: NodeCanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+function invert(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
 	const data = ctx.getImageData(x, y, width, height);
 	for (let i = 0; i < data.data.length; i += 4) {
 		data.data[i] = 255 - data.data[i];
