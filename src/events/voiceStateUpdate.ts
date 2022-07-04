@@ -33,27 +33,25 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 
 	let serverQueue = queue.get(oldState.guild.id);
 	if (serverQueue && (serverQueue.voiceChannel.id === oldChannel?.id || serverQueue.voiceChannel.id === newChannel?.id))
-		if (!newChannel) {
+		if (member.id === client.user!.id && newChannel && oldChannel) {
+			serverQueue.voiceChannel = newChannel;
+			if (serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size > 0 && serverQueue.songs.length > 0) clearLeaveTimeout(serverQueue);
+			else if (!serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);
+		} else if (!newChannel || newChannel.id !== serverQueue.voiceChannel.id) {
 			let members = oldChannel!.members;
 			// if the bot was disconnected
 			if (member.id === client.user!.id) {
 				if (serverQueue.leaveTimeout) clearLeaveTimeout(serverQueue);
 				return queue.delete(oldState.guild.id);
 			}
-			if (serverQueue.leaveTimeout) return;
-			if (members.has(client.user!.id) && members.filter((m) => !m.user.bot).size < 1) setLeaveTimeout(client, serverQueue, music);
+			if (!serverQueue.leaveTimeout && members.has(client.user!.id) && members.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);
 		} else if (newChannel.members.has(client.user!.id) && serverQueue.leaveTimeout && member.id !== client.user!.id && serverQueue.songs.length > 0)
 			clearLeaveTimeout(serverQueue);
-		else if (member.id === client.user!.id && newChannel && oldChannel) {
-			serverQueue.voiceChannel = newChannel;
-			if (serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size > 0 && serverQueue.songs.length > 0) clearLeaveTimeout(serverQueue);
-			else if (!serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);
-		}
 
 	if (!logs_channel || !logs_channel.isText()) return;
 	if (!newState.member || newState.member.user.bot) return;
 
-	let user = `${newState.member.user.tag} (${newState.id})`;
+	let user = `${member.user.tag} (${member.id})`;
 
 	if (!oldChannel && newChannel) logs_channel.send({ embeds: [client.blueEmbed(client.replaceEach(events.voice.joined, { '{user}': user, '{channel}': newChannel.name }))] });
 	else if (!newChannel && oldChannel) {
