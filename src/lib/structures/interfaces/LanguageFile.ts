@@ -330,6 +330,7 @@ export default interface LanguageFile {
 			need: string;
 			success: string;
 		};
+		tiktok: string;
 		connect4: {
 			bot: string;
 			challenge: string;

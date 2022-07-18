@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import request from 'node-superfetch';
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder } from 'discord.js';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,7 +31,7 @@ export default new MessageCommand({
 				}
 			});
 
-			let $ = cheerio.load(text!);
+			let $ = load(text!);
 			let images = $('div[class="islrtb isv-r"]');
 			let urls: { name: string; img: string; site: string; site_url: string }[] = [];
 

@@ -314,6 +314,19 @@ export default [
 						required: true
 					}
 				]
+			},
+			{
+				name: 'tiktok',
+				description: "Search for a user's posts on TikTok",
+				type: ApplicationCommandOptionType.Subcommand,
+				options: [
+					{
+						name: 'user',
+						type: ApplicationCommandOptionType.String,
+						description: 'The user to search (without @)',
+						required: true
+					}
+				]
 			}
 		]
 	},
