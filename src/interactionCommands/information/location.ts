@@ -20,10 +20,10 @@ export default new Command({
 		if (!res[0]) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
-			new ButtonBuilder().setCustomId('left').setEmoji('882626242459861042').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('right').setEmoji('882626290253959258').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('zoomin').setEmoji('964842455390375957').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('zoomout').setEmoji('964842968815116369').setStyle(ButtonStyle.Primary)
+			new ButtonBuilder().setCustomId('left').setEmoji({ id: '882626242459861042' }).setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('right').setEmoji({ id: '882626290253959258' }).setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('zoomin').setEmoji({ id: '964842455390375957' }).setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('zoomout').setEmoji({ id: '964842968815116369' }).setStyle(ButtonStyle.Primary)
 		]);
 		let embed = new EmbedBuilder()
 			.setColor('Random')

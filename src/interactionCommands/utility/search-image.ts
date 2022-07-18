@@ -43,11 +43,11 @@ export default new Command({
 			let image = urls[0];
 			if (!image) interaction.reply({ content: music.not_found, ephemeral: true });
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
-				new ButtonBuilder().setCustomId('dobleleft').setEmoji('882631909442744350').setStyle(ButtonStyle.Primary),
-				new ButtonBuilder().setCustomId('left').setEmoji('882626242459861042').setStyle(ButtonStyle.Primary),
-				new ButtonBuilder().setCustomId('right').setEmoji('882626290253959258').setStyle(ButtonStyle.Primary),
-				new ButtonBuilder().setCustomId('dobleright').setEmoji('882631788550324295').setStyle(ButtonStyle.Primary),
-				new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Danger)
+				new ButtonBuilder().setCustomId('dobleleft').setEmoji({ id: '882631909442744350' }).setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('left').setEmoji({ id: '882626242459861042' }).setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('right').setEmoji({ id: '882626290253959258' }).setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('dobleright').setEmoji({ id: '882631788550324295' }).setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('crossx').setEmoji({ id: '882639143874723932' }).setStyle(ButtonStyle.Danger)
 			]);
 			let embed = new EmbedBuilder()
 				.setTitle(util.image.title)
