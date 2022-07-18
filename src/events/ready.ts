@@ -20,15 +20,15 @@ export default (client: ExtendedClient) => {
 			client.catchError(error, wordChannel);
 		}
 	}
-	const actividades = config.activities;
 
+	const actividades = config.activities;
 	const status = Math.floor(Math.random() * actividades.length);
 	client.user.setPresence({
 		status: 'online',
 		activities: [
 			{
 				name: actividades[status][0],
-				type: actividades[status][1] as unknown as ActivityType.Playing // not really but who cares
+				type: ActivityType[actividades[status][1] as 'Playing' | 'Watching' | 'Listening']
 			}
 		]
 	});

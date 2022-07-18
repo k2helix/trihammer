@@ -11,14 +11,12 @@
         "GOOGLE_API_KEY": "your-api-key",
         "...": "..."
     },
-    //these 3 are for the invite command
-    "invite_link": "https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=8&scope=bot%20applications.commands",
-    "invite_link_without_permissions": "https://discord.com/oauth2/authorize?client_id=611710846426415107&permissions=0&scope=bot%20applications.commands",
+    "enabled_commands": ["config", "development", "fun", "information", "moderation", "music", "social", "utility"],
     "support_server_invite": "https://discord.gg/invite",
     "activities": [
-        ["activity", "TYPE"],
-		["my soul", "WATCHING"],
-		["your beats", "LISTENING"]
+        ["activity", "Type"],
+		["my soul", "Watching"],
+		["your beats", "Listening"]
 	],
     "strings": {
         "ready": "Bot ready: {{guilds}} servers and {{users}} users (in cache).",
