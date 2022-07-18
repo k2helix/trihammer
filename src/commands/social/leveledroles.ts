@@ -24,16 +24,16 @@ export default new MessageCommand({
 			});
 
 			const mapped = roles.map((role) => `Level ${role.level}: <@&${role.role}>`).join('\n');
-			const embed = new Discord.MessageEmbed();
+			const embed = new Discord.EmbedBuilder();
 			embed.setTitle(xp.lvlroles.show);
-			embed.setColor('RANDOM');
-			embed.setThumbnail(message.guild!.iconURL({ dynamic: true })!);
+			embed.setColor('Random');
+			embed.setThumbnail(message.guild!.iconURL()!);
 			embed.setDescription(mapped);
 			return message.channel.send({ embeds: [embed] });
 		}
 		if (args[0] === 'remove') {
 			let perms =
-				guildConf.adminrole !== 'none' ? message.member.roles.cache.has(guildConf.adminrole) : message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+				guildConf.adminrole !== 'none' ? message.member.roles.cache.has(guildConf.adminrole) : message.member.permissions.has(Discord.PermissionsBitField.Flags.Administrator);
 			if (!perms) return message.channel.send({ embeds: [client.redEmbed(config.admin_perm)] });
 			if (!args[1] || !args[2]) return message.channel.send({ embeds: [client.redEmbed(xp.lvlroles.remove)] });
 
@@ -42,7 +42,7 @@ export default new MessageCommand({
 		}
 		if (args[0] !== 'remove') {
 			let perms =
-				guildConf.adminrole !== 'none' ? message.member.roles.cache.has(guildConf.adminrole) : message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+				guildConf.adminrole !== 'none' ? message.member.roles.cache.has(guildConf.adminrole) : message.member.permissions.has(Discord.PermissionsBitField.Flags.Administrator);
 			if (!perms) return message.channel.send({ embeds: [client.redEmbed(config.admin_perm)] });
 			let rol = message.guild.roles.cache.get(args[0]) || message.guild.roles.cache.find((r) => r.name === args[0]);
 			let nivel = args[1];

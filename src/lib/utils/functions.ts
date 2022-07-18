@@ -1,7 +1,7 @@
 import { wordList } from './objects';
 import translate from '@vitalets/google-translate-api';
 import { hiraganaDigraphs, hiraganaMonographs, katakanaDigraphs, katakanaHalfwidths, katakanaHalfwidthsCombined, katakanaMonographs } from './objects';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { EmbedBuilder, Message, TextChannel } from 'discord.js';
 import ExtendedClient from '../structures/Client';
 //@ts-ignore
 function bulkReplace(str: string, regex, map?) {
@@ -147,12 +147,14 @@ function wordOfTheDay(client: ExtendedClient, channel: TextChannel) {
 				const wordData = result[0];
 				const pronunciation = wordData.pronunciation ? wordData.pronunciation : res.text;
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setTitle('Palabra del día')
-					.setColor('RANDOM')
+					.setColor('Random')
 					.setDescription(`La palabra de hoy es... **${res.text}**.`)
-					.addField('Traducción:', `${wordData.english[0]}`)
-					.addField('Pronunciación:', pronunciation + ` (${fromKana(pronunciation).toLowerCase()})`);
+					.addFields(
+						{ name: 'Traducción:', value: `${wordData.english[0]}` },
+						{ name: 'Pronunciación:', value: pronunciation + ` (${fromKana(pronunciation).toLowerCase()})` }
+					);
 				channel.send({ embeds: [embed] });
 				(client.channels.cache.get('860655239278624797') as TextChannel)?.send({ embeds: [embed] });
 			});

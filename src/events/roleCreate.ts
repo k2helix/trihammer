@@ -8,7 +8,7 @@ export default async (client: ExtendedClient, role: Role) => {
 
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 	let logs_channel = role.guild.channels.cache.get(serverConfig.serverlogs);
-	if (!logs_channel || !logs_channel.isText()) return;
+	if (!logs_channel || !logs_channel.isTextBased()) return;
 
 	logs_channel.send({ embeds: [client.blueEmbed(client.replaceEach(events.role.create, { '{role}': `<@&${role.id}>` }))] });
 };

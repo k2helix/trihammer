@@ -1,5 +1,5 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
 	name: 'botinfo',
@@ -8,7 +8,7 @@ export default new MessageCommand({
 	aliases: ['about', 'invite', 'support'],
 	async execute(client, message, _args, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 			.setTitle('Trihammer')
 			.setDescription(client.replaceEach(util.about, { '{guilds}': client.guilds.cache.size.toString(), '{members}': client.users.cache.size.toString() }))
 			.setThumbnail(client.user!.displayAvatarURL())

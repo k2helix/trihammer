@@ -1,5 +1,5 @@
 // const request = require('node-superfetch');
-// const { MessageAttachment } = require('discord.js');
+// const { AttachmentBuilder } = require('discord.js');
 // module.exports = {
 // 	name: 'glitch',
 // 	description: 'Glitch an image',
@@ -8,10 +8,10 @@
 // 	example: 'glitch\nglitch @user',
 // 	cooldown: 3,
 // 	type: 4,
-// 	myPerms: [true, 'ATTACH_FILES'],
+// 	myPerms: [true, 'AttachFiles'],
 // 	async execute(client, message, args) {
 // 		let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author;
-// 		let image = user.displayAvatarURL({ format: 'png', size: 1024 });
+// 		let image = user.displayAvatarURL({ extension: 'png', size: 1024 });
 // 		let attachments = [...message.attachments.values()];
 // 		if (attachments[0]) image = attachments[0].url;
 // 		if (user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0];
@@ -29,7 +29,7 @@
 // 				}
 // 			})
 // 		});
-// 		const attachment = new MessageAttachment(result.raw, 'glitch.png');
+// 		const attachment = new AttachmentBuilder(result.raw, 'glitch.png');
 // 		message.channel.send(`Glitched image`, attachment);
 // 	}
 // };
@@ -37,7 +37,7 @@
 import { createCanvas, loadImage } from 'canvas';
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glitch = require('glitch-canvas');
@@ -47,12 +47,12 @@ export default new MessageCommand({
 	description: 'Glitch an image',
 	cooldown: 10,
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	async execute(client, message, args) {
-		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let image = message.author.displayAvatarURL({ size: 1024, extension: 'png' });
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 
-		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (user) image = user.displayAvatarURL({ extension: 'png', size: 1024 });
 		if (args[0] && args[0].startsWith('http')) image = args[0];
 		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
@@ -75,7 +75,7 @@ export default new MessageCommand({
 			.then(function (glitchedBuffer: Buffer) {
 				message.channel.send({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setColor(3092790)
 							.setDescription(text)
 							.setImage('attachment://glitch.jpeg')

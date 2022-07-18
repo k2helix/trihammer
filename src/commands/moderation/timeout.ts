@@ -9,9 +9,9 @@ export default new MessageCommand({
 		{ index: 1, name: 'duration (0 to remove)', type: 'string' },
 		{ index: 2, name: 'reason', type: 'string' }
 	],
-	required_perms: ['MODERATE_MEMBERS'],
+	required_perms: ['ModerateMembers'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['MODERATE_MEMBERS'],
+	client_perms: ['ModerateMembers'],
 	async execute(client, message, args, guildConf) {
 		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 

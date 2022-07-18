@@ -11,7 +11,7 @@ function greyscale(ctx: CanvasRenderingContext2D, x: number, y: number, width: n
 	return ctx;
 }
 import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import request from 'node-superfetch';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
@@ -19,13 +19,13 @@ export default new MessageCommand({
 	description: 'Black and white image',
 	aliases: ['grey', 'gray', 'grayscale'],
 	category: 'image_manipulation',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
-		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let image = message.author.displayAvatarURL({ size: 1024, extension: 'png' });
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 
-		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (user) image = user.displayAvatarURL({ extension: 'png', size: 1024 });
 		if (args[0] && args[0].startsWith('http')) image = args[0];
 		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
@@ -38,7 +38,7 @@ export default new MessageCommand({
 
 		message.channel.send({
 			embeds: [
-				new MessageEmbed()
+				new EmbedBuilder()
 					.setColor(3092790)
 					.setImage('attachment://greyscale.png')
 					.setFooter({ text: `${data.width}x${data.height}` })

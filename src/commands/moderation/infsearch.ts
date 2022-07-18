@@ -8,7 +8,7 @@ export default new MessageCommand({
 	description: 'Get the infractions of the given user',
 	category: 'moderation',
 	required_args: [{ index: 0, name: 'user', type: 'id' }],
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	required_roles: ['MODERATOR'],
 	aliases: ['inf', 'infractions', 'infrs'],
 	async execute(client, message, args, guildConf) {

@@ -141,7 +141,7 @@ async function getInfoFromName(name: string, getBestMatch = true) {
 		console.error(e);
 	}
 }
-import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
@@ -162,17 +162,17 @@ export default new MessageCommand({
 				const element = results[index];
 				options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 			}
-			const row = new MessageActionRow().addComponents(
-				new MessageSelectMenu().setCustomId('anime').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+			const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+				new SelectMenuBuilder().setCustomId('anime').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 			);
-			let searchEmbed = new MessageEmbed()
+			let searchEmbed = new EmbedBuilder()
 				.setTitle(util.image.title)
-				.setColor('RANDOM')
+				.setColor('Random')
 				.setDescription(`${results.map((result) => `**${results!.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}`);
 			let msg = await message.channel.send({ embeds: [searchEmbed], components: [row] });
 			const filter = (int: SelectMenuInteraction) => int.customId === 'anime' && int.user.id === message.author.id;
 			try {
-				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 				data = await getInfoFromURL(`https://myanimelist.net/anime/${selected.values[0]}`);
 				msg.delete();
 			} catch (error) {
@@ -182,24 +182,24 @@ export default new MessageCommand({
 		} else data = await getInfoFromName(anime);
 
 		if (!data) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 
 			.setTitle(data.title)
 			.setURL(data.url)
 			.setDescription(`${data.score} ⭐`)
 			.setThumbnail(data.picture)
-			.setColor('RANDOM')
-
-			.addField(util.anime.episodes, data.episodes, true)
-			.addField(util.anime.status, data.status, true)
-			.addField(util.anime.aired, data.aired, true)
-			.addField(util.anime.genre, data.genres.join(', ') || 'No', true)
-			.addField(util.anime.studio, data.studios.join(', ') || 'No', true)
-			.addField(util.anime.source, data.source, true)
-			.addField(util.anime.duration, data.duration, true)
-			.addField(util.anime.ranking, data.ranked, true)
-			.addField(util.anime.popularity, data.popularity, true)
-
+			.setColor('Random')
+			.addFields(
+				{ name: util.anime.episodes, value: data.episodes, inline: true },
+				{ name: util.anime.status, value: data.status, inline: true },
+				{ name: util.anime.aired, value: data.aired, inline: true },
+				{ name: util.anime.genre, value: data.genres.join(', ') || 'No', inline: true },
+				{ name: util.anime.studio, value: data.studios.join(', ') || 'No', inline: true },
+				{ name: util.anime.source, value: data.source, inline: true },
+				{ name: util.anime.duration, value: data.duration, inline: true },
+				{ name: util.anime.ranking, value: data.ranked, inline: true },
+				{ name: util.anime.popularity, value: data.popularity, inline: true }
+			)
 			.setFooter({ text: util.anime.footer });
 
 		message.channel.send({ embeds: [embed] });

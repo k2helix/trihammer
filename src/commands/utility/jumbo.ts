@@ -21,7 +21,7 @@ export default new MessageCommand({
 	description: 'Convert a emoji to a image',
 	aliases: ['emoji'],
 	category: 'utility',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	required_args: [{ index: 0, name: 'emoji', type: 'string' }],
 	execute(_client, message, args) {
 		if (args[0].startsWith('<')) {

@@ -9,7 +9,7 @@ export default async (client: ExtendedClient, oldMember: GuildMember, newMember:
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	let logs_channel = oldMember.guild.channels.cache.get(serverConfig.memberlogs);
-	if (!logs_channel || !logs_channel.isText()) return;
+	if (!logs_channel || !logs_channel.isTextBased()) return;
 
 	if (oldMember.nickname !== newMember.nickname)
 		return logs_channel.send(

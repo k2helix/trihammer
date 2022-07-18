@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import { ModelRank, ModelUsers, Rank, Users } from '../../lib/utils/models';
 export default new Command({
@@ -8,7 +8,7 @@ export default new Command({
 	category: 'social',
 	execute(client, interaction) {
 		interaction.deferReply().then(async () => {
-			if ((interaction as CommandInteraction).options.getBoolean('global')) {
+			if ((interaction as ChatInputCommandInteraction).options.getBoolean('global')) {
 				let top: Users[] = await ModelUsers.find({ globalxp: { $gte: 300000 } }).lean();
 				top.sort((a, b) => {
 					return b.globalxp - a.globalxp;

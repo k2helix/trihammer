@@ -9,7 +9,7 @@ export default async (client: ExtendedClient, channel: GuildChannel) => {
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	const logs_channel = channel.guild.channels.cache.get(serverConfig.serverlogs);
-	if (!logs_channel || !logs_channel.isText()) return;
+	if (!logs_channel || !logs_channel.isTextBased()) return;
 
-	logs_channel.send({ embeds: [client.redEmbed(client.replaceEach(events.channel.delete, { '{channel}': channel.type, '{name}': channel.name }))] });
+	logs_channel.send({ embeds: [client.redEmbed(client.replaceEach(events.channel.delete, { '{name}': channel.name }))] });
 };

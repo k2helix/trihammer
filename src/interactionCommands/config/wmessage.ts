@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { ModelWelc } from '../../lib/utils/models';
@@ -6,11 +6,11 @@ export default new Command({
 	name: 'wmessage',
 	description: 'Set the welcome message',
 	category: 'configuration',
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, interaction, guildConf) {
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let msg = (interaction as CommandInteraction).options.getString('message')!;
+		let msg = (interaction as ChatInputCommandInteraction).options.getString('message')!;
 
 		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
 		if (!welcome) {

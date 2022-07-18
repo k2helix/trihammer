@@ -22,7 +22,7 @@ export default async (client: ExtendedClient, infr: Infraction) => {
 	if (!guild) return;
 
 	const channel = guild.channels.cache.get(serverConfig.infrlogs);
-	if (!channel || channel.type !== 'GUILD_TEXT') return;
+	if (!channel || !channel.isTextBased()) return;
 
 	const obj = {
 		'{user}': infr.user.tag,

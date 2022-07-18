@@ -7,7 +7,7 @@ export default new MessageCommand({
 	aliases: ['setprefix'],
 	category: 'configuration',
 	required_args: [{ index: 0, name: 'prefix', type: 'string' }],
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
 		let prefix = args.join(' ');

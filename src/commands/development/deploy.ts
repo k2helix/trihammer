@@ -1,3 +1,4 @@
+import { ApplicationCommandDataResolvable } from 'discord.js';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'deploy',
@@ -6,8 +7,7 @@ export default new MessageCommand({
 	async execute(client, message) {
 		if (!client.config.administrators.includes(message.author.id)) return;
 		const data = (await import(`../../interactionCommands/commands`)).default;
-		// @ts-ignore
-		const commands = await client.application?.commands.set(data);
+		const commands = await client.application?.commands.set(data as ApplicationCommandDataResolvable[]);
 		console.log(commands);
 	}
 });

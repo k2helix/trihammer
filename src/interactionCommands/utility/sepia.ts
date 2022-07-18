@@ -11,7 +11,7 @@ function sepia(ctx: CanvasRenderingContext2D, x: number, y: number, width: numbe
 	return ctx;
 }
 import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import request from 'node-superfetch';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
@@ -23,9 +23,9 @@ export default new Command({
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let image =
-			(interaction as CommandInteraction).options.getString('image') ||
-			(interaction as CommandInteraction).options.getAttachment('attachment')?.url ||
-			((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+			(interaction as ChatInputCommandInteraction).options.getString('image') ||
+			(interaction as ChatInputCommandInteraction).options.getAttachment('attachment')?.url ||
+			((interaction as ChatInputCommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ extension: 'png', size: 1024, forceStatic: true })!;
 
 		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 
@@ -38,7 +38,7 @@ export default new Command({
 
 		interaction.reply({
 			embeds: [
-				new MessageEmbed()
+				new EmbedBuilder()
 					.setColor(3092790)
 					.setImage('attachment://sepia.png')
 					.setFooter({ text: `${data.width}x${data.height}` })

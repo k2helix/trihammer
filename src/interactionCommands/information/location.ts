@@ -1,5 +1,5 @@
 import Command from '../../lib/structures/Command';
-import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType, EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const NodeGeocoder = require('node-geocoder');
@@ -15,32 +15,35 @@ export default new Command({
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const geocoder = NodeGeocoder(options);
-		let location = (interaction as CommandInteraction).options.getString('query');
+		let location = (interaction as ChatInputCommandInteraction).options.getString('query');
 		const res = await geocoder.geocode(location);
 		if (!res[0]) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 
-		const row = new MessageActionRow().addComponents([
-			new MessageButton().setCustomId('left').setEmoji('882626242459861042').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('right').setEmoji('882626290253959258').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('zoomin').setEmoji('964842455390375957').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('zoomout').setEmoji('964842968815116369').setStyle('PRIMARY')
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+			new ButtonBuilder().setCustomId('left').setEmoji('882626242459861042').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('right').setEmoji('882626290253959258').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('zoomin').setEmoji('964842455390375957').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('zoomout').setEmoji('964842968815116369').setStyle(ButtonStyle.Primary)
 		]);
-		let embed = new MessageEmbed()
-			.setColor('RANDOM')
+		let embed = new EmbedBuilder()
+			.setColor('Random')
 			.setDescription(util.map.found(res, '1'))
-			// @ts-ignore it exists indeed
-			.addField(util.map.country, res[0].country || 'No')
-			.addField(util.map.state, res[0].state || 'No')
-			.addField(util.map.city, res[0].city || 'No')
-			.addField(util.map.zipcode, res[0].zipcode || 'No')
-			.addField(util.map.street, res[0].streetName || 'No')
+			.addFields(
+				{ name: util.map.country, value: res[0].country || 'No' },
+				{ name: util.map.state, value: res[0].state || 'No' },
+				{ name: util.map.city, value: res[0].city || 'No' },
+				{ name: util.map.zipcode, value: res[0].zipcode || 'No' },
+				{ name: util.map.street, value: res[0].streetName || 'No' }
+			)
 			.setFooter({ text: '1/' + res.length })
 			.setImage(`https://open.mapquestapi.com/staticmap/v5/map?locations=${res[0].latitude},${res[0].longitude}&size=600,400&key=${process.env.MAPQUEST_API_KEY}&zoom=5`);
 		interaction.reply({ embeds: [embed], components: [row] });
 		let msg = await interaction.fetchReply();
 
 		const filter = (int: ButtonInteraction) => int.user.id === interaction.user.id;
-		const collector = (msg as Message).createMessageComponentCollector({ filter, time: 60000, componentType: 'BUTTON' });
+		const collector = msg.createMessageComponentCollector({ filter, time: 60000, componentType: ComponentType.Button });
+
+		//@ts-ignore
 		collector.on('collect', async (reaction) => {
 			msg = await interaction.channel!.messages.fetch(msg.id);
 			let current = parseInt(msg.embeds[0].footer!.text.charAt(0));
@@ -53,47 +56,49 @@ export default new Command({
 			let embed;
 			switch (reaction.customId) {
 				case 'right':
-					embed = new MessageEmbed(msg.embeds[0])
+					embed = EmbedBuilder.from(msg.embeds[0])
 						.setDescription(util.map.found(res, current + 1 > res.length ? 1 : current + 1))
 						.setImage(`https://open.mapquestapi.com/staticmap/v5/map?locations=${next.latitude},${next.longitude}&size=600,400&key=${process.env.MAPQUEST_API_KEY}&zoom=5`)
+						.setFields(
+							{ name: util.map.country, value: next.country || 'No' },
+							{ name: util.map.state, value: next.state || 'No' },
+							{ name: util.map.city, value: next.city || 'No' },
+							{ name: util.map.zipcode, value: next.zipcode || 'No' },
+							{ name: util.map.street, value: next.streetName || 'No' }
+						)
 						.setFooter({ text: `${current + 1 > res.length ? 1 : current + 1}/${res.length}` });
-
-					embed.fields[0].value = next.country || 'No';
-					embed.fields[1].value = next.state || 'No';
-					embed.fields[2].value = next.city || 'No';
-					embed.fields[3].value = next.zipcode || 'No';
-					embed.fields[4].value = next.streetName || 'No';
 					reaction.update({ embeds: [embed] });
 					break;
 				case 'left':
-					embed = new MessageEmbed(msg.embeds[0])
+					embed = EmbedBuilder.from(msg.embeds[0])
 						.setDescription(util.map.found(res, current - 1 < 1 ? res.length : current - 1))
 						.setImage(
 							`https://open.mapquestapi.com/staticmap/v5/map?locations=${previous.latitude},${previous.longitude}&size=600,400&key=${process.env.MAPQUEST_API_KEY}&zoom=5`
 						)
+						.setFields(
+							{ name: util.map.country, value: previous.country || 'No' },
+							{ name: util.map.state, value: previous.state || 'No' },
+							{ name: util.map.city, value: previous.city || 'No' },
+							{ name: util.map.zipcode, value: previous.zipcode || 'No' },
+							{ name: util.map.street, value: previous.streetName || 'No' }
+						)
 						.setFooter({ text: `${current - 1 < 1 ? res.length : current - 1}/${res.length}` });
-
-					embed.fields[0].value = previous.country || 'No';
-					embed.fields[1].value = previous.state || 'No';
-					embed.fields[2].value = previous.city || 'No';
-					embed.fields[3].value = previous.zipcode || 'No';
-					embed.fields[4].value = previous.streetName || 'No';
 					reaction.update({ embeds: [embed] });
 					break;
 				case 'zoomin':
 					if (zoomIn > 20) return reaction.reply({ embeds: [client.redEmbed(util.map.too_much_zoom)], ephemeral: true });
-					embed = new MessageEmbed(msg.embeds[0]).setImage(currentImage.replace(`&zoom=${currentZoom}`, `&zoom=${zoomIn}`));
+					embed = EmbedBuilder.from(msg.embeds[0]).setImage(currentImage.replace(`&zoom=${currentZoom}`, `&zoom=${zoomIn}`));
 					reaction.update({ embeds: [embed] });
 					break;
 				case 'zoomout':
 					if (zoomOut < 0) return reaction.reply({ embeds: [client.redEmbed(util.map.too_little_zoom)], ephemeral: true });
-					embed = new MessageEmbed(msg.embeds[0]).setImage(currentImage.replace(`&zoom=${currentZoom}`, `&zoom=${zoomOut}`));
+					embed = EmbedBuilder.from(msg.embeds[0]).setImage(currentImage.replace(`&zoom=${currentZoom}`, `&zoom=${zoomOut}`));
 					reaction.update({ embeds: [embed] });
 					break;
 			}
 		});
 		collector.on('end', () => {
-			(msg as Message).edit({ components: [] });
+			msg.edit({ components: [] });
 		});
 	}
 });

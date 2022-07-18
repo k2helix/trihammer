@@ -10,9 +10,9 @@ export default new MessageCommand({
 		{ index: 0, name: 'user', type: 'member' },
 		{ index: 1, name: 'amount', type: 'number', optional: true }
 	],
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['MANAGE_MESSAGES'],
+	client_perms: ['ManageMessages'],
 	async execute(client, message, args, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 

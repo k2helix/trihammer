@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -12,7 +12,7 @@ export default new Command({
 		const serverQueue = queue.get(interaction.guildId!);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		if (!interaction.isCommand()) return interaction.reply({ embeds: [client.redEmbed('Hmph, that was not supposed to happen, try again...')], ephemeral: true });
+		if (!interaction.isChatInputCommand()) return interaction.reply({ embeds: [client.redEmbed('Hmph, that was not supposed to happen, try again...')], ephemeral: true });
 
 		if (interaction.options.data[0].name === 'view') {
 			if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
@@ -24,27 +24,29 @@ export default new Command({
 			const selectedPortion = serverQueue.songs.slice(amplifiedPage, amplifiedEnd);
 			if (!selectedPortion || selectedPortion.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 
-			const row = new MessageActionRow().addComponents([
-				new MessageButton().setCustomId('voteskip').setEmoji('882675796341321798').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('loop').setEmoji('882674902304448582').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('shuffle').setEmoji('923956906006052914').setStyle('PRIMARY'),
-				// new MessageButton().setCustomId('volume-down').setEmoji('882677475350564945').setStyle('PRIMARY'),
-				// new MessageButton().setCustomId('volume-up').setEmoji('882677486553530429').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('stop').setEmoji('882674312094568528').setStyle('DANGER'),
-				new MessageButton().setCustomId('crossx').setEmoji('882639143874723932').setStyle('SECONDARY')
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+				new ButtonBuilder().setCustomId('voteskip').setEmoji('882675796341321798').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('loop').setEmoji('882674902304448582').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('shuffle').setEmoji('923956906006052914').setStyle(ButtonStyle.Primary),
+				// new ButtonBuilder().setCustomId('volume-down').setEmoji('882677475350564945').setStyle(ButtonStyle.Primary),
+				// new ButtonBuilder().setCustomId('volume-up').setEmoji('882677486553530429').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('stop').setEmoji('882674312094568528').setStyle(ButtonStyle.Danger),
+				new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Secondary)
 			]);
-			const view_embed = new MessageEmbed()
+			const view_embed = new EmbedBuilder()
 				.setTitle(music.queue_songs)
 				.setDescription(
 					`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) \`${song.duration}\``).join('\n')}`
 				)
-				.setColor('WHITE')
+				.setColor('White')
 				.setFooter({ text: client.replaceEach(music.queue_page, { '{number}': page.toString(), '{total}': (Math.floor(serverQueue.songs.length / 10) + 1).toString() }) })
 				.setTimestamp();
 
 			interaction.reply({ embeds: [view_embed], components: [row] });
-			let msg = (await interaction.fetchReply()) as Message<boolean>;
+			let msg = await interaction.fetchReply();
 			const collector = msg.createMessageComponentCollector({ time: 60000 });
+
+			//@ts-ignore
 			collector.on('collect', (reaction) => {
 				if (reaction.customId === 'crossx')
 					if (reaction.user.id !== interaction.user.id) return;
@@ -87,9 +89,9 @@ export default new Command({
 // 		const selectedPortion = serverQueue.songs.slice(amplifiedPage, amplifiedEnd);
 // 		if (!selectedPortion || selectedPortion.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 
-// 		const view_embed = new MessageEmbed()
+// 		const view_embed = new EmbedBuilder()
 // 			.setTitle(music.queue_songs)
-// 			.setColor('RANDOM')
+// 			.setColor('Random')
 // 			.setDescription(
 // 				`${selectedPortion
 // 					.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) - ${song.duration}`)

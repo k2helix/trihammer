@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord.js';
 export default [
 	{
 		name: 'set',
@@ -6,11 +7,11 @@ export default [
 			{
 				name: 'autorole',
 				description: 'Set the autorole',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The new autorole',
 						required: true
 					}
@@ -19,11 +20,11 @@ export default [
 			{
 				name: 'admin-role',
 				description: 'Set the admin role',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The new admin role',
 						required: true
 					}
@@ -32,11 +33,11 @@ export default [
 			{
 				name: 'mod-role',
 				description: 'Set the moderator role',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The new moderator role',
 						required: true
 					}
@@ -45,11 +46,11 @@ export default [
 			{
 				name: 'prefix',
 				description: 'Set the prefix',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'prefix',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The new prefix',
 						required: true
 					}
@@ -58,11 +59,11 @@ export default [
 			{
 				name: 'language',
 				description: "Set the language (does not affect slash commands' description)",
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'language',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The new language',
 						required: true,
 						choices: [
@@ -81,17 +82,17 @@ export default [
 			{
 				name: 'welcome',
 				description: 'Set the welcome config',
-				type: 'SUB_COMMAND_GROUP',
+				type: ApplicationCommandOptionType.SubcommandGroup,
 				options: [
 					{
 						name: 'channel',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'The welcome channel',
 						required: false,
 						options: [
 							{
 								name: 'channel',
-								type: 'CHANNEL',
+								type: ApplicationCommandOptionType.Channel,
 								description: 'The new channel',
 								required: true
 							}
@@ -99,13 +100,13 @@ export default [
 					},
 					{
 						name: 'color',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'The welcome title color',
 						required: false,
 						options: [
 							{
 								name: 'color',
-								type: 'STRING',
+								type: ApplicationCommandOptionType.String,
 								description: 'The new color',
 								required: true
 							}
@@ -113,19 +114,19 @@ export default [
 					},
 					{
 						name: 'image',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'The welcome background image',
 						required: false,
 						options: [
 							{
 								name: 'image',
-								type: 'STRING',
+								type: ApplicationCommandOptionType.String,
 								description: 'The new image URL',
 								required: false
 							},
 							{
 								name: 'attachment',
-								type: 'ATTACHMENT',
+								type: ApplicationCommandOptionType.Attachment,
 								description: 'Use this if you want to select the uplaoded file',
 								required: false
 							}
@@ -133,13 +134,13 @@ export default [
 					},
 					{
 						name: 'message',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'The welcome message',
 						required: false,
 						options: [
 							{
 								name: 'message',
-								type: 'STRING',
+								type: ApplicationCommandOptionType.String,
 								description: 'The new message',
 								required: true
 							}
@@ -150,11 +151,11 @@ export default [
 			{
 				name: 'actions-logs',
 				description: 'Set the actions logs channel',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'channel',
-						type: 'CHANNEL',
+						type: ApplicationCommandOptionType.Channel,
 						description: 'The new channel',
 						required: true
 					}
@@ -163,11 +164,11 @@ export default [
 			{
 				name: 'infractions-logs',
 				description: 'Set the infractions logs channel',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'channel',
-						type: 'CHANNEL',
+						type: ApplicationCommandOptionType.Channel,
 						description: 'The new channel',
 						required: true
 					}
@@ -176,11 +177,11 @@ export default [
 			{
 				name: 'members-logs',
 				description: 'Set the members logs channel',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'channel',
-						type: 'CHANNEL',
+						type: ApplicationCommandOptionType.Channel,
 						description: 'The new channel',
 						required: true
 					}
@@ -189,11 +190,11 @@ export default [
 			{
 				name: 'messages-logs',
 				description: 'Set the messages logs channel',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'channel',
-						type: 'CHANNEL',
+						type: ApplicationCommandOptionType.Channel,
 						description: 'The new channel',
 						required: true
 					}
@@ -202,11 +203,11 @@ export default [
 			{
 				name: 'server-logs',
 				description: 'Set the server logs channel',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'channel',
-						type: 'CHANNEL',
+						type: ApplicationCommandOptionType.Channel,
 						description: 'The new channel',
 						required: true
 					}
@@ -215,11 +216,11 @@ export default [
 			{
 				name: 'voice-logs',
 				description: 'Set the voice logs channel',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'channel',
-						type: 'CHANNEL',
+						type: ApplicationCommandOptionType.Channel,
 						description: 'The new channel',
 						required: true
 					}
@@ -234,17 +235,17 @@ export default [
 			{
 				name: 'anime',
 				description: 'Search for an anime',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'query',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The anime to search',
 						required: true
 					},
 					{
 						name: 'confirm-result',
-						type: 'BOOLEAN',
+						type: ApplicationCommandOptionType.Boolean,
 						description: 'Whether or not to search for more than one result to choose.',
 						required: false
 					}
@@ -253,17 +254,17 @@ export default [
 			{
 				name: 'manga',
 				description: 'Search for a manga',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'query',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The manga to search',
 						required: true
 					},
 					{
 						name: 'confirm-result',
-						type: 'BOOLEAN',
+						type: ApplicationCommandOptionType.Boolean,
 						description: 'Whether or not to search for more than one result to choose.',
 						required: false
 					}
@@ -272,11 +273,11 @@ export default [
 			{
 				name: 'image',
 				description: 'Search for an image ',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'query',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The image to search',
 						required: true
 					}
@@ -285,17 +286,17 @@ export default [
 			{
 				name: 'game',
 				description: 'Search for a game',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'query',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The game to search',
 						required: true
 					},
 					{
 						name: 'confirm-result',
-						type: 'BOOLEAN',
+						type: ApplicationCommandOptionType.Boolean,
 						description: 'Whether or not to search for more than one result to choose.',
 						required: false
 					}
@@ -304,11 +305,11 @@ export default [
 			{
 				name: 'location',
 				description: 'Search for a location',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'query',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The location to search',
 						required: true
 					}
@@ -322,7 +323,7 @@ export default [
 		options: [
 			{
 				name: 'animal',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The animal of which you want an image',
 				required: true,
 				choices: [
@@ -365,11 +366,11 @@ export default [
 			{
 				name: 'connect4',
 				description: 'Play connect 4 with a friend',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'user',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The friend you want to play with',
 						required: true
 					}
@@ -378,11 +379,11 @@ export default [
 			{
 				name: 'tictactoe',
 				description: 'Play tictactoe (beta) with a friend',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'user',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The friend you want to play with',
 						required: true
 					}
@@ -391,7 +392,7 @@ export default [
 			{
 				name: 'horse-race',
 				description: 'Play a horse race (alone)',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			}
 		]
 	},
@@ -402,11 +403,11 @@ export default [
 			{
 				name: 'search',
 				description: 'Search for infractions by a user',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'user',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to search infractions for',
 						required: true
 					}
@@ -415,23 +416,23 @@ export default [
 			{
 				name: 'modify',
 				description: 'Modify an infraction',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'id',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The ID of the infraction',
 						required: true
 					},
 					{
 						name: 'duration',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The new duration of the infraction',
 						required: false
 					},
 					{
 						name: 'reason',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The new reason of the infraction',
 						required: false
 					}
@@ -440,11 +441,11 @@ export default [
 			{
 				name: 'delete',
 				description: 'Delete an infraction',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'id',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The ID of the infraction',
 						required: true
 					}
@@ -459,23 +460,23 @@ export default [
 			{
 				name: 'contrast',
 				description: 'Apply contrast to an image',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The URL of the image',
 						required: false
 					},
 					{
 						name: 'user-avatar',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to get the image from',
 						required: false
 					},
 					{
 						name: 'attachment',
-						type: 'ATTACHMENT',
+						type: ApplicationCommandOptionType.Attachment,
 						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
@@ -484,23 +485,23 @@ export default [
 			{
 				name: 'glitch',
 				description: 'Apply a glitch effect to an image',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The URL of the image',
 						required: false
 					},
 					{
 						name: 'user-avatar',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to get the image from',
 						required: false
 					},
 					{
 						name: 'attachment',
-						type: 'ATTACHMENT',
+						type: ApplicationCommandOptionType.Attachment,
 						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
@@ -509,23 +510,23 @@ export default [
 			{
 				name: 'magik',
 				description: 'Apply a distort effect to an image',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The URL of the image',
 						required: false
 					},
 					{
 						name: 'user-avatar',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to get the image from',
 						required: false
 					},
 					{
 						name: 'attachment',
-						type: 'ATTACHMENT',
+						type: ApplicationCommandOptionType.Attachment,
 						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
@@ -534,23 +535,23 @@ export default [
 			{
 				name: 'grayscale',
 				description: 'Change the image colors to gray',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The URL of the image',
 						required: false
 					},
 					{
 						name: 'user-avatar',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to get the image from',
 						required: false
 					},
 					{
 						name: 'attachment',
-						type: 'ATTACHMENT',
+						type: ApplicationCommandOptionType.Attachment,
 						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
@@ -559,23 +560,23 @@ export default [
 			{
 				name: 'invert',
 				description: 'Invert the image colors',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The URL of the image',
 						required: false
 					},
 					{
 						name: 'user-avatar',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to get the image from',
 						required: false
 					},
 					{
 						name: 'attachment',
-						type: 'ATTACHMENT',
+						type: ApplicationCommandOptionType.Attachment,
 						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
@@ -584,23 +585,23 @@ export default [
 			{
 				name: 'sepia',
 				description: 'Change the image colors to sepia',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The URL of the image',
 						required: false
 					},
 					{
 						name: 'user-avatar',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to get the image from',
 						required: false
 					},
 					{
 						name: 'attachment',
-						type: 'ATTACHMENT',
+						type: ApplicationCommandOptionType.Attachment,
 						description: 'Use this if you want to apply the effect to the uplaoded file',
 						required: false
 					}
@@ -615,11 +616,11 @@ export default [
 			{
 				name: 'profile-image',
 				description: 'Set your profile image (use /help profile-image to see every availabe image)',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The ID of the image',
 						required: true,
 						choices: [
@@ -674,11 +675,11 @@ export default [
 			{
 				name: 'profile-description',
 				description: 'Set your profile description',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'description',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'Your new description',
 						required: true
 					}
@@ -687,11 +688,11 @@ export default [
 			{
 				name: 'profile-text',
 				description: 'Set your profile text',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'text',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'Your new text',
 						required: true
 					}
@@ -700,11 +701,11 @@ export default [
 			{
 				name: 'rank-image',
 				description: 'Set your rank image (use /help rank-image to see every availabe image)',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'image',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The ID of the image',
 						required: true,
 						choices: [
@@ -741,17 +742,17 @@ export default [
 			{
 				name: 'play',
 				description: 'Add a song to the queue',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'song',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The song you want to add',
 						required: true
 					},
 					{
 						name: 'confirm-result',
-						type: 'BOOLEAN',
+						type: ApplicationCommandOptionType.Boolean,
 						description: 'Whether or not to search for more than one result to choose.',
 						required: false
 					}
@@ -760,17 +761,17 @@ export default [
 			{
 				name: 'remove',
 				description: 'Remove a song from the queue',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'id',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'ID (number) of the song to remove',
 						required: true
 					},
 					{
 						name: 'slice',
-						type: 'BOOLEAN',
+						type: ApplicationCommandOptionType.Boolean,
 						description: 'Whether to remove all songs queued after this one or not.',
 						required: false
 					}
@@ -779,11 +780,11 @@ export default [
 			{
 				name: 'view',
 				description: 'View the queue',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'page',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The page of the queue you want to view',
 						required: false
 					}
@@ -792,11 +793,11 @@ export default [
 			{
 				name: 'voteskip',
 				description: 'Vote to skip to the next song in queue',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'to',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The song you want to skip to',
 						required: false
 					}
@@ -805,11 +806,11 @@ export default [
 			{
 				name: 'forceskip',
 				description: 'Skip to the next song in queue (permission needed)',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'to',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The song you want to skip to',
 						required: false
 					}
@@ -818,16 +819,16 @@ export default [
 			{
 				name: 'stop',
 				description: 'Make the bot leave and delete all the queue',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			},
 			{
 				name: 'volume',
 				description: 'Change or view the current volume (default: 1)',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'value',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The new volume',
 						required: false
 					}
@@ -836,31 +837,31 @@ export default [
 			{
 				name: 'current-song',
 				description: 'View or modify the current song',
-				type: 'SUB_COMMAND_GROUP',
+				type: ApplicationCommandOptionType.SubcommandGroup,
 				options: [
 					{
 						name: 'view',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'View the currently playing song'
 					},
 					{
 						name: 'pause',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'Pause the currently playing song'
 					},
 					{
 						name: 'resume',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'Unpause the currently playing song'
 					},
 					{
 						name: 'seek',
-						type: 'SUB_COMMAND',
+						type: ApplicationCommandOptionType.Subcommand,
 						description: 'Jump to a specified part of the currently playing song',
 						options: [
 							{
 								name: 'timestamp',
-								type: 'STRING',
+								type: ApplicationCommandOptionType.String,
 								description: 'Part of the song where you want to jump to (mm:ss)',
 								required: true
 							}
@@ -871,17 +872,17 @@ export default [
 			{
 				name: 'loop',
 				description: 'Loop the whole queue',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			},
 			{
 				name: 'shuffle',
 				description: 'Shuffle mode (random)',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			},
 			{
 				name: 'autoplay',
 				description: 'Automatically play songs when there is nothing left on the queue',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			}
 		]
 	},
@@ -895,7 +896,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user which you want to see the profile',
 				required: false
 			}
@@ -907,7 +908,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user which you want to see the rank',
 				required: false
 			}
@@ -919,7 +920,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to give a reputation point to',
 				required: true
 			}
@@ -932,7 +933,7 @@ export default [
 			{
 				name: 'global',
 				description: 'Whether or not to get the global top',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				required: false
 			}
 		]
@@ -947,7 +948,7 @@ export default [
 		options: [
 			{
 				name: 'action',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The action you want to perform',
 				required: true,
 				choices: [
@@ -963,7 +964,7 @@ export default [
 			},
 			{
 				name: 'text',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The text to encode or decode',
 				required: true
 			}
@@ -975,7 +976,7 @@ export default [
 		options: [
 			{
 				name: 'expression',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The expression you want to calculate',
 				required: true
 			}
@@ -987,80 +988,44 @@ export default [
 		options: [
 			{
 				name: 'json',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'OPTIONAL: The JSON code of the embed',
 				required: false
 			},
 			{
 				name: 'title',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The title of the embed',
 				required: false
 			},
 			{
 				name: 'description',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The description of the embed',
 				required: false
 			},
 			{
 				name: 'footer',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The footer of the embed',
 				required: false
 			},
 			{
 				name: 'thumbnail',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The thumbnail of the embed',
 				required: false
 			},
 			{
 				name: 'image',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The image of the embed',
 				required: false
 			},
 			{
 				name: 'color',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The color of the embed',
-				required: false
-			},
-			{
-				name: 'field-title-1',
-				type: 'STRING',
-				description: 'The title of the first field',
-				required: false
-			},
-			{
-				name: 'field-content-1',
-				type: 'STRING',
-				description: 'The content of the first field',
-				required: false
-			},
-			{
-				name: 'field-title-2',
-				type: 'STRING',
-				description: 'The title of the second field',
-				required: false
-			},
-			{
-				name: 'field-content-2',
-				type: 'STRING',
-				description: 'The content of the second field',
-				required: false
-			},
-			{
-				name: 'field-title-3',
-				type: 'STRING',
-				description: 'The title of the third field',
-				required: false
-			},
-			{
-				name: 'field-content-3',
-				type: 'STRING',
-				description: 'The content of the third field',
 				required: false
 			}
 		]
@@ -1072,7 +1037,7 @@ export default [
 			{
 				name: 'emoji',
 				description: 'The emoji you want to get the image from',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				required: true
 			}
 		]
@@ -1084,7 +1049,7 @@ export default [
 			{
 				name: 'advanced',
 				description: 'Whether or not to get advanced ping info',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				required: false
 			}
 		]
@@ -1096,22 +1061,22 @@ export default [
 			{
 				name: 'list',
 				description: 'View your reminder list',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			},
 			{
 				name: 'new',
 				description: 'Set a new reminder',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'reminder',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'What do you want me to remind you?',
 						required: true
 					},
 					{
 						name: 'time',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'When do you want me to remind you? (1d, 30m, 2mo...)',
 						required: true
 					}
@@ -1125,19 +1090,19 @@ export default [
 		options: [
 			{
 				name: 'image',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The URL of the image',
 				required: false
 			},
 			{
 				name: 'user-avatar',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to get the image from',
 				required: false
 			},
 			{
 				name: 'attachment',
-				type: 'ATTACHMENT',
+				type: ApplicationCommandOptionType.Attachment,
 				description: 'Use this if you want to select the uplaoded file',
 				required: false
 			}
@@ -1149,19 +1114,19 @@ export default [
 		options: [
 			{
 				name: 'amount',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The amount of base unit you want to convert',
 				required: true
 			},
 			{
 				name: 'base-unit',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The base unit (p.e, cm)',
 				required: true
 			},
 			{
 				name: 'target-unit',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The target unit (p.e, m)',
 				required: true
 			}
@@ -1173,7 +1138,7 @@ export default [
 		options: [
 			{
 				name: 'zone',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'Country, city... to get the time from',
 				required: true
 			}
@@ -1185,13 +1150,13 @@ export default [
 		options: [
 			{
 				name: 'to',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'Language to translate (en, es...)',
 				required: true
 			},
 			{
 				name: 'text',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The text to translate',
 				required: true
 			}
@@ -1203,13 +1168,13 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user',
 				required: true
 			},
 			{
 				name: 'level',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The new level of the user',
 				required: true
 			}
@@ -1222,17 +1187,17 @@ export default [
 			{
 				name: 'add',
 				description: 'Add a leveled role',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The role you want to add',
 						required: true
 					},
 					{
 						name: 'level',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The level at which you want to give the role',
 						required: true
 					}
@@ -1241,17 +1206,17 @@ export default [
 			{
 				name: 'remove',
 				description: 'Remove a leveled role',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The role you want to remove from the list',
 						required: true
 					},
 					{
 						name: 'level',
-						type: 'STRING',
+						type: ApplicationCommandOptionType.String,
 						description: 'The level at which the role is given',
 						required: true
 					}
@@ -1260,7 +1225,7 @@ export default [
 			{
 				name: 'view',
 				description: 'View the leveled roles list',
-				type: 'SUB_COMMAND'
+				type: ApplicationCommandOptionType.Subcommand
 			}
 		]
 	},
@@ -1274,7 +1239,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to get the avatar from',
 				required: false
 			}
@@ -1286,7 +1251,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to get information from',
 				required: false
 			}
@@ -1302,7 +1267,7 @@ export default [
 		options: [
 			{
 				name: 'command',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The command with which you need help',
 				required: false
 			}
@@ -1316,17 +1281,17 @@ export default [
 		name: 'bot-info',
 		description: 'Get info about the bot'
 	},
-	{
-		name: 'world',
-		description: 'Get info about the world'
-	},
+	// {
+	// 	name: 'world',
+	// 	description: 'Get info about the world'
+	// },
 	{
 		name: 'cuddle',
 		description: 'Cuddle with someone',
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to cuddle with',
 				required: false
 			}
@@ -1338,7 +1303,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to hug',
 				required: false
 			}
@@ -1350,7 +1315,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to kiss',
 				required: false
 			}
@@ -1362,7 +1327,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to pat',
 				required: false
 			}
@@ -1374,7 +1339,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to poke',
 				required: false
 			}
@@ -1386,7 +1351,7 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to faceslap',
 				required: false
 			}
@@ -1398,19 +1363,19 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to ban',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your ban',
 				required: true
 			},
 			{
 				name: 'notify',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				description: 'Whether or not to notify the user',
 				required: false
 			}
@@ -1422,19 +1387,19 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to kick',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your kick',
 				required: true
 			},
 			{
 				name: 'notify',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				description: 'Whether or not to notify the user',
 				required: false
 			}
@@ -1446,19 +1411,19 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to warn',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your warn',
 				required: true
 			},
 			{
 				name: 'notify',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				description: 'Whether or not to notify the user',
 				required: false
 			}
@@ -1470,19 +1435,19 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to time out',
 				required: true
 			},
 			{
 				name: 'duration',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The duration of the time out, for example 1h (0 to clear the timeout)',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your time out',
 				required: false
 			}
@@ -1494,25 +1459,25 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to ban',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your ban',
 				required: true
 			},
 			{
 				name: 'duration',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The duration of the ban (1d, 5h...)',
 				required: true
 			},
 			{
 				name: 'notify',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				description: 'Whether or not to notify the user',
 				required: false
 			}
@@ -1524,25 +1489,25 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'USER',
+				type: ApplicationCommandOptionType.User,
 				description: 'The user you want to mute',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your mute',
 				required: true
 			},
 			{
 				name: 'duration',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The duration of the mute (1d, 5h...)',
 				required: false
 			},
 			{
 				name: 'notify',
-				type: 'BOOLEAN',
+				type: ApplicationCommandOptionType.Boolean,
 				description: 'Whether or not to notify the user',
 				required: false
 			}
@@ -1554,13 +1519,13 @@ export default [
 		options: [
 			{
 				name: 'user',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The id of the user you want to ban',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your ban',
 				required: true
 			}
@@ -1573,17 +1538,17 @@ export default [
 			{
 				name: 'add',
 				description: 'Add a role',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'user',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to give the role',
 						required: true
 					},
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The role you want to add',
 						required: true
 					}
@@ -1592,17 +1557,17 @@ export default [
 			{
 				name: 'remove',
 				description: 'Remove a role',
-				type: 'SUB_COMMAND',
+				type: ApplicationCommandOptionType.Subcommand,
 				options: [
 					{
 						name: 'user',
-						type: 'USER',
+						type: ApplicationCommandOptionType.User,
 						description: 'The user you want to remove the role',
 						required: true
 					},
 					{
 						name: 'role',
-						type: 'ROLE',
+						type: ApplicationCommandOptionType.Role,
 						description: 'The role you want to remove',
 						required: true
 					}
@@ -1616,13 +1581,13 @@ export default [
 		options: [
 			{
 				name: 'users',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The ID of the users you want to ban separated by a space',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your ban',
 				required: true
 			}
@@ -1634,13 +1599,13 @@ export default [
 		options: [
 			{
 				name: 'users',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The ID of the users you want to kick separated by a space',
 				required: true
 			},
 			{
 				name: 'reason',
-				type: 'STRING',
+				type: ApplicationCommandOptionType.String,
 				description: 'The reason for your kick',
 				required: true
 			}
@@ -1652,7 +1617,7 @@ export default [
 		options: [
 			{
 				name: 'role',
-				type: 'ROLE',
+				type: ApplicationCommandOptionType.Role,
 				description: 'The role you want to be locked (leave in blank if @everyone)',
 				required: false
 			}
@@ -1664,7 +1629,7 @@ export default [
 		options: [
 			{
 				name: 'role',
-				type: 'ROLE',
+				type: ApplicationCommandOptionType.Role,
 				description: 'The role you want to be unlocked (leave in blank if @everyone)',
 				required: false
 			}
@@ -1672,34 +1637,34 @@ export default [
 	},
 	{
 		name: 'Translate',
-		type: 'MESSAGE'
+		type: ApplicationCommandType.Message
 	},
 	{
 		name: 'Get sauce',
-		type: 'MESSAGE'
+		type: ApplicationCommandType.Message
 	},
 	{
 		name: 'Add to queue',
-		type: 'MESSAGE'
+		type: ApplicationCommandType.Message
 	},
 	{
 		name: 'Information',
-		type: 'USER'
+		type: ApplicationCommandType.User
 	},
 	{
 		name: 'Avatar',
-		type: 'USER'
+		type: ApplicationCommandType.User
 	},
 	{
 		name: 'Invite to YT Together',
-		type: 'USER'
+		type: ApplicationCommandType.User
 	},
 	{
 		name: 'Play Connect 4',
-		type: 'USER'
+		type: ApplicationCommandType.User
 	},
 	{
 		name: 'Play Tic Tac Toe',
-		type: 'USER'
+		type: ApplicationCommandType.User
 	}
 ];

@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { evaluate } from 'mathjs';
 import Command from '../../lib/structures/Command';
 export default new Command({
@@ -8,7 +8,7 @@ export default new Command({
 	execute(client, interaction) {
 		let resp;
 		try {
-			resp = evaluate((interaction as CommandInteraction).options.getString('expression')!.replace('x', '*'));
+			resp = evaluate((interaction as ChatInputCommandInteraction).options.getString('expression')!.replace('x', '*'));
 		} catch (e) {
 			return;
 		}

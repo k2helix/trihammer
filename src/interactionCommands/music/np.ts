@@ -1,5 +1,5 @@
 import { getVoiceConnection } from '@discordjs/voice';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -46,12 +46,18 @@ export default new Command({
 		let string = '▬▬▬▬▬▬▬▬▬▬';
 		let position = setCharAt(string, index, ':radio_button:');
 
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 			.setTitle(music.now_playing)
 			.setDescription(`**[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`)
 			.setThumbnail(`https://img.youtube.com/vi/${serverQueue.songs[0].id}/hqdefault.jpg`)
-			.addField(`${now} / ${serverQueue.songs[0].duration} (${porcentaje}%)`, position, true)
-			.addField(music.play.now_playing.requested_by, `${serverQueue.songs[0].requested === 'Autoplay' ? 'Autoplay' : `<@${serverQueue.songs[0].requested}>`}`, true);
+			.addFields(
+				{ name: `${now} / ${serverQueue.songs[0].duration} (${porcentaje}%)`, value: position, inline: true },
+				{
+					name: music.play.now_playing.requested_by,
+					value: `${serverQueue.songs[0].requested === 'Autoplay' ? 'Autoplay' : `<@${serverQueue.songs[0].requested}>`}`,
+					inline: true
+				}
+			);
 		interaction.reply({ embeds: [embed] });
 	}
 });

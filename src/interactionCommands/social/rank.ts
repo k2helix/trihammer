@@ -1,5 +1,5 @@
 import Command from '../../lib/structures/Command';
-import { CommandInteraction, MessageAttachment } from 'discord.js';
+import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import { ModelRank, ModelUsers, Rank } from '../../lib/utils/models';
 
@@ -18,10 +18,10 @@ export default new Command({
 	description: 'Get your rank card',
 	cooldown: 3,
 	category: 'social',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	execute(client, interaction) {
 		interaction.deferReply().then(async () => {
-			let user = (interaction as CommandInteraction).options.getUser('user') || interaction.user;
+			let user = (interaction as ChatInputCommandInteraction).options.getUser('user') || interaction.user;
 			if (user.bot) return interaction.editReply({ embeds: [client.redEmbed('Bots do not have profile!')] });
 
 			let local = await ModelRank.findOne({ id: user.id, server: interaction.guildId }).lean();
@@ -93,9 +93,9 @@ export default new Command({
 			ctx.closePath();
 			ctx.clip();
 
-			const avatar = await loadImage(user.displayAvatarURL({ format: 'png' }));
+			const avatar = await loadImage(user.displayAvatarURL({ extension: 'png' }));
 			ctx.drawImage(avatar, 25, 25, 200, 200);
-			const attachment = new MessageAttachment(canvas.toBuffer(), 'rank-image.png');
+			const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'rank-image.png' });
 			interaction.editReply({ files: [attachment] });
 		});
 	}

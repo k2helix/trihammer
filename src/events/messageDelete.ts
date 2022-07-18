@@ -10,7 +10,7 @@ export default async (client: ExtendedClient, message: Message) => {
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 
 	let logs_channel = message.guild.channels.cache.get(serverConfig.messagelogs);
-	if (!logs_channel || !logs_channel.isText()) return;
+	if (!logs_channel || !logs_channel.isTextBased()) return;
 
 	let attachments = [...message.attachments.values()];
 	if (!message.content && !attachments[0]) return;

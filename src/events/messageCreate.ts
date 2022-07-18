@@ -1,4 +1,15 @@
-import { ButtonInteraction, Collection, GuildChannel, Message, MessageActionRow, MessageButton, Permissions, TextChannel } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	Collection,
+	ComponentType,
+	GuildChannel,
+	Message,
+	PermissionsBitField,
+	TextChannel
+} from 'discord.js';
 import ManageActivity from '../lib/modules/experience';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
@@ -77,15 +88,15 @@ export default async (client: ExtendedClient, message: Message) => {
 		if (possibleMatches.length > 0) {
 			let buttons = [];
 			possibleMatches.slice(0, 4).forEach((match) => {
-				buttons.push(new MessageButton().setCustomId(match.name).setLabel(match.name).setStyle('SECONDARY'));
+				buttons.push(new ButtonBuilder().setCustomId(match.name).setLabel(match.name).setStyle(ButtonStyle.Secondary));
 			});
-			buttons.push(new MessageButton().setCustomId('crossx').setEmoji('882639143874723932').setStyle('DANGER'));
-			const row = new MessageActionRow().addComponents(buttons);
+			buttons.push(new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Danger));
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 			let sentMessage = await message.channel.send({ embeds: [client.orangeEmbed(util.similar_commands)], components: [row] });
 
 			const filter = (int: ButtonInteraction) => int.user.id === message.author.id;
 			try {
-				let selected = await sentMessage.awaitMessageComponent({ filter, time: 15000, componentType: 'BUTTON' });
+				let selected = await sentMessage.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.Button });
 				if (selected.customId === 'crossx') {
 					sentMessage.delete();
 					return selected.reply({ embeds: [client.blackEmbed(util.none_selected)], ephemeral: true });
@@ -100,11 +111,11 @@ export default async (client: ExtendedClient, message: Message) => {
 	}
 
 	if (!command) return;
-	if (!message.guild.me!.permissions.has('EMBED_LINKS')) return message.channel.send(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
+	if (!message.guild.members.me!.permissions.has('EmbedLinks')) return message.channel.send(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
 
 	if (command.client_perms.length > 0) {
-		const permsBitfield = Permissions.resolve(command.client_perms);
-		if (!message.guild.me!.permissions.has(permsBitfield))
+		const permsBitfield = PermissionsBitField.resolve(command.client_perms);
+		if (!message.guild.members.me!.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')))] });
 	}
 
@@ -115,7 +126,7 @@ export default async (client: ExtendedClient, message: Message) => {
 				: message.member.roles.cache.has(serverConfig.adminrole);
 			if (!perms)
 				if (command.required_perms.length > 0) {
-					const permsBitfield = Permissions.resolve(command.required_perms);
+					const permsBitfield = PermissionsBitField.resolve(command.required_perms);
 					if (!message.member?.permissions.has(permsBitfield))
 						return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 				} else return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
@@ -123,7 +134,7 @@ export default async (client: ExtendedClient, message: Message) => {
 			return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 
 	if (command.required_perms.length > 0 && (command.required_roles.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
-		const permsBitfield = Permissions.resolve(command.required_perms);
+		const permsBitfield = PermissionsBitField.resolve(command.required_perms);
 		if (!message.member?.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 	}
@@ -226,7 +237,7 @@ export default async (client: ExtendedClient, message: Message) => {
 		command.execute(client, message, args, serverConfig);
 		if (serverConfig.actionslogs === 'none') return;
 		const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
-		if (!logs_channel || !logs_channel.isText()) return;
+		if (!logs_channel || !logs_channel.isTextBased()) return;
 		const cmdObj = {
 			'{user}': message.author.tag,
 			'{command}': command!.name,

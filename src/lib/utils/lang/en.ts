@@ -158,8 +158,8 @@ export const mod = {
 	user_404: "I couldn't find a user with id {id}",
 	user_infrs: "{user}'s infractions ```ml\nType | Moderator | Reason | Duration | Active? | Date | Infr ID \n ------------------------------------",
 	infrs_404: "The given user doesn't have infractions",
-	channel_lock: 'SEND_MESSAGES permission has been denied for `{role}`',
-	channel_unlock: 'SEND_MESSAGES permission has been re-established for `{role}`',
+	channel_lock: 'SendMessages permission has been denied for `{role}`',
+	channel_unlock: 'SendMessages permission has been re-established for `{role}`',
 	temp_infr_md: 'You have been {action} in {server}. Reason: {reason} | Duration: {time}',
 	temp_infr: '{user} has been {action}. Reason: {reason} | Time {time}',
 	time_404: 'You need to type the time.',
@@ -339,7 +339,7 @@ export const util = {
 		main: function (guild, owner) {
 			return `**ID**: ${guild.id}\n**Owner**: <@${owner.id}> (${owner.user.tag})\n**Created**: <t:${Math.floor(guild.createdTimestamp / 1000)}:R> -> <t:${Math.floor(
 				guild.createdTimestamp / 1000
-			)}:F>\n**Members**: ${guild.memberCount}`;
+			)}:F>\n**Members**: ${guild!.memberCount}`;
 		},
 		owner: '__Owner__',
 		createdString: '__Created__',
@@ -585,7 +585,7 @@ export const events = {
 			removed: "`{role}`'s permissions in {channel} have changed, removed: `{perms}`",
 			both: "`{role}`'s permissions in {channel} have changed, added: `{added}`. Removed: `{removed}`"
 		},
-		delete: 'A {channel} channel has been deleted: {name}',
-		create: 'A {channel} channel has been created: {name}'
+		delete: 'A channel has been deleted: {name}',
+		create: 'A channel has been created: {name}'
 	}
 } as LanguageFile['events'];

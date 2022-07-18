@@ -38,7 +38,7 @@ export default new MessageCommand({
 		player.play(resource);
 		connection.subscribe(player);
 
-		player.on<'stateChange'>('stateChange', (oldState, newState) => {
+		player.on('stateChange', (oldState, newState) => {
 			if (oldState.status == 'playing' && newState.status == 'idle') connection.destroy();
 		});
 	}

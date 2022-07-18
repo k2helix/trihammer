@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { ColorResolvable, MessageEmbed, TextBasedChannel } from 'discord.js';
+import { ColorResolvable, EmbedBuilder, TextBasedChannel } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
@@ -7,7 +7,7 @@ export default new MessageCommand({
 	description: 'Create an [embed](https://phodit.net/embedbuilder/)',
 	category: 'utility',
 	required_roles: ['MODERATOR'],
-	required_perms: ['MANAGE_WEBHOOKS'],
+	required_perms: ['ManageWebhooks'],
 	required_args: [
 		{ index: 0, name: 'channel', type: 'channel', optional: true },
 		{ index: 1, name: 'embed', type: 'string' }
@@ -25,7 +25,7 @@ export default new MessageCommand({
 		}
 		if (!embed) return message.channel.send({ embeds: [client.redEmbed(mod.embed.embed_code)] });
 		try {
-			(channel as TextBasedChannel).send({ embeds: [new MessageEmbed(JSON.parse(embed))] });
+			(channel as TextBasedChannel).send({ embeds: [new EmbedBuilder(JSON.parse(embed))] });
 		} catch (err) {
 			try {
 				// no me creo que yo hiciera tal obra de ingeniería, pero aquí estoy reescribiéndola y me parece increíble
@@ -49,7 +49,7 @@ export default new MessageCommand({
 					return indexObject[b as value] - indexObject[a as value];
 				});
 
-				let customEmbed = new MessageEmbed();
+				let customEmbed = new EmbedBuilder();
 				let contains = sorted.filter((v) => indexObject[v as value] > -1);
 				if (!contains[0]) return message.channel.send({ embeds: [client.redEmbed(mod.embed.how_it_works)] });
 				contains.forEach((y) => {

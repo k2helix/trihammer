@@ -6,7 +6,7 @@ export default new Command({
 	description: 'Remove a song from the queue',
 	category: 'music',
 	async execute(client, interaction, guildConf) {
-		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
+		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		const serverQueue = queue.get(interaction.guildId!);

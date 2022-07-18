@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
@@ -15,16 +15,16 @@ export default new MessageCommand({
 		if (!user) return message.channel.send({ content: util.invalid_user });
 
 		let member = await message.guild!.members.fetch(givenId).catch(() => undefined);
-		let avatar = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 });
-		let info_embed = new MessageEmbed()
+		let avatar = user.displayAvatarURL({ extension: 'png', size: 1024 });
+		let info_embed = new EmbedBuilder()
 			.setAuthor({ name: user.tag, iconURL: avatar })
-			.setColor(user.hexAccentColor || 'RANDOM')
+			.setColor(user.hexAccentColor || 'Random')
 			.setThumbnail(avatar)
 			.setDescription(`<@${user.id}>`)
 
-			.addField(util.user.information, util.user.main_info(user), false)
-			.setImage(user.bannerURL({ dynamic: true, size: 1024 })!);
-		if (member) info_embed.addField(util.user.server, util.user.server_specific(member));
+			.addFields({ name: util.user.information, value: util.user.main_info(user), inline: false })
+			.setImage(user.bannerURL({ size: 1024 }) as string | null);
+		if (member) info_embed.addFields({ name: util.user.server, value: util.user.server_specific(member) });
 
 		message.channel.send({ embeds: [info_embed] });
 	}

@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 
 function toCodePoint(unicodeSurrogates: string, sep?: string) {
@@ -21,9 +21,9 @@ export default new Command({
 	name: 'jumbo',
 	description: 'Convert a emoji to a image',
 	category: 'utility',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	execute(_client, interaction) {
-		let emoji = (interaction as CommandInteraction).options.getString('emoji')!;
+		let emoji = (interaction as ChatInputCommandInteraction).options.getString('emoji')!;
 		if (emoji.startsWith('<')) {
 			let emojiRegExp = /<a?:[^:]+:(\d+)>/gm;
 			let emojiID = emojiRegExp.exec(emoji)![1];

@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import { ActivityType, TextChannel } from 'discord.js';
 import config from '../../config.json';
 import checkTimeouts from '../lib/modules/intervals';
 import ExtendedClient from '../lib/structures/Client';
@@ -28,7 +28,7 @@ export default (client: ExtendedClient) => {
 		activities: [
 			{
 				name: actividades[status][0],
-				type: actividades[status][1] as 'WATCHING' | 'LISTENING' | 'PLAYING'
+				type: actividades[status][1] as unknown as ActivityType.Playing // not really but who cares
 			}
 		]
 	});

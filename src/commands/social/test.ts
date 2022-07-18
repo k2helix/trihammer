@@ -2,7 +2,7 @@ import request from 'node-superfetch';
 import cheerio from 'cheerio';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import { createCanvas, loadImage } from 'canvas';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 export default new MessageCommand({
 	name: 'test',
 	description: 'test',
@@ -30,7 +30,7 @@ export default new MessageCommand({
 		const tenorImg = await loadImage(imgUrl);
 		ctx.drawImage(tenorImg, 0, 0, 100, 100);
 
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'test.png');
+		const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'test.png' });
 		message.channel.send({ files: [attachment] });
 	}
 });

@@ -1,5 +1,5 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
 	name: 'avatar',
@@ -14,12 +14,12 @@ export default new MessageCommand({
 		let user = await client.users.fetch(givenId, { force: true }).catch(() => undefined);
 		if (!user) return;
 
-		let avatar = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 });
-		let info_embed = new MessageEmbed()
+		let avatar = user.displayAvatarURL({ extension: 'png', size: 1024 });
+		let info_embed = new EmbedBuilder()
 			.setTitle(`${user.tag}`)
-			.setColor(user.hexAccentColor || 'RANDOM')
+			.setColor(user.hexAccentColor || 'Random')
 			.setDescription(`[Link](${avatar})`)
-			.addField(util.sauce.more_source, util.sauce.search_sources(avatar))
+			.addFields({ name: util.sauce.more_source, value: util.sauce.search_sources(avatar) })
 			.setImage(avatar);
 		message.channel.send({ embeds: [info_embed] });
 	}

@@ -10,7 +10,7 @@ export default new MessageCommand({
 	description: 'Add a song to the queue',
 	aliases: ['p'],
 	category: 'music',
-	client_perms: ['CONNECT', 'SPEAK'],
+	client_perms: ['Connect', 'Speak'],
 	required_args: [{ index: 0, type: 'string', name: 'query' }],
 	async execute(client, message, args, guildConf) {
 		if (!message.guild || !message.member) return;
@@ -24,7 +24,8 @@ export default new MessageCommand({
 
 		let type = await play.validate(searchString);
 
-		if (message.guild.me!.voice.channel && message.guild.me!.voice.channelId !== voiceChannel.id) return message.channel.send({ embeds: [client.redEmbed(music.wrong_vc)] });
+		if (message.guild.members.me!.voice.channel && message.guild.members.me!.voice.channelId !== voiceChannel.id)
+			return message.channel.send({ embeds: [client.redEmbed(music.wrong_vc)] });
 		if (config.spotify_api)
 			if (type.toString().startsWith('sp'))
 				try {

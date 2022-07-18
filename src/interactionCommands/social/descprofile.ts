@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import { ModelUsers } from '../../lib/utils/models';
 export default new Command({
@@ -6,7 +6,7 @@ export default new Command({
 	description: 'Set you profile description',
 	category: 'social',
 	async execute(client, interaction, guildConf) {
-		let text = (interaction as CommandInteraction).options.getString('description');
+		let text = (interaction as ChatInputCommandInteraction).options.getString('description');
 		let global = await ModelUsers.findOne({ id: interaction.user.id });
 		if (!global) {
 			let newModel = new ModelUsers({

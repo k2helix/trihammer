@@ -1,4 +1,4 @@
-import { GuildMember, MessageAttachment } from 'discord.js';
+import { AttachmentBuilder, GuildMember } from 'discord.js';
 import Canvas from 'canvas';
 import { ModelMutes, ModelServer, ModelWelc, Server, Welc } from '../lib/utils/models';
 import ExtendedClient from '../lib/structures/Client';
@@ -35,7 +35,7 @@ export default async (client: ExtendedClient, member: GuildMember) => {
 	const welcomeConfig: Welc = await ModelWelc.findOne({ server: member.guild.id });
 	const { events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 	const logs_channel = member.guild.channels.cache.get(serverConfig.memberlogs);
-	if (logs_channel && logs_channel.isText()) logs_channel.send({ embeds: [client.blueEmbed(events.member.add(member.user))] });
+	if (logs_channel && logs_channel.isTextBased()) logs_channel.send({ embeds: [client.blueEmbed(events.member.add(member.user))] });
 
 	if (welcomeConfig) {
 		const canal = welcomeConfig.canal;
@@ -60,9 +60,9 @@ export default async (client: ExtendedClient, member: GuildMember) => {
 		ctx.arc(800, 200, 175, 0, Math.PI * 2, true);
 		ctx.closePath();
 		ctx.clip();
-		const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'png' }));
+		const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ extension: 'png' }));
 		ctx.drawImage(avatar, 625, 25, 350, 350);
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
-		if (welcomechannel && welcomechannel.isText()) welcomechannel.send({ files: [attachment] });
+		const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'welcome-image.png' });
+		if (welcomechannel && welcomechannel.isTextBased()) welcomechannel.send({ files: [attachment] });
 	}
 };

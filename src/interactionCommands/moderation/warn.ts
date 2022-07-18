@@ -1,20 +1,20 @@
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelInfrs } from '../../lib/utils/models';
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 export default new Command({
 	name: 'warn',
 	description: 'Warn a user',
 	category: 'moderation',
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	required_roles: ['MODERATOR'],
 	async execute(client, interaction, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let member = (interaction as CommandInteraction).options.getMember('user')! as GuildMember;
-		let reason = (interaction as CommandInteraction).options.getString('reason')!;
+		let member = (interaction as ChatInputCommandInteraction).options.getMember('user')! as GuildMember;
+		let reason = (interaction as ChatInputCommandInteraction).options.getString('reason')!;
 
-		if ((interaction as CommandInteraction).options.getBoolean('notify'))
+		if ((interaction as ChatInputCommandInteraction).options.getBoolean('notify'))
 			member
 				.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['warned'], '{server}': interaction.guild!.name, '{reason}': reason }))
 				.catch(() => undefined);

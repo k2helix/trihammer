@@ -279,6 +279,7 @@ export default interface LanguageFile {
 			street: string;
 			zipcode: string;
 			city: string;
+			country: string;
 			state: string;
 			found: <T>(results: T[], current: T) => string;
 		};

@@ -9,9 +9,9 @@ export default new MessageCommand({
 		{ index: 0, name: 'users', type: 'string' },
 		{ index: 1, name: '-r reason', type: 'string' }
 	],
-	required_perms: ['KICK_MEMBERS'],
+	required_perms: ['KickMembers'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['KICK_MEMBERS'],
+	client_perms: ['KickMembers'],
 	aliases: ['multikick'],
 	cooldown: 5,
 	async execute(client, message, args, guildConf) {

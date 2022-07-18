@@ -1,5 +1,5 @@
 import { queue } from '../../lib/modules/music';
-import { Permissions } from 'discord.js';
+import { PermissionsBitField } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { getVoiceConnection } from '@discordjs/voice';
@@ -7,7 +7,7 @@ export default new Command({
 	name: 'forceskip',
 	description: 'Forceskip a song',
 	async execute(client, interaction, guildConf) {
-		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
+		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (!interaction.member.voice.channel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
@@ -18,7 +18,7 @@ export default new Command({
 		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission =
 			interaction.member.roles.cache.has(djRole ? djRole.id : '') ||
-			interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) ||
+			interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages) ||
 			interaction.member.id === serverQueue.songs[0].requested;
 		if (permission) {
 			// @ts-ignore

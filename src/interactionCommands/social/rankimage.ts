@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import { ModelUsers } from '../../lib/utils/models';
 export default new Command({
@@ -6,7 +6,7 @@ export default new Command({
 	description: 'Set your [rank image](https://trihammerdocs.gitbook.io/trihammer/commands/social-commands/rank-image#images)',
 	category: 'social',
 	async execute(client, interaction, guildConf) {
-		let selected = (interaction as CommandInteraction).options.getString('image')!;
+		let selected = (interaction as ChatInputCommandInteraction).options.getString('image')!;
 
 		type image = 'rione' | 'ritwo' | 'rithree' | 'rifour' | 'rifive';
 		let images = {

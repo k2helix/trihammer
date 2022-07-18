@@ -8,7 +8,7 @@ export default new Command({
 	category: 'social',
 	async execute(client, interaction, guildConf) {
 		const { xp, config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
+		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 
 		if (interaction.options.data[0].name === 'view') {
 			const roles: LvlRol[] = await ModelLvlRol.find({ server: interaction.guild!.id });
@@ -19,16 +19,18 @@ export default new Command({
 			});
 
 			const mapped = roles.map((role) => `Level ${role.level}: <@&${role.role}>`).join('\n');
-			const embed = new Discord.MessageEmbed();
+			const embed = new Discord.EmbedBuilder();
 			embed.setTitle(xp.lvlroles.show);
-			embed.setColor('RANDOM');
-			embed.setThumbnail(interaction.guild!.iconURL({ dynamic: true })!);
+			embed.setColor('Random');
+			embed.setThumbnail(interaction.guild!.iconURL()!);
 			embed.setDescription(mapped);
 			return interaction.reply({ embeds: [embed] });
 		}
 		if (interaction.options.data[0].name === 'remove') {
 			let perms =
-				guildConf.adminrole !== 'none' ? interaction.member.roles.cache.has(guildConf.adminrole) : interaction.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+				guildConf.adminrole !== 'none'
+					? interaction.member.roles.cache.has(guildConf.adminrole)
+					: interaction.member.permissions.has(Discord.PermissionsBitField.Flags.Administrator);
 			if (!perms) return interaction.reply({ embeds: [client.redEmbed(config.admin_perm)] });
 
 			await ModelLvlRol.deleteOne({ server: interaction.guild.id, role: interaction.options.getRole('role')!.id, level: parseInt(interaction.options.getString('level')!) });
@@ -36,7 +38,9 @@ export default new Command({
 		}
 		if (interaction.options.data[0].name === 'add') {
 			let perms =
-				guildConf.adminrole !== 'none' ? interaction.member.roles.cache.has(guildConf.adminrole) : interaction.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+				guildConf.adminrole !== 'none'
+					? interaction.member.roles.cache.has(guildConf.adminrole)
+					: interaction.member.permissions.has(Discord.PermissionsBitField.Flags.Administrator);
 			if (!perms) return interaction.reply({ embeds: [client.redEmbed(config.admin_perm)] });
 			let rol = interaction.options.getRole('role')!;
 			let nivel = interaction.options.getString('level');

@@ -1,4 +1,4 @@
-import { CommandInteraction, User } from 'discord.js';
+import { ChatInputCommandInteraction, User } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelInfrs } from '../../lib/utils/models';
@@ -7,16 +7,16 @@ export default new Command({
 	description: 'Ban multiple users in one command',
 	cooldown: 5,
 	category: 'moderation',
-	required_perms: ['BAN_MEMBERS'],
+	required_perms: ['BanMembers'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['BAN_MEMBERS'],
+	client_perms: ['BanMembers'],
 	execute(client, interaction, guildConf) {
 		interaction.deferReply().then(async () => {
 			const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-			let reason = (interaction as CommandInteraction).options.getString('reason')!;
+			let reason = (interaction as ChatInputCommandInteraction).options.getString('reason')!;
 			let ctt = 0;
-			(interaction as CommandInteraction).options
+			(interaction as ChatInputCommandInteraction).options
 				.getString('users')!
 				.split(' ')
 				.forEach((id) => {

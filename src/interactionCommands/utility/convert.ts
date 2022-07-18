@@ -12,7 +12,7 @@ export default new Command({
 	description: 'Convert units to other units',
 	category: 'utility',
 	async execute(client, interaction, guildConf) {
-		if (!interaction.isCommand()) return;
+		if (!interaction.isChatInputCommand()) return;
 
 		const amount = interaction.options.getString('amount')!;
 		const base = interaction.options.getString('base-unit')!;

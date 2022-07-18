@@ -4,7 +4,7 @@ export default new Command({
 	name: 'youtube-together',
 	description: 'Watch YouTube with friends!',
 	category: 'music',
-	client_perms: ['CREATE_INSTANT_INVITE'],
+	client_perms: ['CreateInstantInvite'],
 	async execute(client, interaction, guildConf) {
 		if (!interaction.inCachedGuild()) return;
 
@@ -15,7 +15,7 @@ export default new Command({
 		let invite = await voiceChannel.createInvite({ targetApplication: '880218394199220334', targetType: 2 });
 		if (!invite) return interaction.reply({ embeds: [client.redEmbed('❌ | Could not start **YouTube Together**!')], ephemeral: true });
 
-		if (interaction.isContextMenu()) {
+		if (interaction.isContextMenuCommand()) {
 			let user = client.users.cache.get(interaction.targetId);
 			user!
 				.send(music.ytt.yt_invited.replace('{author}', interaction.user.tag) + `https://discord.gg/${invite.code}`)

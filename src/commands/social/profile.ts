@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { ModelUsers, Users } from '../../lib/utils/models';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -25,7 +25,7 @@ export default new MessageCommand({
 	description: 'Get your profile card',
 	cooldown: 3,
 	category: 'social',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
 	async execute(_client, message, args) {
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member!;
@@ -79,10 +79,10 @@ export default new MessageCommand({
 		ctx.font = '22px sans-serif';
 		wrapText(ctx, global.ptext, 140, 170, 275, 20);
 
-		const avatar = await loadImage(user!.user.displayAvatarURL({ format: 'png' }));
+		const avatar = await loadImage(user!.user.displayAvatarURL({ extension: 'png' }));
 		ctx.drawImage(avatar, 27, 52, 100, 100);
 
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'profile-image.png');
+		const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'profile-image.png' });
 		message.channel.send({ files: [attachment] });
 	}
 });

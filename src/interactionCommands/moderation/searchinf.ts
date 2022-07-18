@@ -3,17 +3,17 @@ import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { digitalTime } from '../../lib/utils/functions';
 import { Infrs, ModelInfrs, ModelMutes, ModelTempban } from '../../lib/utils/models';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 export default new Command({
 	name: 'searchinf',
 	description: 'Get the infractions of the given user',
 	category: 'moderation',
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	required_roles: ['MODERATOR'],
 	async execute(client, interaction, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let user = (interaction as CommandInteraction).options.getUser('user')!;
+		let user = (interaction as ChatInputCommandInteraction).options.getUser('user')!;
 
 		let member = interaction.guild!.members.cache.get(user.id!);
 		const datos: Infrs[] = await ModelInfrs.find({ server: interaction.guildId, id: user.id });
