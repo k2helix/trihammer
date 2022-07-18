@@ -12,10 +12,9 @@
 // var through = require('through')
 
 import MessageCommand from '../../lib/structures/MessageCommand';
-
 // const glitch = require('glitch-canvas')
 import request from 'node-superfetch';
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder } from 'discord.js';
 export default new MessageCommand({
 	name: 'gglitch',
 	description: 'Glitch a gif',
@@ -23,10 +22,10 @@ export default new MessageCommand({
 	category: 'image_manipulation',
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
-		let image = message.author.displayAvatarURL({ size: 1024, format: 'png' });
+		let image = message.author.displayAvatarURL({ size: 1024, extension: 'png' });
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 
-		if (user) image = user.displayAvatarURL({ format: 'png', size: 1024 });
+		if (user) image = user.displayAvatarURL({ extension: 'png', size: 1024 });
 		if (args[0] && args[0].startsWith('http')) image = args[0];
 		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
@@ -44,8 +43,8 @@ export default new MessageCommand({
 			.catch((err: Error) => {
 				return message.channel.send(err.message);
 			});
-		const attachment = new MessageAttachment(body, 'glitch.gif');
-		message.channel.send({ embeds: [new MessageEmbed().setColor(3092790).setImage('attachment://glitch.gif')], files: [attachment] });
+		const attachment = new AttachmentBuilder(body, { name: 'glitch.gif' });
+		message.channel.send({ embeds: [new EmbedBuilder().setColor(3092790).setImage('attachment://glitch.gif')], files: [attachment] });
 		msg.delete();
 	}
 });
@@ -53,7 +52,7 @@ export default new MessageCommand({
 //     let serverConfig = await client.ModelServer.findOne({server: message.guild.id})
 //     const langcode = serverConfig.lang
 //     let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member
-//     let image = user.user.displayAvatarURL({ format: 'jpeg', size: 1024, dynamic: true })
+//     let image = user.user.displayAvatarURL({ extension: 'jpeg', size: 1024 })
 //     let attachments = message.attachments.array()
 //     if (attachments[0]) image = attachments[0].url
 //     if(user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0]
@@ -320,7 +319,7 @@ export default new MessageCommand({
 //       if(frame.frameIndex === frameData[frameData.length - 1].frameIndex) {
 //       encoder.finish()
 //       const buffer = encoder.out.getData()
-//       const attachment = new Discord.MessageAttachment(buffer, 'glitch.gif')
+//       const attachment = new Discord.AttachmentBuilder(buffer, 'glitch.gif')
 //       message.channel.send({ files: [attachment] })
 //       msg.delete()
 //       }
@@ -328,7 +327,7 @@ export default new MessageCommand({
 //       if(frame.frameIndex === frameData[frameData.length - 1].frameIndex) {
 //       encoder.finish()
 //       const buffer = encoder.out.getData()
-//       const attachment = new Discord.MessageAttachment(buffer, 'glitch.gif')
+//       const attachment = new Discord.AttachmentBuilder(buffer, 'glitch.gif')
 //       message.channel.send({ files: [attachment] })
 //       msg.delete()
 //       }

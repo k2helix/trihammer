@@ -129,7 +129,7 @@ async function getInfoFromName(name: string, getBestMatch = true) {
 		console.error(e);
 	}
 }
-import { CommandInteraction, MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ChatInputCommandInteraction, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new Command({
@@ -140,9 +140,9 @@ export default new Command({
 		interaction.deferReply();
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let manga = (interaction as CommandInteraction).options.getString('query')!;
+		let manga = (interaction as ChatInputCommandInteraction).options.getString('query')!;
 		let data;
-		if ((interaction as CommandInteraction).options.getBoolean('confirm-result')) {
+		if ((interaction as ChatInputCommandInteraction).options.getBoolean('confirm-result')) {
 			let results = await getResultsFromSearch(manga);
 			if (!results) return;
 
@@ -151,18 +151,18 @@ export default new Command({
 				const element = results[index];
 				options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 			}
-			const row = new MessageActionRow().addComponents(
-				new MessageSelectMenu().setCustomId('manga').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+			const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+				new SelectMenuBuilder().setCustomId('manga').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 			);
 
-			let searchEmbed = new MessageEmbed()
+			let searchEmbed = new EmbedBuilder()
 				.setTitle(util.image.title)
-				.setColor('RANDOM')
+				.setColor('Random')
 				.setDescription(`${results.map((result) => `**${results!.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}\n ${util.anime.type_a_number}`);
 			let msg = await interaction.channel!.send({ embeds: [searchEmbed], components: [row] });
 			const filter = (int: SelectMenuInteraction) => int.customId === 'manga' && int.user.id === interaction.user.id;
 			try {
-				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 				data = await getInfoFromURL(`https://myanimelist.net/manga/${selected.values[0]}`);
 				msg.delete();
 			} catch (error) {
@@ -173,21 +173,23 @@ export default new Command({
 		} else data = await getInfoFromName(manga);
 
 		if (!data) return interaction.editReply({ embeds: [client.redEmbed(music.not_found)] });
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 			.setTitle(data.title)
 			.setURL(data.url)
 			.setDescription(`${data.score} ⭐`)
 			.setThumbnail(data.picture)
-			.setColor('RANDOM')
-			.addField(util.manga.type, data.type, true)
-			.addField(util.manga.volumes, data.volumes, true)
-			.addField(util.manga.chapters, data.chapters, true)
-			.addField(util.manga.author, data.authors, true)
-			.addField(util.manga.published, data.published, true)
-			.addField(util.manga.genre, data.genres.join(', ') || 'No', true)
-			.addField(util.manga.status, data.status, true)
-			.addField(util.manga.ranking, data.ranked, true)
-			.addField(util.manga.popularity, data.popularity, true);
+			.setColor('Random')
+			.addFields(
+				{ name: util.manga.type, value: data.type, inline: true },
+				{ name: util.manga.volumes, value: data.volumes, inline: true },
+				{ name: util.manga.chapters, value: data.chapters, inline: true },
+				{ name: util.manga.author, value: data.authors, inline: true },
+				{ name: util.manga.published, value: data.published, inline: true },
+				{ name: util.manga.genre, value: data.genres.join(', ') || 'No', inline: true },
+				{ name: util.manga.status, value: data.status, inline: true },
+				{ name: util.manga.ranking, value: data.ranked, inline: true },
+				{ name: util.manga.popularity, value: data.popularity, inline: true }
+			);
 
 		interaction.editReply({ embeds: [embed] });
 	}

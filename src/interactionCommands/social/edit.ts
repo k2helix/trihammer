@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 export default new Command({
 	name: 'edit',
@@ -12,7 +12,7 @@ export default new Command({
 			'rank-image': 'rankimage'
 		};
 		client.interactionCommands
-			.get(names[(interaction as CommandInteraction).options.data[0].name as 'profile-image' | 'profile-description' | 'profile-text' | 'rank-image'])!
+			.get(names[(interaction as ChatInputCommandInteraction).options.data[0].name as 'profile-image' | 'profile-description' | 'profile-text' | 'rank-image'])!
 			.execute(client, interaction, guildConf);
 	}
 });

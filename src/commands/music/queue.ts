@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder } from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -19,19 +19,19 @@ export default new MessageCommand({
 			amplifiedPage = (page - 1) * 10;
 		const selectedPortion = serverQueue.songs.slice(amplifiedPage, amplifiedEnd);
 		if (!selectedPortion || selectedPortion.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
-		const row = new MessageActionRow().addComponents([
-			new MessageButton().setCustomId('voteskip').setEmoji('882675796341321798').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('loop').setEmoji('882674902304448582').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('shuffle').setEmoji('923956906006052914').setStyle('PRIMARY'),
-			// new MessageButton().setCustomId('volume-down').setEmoji('882677475350564945').setStyle('PRIMARY'),
-			// new MessageButton().setCustomId('volume-up').setEmoji('882677486553530429').setStyle('PRIMARY'),
-			new MessageButton().setCustomId('stop').setEmoji('882674312094568528').setStyle('DANGER'),
-			new MessageButton().setCustomId('crossx').setEmoji('882639143874723932').setStyle('SECONDARY')
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+			new ButtonBuilder().setCustomId('voteskip').setEmoji('882675796341321798').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('loop').setEmoji('882674902304448582').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('shuffle').setEmoji('923956906006052914').setStyle(ButtonStyle.Primary),
+			// new ButtonBuilder().setCustomId('volume-down').setEmoji('882677475350564945').setStyle(ButtonStyle.Primary),
+			// new ButtonBuilder().setCustomId('volume-up').setEmoji('882677486553530429').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('stop').setEmoji('882674312094568528').setStyle(ButtonStyle.Danger),
+			new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Secondary)
 		]);
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setTitle(music.queue_songs)
-			.setColor('WHITE')
+			.setColor('White')
 			.setDescription(
 				`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) \`${song.duration}\``).join('\n')}`
 			)
@@ -40,13 +40,14 @@ export default new MessageCommand({
 
 		let msg = await message.channel.send({ embeds: [embed], components: [row] });
 
-		const collector = msg.createMessageComponentCollector({ time: 60000 });
-		collector.on('collect', (reaction) => {
+		const collector = msg.createMessageComponentCollector({ time: 60000, componentType: ComponentType.Button });
+		// @ts-ignore
+		collector.on('collect', (reaction: ButtonInteraction) => {
 			if (reaction.customId === 'crossx')
 				if (reaction.user.id !== message.author.id) return;
 				else return reaction.update({ components: [] });
 
-			client.interactionCommands.get(reaction.customId)!.execute(client, reaction as ButtonInteraction, guildConf);
+			client.interactionCommands.get(reaction.customId)!.execute(client, reaction, guildConf);
 		});
 		collector.on('end', () => {
 			msg.edit({ components: [] });

@@ -9,7 +9,7 @@ export default async (client: ExtendedClient, guild: Guild) => {
 	channel.send(
 		client.replaceEach(config.strings.server_joined, {
 			'{{guild}}': `${guild.name} (${guild.id})`,
-			'{{membercount}}': guild.memberCount.toString(),
+			'{{membercount}}': guild!.memberCount.toString(),
 			'{{guildcount}}': client.guilds.cache.size.toString()
 		})
 	);

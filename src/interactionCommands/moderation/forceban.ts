@@ -1,4 +1,4 @@
-import { CommandInteraction, User } from 'discord.js';
+import { ChatInputCommandInteraction, User } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelInfrs } from '../../lib/utils/models';
@@ -6,14 +6,14 @@ export default new Command({
 	name: 'forceban',
 	description: 'Ban a user which is not in the server',
 	category: 'moderation',
-	required_perms: ['BAN_MEMBERS'],
+	required_perms: ['BanMembers'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['BAN_MEMBERS'],
+	client_perms: ['BanMembers'],
 	async execute(client, interaction, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let id = (interaction as CommandInteraction).options.getString('user')!;
-		let reason = (interaction as CommandInteraction).options.getString('reason')!;
+		let id = (interaction as ChatInputCommandInteraction).options.getString('user')!;
+		let reason = (interaction as ChatInputCommandInteraction).options.getString('reason')!;
 
 		interaction
 			.guild!.members.ban(id, { reason: `[FORCEBAN] Command used by ${interaction.user.tag} | Reason: ${reason}` })

@@ -6,7 +6,7 @@
 // function check(serverConfig, message) {
 // 	spam.log(message, 50);
 // 	if (spam.tooQuick(10, 15000)) {
-// 		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES);
+// 		let permiso = serverConfig.modrole !== 'none' ? message.member.roles.cache.has(serverConfig.modrole) : message.member.permissions.has(Permissions.FLAGS.ManageMessages);
 // 		if (permiso) return;
 // 		let { mod } = require(`../lang/${serverConfig.lang}`);
 // 		let logs_channel = message.guild.channels.cache.get(serverConfig.infrlogs);
@@ -42,7 +42,7 @@
 // 			await newMute.save();
 
 // 			message.channel.send(`<@${message.author.id}>, ` + mod.antispam);
-// 			if (!logs_channel || !logs_channel.isText()) return;
+// 			if (!logs_channel || !logs_channel.isTextBased()) return;
 // 			logs_channel.send(`${message.author.tag}` + mod.antispam);
 // 		});
 // 	}

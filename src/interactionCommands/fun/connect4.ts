@@ -68,9 +68,9 @@ export default new Command({
 	name: 'connect4',
 	description: 'Play connect 4 with a friend',
 	category: 'fun',
-	client_perms: ['MANAGE_MESSAGES'],
+	client_perms: ['ManageMessages'],
 	async execute(client, interaction, guildConf) {
-		if (!interaction.isCommand() && !interaction.isContextMenu()) return;
+		if (!interaction.isChatInputCommand() && !interaction.isContextMenuCommand()) return;
 
 		const opponent = interaction.options.getUser('user');
 		if (!opponent) return;

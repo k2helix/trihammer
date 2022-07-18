@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { ModelUsers } from '../../lib/utils/models';
@@ -8,7 +8,7 @@ export default new Command({
 	category: 'social',
 	async execute(client, interaction, guildConf) {
 		const { xp } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let user = (interaction as CommandInteraction).options.getUser('user')!;
+		let user = (interaction as ChatInputCommandInteraction).options.getUser('user')!;
 		if (user.bot) return interaction.reply({ embeds: [client.redEmbed('Bots do not have profile!')] });
 
 		let author = await ModelUsers.findOne({ id: interaction.user.id });

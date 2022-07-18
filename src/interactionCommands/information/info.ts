@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 export default new Command({
@@ -8,22 +8,22 @@ export default new Command({
 	async execute(client, interaction, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let givenId = (interaction as CommandInteraction).options.getUser('user')?.id || interaction.user.id;
+		let givenId = (interaction as ChatInputCommandInteraction).options.getUser('user')?.id || interaction.user.id;
 		let user = await client.users.fetch(givenId, { force: true }).catch(() => undefined);
 		if (!user) return interaction.reply({ embeds: [client.redEmbed(util.invalid_user)], ephemeral: true });
 
 		let member = await interaction.guild!.members.fetch(givenId).catch(() => undefined);
-		let avatar = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 });
-		let info_embed = new MessageEmbed()
+		let avatar = user.displayAvatarURL({ extension: 'png', size: 1024 });
+		let info_embed = new EmbedBuilder()
 			.setAuthor({ name: user.tag, iconURL: avatar })
-			.setColor(user.hexAccentColor || 'RANDOM')
+			.setColor(user.hexAccentColor || 'Random')
 			.setThumbnail(avatar)
 			.setDescription(`<@${user.id}>`)
 
-			.addField(util.user.information, util.user.main_info(user), false)
-			.setImage(user.bannerURL({ dynamic: true, size: 1024 })!);
-		if (member) info_embed.addField(util.user.server, util.user.server_specific(member));
+			.addFields({ name: util.user.information, value: util.user.main_info(user), inline: false })
+			.setImage(user.bannerURL({ size: 1024 })!);
+		if (member) info_embed.addFields({ name: util.user.server, value: util.user.server_specific(member) });
 
-		interaction.reply({ embeds: [info_embed], ephemeral: interaction.isContextMenu() });
+		interaction.reply({ embeds: [info_embed], ephemeral: interaction.isContextMenuCommand() });
 	}
 });

@@ -581,7 +581,7 @@ export const events = {
 			removed: 'Los permisos del rol `{role}` en el canal {channel} han cambiado, se le ha removido: `{perms}`',
 			both: 'Los permisos del rol `{role}` en el canal {channel} han cambiado, se le ha añadido: `{added}`. Se le ha removido `{removed}`'
 		},
-		delete: 'Un canal de tipo {channel} ha sido borrado: {name}',
-		create: 'Un canal de tipo {channel} ha sido creado: {name}'
+		delete: 'Un canal ha sido borrado: {name}',
+		create: 'Un canal ha sido creado: {name}'
 	}
 } as LanguageFile['events'];

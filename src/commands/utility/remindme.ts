@@ -1,5 +1,5 @@
 import { ModelRemind, Remind } from '../../lib/utils/models';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // let { Convert } = require('../../lib/utils/functions');
@@ -36,9 +36,9 @@ export default new MessageCommand({
 		if (args[0] === 'list') {
 			let reminders: Remind[] = await ModelRemind.find({ id: message.author.id, active: true }).lean();
 
-			let embed = new MessageEmbed()
+			let embed = new EmbedBuilder()
 				.setTitle('Reminders')
-				.setColor('RANDOM')
+				.setColor('Random')
 				.setDescription(
 					reminders
 						.map((remind) => `**${remind.reason}** - ${msToTime(remind.expire - Date.now())}`)

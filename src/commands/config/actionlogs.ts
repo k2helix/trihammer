@@ -10,12 +10,12 @@ export default new MessageCommand({
 		{ index: 0, name: 'disable', type: 'string', optional: true, ignore: true },
 		{ index: 0, name: 'channel', type: 'channel', optional: true }
 	],
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
 		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let channel = message.mentions.channels.first() || message.guild!.channels.cache.get(args[0]) || message.channel;
-		if (!channel.isText()) return message.channel.send({ embeds: [client.redEmbed(config.only_text)] });
+		if (!channel.isTextBased()) return message.channel.send({ embeds: [client.redEmbed(config.only_text)] });
 		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
 
 		if (args[0] === 'disable') {

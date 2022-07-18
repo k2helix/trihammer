@@ -1,5 +1,5 @@
 import translate from '@vitalets/google-translate-api';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 // eslint-disable-next-line prettier/prettier
@@ -135,11 +135,13 @@ export default new MessageCommand({
 
 		if (!text) return;
 		let translated = await translate(text, { to: lang });
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 			.setTitle(util.translate.title)
 			.setThumbnail('https://i.pinimg.com/originals/44/10/19/4410197cf5de4fefe413b55860bb617d.png')
-			.addField(`${util.translate.from} ${langs[translated.from.language.iso as codelang]}:`, `\`\`\`${text.slice(0, 1000)}\`\`\``, true)
-			.addField(`${util.translate.to} ${langs[lang as codelang]}:`, `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, true);
+			.addFields(
+				{ name: `${util.translate.from} ${langs[translated.from.language.iso as codelang]}:`, value: `\`\`\`${text.slice(0, 1000)}\`\`\``, inline: true },
+				{ name: `${util.translate.to} ${langs[lang as codelang]}:`, value: `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, inline: true }
+			);
 		message.channel.send({ embeds: [embed] });
 	}
 });

@@ -8,7 +8,7 @@ export default new Command({
 	category: 'music',
 	cooldown: 3,
 	async execute(client, interaction, guildConf) {
-		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
+		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 		const serverQueue = queue.get(interaction.guildId);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 

@@ -1,5 +1,5 @@
 // const Twitter = require('twit');
-// // const { MessageEmbed } = require('discord.js');
+// // const { EmbedBuilder } = require('discord.js');
 // const { ModelTwitter } = require('../lib/utils/models');
 // const T = new Twitter({
 // 	consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -67,11 +67,11 @@
 // 				owner = text.substr(start + 1, end - start - 1);
 // 				rt = `[${tweet.user.screen_name} RT]`;
 // 			}
-// 			// const embed = new MessageEmbed()
+// 			// const embed = new EmbedBuilder()
 // 			// 	.setAuthor(`${tweet.user.name}`, tweet.user.profile_image_url_https)
 // 			// 	.setTitle('Nuevo Tweet')
 // 			// 	.setURL(`https://twitter.com/${owner}/status/${tweet.id_str}`)
-// 			// 	.setColor('RANDOM')
+// 			// 	.setColor('Random')
 // 			// 	.setDescription(text)
 // 			// 	.setTimestamp();
 // 			// if (img) embed.setImage(img);

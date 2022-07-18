@@ -10,9 +10,9 @@ export default new MessageCommand({
 		{ index: 1, name: 'time', type: 'string' },
 		{ index: 2, name: 'reason', type: 'string', optional: true }
 	],
-	required_perms: ['BAN_MEMBERS'],
+	required_perms: ['BanMembers'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['BAN_MEMBERS'],
+	client_perms: ['BanMembers'],
 	async execute(client, message, args, guildConf) {
 		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 

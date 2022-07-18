@@ -1,5 +1,5 @@
 import { ModelRemind, Remind } from '../../lib/utils/models';
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // let { Convert } = require('../../lib/utils/functions');
@@ -26,21 +26,21 @@ export default new Command({
 	description: 'Add a reminder',
 	category: 'utility',
 	async execute(client, interaction, guildConf) {
-		if ((interaction as CommandInteraction).options.data[0].name === 'list') {
+		if ((interaction as ChatInputCommandInteraction).options.data[0].name === 'list') {
 			let reminders: Remind[] = await ModelRemind.find({ id: interaction.user.id, active: true }).lean();
 
-			let embed = new MessageEmbed()
+			let embed = new EmbedBuilder()
 				.setTitle('Reminders')
-				.setColor('RANDOM')
+				.setColor('Random')
 				.setDescription(reminders.map((remind) => `**${remind.reason}** - ${msToTime(remind.expire - Date.now())}`).join('\n'));
 			return interaction.reply({ embeds: [embed] });
 		}
 
-		let reason = (interaction as CommandInteraction).options.getString('reminder')!;
+		let reason = (interaction as ChatInputCommandInteraction).options.getString('reminder')!;
 
 		const { util, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let timeString = (interaction as CommandInteraction).options.getString('time')!;
+		let timeString = (interaction as ChatInputCommandInteraction).options.getString('time')!;
 		let time_v = functions.Convert(timeString);
 		let ms;
 		if (!time_v) {

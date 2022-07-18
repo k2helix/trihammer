@@ -1,21 +1,21 @@
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelInfrs, ModelMutes } from '../../lib/utils/models';
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 export default new Command({
 	name: 'mute',
 	description: 'Mute or tempmute a user',
 	category: 'moderation',
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
+	client_perms: ['ManageChannels', 'ManageRoles'],
 	async execute(client, interaction, guildConf) {
 		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let member = (interaction as CommandInteraction).options.getMember('user')! as GuildMember;
-		let reason = (interaction as CommandInteraction).options.getString('reason')!;
+		let member = (interaction as ChatInputCommandInteraction).options.getMember('user')! as GuildMember;
+		let reason = (interaction as ChatInputCommandInteraction).options.getString('reason')!;
 
-		let timeString = (interaction as CommandInteraction).options.getString('duration') || 'N/A';
+		let timeString = (interaction as ChatInputCommandInteraction).options.getString('duration') || 'N/A';
 		let time = functions.Convert(timeString);
 
 		let mutedRole = interaction.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
@@ -24,25 +24,25 @@ export default new Command({
 			mutedRole = await interaction.guild!.roles.create({
 				name: 'Trimuted',
 				color: '#123456',
-				position: interaction.guild!.me!.roles.highest.position - 1,
+				position: interaction.guild!.members.me!.roles.highest.position - 1,
 				reason: '[MUTED ROLE] I need it to mute people'
 			});
 
 			interaction.guild!.channels.cache.forEach((channel) => {
-				if (channel.isText() && !channel.isThread())
+				if (channel.isTextBased() && !channel.isThread())
 					channel.permissionOverwrites.create(mutedRole!, {
-						SEND_MESSAGES: false,
-						ADD_REACTIONS: false
+						SendMessages: false,
+						AddReactions: false
 					});
-				else if (channel.isVoice())
+				else if (channel.isVoiceBased())
 					channel.permissionOverwrites.create(mutedRole!, {
-						CONNECT: false,
-						SPEAK: false
+						Connect: false,
+						Speak: false
 					});
 			});
 		}
 
-		if ((interaction as CommandInteraction).options.getBoolean('notify'))
+		if ((interaction as ChatInputCommandInteraction).options.getBoolean('notify'))
 			member
 				.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['muted'], '{server}': interaction.guild!.name, '{reason}': reason, '{time}': timeString }))
 				.catch(() => undefined);

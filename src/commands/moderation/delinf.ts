@@ -7,7 +7,7 @@ export default new MessageCommand({
 	category: 'moderation',
 	required_args: [{ index: 0, name: 'infraction id', type: 'string' }],
 	required_roles: ['MODERATOR'],
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	async execute(client, message, args, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		await ModelInfrs.deleteOne({ server: message.guildId, key: args[0] });

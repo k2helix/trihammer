@@ -1,7 +1,7 @@
 import { createCanvas, loadImage } from 'canvas';
 import request from 'node-superfetch';
 import Command from '../../lib/structures/Command';
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -11,14 +11,14 @@ export default new Command({
 	name: 'glitch',
 	description: 'Glitch an image',
 	cooldown: 10,
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	async execute(client, interaction, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let image =
-			(interaction as CommandInteraction).options.getString('image') ||
-			(interaction as CommandInteraction).options.getAttachment('attachment')?.url ||
-			((interaction as CommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ format: 'png', size: 1024, dynamic: false })!;
+			(interaction as ChatInputCommandInteraction).options.getString('image') ||
+			(interaction as ChatInputCommandInteraction).options.getAttachment('attachment')?.url ||
+			((interaction as ChatInputCommandInteraction).options.getUser('user-avatar') || interaction.user).displayAvatarURL({ extension: 'png', size: 1024, forceStatic: true })!;
 
 		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 
@@ -41,7 +41,7 @@ export default new Command({
 			.then(function (glitchedBuffer: Buffer) {
 				interaction.reply({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setColor(3092790)
 							.setDescription(text)
 							.setImage('attachment://glitch.jpeg')

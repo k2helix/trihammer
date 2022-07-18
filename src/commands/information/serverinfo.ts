@@ -1,5 +1,5 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
 	name: 'serverinfo',
@@ -13,15 +13,15 @@ export default new MessageCommand({
 		let guild = message.guild!;
 
 		if (!isNaN(parseInt(args[0]))) guild = client.guilds.cache.get(args[0])!;
-		if (args[0] === 'icon') return message.channel.send(guild.iconURL({ dynamic: true, format: 'png', size: 1024 })!);
+		if (args[0] === 'icon') return message.channel.send(guild.iconURL({ extension: 'png', size: 1024 })!);
 		if (!guild) return message.channel.send(':x: No encontré el servidor');
 
 		let owner = await guild.fetchOwner();
-		let serverembed = new MessageEmbed()
-			.setAuthor({ name: guild.name, iconURL: guild.iconURL({ dynamic: true })! })
-			.setColor('RANDOM')
-			.setThumbnail(guild.iconURL({ dynamic: true })!)
-			.addField(util.user.information, util.server.main(guild, owner));
+		let serverembed = new EmbedBuilder()
+			.setAuthor({ name: guild.name, iconURL: guild.iconURL()! })
+			.setColor('Random')
+			.setThumbnail(guild.iconURL()!)
+			.addFields({ name: util.user.information, value: util.server.main(guild, owner) });
 
 		message.channel.send({ embeds: [serverembed] });
 	}

@@ -69,7 +69,7 @@ export default new MessageCommand({
 	aliases: ['connectfour', 'connect-four', 'c4'],
 	category: 'fun',
 	required_args: [{ index: 0, type: 'user', name: 'user' }],
-	client_perms: ['MANAGE_MESSAGES'],
+	client_perms: ['ManageMessages'],
 	async execute(client, message, args, guildConf) {
 		const opponent = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]);
 		if (!opponent) return;

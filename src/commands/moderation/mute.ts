@@ -10,9 +10,9 @@ export default new MessageCommand({
 		{ index: 1, name: 'time', type: 'string', optional: true },
 		{ index: 2, name: 'reason', type: 'string', optional: true }
 	],
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
+	client_perms: ['ManageChannels', 'ManageRoles'],
 	aliases: ['tempmute'],
 	async execute(client, message, args, guildConf) {
 		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
@@ -29,20 +29,20 @@ export default new MessageCommand({
 			mutedRole = await message.guild!.roles.create({
 				name: 'Trimuted',
 				color: '#123456',
-				position: message.guild!.me!.roles.highest.position - 1,
+				position: message.guild!.members.me!.roles.highest.position - 1,
 				reason: '[MUTED ROLE] I need it to mute people'
 			});
 
 			message.guild!.channels.cache.forEach((channel) => {
-				if (channel.isText() && !channel.isThread())
+				if (channel.isTextBased() && !channel.isThread())
 					channel.permissionOverwrites.create(mutedRole!, {
-						SEND_MESSAGES: false,
-						ADD_REACTIONS: false
+						SendMessages: false,
+						AddReactions: false
 					});
-				else if (channel.isVoice())
+				else if (channel.isVoiceBased())
 					channel.permissionOverwrites.create(mutedRole!, {
-						CONNECT: false,
-						SPEAK: false
+						Connect: false,
+						Speak: false
 					});
 			});
 		}

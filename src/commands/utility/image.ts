@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import cheerio from 'cheerio';
 import request from 'node-superfetch';
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder } from 'discord.js';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function findWithAttr(array: any[], attr: string, value: string) {
 	// eslint-disable-next-line no-var
@@ -43,18 +43,18 @@ export default new MessageCommand({
 				});
 
 			let image = urls[0];
-			const row = new MessageActionRow().addComponents([
-				new MessageButton().setCustomId('dobleleft').setEmoji('882631909442744350').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('left').setEmoji('882626242459861042').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('right').setEmoji('882626290253959258').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('dobleright').setEmoji('882631788550324295').setStyle('PRIMARY'),
-				new MessageButton().setCustomId('crossx').setEmoji('882639143874723932').setStyle('DANGER')
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+				new ButtonBuilder().setCustomId('dobleleft').setEmoji('882631909442744350').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('left').setEmoji('882626242459861042').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('right').setEmoji('882626290253959258').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('dobleright').setEmoji('882631788550324295').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Danger)
 			]);
-			let embed = new MessageEmbed()
+			let embed = new EmbedBuilder()
 				.setTitle(util.image.title)
 				.setDescription(`[${image.name}](${image.site_url}) (${image.site})`)
 				.setImage(image.img)
-				.setColor('RANDOM')
+				.setColor('Random')
 
 				.setFooter({
 					text: util.image.footer + `${findWithAttr(urls, 'img', image.img) + 1}/${urls.length}`,
@@ -64,7 +64,7 @@ export default new MessageCommand({
 				let url;
 
 				const filter = (int: ButtonInteraction) => int.user.id === message.author.id;
-				const collector = msg.createMessageComponentCollector({ filter, time: 60000, componentType: 'BUTTON' });
+				const collector = msg.createMessageComponentCollector({ filter, time: 60000, componentType: ComponentType.Button });
 				collector.on('collect', async (reaction) => {
 					url = msg.embeds[0].image ? msg.embeds[0].image.url : urls[0].img;
 					msg = await message.channel.messages.fetch(msg.id);
@@ -73,7 +73,7 @@ export default new MessageCommand({
 					switch (reaction.customId) {
 						case 'dobleleft':
 							newUrl = urls[findWithAttr(urls, 'img', url) - 10] ? urls[findWithAttr(urls, 'img', url) - 10] : urls[0];
-							embed = new MessageEmbed(msg.embeds[0])
+							embed = EmbedBuilder.from(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
 								.setFooter({
@@ -84,7 +84,7 @@ export default new MessageCommand({
 							break;
 						case 'left':
 							newUrl = urls[findWithAttr(urls, 'img', url) - 1] ? urls[findWithAttr(urls, 'img', url) - 1] : urls[urls.length - 1];
-							embed = new MessageEmbed(msg.embeds[0])
+							embed = EmbedBuilder.from(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
 								.setFooter({
@@ -95,7 +95,7 @@ export default new MessageCommand({
 							break;
 						case 'right':
 							newUrl = urls[findWithAttr(urls, 'img', url) + 1] ? urls[findWithAttr(urls, 'img', url) + 1] : urls[0];
-							embed = new MessageEmbed(msg.embeds[0])
+							embed = EmbedBuilder.from(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
 								.setFooter({
@@ -106,7 +106,7 @@ export default new MessageCommand({
 							break;
 						case 'dobleright':
 							newUrl = urls[findWithAttr(urls, 'img', url) + 10] ? urls[findWithAttr(urls, 'img', url) + 10] : urls[urls.length - 1];
-							embed = new MessageEmbed(msg.embeds[0])
+							embed = EmbedBuilder.from(msg.embeds[0])
 								.setDescription(`[${newUrl.name}](${newUrl.site_url}) (${newUrl.site})`)
 								.setImage(newUrl.img)
 								.setFooter({

@@ -1,6 +1,6 @@
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 // let object = {
 // 	0: `Info`,
 // 	1: `Utilidades`,
@@ -31,17 +31,17 @@ export default new MessageCommand({
 			config: client.commands.filter((cmd) => cmd.category == 'configuration')
 		};
 
-		let help_embed = new MessageEmbed();
-		help_embed.setTitle(util.help.title);
-		help_embed.setDescription(util.help.description.replace('{prefix}', prefix));
-		help_embed.setColor(`RANDOM`);
-		help_embed.setThumbnail(`https://i.imgur.com/t3UesbC.png`);
-		help_embed.setURL('https://trihammerdocs.gitbook.io/trihammer/');
+		let help_embed = new EmbedBuilder()
+			.setTitle(util.help.title)
+			.setDescription(util.help.description.replace('{prefix}', prefix))
+			.setColor(`Random`)
+			.setThumbnail(`https://i.imgur.com/t3UesbC.png`)
+			.setURL('https://trihammerdocs.gitbook.io/trihammer/');
 
 		Object.keys(commands).forEach((key) => {
 			let k = key as 'info' | 'util' | 'image_manipulation' | 'social' | 'music' | 'fun' | 'mod' | 'config';
 			let cmds = commands[k];
-			help_embed.addField(`${util.help.fields[k]} (${cmds.size})`, cmds.map((cmd) => `\`${cmd.name}\``).join(', ') || 'No', true);
+			help_embed.addFields({ name: `${util.help.fields[k]} (${cmds.size})`, value: cmds.map((cmd) => `\`${cmd.name}\``).join(', ') || 'No', inline: true });
 		});
 
 		help_embed.setFooter({ text: client.commands.size + util.help.footer });

@@ -2,19 +2,19 @@
 import Command from '../../lib/structures/Command';
 import { ModelInfrs, ModelMutes, ModelTempban } from '../../lib/utils/models';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 export default new Command({
 	name: 'modifyinf',
 	description: 'Modify an infraction (time and reason)',
 	category: 'moderation',
 	required_roles: ['MODERATOR'],
-	required_perms: ['MANAGE_MESSAGES'],
+	required_perms: ['ManageMessages'],
 	async execute(client, interaction, guildConf) {
 		const { mod, functions, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		const key = (interaction as CommandInteraction).options.getString('id')!,
-			reason = (interaction as CommandInteraction).options.getString('reason'),
-			duration = (interaction as CommandInteraction).options.getString('duration');
+		const key = (interaction as ChatInputCommandInteraction).options.getString('id')!,
+			reason = (interaction as ChatInputCommandInteraction).options.getString('reason'),
+			duration = (interaction as ChatInputCommandInteraction).options.getString('duration');
 
 		if (!reason && !duration) return interaction.reply({ embeds: [client.redEmbed(mod.which_edit)], ephemeral: true });
 

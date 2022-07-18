@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageAttachment } from 'discord.js';
+import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
 import { ModelUsers } from '../../lib/utils/models';
 import Command from '../../lib/structures/Command';
@@ -25,10 +25,10 @@ export default new Command({
 	description: 'Get your profile card',
 	cooldown: 3,
 	category: 'social',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	execute(client, interaction) {
 		interaction.deferReply().then(async () => {
-			let user = (interaction as CommandInteraction).options.getUser('user') || interaction.user;
+			let user = (interaction as ChatInputCommandInteraction).options.getUser('user') || interaction.user;
 			if (user.bot) return interaction.editReply({ embeds: [client.redEmbed('Bots do not have profile!')] });
 
 			let global = await ModelUsers.findOne({ id: user.id }).lean();
@@ -72,10 +72,10 @@ export default new Command({
 			context.font = '22px sans-serif';
 			wrapText(canvas.getContext('2d'), global.ptext, 140, 170, 275, 20);
 
-			const avatar = await loadImage(user.displayAvatarURL({ format: 'png' }));
+			const avatar = await loadImage(user.displayAvatarURL({ extension: 'png' }));
 			ctx.drawImage(avatar, 27, 52, 100, 100);
 
-			const attachment = new MessageAttachment(canvas.toBuffer(), 'profile-image.png');
+			const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'profile-image.png' });
 			interaction.editReply({ files: [attachment] });
 		});
 	}

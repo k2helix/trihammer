@@ -9,9 +9,9 @@ export default new MessageCommand({
 		{ index: 0, name: 'user', type: 'member' },
 		{ index: 1, name: 'role', type: 'role', ignore: true }
 	],
-	required_perms: ['MANAGE_ROLES'],
+	required_perms: ['ManageRoles'],
 	required_roles: ['ADMINISTRATOR'],
-	client_perms: ['MANAGE_ROLES'],
+	client_perms: ['ManageRoles'],
 	async execute(client, message, args, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
@@ -22,7 +22,7 @@ export default new MessageCommand({
 			message.mentions.roles.first() ||
 			message.guild!.roles.cache.get(args[1]) ||
 			message.guild!.roles.cache.find((r) => r.name.toLowerCase() === args.slice(1).join(' ').toLowerCase());
-		if (!role || role?.comparePositionTo(message.guild!.me!.roles.highest) > 0) return message.channel.send({ embeds: [client.redEmbed(mod.role_404)] });
+		if (!role || role?.comparePositionTo(message.guild!.members.me!.roles.highest) > 0) return message.channel.send({ embeds: [client.redEmbed(mod.role_404)] });
 		member.roles
 			.add(role, `[ADD ROLE] Command used by ${message.author.tag}`)
 			.then(() => {

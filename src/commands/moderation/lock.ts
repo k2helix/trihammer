@@ -6,9 +6,9 @@ export default new MessageCommand({
 	description: 'Lock the current channel',
 	category: 'moderation',
 	required_args: [{ index: 0, name: 'role', type: 'role', optional: true }],
-	required_perms: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
+	required_perms: ['ManageChannels', 'ManageRoles'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
+	client_perms: ['ManageChannels', 'ManageRoles'],
 	cooldown: 5,
 	async execute(client, message, args, guildConf) {
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
@@ -18,7 +18,7 @@ export default new MessageCommand({
 		(message.channel as TextChannel).permissionOverwrites.create(
 			role!,
 			{
-				SEND_MESSAGES: false
+				SendMessages: false
 			},
 			{ reason: `[LOCK] Command used by ${message.author.tag}` }
 		);

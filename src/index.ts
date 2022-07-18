@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import config from '../config.json';
 import Client from './lib/structures/Client';
 import { join } from 'path';
-import { Intents, TextChannel } from 'discord.js';
+import { GatewayIntentBits, TextChannel } from 'discord.js';
 import { readdir, readdirSync } from 'fs';
 import { captureException, init } from '@sentry/node';
 import MessageCommand from './lib/structures/MessageCommand';
@@ -32,11 +32,11 @@ db.once('open', function () {
 });
 
 const intents = [
-	Intents.FLAGS.GUILDS,
-	Intents.FLAGS.GUILD_MEMBERS,
-	Intents.FLAGS.GUILD_VOICE_STATES,
-	Intents.FLAGS.GUILD_MESSAGES,
-	Intents.FLAGS.GUILD_MESSAGE_REACTIONS //quitar mas tarde
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMembers,
+	GatewayIntentBits.GuildVoiceStates,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.MessageContent
 ];
 const client = new Client(
 	{

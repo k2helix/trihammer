@@ -1,4 +1,4 @@
-import { Collection, GuildMember, Interaction, Permissions, TextChannel } from 'discord.js';
+import { Collection, GuildMember, Interaction, PermissionsBitField, TextChannel } from 'discord.js';
 import ExtendedClient from '../lib/structures/Client';
 import ContextMenuName from '../lib/structures/interfaces/ContextMenuName';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
@@ -32,7 +32,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 	}
 	const { config, util, other } = (await import(`../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-	if (interaction.isContextMenu()) {
+	if (interaction.isContextMenuCommand()) {
 		let cmdName = interaction.commandName.toLowerCase().split(' ').join('-') as ContextMenuName;
 		let names = {
 			'add-to-queue': 'music-play',
@@ -46,15 +46,15 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		};
 		client.interactionCommands.get(names[cmdName])!.execute(client, interaction, guildConf);
 	}
-	if (interaction.isCommand()) {
+	if (interaction.isChatInputCommand()) {
 		if (!interaction.inGuild() || interaction.user.bot) return;
 		const command = client.interactionCommands.get(interaction.commandName);
 		if (!command) return;
-		if (!interaction.guild.me!.permissions.has('EMBED_LINKS')) return interaction.reply(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
+		if (!interaction.guild.members.me!.permissions.has('EmbedLinks')) return interaction.reply(other.need_perm.guild.replace('{perms}', '`EMBED_LINKS`'));
 
 		if (command.client_perms.length > 0) {
-			const permsBitfield = Permissions.resolve(command.client_perms);
-			if (!interaction.guild.me!.permissions.has(permsBitfield))
+			const permsBitfield = PermissionsBitField.resolve(command.client_perms);
+			if (!interaction.guild.members.me!.permissions.has(permsBitfield))
 				return interaction.reply({ embeds: [client.redEmbed(other.need_perm.guild.replace('{perms}', command.client_perms.map((perm) => `\`${perm}\``).join(', ')))] });
 		}
 
@@ -65,7 +65,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 					: (interaction.member as GuildMember).roles.cache.has(guildConf.adminrole);
 				if (!perms)
 					if (command.required_perms.length > 0) {
-						const permsBitfield = Permissions.resolve(command.required_perms);
+						const permsBitfield = PermissionsBitField.resolve(command.required_perms);
 						if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
 							return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });
 					} else return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
@@ -73,7 +73,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 				return interaction.reply({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)], ephemeral: true });
 
 		if (command.required_perms.length > 0 && (command.required_roles.length === 0 || !interaction.guild.roles.cache.hasAny(guildConf.modrole, guildConf.adminrole))) {
-			const permsBitfield = Permissions.resolve(command.required_perms);
+			const permsBitfield = PermissionsBitField.resolve(command.required_perms);
 			if (!(interaction.member as GuildMember)?.permissions.has(permsBitfield))
 				return interaction.reply({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)], ephemeral: true });
 		}
@@ -100,7 +100,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 			command.execute(client, interaction, guildConf);
 			if (guildConf.actionslogs === 'none') return;
 			let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);
-			if (!logs_channel || !logs_channel.isText()) return;
+			if (!logs_channel || !logs_channel.isTextBased()) return;
 			let cmdObj = {
 				'{user}': interaction.user.tag,
 				'{command}': command.name,

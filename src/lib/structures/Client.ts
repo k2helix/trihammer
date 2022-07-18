@@ -1,6 +1,6 @@
 import config from '../../../config.json';
 import { captureException } from '@sentry/node';
-import { Client, ClientOptions, Collection, MessageEmbed, TextChannel } from 'discord.js';
+import { Client, ClientOptions, Collection, EmbedBuilder, TextChannel } from 'discord.js';
 import Command from './Command';
 import MessageCommand from './MessageCommand';
 
@@ -31,39 +31,39 @@ class ExtendedClient extends Client {
 	}
 
 	redEmbed(string: string) {
-		return new MessageEmbed().setColor('RED').setDescription(string);
+		return new EmbedBuilder().setColor('Red').setDescription(string);
 	}
 
 	yellowEmbed(string: string) {
-		return new MessageEmbed().setColor('YELLOW').setDescription(string);
+		return new EmbedBuilder().setColor('Yellow').setDescription(string);
 	}
 
 	blueEmbed(string: string) {
-		return new MessageEmbed().setColor('#0090ff').setDescription(string);
+		return new EmbedBuilder().setColor('#0090ff').setDescription(string);
 	}
 
 	lightBlueEmbed(string: string) {
-		return new MessageEmbed().setColor(5814783).setDescription(string);
+		return new EmbedBuilder().setColor(5814783).setDescription(string);
 	}
 
 	blackEmbed(string: string) {
-		return new MessageEmbed().setDescription(string);
+		return new EmbedBuilder().setDescription(string);
 	}
 
 	whiteEmbed(string: string) {
-		return new MessageEmbed().setColor('WHITE').setDescription(string);
+		return new EmbedBuilder().setColor('White').setDescription(string);
 	}
 
 	orangeEmbed(string: string) {
-		return new MessageEmbed().setColor('ORANGE').setDescription(string);
+		return new EmbedBuilder().setColor('Orange').setDescription(string);
 	}
 
 	greenEmbed(string: string) {
-		return new MessageEmbed().setColor('GREEN').setDescription(string);
+		return new EmbedBuilder().setColor('Green').setDescription(string);
 	}
 
 	loadingEmbed() {
-		return new MessageEmbed().setImage('https://cdn.discordapp.com/attachments/487962590887149603/965625447733923920/loading.gif?size=4096');
+		return new EmbedBuilder().setImage('https://cdn.discordapp.com/attachments/487962590887149603/965625447733923920/loading.gif?size=4096');
 	}
 }
 

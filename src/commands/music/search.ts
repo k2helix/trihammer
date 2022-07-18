@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from 'discord.js';
+import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction, TextChannel } from 'discord.js';
 import { handleVideo } from '../../lib/modules/music';
 import play, { YouTubeVideo } from 'play-dl';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -8,7 +8,7 @@ export default new MessageCommand({
 	description: 'Search a song',
 	aliases: ['sc'],
 	category: 'music',
-	client_perms: ['CONNECT', 'SPEAK'],
+	client_perms: ['Connect', 'Speak'],
 	required_args: [{ index: 0, type: 'string', name: 'query' }],
 	async execute(client, message, args, guildConf) {
 		if (!message.guild || !message.member) return;
@@ -17,7 +17,8 @@ export default new MessageCommand({
 		const searchString = args.join(' ');
 		const voiceChannel = message.member.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
-		if (message.guild.me!.voice.channel && message.guild.me!.voice.channelId !== voiceChannel.id) return message.channel.send({ embeds: [client.redEmbed(music.wrong_vc)] });
+		if (message.guild.members.me!.voice.channel && message.guild.members.me!.voice.channelId !== voiceChannel.id)
+			return message.channel.send({ embeds: [client.redEmbed(music.wrong_vc)] });
 
 		const videos = (await play.search(searchString, { limit: 10 }).catch((err) => {
 			return client.catchError(err, message.channel as TextChannel);
@@ -29,12 +30,12 @@ export default new MessageCommand({
 			const element = videos[index];
 			options.push({ label: `${index + 1}- ${element.title}`.slice(0, 99), value: index.toString() });
 		}
-		const row = new MessageActionRow().addComponents(
-			new MessageSelectMenu().setCustomId('music-search').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+		const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+			new SelectMenuBuilder().setCustomId('music-search').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 		);
 
 		let songIndex = 0;
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setTitle(music.song_select)
 			.setColor('#1423aa')
 			.setFooter({ text: music.cancel_select })
@@ -44,7 +45,7 @@ export default new MessageCommand({
 		const filter = (int: SelectMenuInteraction) => int.customId === 'music-search' && int.user.id === message.author.id;
 		let selected;
 		try {
-			selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+			selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 			msg.delete();
 		} catch (error) {
 			message.channel.send({ embeds: [client.redEmbed(music.cancel)] });

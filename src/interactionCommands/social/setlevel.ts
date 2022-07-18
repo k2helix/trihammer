@@ -1,17 +1,17 @@
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelRank } from '../../lib/utils/models';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 export default new Command({
 	name: 'setlevel',
 	description: "Set someone's level to the specified",
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	category: 'social',
 	async execute(client, interaction, guildConf) {
 		const { xp } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let user = (interaction as CommandInteraction).options.getUser('user')!;
-		let level = (interaction as CommandInteraction).options.getString('level')!;
+		let user = (interaction as ChatInputCommandInteraction).options.getUser('user')!;
+		let level = (interaction as ChatInputCommandInteraction).options.getString('level')!;
 
 		if (user.bot) return interaction.reply('nope');
 		if (level.startsWith('-')) return interaction.reply('nope');

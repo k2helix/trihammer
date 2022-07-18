@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 
 function decode(text: string) {
@@ -25,13 +25,13 @@ export default new Command({
 	description: 'Encode or decode binary text',
 	category: 'utility',
 	execute(_client, interaction) {
-		switch ((interaction as CommandInteraction).options.getString('action')) {
+		switch ((interaction as ChatInputCommandInteraction).options.getString('action')) {
 			case 'decode_binary':
-				interaction.reply(decode((interaction as CommandInteraction).options.getString('text')!));
+				interaction.reply(decode((interaction as ChatInputCommandInteraction).options.getString('text')!));
 				break;
 
 			default:
-				interaction.reply(encode((interaction as CommandInteraction).options.getString('text')!, true));
+				interaction.reply(encode((interaction as ChatInputCommandInteraction).options.getString('text')!, true));
 				break;
 		}
 	}

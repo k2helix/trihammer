@@ -7,7 +7,7 @@ export default new MessageCommand({
 	aliases: ['welcome-message', 'welcomemessage'],
 	category: 'configuration',
 	required_args: [{ index: 0, name: 'message', type: 'string' }],
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;

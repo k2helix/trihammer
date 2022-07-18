@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 import request from 'node-superfetch';
-import { CommandInteraction, MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ChatInputCommandInteraction, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
@@ -46,11 +46,11 @@ export default new Command({
 			const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 			// not rewriting this, lol
 			try {
-				let steamGame = (interaction as CommandInteraction).options.getString('query')!;
+				let steamGame = (interaction as ChatInputCommandInteraction).options.getString('query')!;
 				// @ts-ignore
 				let result;
 				let appId;
-				if ((interaction as CommandInteraction).options.getBoolean('confirm-result')) {
+				if ((interaction as ChatInputCommandInteraction).options.getBoolean('confirm-result')) {
 					result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
 					// @ts-ignore
 					if (result.body.total == 0) return interaction.editReply({ content: util.game.not_found, ephemeral: true });
@@ -63,13 +63,13 @@ export default new Command({
 						options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 					}
 
-					const row = new MessageActionRow().addComponents(
-						new MessageSelectMenu().setCustomId('game').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+					const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+						new SelectMenuBuilder().setCustomId('game').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 					);
 
-					let embedSearch = new MessageEmbed()
+					let embedSearch = new EmbedBuilder()
 						.setTitle(util.image.title)
-						.setColor('RANDOM')
+						.setColor('Random')
 						.setDescription(
 							// @ts-ignore
 							`${result.body.items
@@ -81,7 +81,7 @@ export default new Command({
 					let msg = await interaction.channel!.send({ embeds: [embedSearch], components: [row] });
 					const filter = (int: SelectMenuInteraction) => int.customId === 'game' && int.user.id === interaction.user.id;
 					try {
-						let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: 'SELECT_MENU' });
+						let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 						appId = selected.values[0];
 						msg.delete();
 					} catch (error) {
@@ -98,7 +98,7 @@ export default new Command({
 				// @ts-ignore
 				let tags: string[] = [];
 				// @ts-ignore
-				let steamDLCs = [];
+				let steamDLCs: string[] = [];
 				let { body } = await request.get(`http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}`);
 				// @ts-ignore
 				let data = body[appId].data;
@@ -111,18 +111,17 @@ export default new Command({
 					tags.push(genre.description);
 				});
 				if (!data.dlc) {
-					let embed = new MessageEmbed()
+					let embed = new EmbedBuilder()
 						.setTitle(data.name)
 						.setDescription(data.short_description)
 						.setImage(data.header_image)
-						.setColor('RANDOM')
-
-						.addField(util.game.release, data.release_date.date)
-						// @ts-ignore
-						.addField(util.game.genres, tags.join(', '))
-						.addField(util.game.price, price)
-						.addField(util.game.publishers, data.publishers.join(', ') || 'No')
-
+						.setColor('Random')
+						.addFields(
+							{ name: util.game.release, value: data.release_date.date },
+							{ name: util.game.genres, value: tags.join(', ') },
+							{ name: util.game.price, value: price },
+							{ name: util.game.publishers, value: data.publishers.join(', ') || 'No' }
+						)
 						.setFooter({ text: 'Steam Store' });
 					interaction.editReply({ embeds: [embed] });
 					// eslint-disable-next-line curly
@@ -144,20 +143,18 @@ export default new Command({
 							steamDLCs.push(`${body[dlc].data.name} (${dlcprice})`);
 							let length = data.dlc.length < 3 ? data.dlc.length : 3;
 							if (steamDLCs.length == length) {
-								let embed = new MessageEmbed()
+								let embed = new EmbedBuilder()
 									.setTitle(data.name)
 									.setDescription(data.short_description)
 									.setImage(data.header_image)
-									.setColor('RANDOM')
-
-									.addField(util.game.release, data.release_date.date, true)
-									.addField(util.game.genres, tags.join(', '), true)
-									.addField(util.game.price, price, true)
-									// @ts-ignore
-									.addField(util.game.publishers, data.publishers.join(', ') || 'No', false)
-									// @ts-ignore
-									.addField('DLCs', `${steamDLCs[0] ? steamDLCs.join('\n') : 'No'}${data.dlc.length > 3 ? `\n${data.dlc.length - 3} more...` : ''}`, false)
-
+									.setColor('Random')
+									.addFields(
+										{ name: util.game.release, value: data.release_date.date },
+										{ name: util.game.genres, value: tags.join(', ') },
+										{ name: util.game.price, value: price },
+										{ name: util.game.publishers, value: data.publishers.join(', ') || 'No' },
+										{ name: 'DLCs', value: `${steamDLCs.join('\n') || 'No'}${data.dlc.length > 3 ? `\n${data.dlc.length - 3} more...` : ''}`, inline: false }
+									)
 									.setFooter({ text: 'Steam Store' });
 								interaction.editReply({ embeds: [embed] });
 							}
@@ -189,11 +186,11 @@ export default new Command({
 // tags.push(desc.name)
 // })
 
-// let embed = new MessageEmbed()
+// let embed = new EmbedBuilder()
 // .setTitle(body.name)
 // .setDescription('**'+Number(body.star_rating.score) * 2 + '** ⭐\n' + body.long_desc.replace(/<br\/>|<br>/gi, '\n').slice(0, 500) + '...')
 // .setThumbnail(body.images[0].url)
-// .setColor('RANDOM')
+// .setColor('Random')
 // .setURL('https://store.playstation.com/es-es/product/' + body.id)
 
 // if(guildConf.lang === 'es') {

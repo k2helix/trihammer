@@ -1,15 +1,15 @@
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelServer } from '../../lib/utils/models';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 export default new Command({
 	name: 'autorole',
 	description: 'Set the autorole',
 	category: 'configuration',
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, interaction, guildConf) {
-		let role = (interaction as CommandInteraction).options.getRole('role')!;
+		let role = (interaction as ChatInputCommandInteraction).options.getRole('role')!;
 		const serverConfig = await ModelServer.findOne({ server: interaction.guildId });
 		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 

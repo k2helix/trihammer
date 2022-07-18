@@ -1,7 +1,7 @@
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
 
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import request from 'node-superfetch';
 import translate from '@vitalets/google-translate-api';
 
@@ -41,13 +41,13 @@ export default new MessageCommand({
 		const events = body.data.Events;
 		const event = events[Math.floor(Math.random() * events.length)];
 		let translated = await translate(event.text, { from: 'en', to: guildConf.lang });
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(0x9797ff)
 			.setURL(body.url)
 			.setTitle(`${util.today.title} (${body.date})...`)
 			.setTimestamp()
 			.setDescription(`${event.year}: ${translated.text}`)
-			.addField(util.today.see_more, event.links.map((link: { title: string; link: string }) => `[${link.title}](${link.link})`).join('\n'));
+			.addFields({ name: util.today.see_more, value: event.links.map((link: { title: string; link: string }) => `[${link.title}](${link.link})`).join('\n') });
 		message.channel.send({ embeds: [embed] });
 	}
 });

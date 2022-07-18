@@ -1,4 +1,4 @@
-import { ButtonInteraction, CommandInteraction, ContextMenuInteraction, PermissionString, SelectMenuInteraction } from 'discord.js';
+import { CommandInteraction, MessageComponentInteraction, PermissionsString } from 'discord.js';
 import Client from './Client';
 import GuildConfig from './interfaces/GuildConfig';
 import CommandOptions from './interfaces/CommandOptions';
@@ -9,9 +9,9 @@ class Command {
 	cooldown: number;
 	category: string;
 	required_roles: ('ADMINISTRATOR' | 'MODERATOR')[];
-	required_perms: PermissionString[];
-	client_perms: PermissionString[];
-	execute: (client: Client, interaction: CommandInteraction | SelectMenuInteraction | ButtonInteraction | ContextMenuInteraction, guildConf: GuildConfig) => unknown;
+	required_perms: PermissionsString[];
+	client_perms: PermissionsString[];
+	execute: (client: Client, interaction: CommandInteraction | MessageComponentInteraction, guildConf: GuildConfig) => unknown;
 	constructor(options: CommandOptions) {
 		this.name = options.name;
 		this.description = options.description || 'No description provided.';

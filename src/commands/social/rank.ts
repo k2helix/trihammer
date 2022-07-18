@@ -1,5 +1,5 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import { ModelRank, ModelUsers, Rank } from '../../lib/utils/models';
 
@@ -19,7 +19,7 @@ export default new MessageCommand({
 	cooldown: 3,
 	category: 'social',
 	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	async execute(_client, message, args) {
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member!;
 		if (user.user.bot) return;
@@ -99,9 +99,9 @@ export default new MessageCommand({
 		ctx.closePath();
 		ctx.clip();
 
-		const avatar = await loadImage(user.user.displayAvatarURL({ format: 'png' }));
+		const avatar = await loadImage(user.user.displayAvatarURL({ extension: 'png' }));
 		ctx.drawImage(avatar, 25, 25, 200, 200);
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'rank-image.png');
+		const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'rank-image.png' });
 		message.channel.send({ files: [attachment] });
 	}
 });

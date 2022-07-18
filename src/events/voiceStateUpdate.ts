@@ -48,7 +48,7 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 		} else if (newChannel.members.has(client.user!.id) && serverQueue.leaveTimeout && member.id !== client.user!.id && serverQueue.songs.length > 0)
 			clearLeaveTimeout(serverQueue);
 
-	if (!logs_channel || !logs_channel.isText()) return;
+	if (!logs_channel || !logs_channel.isTextBased()) return;
 	if (!newState.member || newState.member.user.bot) return;
 
 	let user = `${member.user.tag} (${member.id})`;

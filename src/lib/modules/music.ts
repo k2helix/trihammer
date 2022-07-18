@@ -1,7 +1,7 @@
 import { Queue, Song } from '../structures/interfaces/MusicInterfaces';
 import { ModelServer, Server } from '../utils/models';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
-import { Guild, Interaction, Message, MessageEmbed, TextBasedChannel, VoiceBasedChannel } from 'discord.js';
+import { BaseGuildTextChannel, EmbedBuilder, Guild, Interaction, Message, VoiceBasedChannel } from 'discord.js';
 import { array_move } from '../utils/functions';
 import { DiscordGatewayAdapterCreator, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import LanguageFile from '../structures/interfaces/LanguageFile';
@@ -32,15 +32,14 @@ const queue: Map<string, Queue> = new Map();
 async function play(guild: Guild, song: Song) {
 	const serverQueue = queue.get(guild.id);
 	if (!serverQueue) return;
-	if (serverQueue.textChannel.type === 'DM') return;
 
 	if (!song) {
 		getVoiceConnection(serverQueue.voiceChannel.guildId)?.destroy();
-		queue.delete(guild.id);
+		return queue.delete(guild.id);
 	}
 
-	const musicC: Server = await ModelServer.findOne({ server: serverQueue.textChannel.guild.id }).lean();
-	const lang = musicC.lang;
+	const guildConfig: Server = await ModelServer.findOne({ server: serverQueue.textChannel.guild.id }).lean();
+	const lang = guildConfig.lang;
 	const { music } = (await import(`../utils/lang/${lang}`)) as LanguageFile;
 
 	// let url = await googleTTS(music.play.now_playing.tts + ` ${song.title}`, lang, 1); // speed normal = 1 (default), slow = 0.24
@@ -66,8 +65,7 @@ async function play(guild: Guild, song: Song) {
 	// let stream = concatStreams([ttsStream, ytStream]);
 	let source: YouTubeStream | SoundCloudStream;
 	try {
-		if (song.seek !== 0) source = await stream(song.url, { seek: song.seek });
-		else source = await stream(song.url);
+		source = await stream(song.url, { seek: song.seek || 0 });
 	} catch (error) {
 		if (!(error instanceof Error)) throw new Error('Unexpected non-error thrown');
 		console.log('Tried with play-dl, got error ' + error.message);
@@ -89,7 +87,7 @@ async function play(guild: Guild, song: Song) {
 		const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
 		const player = createAudioPlayer();
 		player.play(resource);
-		player.on<'stateChange'>('stateChange', async (oldState, newState) => {
+		player.on('stateChange', async (oldState, newState) => {
 			if (oldState.status == 'playing' && newState.status == 'idle') {
 				if (serverQueue.autoplay)
 					if (serverQueue.songs.length == 1) {
@@ -144,22 +142,22 @@ async function play(guild: Guild, song: Song) {
 		return serverQueue.textChannel.send('An error ocurred when executing this command: ' + error.message);
 	}
 
-	if (song.seek > 0) return;
-
-	const embed = new MessageEmbed()
-		.setTitle(music.play.now_playing.title)
-		.setDescription(`**[${song.title}](${song.url})**\n[${song.channel!.name}](${song.channel!.url})`)
-		.setColor(4494843)
-		.addField(music.play.now_playing.requested_by, `${song.requested === 'Autoplay' ? 'Autoplay' : `<@${song.requested}>`}`, true)
-		.addField(music.play.now_playing.duration, song.duration || 'Unknown', true)
-		.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
-	return serverQueue.textChannel.send({ embeds: [embed] });
+	if (!song.seek) {
+		const embed = new EmbedBuilder()
+			.setTitle(music.play.now_playing.title)
+			.setDescription(`**[${song.title}](${song.url})**\n[${song.channel!.name}](${song.channel!.url})`)
+			.setColor(4494843)
+			.addFields(
+				{ name: music.play.now_playing.requested_by, value: `${song.requested === 'Autoplay' ? 'Autoplay' : `<@${song.requested}>`}`, inline: true },
+				{ name: music.play.now_playing.duration, value: song.duration || 'Unknown', inline: true }
+			)
+			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
+		return serverQueue.textChannel.send({ embeds: [embed] });
+	}
 	// });
 }
 
-async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceBasedChannel, playlist = false, seek: number) {
-	// if (message.options) message.type = 'interaction';
-	if (message.channel!.type === 'DM') return;
+async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceBasedChannel, playlist = false, seek = 0) {
 	const serverQueue = queue.get(message.guildId!);
 	// function humanize(object) {
 	// 	let arr = [];
@@ -184,12 +182,12 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 		},
 		url: `https://www.youtube.com/watch?v=${video.id}`,
 		requested: message instanceof Message ? message.author.id : message.user.id,
-		seek: seek ? seek : 0,
+		seek: seek,
 		skip: []
 	};
 	if (!serverQueue) {
 		const queueConstruct: Queue = {
-			textChannel: message.channel! as TextBasedChannel,
+			textChannel: message.channel! as BaseGuildTextChannel,
 			voiceChannel: voiceChannel,
 			songs: [],
 			volume: 1,
@@ -218,12 +216,11 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 			return message.channel!.send(`Error: ${error}`);
 		}
 	} else {
-		if (serverQueue.textChannel.type === 'DM') return;
 		serverQueue.songs.push(song);
-		const musicC: Server = await ModelServer.findOne({
+		const guildConfig: Server = await ModelServer.findOne({
 			server: serverQueue.textChannel.guild.id
 		}).lean();
-		const lang = musicC.lang;
+		const lang = guildConfig.lang;
 		const { music } = (await import(`../utils/lang/${lang}`)) as LanguageFile;
 		if (seek) {
 			if (song.seek > Number(song.durationInSec)) return serverQueue.textChannel.send(music.seek_cancelled);
@@ -236,15 +233,16 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 			clearTimeout(serverQueue.leaveTimeout);
 			serverQueue.leaveTimeout = null;
 			if (!playlist) return play(serverQueue.textChannel.guild, song);
-			else play(serverQueue.textChannel.guild, serverQueue.songs[0]);
+			return play(serverQueue.textChannel.guild, playlist ? serverQueue.songs[0] : song);
 		}
-		if (playlist) return;
-		const embed = new MessageEmbed()
-			.setTitle(music.play.added_to_queue.title)
-			.setDescription(`**[${song.title}](${song.url})**\n[${song.channel!.name}](${song.channel!.url})`)
-			.addField(music.play.added_to_queue.duration, song.duration || 'Unknown', true)
-			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
-		return serverQueue.textChannel.send({ embeds: [embed] });
+		if (!playlist) {
+			const embed = new EmbedBuilder()
+				.setTitle(music.play.added_to_queue.title)
+				.setDescription(`**[${song.title}](${song.url})**\n[${song.channel!.name}](${song.channel!.url})`)
+				.addFields({ name: music.play.added_to_queue.duration, value: song.duration || 'Unknown', inline: true })
+				.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
+			return serverQueue.textChannel.send({ embeds: [embed] });
+		}
 	}
 	return;
 }

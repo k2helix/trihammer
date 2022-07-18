@@ -9,7 +9,7 @@ export default new Command({
 	description: 'Jump to a part of the song',
 	category: 'music',
 	async execute(client, interaction, guildConf) {
-		if (!interaction.inCachedGuild() || !interaction.isCommand()) return;
+		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 
 		const serverQueue = queue.get(interaction.guildId);
 		const voiceChannel = interaction.member.voice.channel;

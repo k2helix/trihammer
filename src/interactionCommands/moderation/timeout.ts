@@ -1,19 +1,19 @@
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new Command({
 	name: 'timeout',
 	description: 'Timeout a member',
 	category: 'moderation',
-	required_perms: ['MODERATE_MEMBERS'],
+	required_perms: ['ModerateMembers'],
 	required_roles: ['MODERATOR'],
-	client_perms: ['MODERATE_MEMBERS'],
+	client_perms: ['ModerateMembers'],
 	async execute(client, interaction, guildConf) {
 		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let member = (interaction as CommandInteraction).options.getMember('user')! as GuildMember,
-			reason = (interaction as CommandInteraction).options.getString('reason') || 'No reason',
-			timeString = (interaction as CommandInteraction).options.getString('duration')!,
+		let member = (interaction as ChatInputCommandInteraction).options.getMember('user')! as GuildMember,
+			reason = (interaction as ChatInputCommandInteraction).options.getString('reason') || 'No reason',
+			timeString = (interaction as ChatInputCommandInteraction).options.getString('duration')!,
 			time = functions.Convert(timeString);
 
 		if (!member.moderatable) return interaction.reply({ embeds: [client.redEmbed(mod.not_moderatable)], ephemeral: true });

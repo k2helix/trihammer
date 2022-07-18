@@ -1,4 +1,4 @@
-import { Image, CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, Image, createCanvas, loadImage } from 'canvas';
 
 function formatTime(time: number) {
 	const min = Math.floor(time / 60);
@@ -34,13 +34,13 @@ function drawImageWithTint(ctx: CanvasRenderingContext2D, image: Image, color: s
 import { horses } from '../../lib/utils/objects';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
 export default new MessageCommand({
 	name: 'horse-race',
 	description: 'Play some horse races',
 	aliases: ['horse', 'horserace'],
 	category: 'fun',
-	client_perms: ['ATTACH_FILES'],
+	client_perms: ['AttachFiles'],
 	async execute(client, message, _args, guildConf) {
 		let { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		async function generateLeaderboard(chosenHorses: { name: string; minTime: number }[], results: { name: string; time: number }[]) {
@@ -67,36 +67,36 @@ export default new MessageCommand({
 		}
 
 		const chosenHorses = shuffle(horses).slice(0, 6);
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 			.setTitle(util.horse_race.title)
 			.setDescription(util.horse_race.description)
-			.addField(util.horse_race.list, chosenHorses.map((horse, i) => `**${i + 1}.** ${horse.name}`).join('\n'));
+			.addFields({ name: util.horse_race.list, value: chosenHorses.map((horse, i) => `**${i + 1}.** ${horse.name}`).join('\n') });
 
 		let options = [];
 		for (let index = 0; index < chosenHorses.length; index++) {
 			const element = chosenHorses[index];
 			options.push({ label: `${index + 1}- ${element.name}`, value: index.toString() });
 		}
-		const row = new MessageActionRow().addComponents(
-			new MessageSelectMenu().setCustomId('horses').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+		const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+			new SelectMenuBuilder().setCustomId('horses').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 		);
 
 		let mainMessage = await message.channel.send({ embeds: [embed], components: [row] });
 		let currentBets: { user: string; horse: string }[] = [];
 		const filter = (int: SelectMenuInteraction) => int.customId === 'horses';
-		const collector = await mainMessage.createMessageComponentCollector({ filter, time: 15000, componentType: 'SELECT_MENU' });
+		const collector = await mainMessage.createMessageComponentCollector({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 
 		collector.on('collect', (i) => {
 			let selected = chosenHorses[parseInt(i.values[0])].name;
 			let userBet = currentBets.find((bet) => bet.user === i.user.id);
 			if (userBet) userBet.horse = selected;
 			else currentBets.push({ user: i.user.id, horse: selected });
-			let editedEmbed = new MessageEmbed()
+			let editedEmbed = new EmbedBuilder()
 				.setTitle(util.horse_race.title)
 				.setDescription(util.horse_race.description)
-				.addField(
-					util.horse_race.list,
-					chosenHorses
+				.addFields({
+					name: util.horse_race.list,
+					value: chosenHorses
 						.map(
 							(horse, index) =>
 								`**${index + 1}.** ${horse.name}: ${currentBets
@@ -105,7 +105,7 @@ export default new MessageCommand({
 									.join(', ')}`
 						)
 						.join('\n')
-				);
+				});
 			mainMessage.edit({ embeds: [editedEmbed] });
 			i.reply({ embeds: [client.blueEmbed(util.horse_race.selected)], ephemeral: true });
 		});
@@ -117,7 +117,7 @@ export default new MessageCommand({
 			}
 			mainMessage.edit({
 				components: [],
-				embeds: [new MessageEmbed().setImage('https://cdn.discordapp.com/attachments/487962590887149603/955132839500873778/horse-race.gif?size=4096')]
+				embeds: [new EmbedBuilder().setImage('https://cdn.discordapp.com/attachments/487962590887149603/955132839500873778/horse-race.gif?size=4096')]
 			});
 
 			setTimeout(async () => {
@@ -132,8 +132,8 @@ export default new MessageCommand({
 				const leaderboard = await generateLeaderboard(chosenHorses, results);
 				const winners = currentBets.filter((bet) => results[0].name === bet.horse);
 
-				let finalEmbed = new MessageEmbed()
-					.setColor('YELLOW')
+				let finalEmbed = new EmbedBuilder()
+					.setColor('Yellow')
 					.setDescription(util.horse_race.win.replace('{users}', winners.map((winner) => `<@${winner.user}>`).join(', ') || results[0].name))
 					.setImage('attachment://leaderboard.png');
 				return mainMessage.edit({ embeds: [finalEmbed], files: [leaderboard] });

@@ -10,7 +10,7 @@ export default new MessageCommand({
 		{ index: 0, name: 'disable', type: 'string', optional: true, ignore: true },
 		{ index: 0, name: 'role', type: 'role' }
 	],
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
 		let role = message.mentions.roles.first() || message.guild!.roles.cache.find((r) => r.name === args.join(' ')) || message.guild!.roles.cache.get(args[0]);

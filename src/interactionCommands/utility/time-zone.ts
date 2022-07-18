@@ -30,7 +30,7 @@ let object = {
 const moment = require('moment-timezone');
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 let array = moment.tz.names();
 function firstUpperCase(text: string, split: string | RegExp = ' ') {
 	return text
@@ -45,7 +45,7 @@ export default new Command({
 	async execute(client, interaction, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let inputZone = (interaction as CommandInteraction).options.getString('zone')!.toLowerCase();
+		let inputZone = (interaction as ChatInputCommandInteraction).options.getString('zone')!.toLowerCase();
 		let zone = object[inputZone as keyof object] !== undefined ? object[inputZone as keyof object] : inputZone;
 		let timeZone = findBestMatch(zone, array).bestMatch.target;
 

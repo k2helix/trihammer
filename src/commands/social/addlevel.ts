@@ -9,7 +9,7 @@ export default new MessageCommand({
 		{ index: 0, name: 'user', type: 'member' },
 		{ index: 1, name: 'level', type: 'number' }
 	],
-	required_perms: ['ADMINISTRATOR'],
+	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	category: 'social',
 	async execute(client, message, args, guildConf) {

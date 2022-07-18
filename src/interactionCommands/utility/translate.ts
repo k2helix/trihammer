@@ -1,6 +1,6 @@
 import Command from '../../lib/structures/Command';
 import translate from '@vitalets/google-translate-api';
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // eslint-disable-next-line prettier/prettier
 type codelang = 'af' | 'sq' | 'am' | 'ar' | 'hy' | 'az' | 'eu' | 'be' | 'bn' | 'bs' | 'bg' | 'ca' | 'ceb' | 'ny' | 'zh-CN' | 'zh-TW' | 'co' | 'hr' | 'cs' | 'da' | 'nl' | 'en' | 'eo' | 'et' | 'tl' | 'fi' | 'fr' | 'fy' | 'gl' | 'ka' | 'de' | 'el' | 'gu' | 'ht' | 'ha' | 'haw' | 'he' | 'iw' | 'hi' | 'hmn' | 'hu' | 'is' | 'ig' | 'id' | 'ga' | 'it' | 'ja' | 'jw' | 'kn' | 'kk' | 'km' | 'ko' | 'ku' | 'ky' | 'lo' | 'la' | 'lv' | 'lt' | 'lb' | 'mk' | 'mg' | 'ms' | 'ml' | 'mt' | 'mi' | 'mr' | 'mn' | 'my' | 'ne' | 'no' | 'ps' | 'fa' | 'pl' | 'pt' | 'pa' | 'ro' | 'ru' | 'sm' | 'gd' | 'sr' | 'st' | 'sn' | 'sd' | 'si' | 'sk' | 'sl' | 'so' | 'es' | 'su' | 'sw' | 'sv' | 'tg' | 'ta' | 'te' | 'th' | 'tr' | 'uk' | 'ur' | 'uz' | 'vi' | 'cy' | 'xh' | 'yi' | 'yo' | 'zu';
@@ -128,9 +128,9 @@ export default new Command({
 	async execute(client, interaction, guildConf) {
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let lang = (interaction as CommandInteraction).options.getString('to');
-		let text = (interaction as CommandInteraction).options.getString('text');
-		if (interaction.isContextMenu()) {
+		let lang = (interaction as ChatInputCommandInteraction).options.getString('to');
+		let text = (interaction as ChatInputCommandInteraction).options.getString('text');
+		if (interaction.isContextMenuCommand()) {
 			let message = await interaction.channel!.messages.fetch(interaction.targetId);
 			lang = interactionLocales[interaction.locale as 'en-GB' | 'en-US' | 'es-ES' | 'pt-BR' | 'sv-SE'] || interaction.locale;
 			text = message.content;
@@ -142,11 +142,14 @@ export default new Command({
 		}
 		if (!Object.keys(langs).includes(lang)) return interaction.reply({ embeds: [client.redEmbed(util.translate.not_found)], ephemeral: true });
 		let translated = await translate(text, { to: lang });
-		let embed = new MessageEmbed()
+		let embed = new EmbedBuilder()
 			.setTitle(util.translate.title)
 			.setThumbnail('https://i.pinimg.com/originals/44/10/19/4410197cf5de4fefe413b55860bb617d.png')
-			.addField(`${util.translate.from} ${langs[translated.from.language.iso as codelang]}:`, `\`\`\`${text.slice(0, 1000)}\`\`\``, true)
-			.addField(`${util.translate.to} ${langs[lang as codelang]}:`, `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, true);
-		interaction.reply({ embeds: [embed], ephemeral: interaction.isContextMenu() });
+			.addFields(
+				{ name: `${util.translate.from} ${langs[translated.from.language.iso as codelang]}:`, value: `\`\`\`${text.slice(0, 1000)}\`\`\``, inline: true },
+				{ name: `${util.translate.to} ${langs[lang as codelang]}:`, value: `\`\`\`${translated.text.slice(0, 1000)}\`\`\``, inline: true }
+			);
+
+		interaction.reply({ embeds: [embed], ephemeral: interaction.isContextMenuCommand() });
 	}
 });
