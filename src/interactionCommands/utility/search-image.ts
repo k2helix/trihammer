@@ -1,7 +1,6 @@
 import { ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType } from 'discord.js';
 import Command from '../../lib/structures/Command';
-
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import request from 'node-superfetch';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -29,7 +28,7 @@ export default new Command({
 				}
 			});
 
-			let $ = cheerio.load(text!);
+			let $ = load(text!);
 			let images = $('div[class="islrtb isv-r"]');
 			let urls: { name: string; img: string; site: string; site_url: string }[] = [];
 

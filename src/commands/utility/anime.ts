@@ -9,7 +9,7 @@
 // }
 
 import request from 'node-superfetch';
-import cheerio, { CheerioAPI } from 'cheerio';
+import { CheerioAPI, load } from 'cheerio';
 import { matchSorter } from 'match-sorter';
 //editado de mal-scraper
 interface anime {
@@ -34,7 +34,7 @@ const getFromBorder = ($: CheerioAPI, t: string) => {
 	return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim();
 };
 const parsePage = (data: Buffer) => {
-	const $ = cheerio.load(data);
+	const $ = load(data);
 	const result: anime = {
 		title: '',
 		picture: '',

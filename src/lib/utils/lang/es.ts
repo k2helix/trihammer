@@ -450,6 +450,8 @@ export const util = {
 		need: 'Debe ser {prefix}convert <cantidad> <unidad base> <unidad objetivo> (separado por espacios)',
 		success: '{amount} {base} son {number} {target}'
 	},
+	tiktok:
+		'__**Publicaciones de {user}**__\n{videoUrl}\n{mainComment}\n**♥️ Likes**: {likes}\n**👁️ Visualizaciones**: {views}\n**👁‍🗨 Comentarios**: {comments}\nPublicación {current} de {total}',
 	connect4: {
 		bot: 'no se puede jugar contra bots.',
 		challenge: ', aceptas el desafío? (yes o no)',

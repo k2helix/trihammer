@@ -1,5 +1,5 @@
 import { queue } from '../../lib/modules/music';
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import request from 'node-superfetch';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -16,7 +16,7 @@ async function getSongLyrics(song: string) {
 		});
 		if (!text) return '';
 		let lyrics: string[] = [];
-		let $ = cheerio.load(text);
+		let $ = load(text);
 		let mainDiv = $('div[jsname="WbKHeb"]')[0].children;
 		mainDiv.forEach((div) => {
 			// @ts-ignore
