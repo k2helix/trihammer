@@ -90,7 +90,7 @@ export default async (client: ExtendedClient, message: Message) => {
 			possibleMatches.slice(0, 4).forEach((match) => {
 				buttons.push(new ButtonBuilder().setCustomId(match.name).setLabel(match.name).setStyle(ButtonStyle.Secondary));
 			});
-			buttons.push(new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Danger));
+			buttons.push(new ButtonBuilder().setCustomId('crossx').setEmoji({ id: '882639143874723932' }).setStyle(ButtonStyle.Danger));
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 			let sentMessage = await message.channel.send({ embeds: [client.orangeEmbed(util.similar_commands)], components: [row] });
 

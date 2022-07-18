@@ -20,13 +20,13 @@ export default new MessageCommand({
 		const selectedPortion = serverQueue.songs.slice(amplifiedPage, amplifiedEnd);
 		if (!selectedPortion || selectedPortion.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
-			new ButtonBuilder().setCustomId('voteskip').setEmoji('882675796341321798').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('loop').setEmoji('882674902304448582').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('shuffle').setEmoji('923956906006052914').setStyle(ButtonStyle.Primary),
-			// new ButtonBuilder().setCustomId('volume-down').setEmoji('882677475350564945').setStyle(ButtonStyle.Primary),
-			// new ButtonBuilder().setCustomId('volume-up').setEmoji('882677486553530429').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('stop').setEmoji('882674312094568528').setStyle(ButtonStyle.Danger),
-			new ButtonBuilder().setCustomId('crossx').setEmoji('882639143874723932').setStyle(ButtonStyle.Secondary)
+			new ButtonBuilder().setCustomId('voteskip').setEmoji({ id: '882675796341321798' }).setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('loop').setEmoji({ id: '882674902304448582' }).setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('shuffle').setEmoji({ id: '923956906006052914' }).setStyle(ButtonStyle.Primary),
+			// new ButtonBuilder().setCustomId('volume-down').setEmoji({ id: '882677475350564945' }).setStyle(ButtonStyle.Primary),
+			// new ButtonBuilder().setCustomId('volume-up').setEmoji({ id: '882677486553530429' }).setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('stop').setEmoji({ id: '882674312094568528' }).setStyle(ButtonStyle.Danger),
+			new ButtonBuilder().setCustomId('crossx').setEmoji({ id: '882639143874723932' }).setStyle(ButtonStyle.Secondary)
 		]);
 
 		const embed = new EmbedBuilder()

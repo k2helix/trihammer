@@ -89,6 +89,7 @@ async function getInfoFromURL(url: string) {
 	let { body } = await request.get(url);
 	const res = parsePage(body as Buffer);
 	res.id = +url.split(/\/+/)[3];
+	res.url = url;
 	return res;
 }
 
