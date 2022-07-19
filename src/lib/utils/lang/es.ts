@@ -451,7 +451,7 @@ export const util = {
 		success: '{amount} {base} son {number} {target}'
 	},
 	tiktok:
-		'__**Publicaciones de {user}**__\n{videoUrl}\n{mainComment}\n**♥️ Likes**: {likes}\n**👁️ Visualizaciones**: {views}\n**👁‍🗨 Comentarios**: {comments}\nPublicación {current} de {total}',
+		'__**Publicaciones de {user}**__\n{videoUrl}\n{mainComment}\n**♥️ Likes**: {likes}\n**👁️ Visualizaciones**: {views}\n**👁‍🗨 Comentarios**: {comments}\nPublicación {current} de {total}\n{date}',
 	connect4: {
 		bot: 'no se puede jugar contra bots.',
 		challenge: ', aceptas el desafío? (yes o no)',
