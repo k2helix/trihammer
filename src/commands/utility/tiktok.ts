@@ -1,3 +1,4 @@
+// @ts-nocheck
 import MessageCommand from '../../lib/structures/MessageCommand';
 import request from 'node-superfetch';
 import { load } from 'cheerio';
@@ -29,47 +30,43 @@ export default new MessageCommand({
 			let instances = ['https://proxitok.herokuapp.com', 'https://proxitok.pussthecat.org', 'https://proxitok.privacydev.net'];
 			let currentInstance = 0;
 			do {
-				let r = await request.get(`${instances[currentInstance]}/@${args[0]}`);
-				if (r.status !== 200) return;
+				let r = await request.get(`${instances[currentInstance]}/@${args[0]}`).catch(() => null);
+				if (r?.status === 200) {
+					let $ = load(r.text as string);
+					let posts = $('div[class="media-content"]');
+					let videoSources = posts.find('source');
+					let postsContent = posts.find('div[class="content"]');
+					postsData = [];
+					for (let index = 0; index < postsContent.length; index++) {
+						const content = postsContent[index];
+						let valuableChildren = content.children.filter((ch) => ch.children);
 
-				let $ = load(r.text as string);
-				let posts = $('div[class="media-content"]');
-				let videoSources = posts.find('source');
-				let postsContent = posts.find('div[class="content"]');
-				postsData = [];
-				for (let index = 0; index < postsContent.length; index++) {
-					const content = postsContent[index];
-					// @ts-ignore ignoring next children as I'm not defining types
-					let valuableChildren = content.children.filter((ch) => ch.children);
+						let nameAndDateParagraph = valuableChildren[0];
+						// let tagsParagraph = valuableChildren.find((ch) => ch.children[0].attribs && ch.children[0].attribs.class === 'tags');
+						let mainCommentParagraph = valuableChildren.find((ch) => ch.children.length === 1);
+						let interactionsParagraph = valuableChildren[valuableChildren.length - 1];
 
-					let nameAndDateParagraph = valuableChildren[0];
-					// let tagsParagraph = valuableChildren.find((ch) => ch.children[0].attribs && ch.children[0].attribs.class === 'tags');
-					// @ts-ignore
-					let mainCommentParagraph = valuableChildren.find((ch) => ch.children.length === 1);
-					let interactionsParagraph = valuableChildren[valuableChildren.length - 1];
-					// @ts-ignore
-					let date = nameAndDateParagraph.children.find((ch: { name: string; attribs: { title: string } }) => ch.name === 'small' && ch.attribs?.title)?.attribs.title;
-					// @ts-ignore
-					let mainComment = mainCommentParagraph ? mainCommentParagraph.children[0].data : null;
-					// @ts-ignore
-					let interactions = interactionsParagraph.children.filter((ch: { attribs: { class: string } }) => ch.attribs && ch.attribs.class === 'icon-text');
-					let views = interactions[0].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
-					let likes = interactions[1].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
-					let comments = interactions[2].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
+						let date = nameAndDateParagraph.children.find((ch: { name: string; attribs: { title: string } }) => ch.name === 'small' && ch.attribs?.title)?.attribs.title;
+						let mainComment = mainCommentParagraph ? mainCommentParagraph.children[0].data : null;
+						let interactions = interactionsParagraph.children.filter((ch: { attribs: { class: string } }) => ch.attribs && ch.attribs.class === 'icon-text');
+						let views = interactions[0].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
+						let likes = interactions[1].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
+						let comments = interactions[2].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
 
-					postsData.push({
-						itemInfos: {
-							video: { urls: [videoSources[index].attribs.src.slice(12)], shortened_video: null },
-							text: mainComment,
-							createTime: date || '',
-							playCount: views,
-							diggCount: likes,
-							commentCount: comments,
-							index: index
-						}
-					});
+						postsData.push({
+							itemInfos: {
+								video: { urls: [videoSources[index].attribs.src.slice(12)], shortened_video: null },
+								text: mainComment,
+								createTime: date || '',
+								playCount: views,
+								diggCount: likes,
+								commentCount: comments,
+								index: index
+							}
+						});
+					}
+					currentPost = postsData[0]?.itemInfos;
 				}
-				currentPost = postsData[0]?.itemInfos;
 				currentInstance++;
 			} while (!currentPost && currentInstance < instances.length);
 
