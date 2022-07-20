@@ -246,7 +246,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Wheter or not to let you choose between found results',
+						description: 'Whether or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -265,7 +265,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Wheter or not to let you choose between found results',
+						description: 'Whether or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -297,7 +297,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Wheter or not to let you choose between found results',
+						description: 'Whether or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -766,7 +766,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Wheter or not to let you choose between found results',
+						description: 'Whether or not to let you choose between found results',
 						required: false
 					}
 				]
