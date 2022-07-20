@@ -4,6 +4,7 @@ import request from 'node-superfetch';
 import { load } from 'cheerio';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType, TextChannel } from 'discord.js';
+import { abbrNum } from '../../lib/utils/functions';
 interface post {
 	itemInfos: {
 		video: {
@@ -12,9 +13,9 @@ interface post {
 		};
 		text: string | null;
 		createTime: string;
-		playCount: string;
-		diggCount: string;
-		commentCount: string;
+		playCount: string | number;
+		diggCount: string | number;
+		commentCount: string | number;
 		index: number;
 	};
 }
@@ -25,6 +26,7 @@ export default new MessageCommand({
 	async execute(client, interaction, guildConf) {
 		let currentPost: post['itemInfos'];
 		let postsData: post[];
+		interaction.reply({ embeds: [client.loadingEmbed()] });
 		try {
 			let instances = ['https://proxitok.herokuapp.com', 'https://proxitok.pussthecat.org', 'https://proxitok.privacydev.net'];
 			let currentInstance = 0;
@@ -78,8 +80,8 @@ export default new MessageCommand({
 				});
 				let parsedResponse = JSON.parse(text!);
 				if (parsedResponse.statusCode !== 0)
-					return interaction.reply({
-						embeds: [client.redEmbed(`[${parsedResponse.statusCode}] An error ocurred while getting the user id.\n${parsedResponse.statusMsg}`)]
+					return interaction.editReply({
+						embeds: [client.redEmbed(`[${parsedResponse.statusCode}] An error ocurred while getting the user id (does the user exist?).\n${parsedResponse.statusMsg}`)]
 					});
 				let userData = parsedResponse.userInfo;
 				let postsRequest = await request.get(
@@ -97,7 +99,7 @@ export default new MessageCommand({
 				);
 				let parsedData = JSON.parse(postsRequest.text!);
 				if (parsedData.statusCode !== 0)
-					return interaction.reply({ embeds: [client.redEmbed(`[${parsedData.statusCode}] An error ocurred while getting user posts.\n${parsedData.errMsg}`)] });
+					return interaction.editReply({ embeds: [client.redEmbed(`[${parsedData.statusCode}] An error ocurred while getting user posts.\n${parsedData.errMsg}`)] });
 				postsData = parsedData.body.itemListData;
 
 				currentPost = postsData[0]?.itemInfos;
@@ -106,7 +108,7 @@ export default new MessageCommand({
 
 			const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-			if (!currentPost) return interaction.reply({ embeds: [client.redEmbed(music.not_found)] });
+			if (!currentPost) return interaction.editReply({ embeds: [client.redEmbed(music.not_found)] });
 			currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
@@ -116,19 +118,20 @@ export default new MessageCommand({
 				new ButtonBuilder().setCustomId('dobleright').setEmoji({ id: '882631788550324295' }).setStyle(ButtonStyle.Primary),
 				new ButtonBuilder().setCustomId('crossx').setEmoji({ id: '882639143874723932' }).setStyle(ButtonStyle.Danger)
 			]);
-			interaction.reply({
+			interaction.editReply({
 				content: client.replaceEach(util.tiktok, {
 					'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
 					'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
 					'{mainComment}': currentPost.text || '',
-					'{likes}': currentPost.diggCount,
-					'{views}': currentPost.playCount,
-					'{comments}': currentPost.commentCount,
+					'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
+					'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
+					'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
 					'{current}': (currentPost.index + 1).toString(),
 					'{total}': postsData.length.toString(),
 					'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
 				}),
-				components: [row]
+				components: [row],
+				embeds: []
 			});
 
 			let msg = await interaction.fetchReply();
@@ -147,9 +150,9 @@ export default new MessageCommand({
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
 								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
-								'{likes}': currentPost.diggCount,
-								'{views}': currentPost.playCount,
-								'{comments}': currentPost.commentCount,
+								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
+								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
+								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
 								'{current}': (currentPost.index + 1).toString(),
 								'{total}': postsData.length.toString(),
 								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
@@ -166,9 +169,9 @@ export default new MessageCommand({
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
 								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
-								'{likes}': currentPost.diggCount,
-								'{views}': currentPost.playCount,
-								'{comments}': currentPost.commentCount,
+								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
+								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
+								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
 								'{current}': (currentPost.index + 1).toString(),
 								'{total}': postsData.length.toString(),
 								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
@@ -185,9 +188,9 @@ export default new MessageCommand({
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
 								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
-								'{likes}': currentPost.diggCount,
-								'{views}': currentPost.playCount,
-								'{comments}': currentPost.commentCount,
+								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
+								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
+								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
 								'{current}': (currentPost.index + 1).toString(),
 								'{total}': postsData.length.toString(),
 								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
@@ -204,9 +207,9 @@ export default new MessageCommand({
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
 								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
-								'{likes}': currentPost.diggCount,
-								'{views}': currentPost.playCount,
-								'{comments}': currentPost.commentCount,
+								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
+								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
+								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
 								'{current}': (currentPost.index + 1).toString(),
 								'{total}': postsData.length.toString(),
 								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
