@@ -1,4 +1,4 @@
-import { Collection, Message, EmbedBuilder, Snowflake } from 'discord.js';
+import { Collection, EmbedBuilder, Message, Snowflake } from 'discord.js';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
 import { ModelServer, Server } from '../lib/utils/models';
