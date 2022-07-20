@@ -63,7 +63,7 @@ class ExtendedClient extends Client {
 	}
 
 	loadingEmbed() {
-		return new EmbedBuilder().setImage('https://cdn.discordapp.com/attachments/487962590887149603/965625447733923920/loading.gif?size=4096');
+		return new EmbedBuilder().setColor('#5865f2').setImage('https://cdn.discordapp.com/attachments/487962590887149603/999306111360454676/in.gif?size=4096?size=4096');
 	}
 }
 
