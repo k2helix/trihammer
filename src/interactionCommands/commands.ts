@@ -246,7 +246,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Whether or not to search for more than one result to choose.',
+						description: 'Wheter or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -265,7 +265,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Whether or not to search for more than one result to choose.',
+						description: 'Wheter or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -278,7 +278,7 @@ export default [
 					{
 						name: 'query',
 						type: ApplicationCommandOptionType.String,
-						description: 'The image to search',
+						description: 'The query for the image',
 						required: true
 					}
 				]
@@ -291,13 +291,13 @@ export default [
 					{
 						name: 'query',
 						type: ApplicationCommandOptionType.String,
-						description: 'The game to search',
+						description: 'The game you want to search',
 						required: true
 					},
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Whether or not to search for more than one result to choose.',
+						description: 'Wheter or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -310,7 +310,7 @@ export default [
 					{
 						name: 'query',
 						type: ApplicationCommandOptionType.String,
-						description: 'The location to search',
+						description: 'The location you want to search',
 						required: true
 					}
 				]
@@ -323,7 +323,7 @@ export default [
 					{
 						name: 'user',
 						type: ApplicationCommandOptionType.String,
-						description: 'The user to search (without @)',
+						description: 'The user you want to search (without @)',
 						required: true
 					}
 				]
@@ -766,7 +766,7 @@ export default [
 					{
 						name: 'confirm-result',
 						type: ApplicationCommandOptionType.Boolean,
-						description: 'Whether or not to search for more than one result to choose.',
+						description: 'Wheter or not to let you choose between found results',
 						required: false
 					}
 				]
@@ -910,7 +910,7 @@ export default [
 			{
 				name: 'user',
 				type: ApplicationCommandOptionType.User,
-				description: 'The user which you want to see the profile',
+				description: 'The user whose profile card you want to see',
 				required: false
 			}
 		]
@@ -922,7 +922,7 @@ export default [
 			{
 				name: 'user',
 				type: ApplicationCommandOptionType.User,
-				description: 'The user which you want to see the rank',
+				description: 'The user whose rank card you want to see',
 				required: false
 			}
 		]
@@ -934,7 +934,7 @@ export default [
 			{
 				name: 'user',
 				type: ApplicationCommandOptionType.User,
-				description: 'The user you want to give a reputation point to',
+				description: 'The user to whom you want to give a reputation point',
 				required: true
 			}
 		]
