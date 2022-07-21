@@ -70,7 +70,21 @@ async function play(guild: Guild, song: Song) {
 		if (!(error instanceof Error)) throw new Error('Unexpected non-error thrown');
 		console.log('Tried with play-dl, got error ' + error.message);
 		console.error(error);
-		return serverQueue.textChannel.send('An error ocurred while executing this command (is the video age restricted?): ' + error.message);
+		serverQueue.textChannel.send({
+			embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', serverQueue.songs[0].title) + `\`${error.message}\``).setColor('Red')]
+		});
+		serverQueue.songs.shift(); // skip to next song
+		if (!serverQueue.songs[0]) {
+			if (serverQueue.leaveTimeout) return;
+			serverQueue.leaveTimeout = setTimeout(() => {
+				getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
+				return queue.delete(serverQueue.voiceChannel.guildId);
+			}, 30000);
+		} else {
+			if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
+			play(guild, serverQueue.songs[0]);
+		}
+		return;
 	}
 	try {
 		// let currentType = StreamType.Arbitrary;

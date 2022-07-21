@@ -249,7 +249,7 @@ export const music = {
 	not_found: 'No se ha encontrado nada.',
 	error_nothing_found: 'Ocurrió un error al buscar ese vídeo: ',
 	error_stream:
-		'Ocurrió un error al intentar reproducir ese vídeo (¿tiene el vídeo restricción de edad?). Si esto sigue pasando, por favor repórtalo al servidor de soporte (invitación en el comando `invite`).\n',
+		'Ocurrió un error al intentar reproducir {video}, **es muy probable que el vídeo tenga restricción de edad (y por tanto no pueda ponerlo)**. Más información abajo\n\n',
 	length: 'La letra es demasiado larga',
 	now_playing: '__Sonando ahora__',
 	requested_by: 'Pedida por:',
