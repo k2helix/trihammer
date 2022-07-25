@@ -23,6 +23,7 @@ export default new MessageCommand({
 	name: 'tiktok',
 	description: 'Search for someone in TikTok',
 	category: 'utility',
+	cooldown: 5,
 	async execute(client, interaction, guildConf) {
 		let currentPost: post['itemInfos'];
 		let postsData: post[];
