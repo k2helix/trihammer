@@ -37,6 +37,7 @@ export default new MessageCommand({
 	required_args: [{ index: 0, type: 'string', name: 'song', optional: true }],
 	aliases: ['letra', 'lyr'],
 	category: 'music',
+	cooldown: 10,
 	async execute(client, message, args, guildConf) {
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
