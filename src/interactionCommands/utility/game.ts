@@ -7,7 +7,7 @@ import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
 // async function getGameSearch(query) {
-// 	let { body } = await request.get(`https://store.playstation.com/store/api/chihiro/00_09_000/tumbler/US/en/99/${encodeURI(query)}?size=10&suggested_size=5&mode=game`);
+// 	let { body } = await request.get({ url: `https://store.playstation.com/store/api/chihiro/00_09_000/tumbler/US/en/99/${encodeURI(query)}?size=10&suggested_size=5&mode=game`);
 // 	let results = [];
 // 	for (let index = 0; index < body.links.length; index++) {
 // 		const game = body.links[index];
@@ -23,12 +23,12 @@ import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // async function getGameResults(query) {
 // 	let searchResults = await getGameSearch(query);
 // 	if (!searchResults[0]) return { game: null, DLCs: null };
-// 	let { body } = await request.get(`https://store.playstation.com/valkyrie-api/en/US/999/resolve/${searchResults[0].id}`);
+// 	let { body } = await request.get({ url: `https://store.playstation.com/valkyrie-api/en/US/999/resolve/${searchResults[0].id}`);
 
 // 	let game = body.included[0].attributes;
 // 	let DLCs = body.included.filter((each) => each.attributes['kamaji-relationship'] === 'add-ons');
 // 	if (game.parent) {
-// 		let { body } = await request.get(`https://store.playstation.com/valkyrie-api/en/US/999/resolve/${game.parent.id}`);
+// 		let { body } = await request.get({ url: `https://store.playstation.com/valkyrie-api/en/US/999/resolve/${game.parent.id}`);
 // 		game = body.included.find((inc) => inc.attributes['game-content-type'] === 'Full Game').attributes;
 // 		DLCs = body.included.filter((each) => each.attributes['kamaji-relationship'] === 'add-ons');
 // 	}
@@ -51,7 +51,7 @@ export default new Command({
 				let result;
 				let appId;
 				if ((interaction as ChatInputCommandInteraction).options.getBoolean('confirm-result')) {
-					result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
+					result = await request.get({ url: `http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US` });
 					// @ts-ignore
 					if (result.body.total == 0) return interaction.editReply({ content: util.game.not_found, ephemeral: true });
 
@@ -91,7 +91,7 @@ export default new Command({
 					}
 				} else {
 					// @ts-ignore
-					result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
+					result = await request.get({ url: `http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US` });
 					// @ts-ignore
 					appId = result.body.items[0].id;
 				}
@@ -99,7 +99,7 @@ export default new Command({
 				let tags: string[] = [];
 				// @ts-ignore
 				let steamDLCs: string[] = [];
-				let { body } = await request.get(`http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}`);
+				let { body } = await request.get({ url: `http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}` });
 				// @ts-ignore
 				let data = body[appId].data;
 				let price = data.price_overview ? data.price_overview.final_formatted : '???';
@@ -129,7 +129,7 @@ export default new Command({
 					// @ts-ignore
 					data.dlc.forEach(async (dlc) => {
 						if (data.dlc.indexOf(dlc) < 4) {
-							let { body } = await request.get('https://store.steampowered.com/api/appdetails?appids=' + dlc);
+							let { body } = await request.get({ url: 'https://store.steampowered.com/api/appdetails?appids=' + dlc });
 							// @ts-ignore
 							let dlcprice = body[dlc].data.price_overview ? body[dlc].data.price_overview.final_formatted : '???';
 							// @ts-ignore

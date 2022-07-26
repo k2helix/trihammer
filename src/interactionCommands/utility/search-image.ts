@@ -20,7 +20,7 @@ export default new Command({
 		let search = (interaction as ChatInputCommandInteraction).options.getString('query');
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		try {
-			let { text } = await request.get(`https://www.google.com/search?q=${search}&tbm=isch&ie=UTF-8&safe=active`, {
+			let { text } = await request.get({
 				url: `https://www.google.com/search?q=${search}&tbm=isch&ie=UTF-8&safe=active`,
 				headers: {
 					'User-Agent': 'Mozilla/5.0 (Linux; U; Android 4.1.1; en-gb; Build/KLP) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30',

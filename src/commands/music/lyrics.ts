@@ -7,7 +7,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 async function getSongLyrics(song: string) {
 	const url = `https://www.google.com/search?q=${song} song lyrics`;
 	try {
-		let { text } = await request.get(url, {
+		let { text } = await request.get({
 			url: url,
 			headers: {
 				'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:98.0) Gecko/20100101 Firefox/98.0',

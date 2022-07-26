@@ -26,7 +26,7 @@ export default new Command({
 		}
 		if (!image!.startsWith('http')) return interaction.reply({ content: util.anime.screenshot.no_image, ephemeral: true });
 
-		let { body } = await request.get(`https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image);
+		let { body } = await request.get({ url: `https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image });
 		if (!(body as { results: Result[] }).results || (body as { results: Result[] }).results?.length === 0)
 			return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 

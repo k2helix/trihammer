@@ -14,7 +14,7 @@ export default async (client: ExtendedClient, guild: Guild) => {
 		})
 	);
 	if (config['top.gg'])
-		await request.post('https://top.gg/api/bots/stats', {
+		await request.post({
 			url: 'https://top.gg/api/bots/stats',
 			headers: {
 				'Content-Type': 'application/json',

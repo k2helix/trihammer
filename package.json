@@ -28,7 +28,7 @@
     "mongoose": "^5.13.14",
     "node-geocoder": "^4.2.0",
     "node-schedule": "^2.1.0",
-    "node-superfetch": "^0.2.3",
+    "node-superfetch": "github:k2helix/node-superfetch",
     "play-dl": "^1.9.5",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"

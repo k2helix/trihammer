@@ -19,7 +19,7 @@ export default new MessageCommand({
 
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let { body } = await request.get(`https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image);
+		let { body } = await request.get({ url: `https://saucenao.com/search.php?api_key=${process.env.SAUCENAO_API_KEY}&output_type=2&numres=1&url=` + image });
 		if (!(body as { results: Result[] }).results || (body as { results: Result[] }).results?.length === 0)
 			return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 

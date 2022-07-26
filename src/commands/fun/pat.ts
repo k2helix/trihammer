@@ -10,7 +10,7 @@ export default new MessageCommand({
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member;
 		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let { body } = await request.get('https://nekos.life/api/v2/img/pat');
+		let { body } = await request.get({ url: 'https://nekos.life/api/v2/img/pat' });
 		let embed = new EmbedBuilder();
 		embed.setTitle(client.replaceEach(kawaii.pat, { '{author}': message.member!.displayName, '{member}': user!.displayName }));
 		embed.setColor('Random');

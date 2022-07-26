@@ -8,7 +8,7 @@ export default new MessageCommand({
 	required_perms: ['AttachFiles'],
 	client_perms: ['AttachFiles'],
 	async execute(_client, message) {
-		const { body } = await request.get('https://randomfox.ca/floof/');
+		const { body } = await request.get({ url: 'https://randomfox.ca/floof/' });
 		message.channel.send({ embeds: [new EmbedBuilder().setColor('White').setImage((body as { image: string }).image)] });
 	}
 });
