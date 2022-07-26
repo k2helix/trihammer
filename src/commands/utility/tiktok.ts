@@ -90,7 +90,7 @@ export default new MessageCommand({
 				let postsRequest = await request.get({
 					url: 'https://m.tiktok.com/share/item/list?type=1&cursor=0&minCursor=0&maxCursor=0',
 					query: {
-						id: userData.user.index,
+						id: userData.user.id,
 						count: (50 * 6).toString(),
 						_signature: '_02B4Z6wo00f01dm7eCQAAIBDJ6yC3DDIHBXZq3SAABS723'
 					},
