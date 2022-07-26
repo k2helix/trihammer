@@ -8,7 +8,7 @@ export default new MessageCommand({
 	async execute(client, message) {
 		if (!client.config.administrators.includes(message.author.id)) return;
 		message.channel.send('Restarting...');
-		await request.delete('https://api.heroku.com/apps/trihammer/dynos/worker', {
+		await request.delete({
 			url: 'https://api.heroku.com/apps/trihammer/dynos/worker',
 			headers: {
 				'Content-Type': 'application/json',

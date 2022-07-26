@@ -27,7 +27,7 @@ export default new MessageCommand({
 		if (args[0] && args[0].startsWith('http')) image = args[0];
 		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
-		const { body } = await request.get(image);
+		const { body } = await request.get({ url: image });
 		const data = await loadImage(body as Buffer);
 		const canvas = createCanvas(data.width, data.height);
 		const ctx = canvas.getContext('2d');

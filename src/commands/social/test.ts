@@ -1,5 +1,5 @@
 import request from 'node-superfetch';
-import { load } from 'cheerio'
+import { load } from 'cheerio';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import { createCanvas, loadImage } from 'canvas';
 import { AttachmentBuilder } from 'discord.js';
@@ -12,7 +12,7 @@ export default new MessageCommand({
 		if (!client.config.administrators.includes(message.author.id)) return;
 		if (!args[0]) return;
 		let tenorGif = args[0];
-		let { text } = await request.get(tenorGif);
+		let { text } = await request.get({ url: tenorGif });
 		let $ = load(text!);
 		let imgUrl = $('meta[name="twitter:image"]')[0].attribs.content;
 		console.log(imgUrl);

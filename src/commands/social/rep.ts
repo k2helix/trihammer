@@ -21,7 +21,7 @@ export default new MessageCommand({
 				let hasVoted = (await reset.has(message.author.id)) ? await reset.get(message.author.id) : false;
 				if (hasVoted) return message.channel.send({ embeds: [client.blueEmbed(xp.rep.no_reset)] });
 				try {
-					let { body } = await request.get(`https://top.gg/api/bots/${client.user!.id}/check?userId=` + message.author.id, {
+					let { body } = await request.get({
 						url: `https://top.gg/api/bots/${client.user!.id}/check?userId=` + message.author.id,
 						headers: {
 							'Content-Type': 'application/json',

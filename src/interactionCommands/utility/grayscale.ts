@@ -29,7 +29,7 @@ export default new Command({
 
 		if (!image.startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(util.anime.screenshot.no_image)], ephemeral: true });
 
-		const { body } = await request.get(image);
+		const { body } = await request.get({ url: image });
 		const data = await loadImage(body as Buffer);
 		const canvas = createCanvas(data.width, data.height);
 		const ctx = canvas.getContext('2d');

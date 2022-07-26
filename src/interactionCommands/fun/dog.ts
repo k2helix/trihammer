@@ -8,7 +8,7 @@ export default new Command({
 	required_perms: ['AttachFiles'],
 	client_perms: ['AttachFiles'],
 	async execute(_client, interaction) {
-		const { body } = await request.get('https://dog.ceo/api/breeds/image/random');
+		const { body } = await request.get({ url: 'https://dog.ceo/api/breeds/image/random' });
 		interaction.reply({ embeds: [new EmbedBuilder().setColor('White').setImage((body as { message: string }).message)] });
 	}
 });
