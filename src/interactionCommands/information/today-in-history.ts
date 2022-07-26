@@ -3,7 +3,7 @@ import Command from '../../lib/structures/Command';
 
 import { EmbedBuilder } from 'discord.js';
 import request from 'node-superfetch';
-import translate from 'google-translate-api-x';
+import translate from '@vitalets/google-translate-api';
 
 function monthandday(ms: number) {
 	let date = new Date(ms),

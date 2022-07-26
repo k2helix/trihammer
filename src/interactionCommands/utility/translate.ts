@@ -1,5 +1,5 @@
 import Command from '../../lib/structures/Command';
-import translate from 'google-translate-api-x';
+import translate from '@vitalets/google-translate-api';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 // eslint-disable-next-line prettier/prettier

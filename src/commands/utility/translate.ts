@@ -1,4 +1,4 @@
-import translate from 'google-translate-api-x';
+import translate from '@vitalets/google-translate-api';
 import { EmbedBuilder } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';

@@ -1,5 +1,5 @@
 import { wordList } from './objects';
-import translate from 'google-translate-api-x';
+import translate from '@vitalets/google-translate-api';
 import { hiraganaDigraphs, hiraganaMonographs, katakanaDigraphs, katakanaHalfwidths, katakanaHalfwidthsCombined, katakanaMonographs } from './objects';
 import { EmbedBuilder, Message, TextChannel } from 'discord.js';
 import ExtendedClient from '../structures/Client';
