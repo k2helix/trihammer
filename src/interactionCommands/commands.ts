@@ -1527,6 +1527,24 @@ export default [
 		]
 	},
 	{
+		name: 'unmute',
+		description: 'Unmute someone already muted',
+		options: [
+			{
+				name: 'user',
+				type: ApplicationCommandOptionType.User,
+				description: 'The user you want to unmute',
+				required: true
+			},
+			{
+				name: 'reason',
+				type: ApplicationCommandOptionType.String,
+				description: 'The reason for your unmute',
+				required: false
+			}
+		]
+	},
+	{
 		name: 'forceban',
 		description: 'Permanently ban someone that is not in the server',
 		options: [

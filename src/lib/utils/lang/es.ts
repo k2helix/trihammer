@@ -105,6 +105,7 @@ export const config = {
 	mod_perm: 'Necesitas el rol de moderador o administrador para ejecutar el comando.',
 	required_perms: 'Necesitas los siguientes permisos para ejecutar este comando: ',
 	required_args: 'No especificaste los siguientes argumentos: ',
+	maybe_not_in_cache: ' (puede que no tenga al usuario en caché, prueba @mencionándole)',
 	command_used: ':wrench: {user} ha usado el comando **{command}** en {channel}',
 	twitter: {
 		follow: function (username, channel, id) {
@@ -171,6 +172,7 @@ export const mod = {
 	modinf: 'Infracción {infr} modificada.',
 	mkick: '{count} usuarios fueron expulsados',
 	mban: '{count} usuarios fueron baneados',
+	no_muted_role: 'No existe un rol llamado "Trimuted" en el servidor, usa el comando `mute` al menos una vez para crearlo.',
 	timeout: {
 		clear: 'El timeout de {member} fue removido',
 		timeout: '{member} recibió un timeout de {duration}. Razón: {reason}',

@@ -18,7 +18,10 @@ export default new MessageCommand({
 		let member = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
 		let reason = args.slice(1).join(' ') || 'No';
 
-		member.roles.remove(message.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted')!, `[UNMUTE] Command used by ${message.author.tag} | Reason: ${reason}`);
+		let mutedRole = message.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
+		if (!mutedRole) return message.channel.send({ embeds: [client.redEmbed(mod.no_muted_role)] });
+
+		member.roles.remove(mutedRole, `[UNMUTE] Command used by ${message.author.tag} | Reason: ${reason}`);
 		message.channel.send({
 			embeds: [client.orangeEmbed(client.replaceEach(mod.infraction, { '{user}': member.user.tag, '{action}': mod.actions['unmuted'], '{reason}': reason }))]
 		});

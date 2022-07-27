@@ -15,7 +15,7 @@ export default new MessageCommand({
 		if (!color || !color.toLowerCase().startsWith('#')) return message.channel.send({ embeds: [client.redEmbed(welcome.hex)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: message.guild!.id });
-		if (!welcome) {
+		if (!welcomeModel) {
 			let newModel = new ModelWelc({
 				server: message.guild!.id,
 				canal: 'none',

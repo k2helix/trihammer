@@ -13,7 +13,7 @@ export default new Command({
 		let msg = (interaction as ChatInputCommandInteraction).options.getString('message')!;
 
 		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
-		if (!welcome) {
+		if (!welcomeModel) {
 			let newModel = new ModelWelc({
 				server: interaction.guildId,
 				canal: 'none',
