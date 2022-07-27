@@ -261,7 +261,9 @@ export const music = {
 	queue_page: 'Página {number} de {total}',
 	need_qnumber: 'Pon un número para borrarlo de la cola',
 	must_be_number: 'Tienes que envíar un número',
+	cannot_move: 'No puedes mover la canción que está sonando ahora mismo',
 	cannot_remove: 'No puedes borrar esa canción',
+	song_moved: '**{song}** fue movida satisfactoriamente',
 	song_removed: '**{song}** ha sido removida de la cola',
 	song_removed_and_sliced: 'Se ha borrado a partir de esa canción de la cola',
 	song_404: 'La cola no tiene ninguna canción con ese número',
@@ -297,6 +299,7 @@ export const music = {
 	},
 	need_dj: {
 		remove: 'Necesitas un rol llamado DJ para borrar la canción de otro usuario',
+		move: 'Necesitas un rol llamado DJ para mover la canción de otro usuario',
 		stop: 'Necesitas un rol llamado DJ para parar la canción de otro usuario',
 		volume: 'Necesitas un rol llamado DJ para cambiar el volumen'
 	}

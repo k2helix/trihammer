@@ -1,7 +1,7 @@
-import { handleVideo, queue } from '../../lib/modules/music';
-import play from 'play-dl';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { queue } from '../../lib/modules/music';
+import { getVoiceConnection } from '@discordjs/voice';
 
 export default new MessageCommand({
 	name: 'seek',
@@ -25,10 +25,14 @@ export default new MessageCommand({
 
 		let all = Math.floor(seconds + minutes /*+ Number(hours)*/);
 		if (isNaN(all)) return;
+		if (all > Number(serverQueue.songs[0].durationInSec)) return message.channel.send({ embeds: [client.redEmbed(music.seek_cancelled)] });
 		if (all === 0) all = 0.05;
-		const video = await play.video_info(serverQueue.songs[0].url);
-		handleVideo(video.video_details, message, voiceChannel, false, all);
 
+		serverQueue.songs.splice(1, 0, serverQueue.songs[0]);
+		serverQueue.songs[1].seek = all;
+
+		//@ts-ignore
+		getVoiceConnection(message.guildId!)!.state.subscription.player.stop();
 		message.channel.send({ embeds: [client.blueEmbed(music.seek.replace('{time}', args.join(' ')))] });
 	}
 });

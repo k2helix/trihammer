@@ -64,6 +64,7 @@ export default new Command({
 				'current-song': optName ? currentSongOpt[optName] : null,
 				play: interaction.options.getBoolean('confirm-result') ? 'music-search' : 'music-play',
 				remove: 'remove',
+				move: 'move',
 				voteskip: 'voteskip',
 				forceskip: 'forceskip',
 				stop: 'stop',

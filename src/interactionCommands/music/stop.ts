@@ -18,7 +18,7 @@ export default new Command({
 
 		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission =
-			interaction.member.roles.cache.has(djRole ? djRole.id : '') ||
+			interaction.member.roles.cache.has(djRole?.id || '') ||
 			interaction.member.id === serverQueue.songs[0].requested ||
 			serverQueue.songs[0]?.requested === 'Autoplay' ||
 			serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3;

@@ -174,7 +174,9 @@ export default interface LanguageFile {
 		queue_page: string;
 		need_qnumber: string;
 		must_be_number: string;
+		cannot_move: string;
 		cannot_remove: string;
+		song_moved: string;
 		song_removed: string;
 		song_removed_and_sliced: string;
 		song_404: string;
@@ -210,6 +212,7 @@ export default interface LanguageFile {
 		};
 		need_dj: {
 			remove: string;
+			move: string;
 			stop: string;
 			volume: string;
 		};

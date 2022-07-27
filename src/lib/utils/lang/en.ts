@@ -264,7 +264,9 @@ export const music = {
 	queue_page: 'Page {number} of {total}',
 	need_qnumber: 'Type a number to delete it from the queue',
 	must_be_number: 'You must type a number',
+	cannot_move: 'You cannot move the currently playing song',
 	cannot_remove: 'You cannot delete that song',
+	song_moved: '**{song}** has been moved successfully',
 	song_removed: '**{song}** has been removed from the queue',
 	song_removed_and_sliced: 'The songs from that song to the end where removed from the queue',
 	song_404: "There isn't a song with that number in the queue",
@@ -299,8 +301,9 @@ export const music = {
 		}
 	},
 	need_dj: {
-		remove: 'You need a role named DJ to remove a song of other member',
-		stop: 'You need a role named DJ to stop a song of other member.',
+		remove: 'You need a role named DJ to remove a song of another member',
+		move: 'You need a role named DJ to move a song of another member',
+		stop: 'You need a role named DJ to stop a song of another member.',
 		volume: 'You need a role named DJ to change the volume'
 	}
 } as LanguageFile['music'];
