@@ -38,7 +38,7 @@ export default new MessageCommand({
 						for (let index = 0; index < songs.length; index++) {
 							const track = songs[index];
 							let searched = await play.search(`${track.artists[0]?.name} ${track.name}`, { limit: 1 }).catch(() => false);
-							if (typeof searched !== 'boolean' && searched[0]) handleVideo(searched[0], message, voiceChannel, true, 0);
+							if (typeof searched !== 'boolean' && searched[0]) handleVideo(searched[0], message, voiceChannel, true);
 						}
 						return;
 					} else {
@@ -46,7 +46,7 @@ export default new MessageCommand({
 							return client.catchError(err, message.channel as TextChannel);
 						})) as YouTubeVideo[];
 						if (typeof searched === 'boolean' || searched.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
-						return handleVideo((searched as YouTubeVideo[])[0], message, voiceChannel, false, 0);
+						return handleVideo((searched as YouTubeVideo[])[0], message, voiceChannel, false);
 					}
 				} catch (err) {
 					return client.catchError(err, message.channel as TextChannel);
@@ -56,7 +56,7 @@ export default new MessageCommand({
 			const playlist = await play.playlist_info(searchString, { incomplete: true });
 			const videos = await playlist.all_videos();
 			videos.forEach(async (video) => {
-				await handleVideo(video, message, voiceChannel, true, 0);
+				await handleVideo(video, message, voiceChannel, true);
 			});
 			return message.channel.send({ embeds: [client.blueEmbed(music.playlist.replace('{playlist}', playlist.title!))] });
 		} else {
@@ -70,7 +70,7 @@ export default new MessageCommand({
 					if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 					video = (await play.video_info((videos as YouTubeVideo[])[0].id!)).video_details;
 				}
-				handleVideo(video, message, voiceChannel, false, 0);
+				handleVideo(video, message, voiceChannel, false);
 			} catch (err) {
 				message.channel.send({
 					embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', music.that_video) + `\`${(err as Error).message}\``).setColor('Red')]

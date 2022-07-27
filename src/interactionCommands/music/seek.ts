@@ -1,8 +1,7 @@
 import { queue } from '../../lib/modules/music';
-import { handleVideo } from '../../lib/modules/music';
-import play from 'play-dl';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+import { getVoiceConnection } from '@discordjs/voice';
 
 export default new Command({
 	name: 'seek',
@@ -26,9 +25,14 @@ export default new Command({
 
 		let all = Math.floor(seconds + minutes /*+ Number(hours)*/);
 		if (isNaN(all)) return interaction.reply({ embeds: [client.redEmbed('Invalid timestamp')], ephemeral: true });
+		if (all > Number(serverQueue.songs[0].durationInSec)) return interaction.reply({ embeds: [client.redEmbed(music.seek_cancelled)], ephemeral: true });
 		if (all === 0) all = 0.05;
-		const video = await play.video_info(serverQueue.songs[0].url);
-		handleVideo(video.video_details, interaction, voiceChannel, false, all);
+
+		serverQueue.songs.splice(1, 0, serverQueue.songs[0]);
+		serverQueue.songs[1].seek = all;
+
+		//@ts-ignore
+		getVoiceConnection(interaction.guildId)!.state.subscription.player.stop();
 		interaction.reply({ embeds: [client.blueEmbed(music.seek.replace('{time}', interaction.options.getString('timestamp')!))] });
 	}
 });

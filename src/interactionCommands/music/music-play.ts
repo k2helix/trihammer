@@ -37,7 +37,7 @@ export default new Command({
 						for (let index = 0; index < songs.length; index++) {
 							const track = songs[index];
 							let searched = await play.search(`${track.artists[0]?.name} ${track.name}`, { limit: 1 }).catch(() => false);
-							if (typeof searched !== 'boolean' && searched[0]) handleVideo(searched[0], interaction as Interaction, voiceChannel, true, 0);
+							if (typeof searched !== 'boolean' && searched[0]) handleVideo(searched[0], interaction as Interaction, voiceChannel, true);
 						}
 						return;
 					} else {
@@ -45,7 +45,7 @@ export default new Command({
 							return client.catchError(err, interaction.channel as TextChannel);
 						})) as YouTubeVideo[];
 						if (typeof searched === 'boolean' || searched.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
-						handleVideo((searched as YouTubeVideo[])[0], interaction as Interaction, voiceChannel, false, 0);
+						handleVideo((searched as YouTubeVideo[])[0], interaction as Interaction, voiceChannel, false);
 						return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${searched[0].title}**`))], ephemeral: true });
 					}
 				} catch (err) {
@@ -56,7 +56,7 @@ export default new Command({
 			const playlist = await play.playlist_info(searchString, { incomplete: true });
 			const videos = await playlist.all_videos();
 			videos.forEach(async (video) => {
-				await handleVideo(video, interaction as Interaction, voiceChannel, true, 0);
+				await handleVideo(video, interaction as Interaction, voiceChannel, true);
 			});
 			return interaction.reply({ embeds: [client.blueEmbed(music.playlist.replace('{playlist}', playlist.title!))] });
 		} else {
@@ -70,7 +70,7 @@ export default new Command({
 					if (typeof videos === 'boolean' || videos?.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 					video = (await play.video_info((videos as YouTubeVideo[])[0].id!)).video_details;
 				}
-				handleVideo(video, interaction as Interaction, voiceChannel, false, 0);
+				handleVideo(video, interaction as Interaction, voiceChannel, false);
 				return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${video.title}**`))], ephemeral: true });
 			} catch (err) {
 				interaction.reply({

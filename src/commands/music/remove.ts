@@ -28,7 +28,7 @@ export default new MessageCommand({
 
 		const djRole = message.guild!.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 
-		let permission = message.member!.roles.cache.has(djRole ? djRole.id : '') || message.member!.id === song.requested;
+		let permission = message.member!.roles.cache.has(djRole?.id || '') || message.member!.id === song.requested;
 		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.remove)] });
 
 		if (args[1] === 'slice') {

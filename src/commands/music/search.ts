@@ -53,6 +53,6 @@ export default new MessageCommand({
 		}
 		// @ts-ignore
 		const actualVideo = videos[selected.values[0]];
-		await handleVideo(actualVideo, message, voiceChannel, false, 0);
+		await handleVideo(actualVideo, message, voiceChannel, false);
 	}
 });

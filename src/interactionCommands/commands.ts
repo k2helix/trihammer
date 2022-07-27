@@ -791,6 +791,25 @@ export default [
 				]
 			},
 			{
+				name: 'move',
+				description: 'Move a song from the queue to another position',
+				type: ApplicationCommandOptionType.Subcommand,
+				options: [
+					{
+						name: 'current',
+						type: ApplicationCommandOptionType.String,
+						description: 'The current position of the song',
+						required: true
+					},
+					{
+						name: 'new',
+						type: ApplicationCommandOptionType.String,
+						description: 'The new position of the song',
+						required: true
+					}
+				]
+			},
+			{
 				name: 'view',
 				description: 'View the queue',
 				type: ApplicationCommandOptionType.Subcommand,

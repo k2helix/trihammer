@@ -2,18 +2,18 @@ import { Queue, Song } from '../structures/interfaces/MusicInterfaces';
 import { ModelServer, Server } from '../utils/models';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, Interaction, Message, VoiceBasedChannel } from 'discord.js';
-import { array_move, compareTwoStrings } from '../utils/functions';
+import { compareTwoStrings } from '../utils/functions';
 import { DiscordGatewayAdapterCreator, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import LanguageFile from '../structures/interfaces/LanguageFile';
 
 // const prism = require('prism-media');
 
-function swap<T>(array: T[], x: number, y: number) {
-	const b = array[x];
-	array[x] = array[y];
-	array[y] = b;
-	return array;
-}
+// function swap<T>(array: T[], x: number, y: number) {
+// 	const b = array[x];
+// 	array[x] = array[y];
+// 	array[y] = b;
+// 	return array;
+// }
 // var googleTTS = require('google-tts-api');
 // const https = require('https');
 
@@ -75,13 +75,14 @@ async function play(guild: Guild, song: Song) {
 		});
 		serverQueue.songs.shift(); // skip to next song
 		if (!serverQueue.songs[0]) {
-			if (serverQueue.leaveTimeout) return;
-			serverQueue.leaveTimeout = setTimeout(() => {
-				getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
-				return queue.delete(serverQueue.voiceChannel.guildId);
-			}, 30000);
+			if (!serverQueue.leaveTimeout)
+				serverQueue.leaveTimeout = setTimeout(() => {
+					getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
+					return queue.delete(serverQueue.voiceChannel.guildId);
+				}, 30000);
 		} else {
-			if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
+			if (serverQueue.shuffle && serverQueue.songs[0].seek === 0)
+				serverQueue.songs.splice(0, 0, serverQueue.songs.splice(Math.floor(Math.random() * serverQueue.songs.length), 1)[0]);
 			play(guild, serverQueue.songs[0]);
 		}
 		return;
@@ -136,13 +137,14 @@ async function play(guild: Guild, song: Song) {
 					serverQueue.songs[serverQueue.songs.length - 1].seek = 0;
 				} else serverQueue.songs.shift();
 				if (!serverQueue.songs[0]) {
-					if (serverQueue.leaveTimeout) return;
-					serverQueue.leaveTimeout = setTimeout(() => {
-						getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
-						return queue.delete(serverQueue.voiceChannel.guildId);
-					}, 30000);
+					if (!serverQueue.leaveTimeout)
+						serverQueue.leaveTimeout = setTimeout(() => {
+							getVoiceConnection(serverQueue.voiceChannel.guildId)!.destroy();
+							return queue.delete(serverQueue.voiceChannel.guildId);
+						}, 30000);
 				} else {
-					if (serverQueue.shuffle) serverQueue.songs = swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length));
+					if (serverQueue.shuffle && serverQueue.songs[0].seek === 0)
+						serverQueue.songs.splice(0, 0, serverQueue.songs.splice(Math.floor(Math.random() * serverQueue.songs.length), 1)[0]); //swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length)); // change the song that is gonna be played with a random song
 					play(guild, serverQueue.songs[0]);
 				}
 			}
@@ -171,7 +173,7 @@ async function play(guild: Guild, song: Song) {
 	// });
 }
 
-async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceBasedChannel, playlist = false, seek = 0) {
+async function handleVideo(video: YouTubeVideo, message: Message | Interaction, voiceChannel: VoiceBasedChannel, playlist = false) {
 	const serverQueue = queue.get(message.guildId!);
 	// function humanize(object) {
 	// 	let arr = [];
@@ -196,7 +198,7 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 		},
 		url: `https://www.youtube.com/watch?v=${video.id}`,
 		requested: message instanceof Message ? message.author.id : message.user.id,
-		seek: seek,
+		seek: 0,
 		skip: []
 	};
 	if (!serverQueue) {
@@ -236,13 +238,6 @@ async function handleVideo(video: YouTubeVideo, message: Message | Interaction, 
 		}).lean();
 		const lang = guildConfig.lang;
 		const { music } = (await import(`../utils/lang/${lang}`)) as LanguageFile;
-		if (seek) {
-			if (song.seek > Number(song.durationInSec)) return serverQueue.textChannel.send(music.seek_cancelled);
-			array_move(serverQueue.songs, serverQueue.songs.length - 1, 1);
-			// @ts-ignore
-			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
-			return;
-		}
 		if (serverQueue.leaveTimeout) {
 			clearTimeout(serverQueue.leaveTimeout);
 			serverQueue.leaveTimeout = null;

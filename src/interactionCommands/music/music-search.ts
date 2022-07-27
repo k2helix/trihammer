@@ -55,7 +55,7 @@ export default new Command({
 		}
 		// @ts-ignore
 		const actualVideo = videos[selected.values[0]];
-		await handleVideo(actualVideo, interaction, voiceChannel, false, 0);
+		await handleVideo(actualVideo, interaction, voiceChannel, false);
 		return interaction.editReply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${actualVideo.title}**`))] });
 	}
 });
