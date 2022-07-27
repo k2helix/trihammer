@@ -96,7 +96,7 @@ readdir(join(__dirname, 'events'), (err, files) => {
 
 process.on('unhandledRejection', (error: Error) => {
 	if (config.use_sentry) captureException(error);
-	else console.error(error);
+	console.error(error);
 	(client.channels.cache.get(config.logs_channel) as TextChannel).send(`[ERROR]\`\`\`js\n${error.stack}\`\`\``);
 });
 

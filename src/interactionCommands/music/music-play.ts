@@ -1,7 +1,7 @@
 import Command from '../../lib/structures/Command';
 import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
 import { handleVideo } from '../../lib/modules/music';
-import { Interaction, TextChannel } from 'discord.js';
+import { EmbedBuilder, Interaction, TextChannel } from 'discord.js';
 import config from '../../../config.json';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new Command({
@@ -73,7 +73,10 @@ export default new Command({
 				handleVideo(video, interaction as Interaction, voiceChannel, false, 0);
 				return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${video.title}**`))], ephemeral: true });
 			} catch (err) {
-				client.catchError(err, interaction.channel as TextChannel);
+				interaction.reply({
+					embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', music.that_video) + `\`${(err as Error).message}\``).setColor('Red')]
+				});
+				client.catchError(err, interaction.channel as TextChannel, false);
 			}
 		}
 	}

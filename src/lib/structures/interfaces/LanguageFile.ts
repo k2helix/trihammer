@@ -164,6 +164,7 @@ export default interface LanguageFile {
 		lyrics_not_found: string;
 		not_found: string;
 		error_nothing_found: string;
+		that_video: string;
 		error_stream: string;
 		length: string;
 		now_playing: string;

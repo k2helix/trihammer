@@ -18,7 +18,7 @@ export default new MessageCommand({
 	description: 'Get your rank card',
 	cooldown: 3,
 	category: 'social',
-	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
+	required_args: [{ index: 0, name: 'user', type: 'member', optional: true }],
 	client_perms: ['AttachFiles'],
 	async execute(_client, message, args) {
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member!;

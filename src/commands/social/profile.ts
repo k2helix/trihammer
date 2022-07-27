@@ -26,7 +26,7 @@ export default new MessageCommand({
 	cooldown: 3,
 	category: 'social',
 	client_perms: ['AttachFiles'],
-	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
+	required_args: [{ index: 0, name: 'user', type: 'member', optional: true }],
 	async execute(_client, message, args) {
 		let user = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]) || message.member!;
 

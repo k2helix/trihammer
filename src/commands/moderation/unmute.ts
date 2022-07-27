@@ -5,7 +5,7 @@ export default new MessageCommand({
 	description: 'Unmute a user',
 	category: 'moderation',
 	required_args: [
-		{ index: 0, name: 'user', type: 'user' },
+		{ index: 0, name: 'user', type: 'member' },
 		{ index: 1, name: 'reason', type: 'string', optional: true }
 	],
 	required_perms: ['ManageMessages'],
@@ -16,6 +16,8 @@ export default new MessageCommand({
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let member = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
+		if (!member.manageable) return message.channel.send({ embeds: [client.redEmbed(mod.not_moderatable)] });
+
 		let reason = args.slice(1).join(' ') || 'No';
 
 		let mutedRole = message.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');

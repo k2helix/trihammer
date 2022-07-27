@@ -250,6 +250,7 @@ export const music = {
 	lyrics_not_found: 'No encontré la letra de la canción que pediste. Intenta especificar más (el/la artista...)',
 	not_found: 'No se ha encontrado nada.',
 	error_nothing_found: 'Ocurrió un error al buscar ese vídeo: ',
+	that_video: 'ese vídeo',
 	error_stream:
 		'Ocurrió un error al intentar reproducir {video}, **es muy probable que el vídeo tenga restricción de edad (y por tanto no pueda ponerlo)**. Más información abajo\n\n',
 	length: 'La letra es demasiado larga',

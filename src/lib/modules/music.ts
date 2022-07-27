@@ -2,10 +2,10 @@ import { Queue, Song } from '../structures/interfaces/MusicInterfaces';
 import { ModelServer, Server } from '../utils/models';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, Interaction, Message, VoiceBasedChannel } from 'discord.js';
-import { array_move } from '../utils/functions';
+import { array_move, compareTwoStrings } from '../utils/functions';
 import { DiscordGatewayAdapterCreator, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import LanguageFile from '../structures/interfaces/LanguageFile';
-import { compareTwoStrings } from '../utils/functions';
+
 // const prism = require('prism-media');
 
 function swap<T>(array: T[], x: number, y: number) {
@@ -68,8 +68,8 @@ async function play(guild: Guild, song: Song) {
 		source = await stream(song.url, { seek: song.seek || 0 });
 	} catch (error) {
 		if (!(error instanceof Error)) throw new Error('Unexpected non-error thrown');
-		console.log('Tried with play-dl, got error ' + error.message);
-		console.error(error);
+		Promise.reject(error); //cannot call client.catchError here, so handle it with the unhandledRejection event in the index file
+
 		serverQueue.textChannel.send({
 			embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', serverQueue.songs[0].title) + `\`${error.message}\``).setColor('Red')]
 		});

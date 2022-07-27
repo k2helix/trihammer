@@ -12,6 +12,8 @@ export default new Command({
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let member = (interaction as ChatInputCommandInteraction).options.getMember('user')! as GuildMember;
+		if (!member.manageable) return interaction.reply({ embeds: [client.redEmbed(mod.not_moderatable)] });
+
 		let reason = (interaction as ChatInputCommandInteraction).options.getString('reason') || 'No';
 
 		let mutedRole = interaction.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
