@@ -8,7 +8,7 @@ export default new Command({
 	required_perms: ['AttachFiles'],
 	client_perms: ['AttachFiles'],
 	async execute(_client, interaction) {
-		const { body } = await request.get({ url: 'https://shibe.online/api/birds' }).query({
+		const { body } = await request.get('https://shibe.online/api/birds').query({
 			count: '1',
 			urls: 'true',
 			httpsUrls: 'true'

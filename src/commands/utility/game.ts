@@ -53,7 +53,7 @@ export default new MessageCommand({
 			if (steamGame.toLowerCase().includes('-search')) {
 				let index = steamGame.indexOf('-search');
 				steamGame = steamGame.slice(0, index);
-				result = await request.get({ url: `http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US` });
+				result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
 				// @ts-ignore
 				if (result.body.total == 0) return message.channel.send({ embeds: [client.redEmbed(util.game.not_found)] });
 
@@ -92,7 +92,7 @@ export default new MessageCommand({
 				}
 			} else {
 				// @ts-ignore
-				result = await request.get({ url: `http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US` });
+				result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
 				// @ts-ignore
 				appId = result.body.items[0].id;
 			}
@@ -100,7 +100,7 @@ export default new MessageCommand({
 			let tags: string[] = [];
 			// @ts-ignore
 			let steamDLCs: string[] = [];
-			let { body } = await request.get({ url: `http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}` });
+			let { body } = await request.get(`http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}`);
 			// @ts-ignore
 			let data = body[appId].data;
 			let price = data.price_overview ? data.price_overview.final_formatted : '???';
@@ -130,7 +130,7 @@ export default new MessageCommand({
 				// @ts-ignore
 				data.dlc.forEach(async (dlc) => {
 					if (data.dlc.indexOf(dlc) < 4) {
-						let { body } = await request.get({ url: 'https://store.steampowered.com/api/appdetails?appids=' + dlc });
+						let { body } = await request.get('https://store.steampowered.com/api/appdetails?appids=' + dlc);
 						// @ts-ignore
 						let dlcprice = body[dlc].data.price_overview ? body[dlc].data.price_overview.final_formatted : '???';
 						// @ts-ignore

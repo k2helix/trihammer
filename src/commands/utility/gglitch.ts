@@ -57,7 +57,7 @@ export default new MessageCommand({
 //     if (attachments[0]) image = attachments[0].url
 //     if(user.id === message.member.id && args[0] && args[0].startsWith('http')) image = args[0]
 //     if(!image.toLowerCase().includes('.gif')) return message.channel.send(langcode === 'es' ? "Eso no parece un gif, asegúrate de que el archivo sea .gif" : "That doesn't seem like a gif, make sure that the file is .gif")
-// const { body, headers } = await request.get({ url: image });
+// const { body, headers } = await request.get(image);
 // if(Math.floor(headers['content-length']/1e6) > 3) return message.channel.send(langcode === 'es' ? "El gif es demasiado pesado, tiene que ser inferior a 3MB" : "The gif is heavier than the maximum, it must be lower than 3MB")
 // const data = await loadImage(body)
 // let width = data.width

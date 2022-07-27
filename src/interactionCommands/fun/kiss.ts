@@ -13,7 +13,7 @@ export default new Command({
 		let user = interaction.options.getUser('user') || interaction.user;
 		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		let { body } = await request.get({ url: 'https://nekos.life/api/v2/img/kiss' });
+		let { body } = await request.get('https://nekos.life/api/v2/img/kiss');
 		let embed = new EmbedBuilder();
 		embed.setTitle(client.replaceEach(kawaii.kiss, { '{author}': interaction.user.username, '{member}': user.username }));
 		embed.setColor('Random');

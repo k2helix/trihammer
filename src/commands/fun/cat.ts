@@ -8,7 +8,7 @@ export default new MessageCommand({
 	required_perms: ['AttachFiles'],
 	client_perms: ['AttachFiles'],
 	async execute(_client, message) {
-		const { body } = await request.get({ url: 'https://api.thecatapi.com/v1/images/search' }); //https://aws.random.cat/meow
+		const { body } = await request.get('https://api.thecatapi.com/v1/images/search'); //https://aws.random.cat/meow
 		message.channel.send({ embeds: [new EmbedBuilder().setColor('White').setImage((body as { url: string }[])[0].url)] });
 	}
 });

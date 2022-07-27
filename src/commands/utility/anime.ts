@@ -86,7 +86,7 @@ async function getInfoFromURL(url: string) {
 
 	url = encodeURI(url);
 
-	let { body } = await request.get({ url: url });
+	let { body } = await request.get(url);
 	const res = parsePage(body as Buffer);
 	res.id = +url.split(/\/+/)[3];
 	res.url = url;
@@ -112,7 +112,7 @@ interface SearchResultsDataModel {
 }
 
 async function getResultsFromSearch(keyword: string) {
-	let { body } = await request.get({ url: 'https://myanimelist.net/search/prefix.json?type=anime&keyword=' + keyword });
+	let { body } = await request.get('https://myanimelist.net/search/prefix.json?type=anime&keyword=' + keyword);
 	const items: SearchResultsDataModel[] = [];
 	if (!(body as { categories: { items: SearchResultsDataModel[] }[] }).categories) return;
 	(body as { categories: { items: SearchResultsDataModel[] }[] }).categories.forEach((elem) => {
