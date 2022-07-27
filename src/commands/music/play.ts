@@ -1,7 +1,7 @@
 import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
 import config from '../../../config.json';
 import { handleVideo } from '../../lib/modules/music';
-import { TextChannel } from 'discord.js';
+import { EmbedBuilder, TextChannel } from 'discord.js';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
@@ -72,7 +72,10 @@ export default new MessageCommand({
 				}
 				handleVideo(video, message, voiceChannel, false, 0);
 			} catch (err) {
-				client.catchError(err, message.channel as TextChannel);
+				message.channel.send({
+					embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', music.that_video) + `\`${(err as Error).message}\``).setColor('Red')]
+				});
+				client.catchError(err, message.channel as TextChannel, false);
 			}
 		}
 	}

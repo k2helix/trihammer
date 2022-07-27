@@ -10,7 +10,7 @@ export default new MessageCommand({
 	name: 'rep',
 	description: 'Give a reputation point to a member',
 	category: 'social',
-	required_args: [{ index: 0, name: 'user', type: 'user', optional: true }],
+	required_args: [{ index: 0, name: 'user', type: 'member', optional: true }],
 	async execute(client, message, args, guildConf) {
 		let user = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
 

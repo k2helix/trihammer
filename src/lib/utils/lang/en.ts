@@ -254,8 +254,8 @@ export const music = {
 	lyrics_not_found: 'I could not find the lyrics of the song you requested. Try being more specific (the artist...)',
 	not_found: 'Nothing could be found',
 	error_nothing_found: 'There was an error while searching for that video: ',
+	that_video: 'that video',
 	error_stream: "There was an error when attempting to play {video}, **it is highly possible that it is age restricted (therefore I can't play it)**. More info below\n\n",
-
 	length: 'Lyrics are too long',
 	now_playing: '__Now playing__',
 	requested_by: 'Requested by:',

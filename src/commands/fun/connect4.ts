@@ -68,7 +68,7 @@ export default new MessageCommand({
 	description: 'Play connect 4 with a friend',
 	aliases: ['connectfour', 'connect-four', 'c4'],
 	category: 'fun',
-	required_args: [{ index: 0, type: 'user', name: 'user' }],
+	required_args: [{ index: 0, type: 'member', name: 'user' }],
 	client_perms: ['ManageMessages'],
 	async execute(client, message, args, guildConf) {
 		const opponent = message.mentions.members!.first() || message.guild!.members.cache.get(args[0]);

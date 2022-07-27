@@ -30,6 +30,6 @@ export default new MessageCommand({
 			.then(() => {
 				message.channel.send({ embeds: [client.lightBlueEmbed(client.replaceEach(mod.role_added, { '{member}': member.user.tag, '{role}': role!.name }))] });
 			})
-			.catch((error) => message.channel.send(error.message));
+			.catch((error) => message.channel.send({ embeds: [client.redEmbed(error.message)] }));
 	}
 });

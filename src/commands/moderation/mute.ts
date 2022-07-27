@@ -18,6 +18,7 @@ export default new MessageCommand({
 		const { mod, functions } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let member = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0]);
+		if (!member.manageable) return message.channel.send({ embeds: [client.redEmbed(mod.not_moderatable)] });
 
 		let time = functions.Convert(args[1]);
 		let timeString = time ? args[1] : 'N/A';
