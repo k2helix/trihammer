@@ -17,6 +17,8 @@ export default new Command({
 		let mutedRole = interaction.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
 		if (!mutedRole) return interaction.reply({ embeds: [client.redEmbed(mod.no_muted_role)] });
 
+		if (!member.roles.cache.has(mutedRole.id))
+			return interaction.reply({ embeds: [client.redEmbed(client.replaceEach(mod.has_role_nt, { '{member}': `<@${member.id}>`, '{role}': 'Trimuted' }))] });
 		member.roles.remove(mutedRole, `[UNMUTE] Command used by ${interaction.user.tag} | Reason: ${reason}`);
 		interaction.reply({
 			embeds: [client.orangeEmbed(client.replaceEach(mod.infraction, { '{user}': member.user.tag, '{action}': mod.actions['unmuted'], '{reason}': reason }))]

@@ -42,6 +42,9 @@ export default new Command({
 			});
 		}
 
+		if (member.roles.cache.has(mutedRole.id))
+			return interaction.reply({ embeds: [client.redEmbed(client.replaceEach(mod.has_role, { '{member}': `<@${member.id}>`, '{role}': 'Trimuted' }))] });
+
 		if ((interaction as ChatInputCommandInteraction).options.getBoolean('notify'))
 			member
 				.send(client.replaceEach(mod.infraction_md, { '{action}': mod.actions['muted'], '{server}': interaction.guild!.name, '{reason}': reason, '{time}': timeString }))

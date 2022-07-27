@@ -20,8 +20,13 @@ type required_arg = { index: number; name: string; type: string; optional?: bool
 function moveArgumentsIndex(required_args: required_arg[], arg: required_arg) {
 	let followingArgs = required_args.filter((a) => a.index > arg.index);
 	followingArgs.forEach((a) => {
-		a.index = a.index - 1;
+		a.index--;
 	});
+}
+
+function addToRequired(required_args: required_arg[], arg: required_arg, missing_args: string[]) {
+	if (arg.optional) return moveArgumentsIndex(required_args, arg);
+	missing_args.push(arg.name);
 }
 
 const cooldowns = new Collection();
@@ -152,10 +157,7 @@ export default async (client: ExtendedClient, message: Message) => {
 			switch (type) {
 				case 'user': {
 					let user = message.mentions.users.first() || (await client.users.fetch(args[index]).catch(() => undefined));
-					if (!user) {
-						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-						requiredArgs.push(arg.name);
-					}
+					if (!user) addToRequired(tmpArgs, arg, requiredArgs);
 					// else options[arg.name] = user and some edits to the MessageCommand class would make it work like I said above
 					break;
 				}
@@ -169,10 +171,7 @@ export default async (client: ExtendedClient, message: Message) => {
 				}
 				case 'channel': {
 					let channel = (message.mentions.channels.first() as GuildChannel) || message.guild!.channels.cache.get(args[index]);
-					if (!channel) {
-						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-						requiredArgs.push(arg.name);
-					}
+					if (!channel) addToRequired(tmpArgs, arg, requiredArgs);
 					break;
 				}
 				case 'role':
@@ -181,31 +180,19 @@ export default async (client: ExtendedClient, message: Message) => {
 							message.mentions.roles.first() ||
 							message.guild?.roles.cache.get(args[index]) ||
 							message.guild?.roles.cache.find((r) => r.name.toLowerCase() === args[index].toLowerCase());
-						if (!role) {
-							if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-							requiredArgs.push(arg.name);
-						}
+						if (!role) addToRequired(tmpArgs, arg, requiredArgs);
 					}
 					break;
 				case 'number':
-					if (isNaN(parseInt(args[index]))) {
-						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-						requiredArgs.push(arg.name);
-					}
+					if (isNaN(parseInt(args[index]))) addToRequired(tmpArgs, arg, requiredArgs);
 					break;
 				case 'string':
-					if (!args[index]) {
-						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-						requiredArgs.push(arg.name);
-					}
+					if (!args[index]) addToRequired(tmpArgs, arg, requiredArgs);
 					break;
 				default: {
 					if (type.includes('|')) {
 						let opt = type.split(' | ');
-						if (!opt.some((o) => args[index] === o)) {
-							if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-							requiredArgs.push(arg.name);
-						}
+						if (!opt.some((o) => args[index] === o)) addToRequired(tmpArgs, arg, requiredArgs);
 					}
 					break;
 				}
