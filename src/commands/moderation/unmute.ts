@@ -21,6 +21,9 @@ export default new MessageCommand({
 		let mutedRole = message.guild!.roles.cache.find((r) => r.name.toLowerCase() === 'trimuted');
 		if (!mutedRole) return message.channel.send({ embeds: [client.redEmbed(mod.no_muted_role)] });
 
+		if (!member.roles.cache.has(mutedRole.id))
+			return message.channel.send({ embeds: [client.redEmbed(client.replaceEach(mod.has_role_nt, { '{member}': `<@${member.id}>`, '{role}': 'Trimuted' }))] });
+
 		member.roles.remove(mutedRole, `[UNMUTE] Command used by ${message.author.tag} | Reason: ${reason}`);
 		message.channel.send({
 			embeds: [client.orangeEmbed(client.replaceEach(mod.infraction, { '{user}': member.user.tag, '{action}': mod.actions['unmuted'], '{reason}': reason }))]

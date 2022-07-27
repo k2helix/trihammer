@@ -22,7 +22,9 @@ export default new MessageCommand({
 			message.mentions.roles.first() ||
 			message.guild!.roles.cache.get(args[1]) ||
 			message.guild!.roles.cache.find((r) => r.name.toLowerCase() === args.slice(1).join(' ').toLowerCase());
-		if (!role || role?.comparePositionTo(message.guild!.members.me!.roles.highest) > 0) return message.channel.send({ embeds: [client.redEmbed(mod.role_404)] });
+		if (!role || role.comparePositionTo(message.guild!.members.me!.roles.highest) > 0) return message.channel.send({ embeds: [client.redEmbed(mod.role_404)] });
+		if (member.roles.cache.has(role.id))
+			return message.channel.send({ embeds: [client.redEmbed(client.replaceEach(mod.has_role, { '{member}': `<@${member.id}>`, '{role}': role.name }))] });
 		member.roles
 			.add(role, `[ADD ROLE] Command used by ${message.author.tag}`)
 			.then(() => {

@@ -47,6 +47,9 @@ export default new MessageCommand({
 			});
 		}
 
+		if (member.roles.cache.has(mutedRole.id))
+			return message.channel.send({ embeds: [client.redEmbed(client.replaceEach(mod.has_role, { '{member}': `<@${member.id}>`, '{role}': 'Trimuted' }))] });
+
 		let sendDM = !message.content.toLowerCase().includes('-nodm');
 
 		switch (sendDM) {

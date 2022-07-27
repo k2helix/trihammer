@@ -15,7 +15,10 @@ export default new Command({
 		if (!member.manageable) return interaction.reply({ embeds: [client.redEmbed(mod.not_moderatable)], ephemeral: true });
 
 		let role = (interaction as ChatInputCommandInteraction).options.getRole('role')! as Role;
-		if (!role || role?.comparePositionTo(interaction.guild!.members.me!.roles.highest) > 0) return interaction.reply({ embeds: [client.redEmbed(mod.role_404)], ephemeral: true });
+		if (!role || role.comparePositionTo(interaction.guild!.members.me!.roles.highest) > 0)
+			return interaction.reply({ embeds: [client.redEmbed(mod.role_404)], ephemeral: true });
+		if (!member.roles.cache.has(role.id))
+			return interaction.reply({ embeds: [client.redEmbed(client.replaceEach(mod.has_role_nt, { '{member}': `<@${member.id}>`, '{role}': role.name }))], ephemeral: true });
 		member.roles
 			.remove(role, `[REMOVE ROLE] Command used by ${interaction.user.tag}`)
 			.then(() => {
