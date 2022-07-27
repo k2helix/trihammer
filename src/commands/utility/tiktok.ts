@@ -34,7 +34,7 @@ export default new MessageCommand({
 			let instances = ['https://proxitok.herokuapp.com', 'https://proxitok.pussthecat.org', 'https://proxitok.privacydev.net'];
 			let currentInstance = 0;
 			do {
-				let r = await request.get({ url: `${instances[currentInstance]}/@${args[0]}` }).catch(() => null);
+				let r = await request.get(`${instances[currentInstance]}/@${args[0]}`).catch(() => null);
 				if (r?.status === 200) {
 					let $ = load(r.text as string);
 					let posts = $('div[class="media-content"]');
@@ -111,7 +111,7 @@ export default new MessageCommand({
 			const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 			if (!currentPost) return msg.edit({ embeds: [client.redEmbed(music.not_found)] });
-			currentPost.video.shortened_video = (await request.get({ url: 'https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0] }).catch(() => null))?.text;
+			currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder().setCustomId('dobleleft').setEmoji({ id: '882631909442744350' }).setStyle(ButtonStyle.Primary),
@@ -145,9 +145,7 @@ export default new MessageCommand({
 						currentPost = postsData[currentIndex - 10]?.itemInfos || postsData[0].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex - 10] ? currentIndex - 10 : 0;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (
-								await request.get({ url: 'https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0] }).catch(() => null)
-							)?.text;
+							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${args[0]}`,
@@ -166,9 +164,7 @@ export default new MessageCommand({
 						currentPost = postsData[currentIndex - 1]?.itemInfos || postsData[postsData.length - 1].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex - 1] ? currentIndex - 1 : postsData.length - 1;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (
-								await request.get({ url: 'https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0] }).catch(() => null)
-							)?.text;
+							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${args[0]}`,
@@ -187,9 +183,7 @@ export default new MessageCommand({
 						currentPost = postsData[currentIndex + 1]?.itemInfos || postsData[0].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex + 1] ? currentIndex + 1 : 0;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (
-								await request.get({ url: 'https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0] }).catch(() => null)
-							)?.text;
+							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${args[0]}`,
@@ -208,9 +202,7 @@ export default new MessageCommand({
 						currentPost = postsData[currentIndex + 10]?.itemInfos || postsData[postsData.length - 1].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex + 10] ? currentIndex + 10 : postsData.length - 1;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (
-								await request.get({ url: 'https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0] }).catch(() => null)
-							)?.text;
+							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${args[0]}`,

@@ -36,7 +36,7 @@ export default new Command({
 
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-		const { text } = await request.get({ url: `http://history.muffinlabs.com/date/${date}` });
+		const { text } = await request.get(`http://history.muffinlabs.com/date/${date}`);
 		const body = JSON.parse(text!);
 		const events = body.data.Events;
 		const event = events[Math.floor(Math.random() * events.length)];

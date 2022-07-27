@@ -51,7 +51,7 @@ export default new Command({
 				let result;
 				let appId;
 				if ((interaction as ChatInputCommandInteraction).options.getBoolean('confirm-result')) {
-					result = await request.get({ url: `http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US` });
+					result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
 					// @ts-ignore
 					if (result.body.total == 0) return interaction.editReply({ content: util.game.not_found, ephemeral: true });
 
@@ -91,7 +91,7 @@ export default new Command({
 					}
 				} else {
 					// @ts-ignore
-					result = await request.get({ url: `http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US` });
+					result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
 					// @ts-ignore
 					appId = result.body.items[0].id;
 				}
@@ -99,7 +99,7 @@ export default new Command({
 				let tags: string[] = [];
 				// @ts-ignore
 				let steamDLCs: string[] = [];
-				let { body } = await request.get({ url: `http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}` });
+				let { body } = await request.get(`http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}`);
 				// @ts-ignore
 				let data = body[appId].data;
 				let price = data.price_overview ? data.price_overview.final_formatted : '???';
@@ -129,7 +129,7 @@ export default new Command({
 					// @ts-ignore
 					data.dlc.forEach(async (dlc) => {
 						if (data.dlc.indexOf(dlc) < 4) {
-							let { body } = await request.get({ url: 'https://store.steampowered.com/api/appdetails?appids=' + dlc });
+							let { body } = await request.get('https://store.steampowered.com/api/appdetails?appids=' + dlc);
 							// @ts-ignore
 							let dlcprice = body[dlc].data.price_overview ? body[dlc].data.price_overview.final_formatted : '???';
 							// @ts-ignore

@@ -8,7 +8,7 @@ export default new MessageCommand({
 	required_perms: ['AttachFiles'],
 	client_perms: ['AttachFiles'],
 	async execute(_client, message) {
-		const { body } = await request.get({ url: 'https://dog.ceo/api/breeds/image/random' });
+		const { body } = await request.get('https://dog.ceo/api/breeds/image/random');
 		message.channel.send({ embeds: [new EmbedBuilder().setColor('White').setImage((body as { message: string }).message)] });
 	}
 });
