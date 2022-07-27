@@ -10,11 +10,12 @@ export default new Command({
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, interaction, guildConf) {
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		let image = (interaction as ChatInputCommandInteraction).options.getString('image') || (interaction as ChatInputCommandInteraction).options.getAttachment('attachment')?.url;
+		let image =
+			(interaction as ChatInputCommandInteraction).options.getString('image') || (interaction as ChatInputCommandInteraction).options.getAttachment('attachment')?.url;
 		if (!image?.toLowerCase().startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(welcome.need_url)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
-		if (!welcome) {
+		if (!welcomeModel) {
 			let newModel = new ModelWelc({
 				server: interaction.guildId,
 				canal: 'none',

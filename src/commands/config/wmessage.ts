@@ -13,7 +13,7 @@ export default new MessageCommand({
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let msg = args.join(' ');
 		let welcomeModel = await ModelWelc.findOne({ server: message.guild!.id });
-		if (!welcome) {
+		if (!welcomeModel) {
 			let newModel = new ModelWelc({
 				server: message.guild!.id,
 				canal: 'none',

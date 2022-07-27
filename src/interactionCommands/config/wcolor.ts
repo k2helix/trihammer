@@ -14,7 +14,7 @@ export default new Command({
 		if (!color.toLowerCase().startsWith('#')) return interaction.reply({ embeds: [client.redEmbed(welcome.hex)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
-		if (!welcome) {
+		if (!welcomeModel) {
 			let newModel = new ModelWelc({
 				server: interaction.guildId,
 				canal: 'none',

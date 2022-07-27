@@ -15,7 +15,7 @@ export default new MessageCommand({
 		if (!image || !image.toLowerCase().startsWith('http')) return message.channel.send({ embeds: [client.redEmbed(welcome.need_url)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: message.guild!.id });
-		if (!welcome) {
+		if (!welcomeModel) {
 			let newModel = new ModelWelc({
 				server: message.guild!.id,
 				canal: 'none',

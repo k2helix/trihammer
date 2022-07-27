@@ -160,15 +160,15 @@ export default async (client: ExtendedClient, message: Message) => {
 					break;
 				}
 				case 'member': {
-					let member = message.mentions.members?.first() || (await message.guild?.members.fetch(args[index]).catch(() => undefined));
+					let member = message.mentions.members?.first() || message.guild!.members.cache.get(args[index]);
 					if (!member) {
 						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
-						requiredArgs.push(arg.name);
+						requiredArgs.push(arg.name + config.maybe_not_in_cache);
 					}
 					break;
 				}
 				case 'channel': {
-					let channel = (message.mentions.channels.first() as GuildChannel) || message.guild?.channels.cache.get(args[index]);
+					let channel = (message.mentions.channels.first() as GuildChannel) || message.guild!.channels.cache.get(args[index]);
 					if (!channel) {
 						if (arg.optional) return moveArgumentsIndex(tmpArgs, arg);
 						requiredArgs.push(arg.name);

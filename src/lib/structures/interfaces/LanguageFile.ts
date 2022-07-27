@@ -29,6 +29,7 @@ export default interface LanguageFile {
 		mod_perm: string;
 		required_perms: string;
 		required_args: string;
+		maybe_not_in_cache: string;
 		command_used: string;
 		twitter: {
 			follow: (username: string, channel: TextChannel, id: string) => string;
@@ -88,6 +89,7 @@ export default interface LanguageFile {
 		modinf: string;
 		mkick: string;
 		mban: string;
+		no_muted_role: string;
 		timeout: {
 			clear: string;
 			timeout: string;

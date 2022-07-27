@@ -109,6 +109,7 @@ export const config = {
 	mod_perm: 'You need the administrator or moderator role to execute this command.',
 	required_perms: 'You need the following permissions in order to execute this command: ',
 	required_args: 'You did not provide the following argument(s): ',
+	maybe_not_in_cache: ' (may be the user is not cached, try @mentioning them',
 	command_used: ':wrench: {user} has used the command **{command}** in {channel}',
 	twitter: {
 		follow: function (username, channel, id) {
@@ -175,6 +176,7 @@ export const mod = {
 	modinf: 'Infraction {infr} modified.',
 	mkick: '{count} users were kicked',
 	mban: '{count} users were banned',
+	no_muted_role: 'A role named "Trimuted" does not exist, use the command `mute` at least once to create it',
 	timeout: {
 		clear: "{member}'s time-out was cleared",
 		timeout: '{member} was timed out for {duration}. Reason: {reason}',
