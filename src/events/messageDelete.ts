@@ -20,5 +20,5 @@ export default async (client: ExtendedClient, message: Message) => {
 		'{channel}': `<#${message.channel.id}>`,
 		'{content}': message.content
 	};
-	logs_channel.send({ embeds: [client.blackEmbed(client.replaceEach(events.message.delete, obj)).setImage(attachments[0] ? attachments[0].proxyURL : '')] });
+	logs_channel.send({ embeds: [client.blackEmbed(client.replaceEach(events.message.delete, obj)).setImage(attachments[0]?.proxyURL)] });
 };
