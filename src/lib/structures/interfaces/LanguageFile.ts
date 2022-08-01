@@ -289,6 +289,13 @@ export default interface LanguageFile {
 			state: string;
 			found: <T>(results: T[], current: T) => string;
 		};
+		feedback: {
+			title: string;
+			comment: string;
+			main: string;
+			send_feedback: string;
+			thank_you: string;
+		};
 		loading: string;
 		nsfw: string;
 		invite: {

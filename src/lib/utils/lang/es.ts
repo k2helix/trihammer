@@ -409,6 +409,13 @@ export const util = {
 			return `Encontré ${results.length} resultados. Mostrando el ${current}`;
 		}
 	},
+	feedback: {
+		title: '¿Le quieres dar un título a tu comentario?',
+		comment: '¿Qué quieres hacer saber al desarrollador?',
+		main: 'Tus comentarios son muy importantes para ayudar al desarrollador a mejorar al bot. Si quieres enviar feedback, pulsa el botón.',
+		send_feedback: 'Enviar feedback',
+		thank_you: 'Gracias por tu feedback.'
+	},
 	loading: '<a:loading:735243076758667275> Procesando...',
 	nsfw: 'Este canal no es NSFW, usa el comando en uno que lo sea',
 	invite: {

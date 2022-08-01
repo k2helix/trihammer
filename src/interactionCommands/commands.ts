@@ -975,6 +975,10 @@ export default [
 		description: 'Get information about today in history'
 	},
 	{
+		name: 'feedback',
+		description: 'Send some feedback about the bot to the developer'
+	},
+	{
 		name: 'binary',
 		description: 'Encode or decode binary',
 		options: [

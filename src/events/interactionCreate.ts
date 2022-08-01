@@ -1,4 +1,4 @@
-import { Collection, GuildMember, Interaction, PermissionsBitField, TextChannel } from 'discord.js';
+import { Collection, EmbedBuilder, GuildMember, Interaction, PermissionsBitField, TextChannel } from 'discord.js';
 import ExtendedClient from '../lib/structures/Client';
 import ContextMenuName from '../lib/structures/interfaces/ContextMenuName';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
@@ -31,6 +31,16 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		guildConf = newGuild;
 	}
 	const { config, util, other } = (await import(`../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
+
+	if (interaction.isModalSubmit()) {
+		let embed = new EmbedBuilder()
+			.setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+			.setTitle(interaction.fields.getTextInputValue('feedbackTitle') || null)
+			.setColor('Green')
+			.setDescription(interaction.fields.getTextInputValue('feedbackComment'));
+		(client.channels.cache.get('1003670801775599636')! as TextChannel).send({ embeds: [embed] });
+		return interaction.reply({ embeds: [client.lightBlueEmbed(util.feedback.thank_you)], ephemeral: true });
+	}
 
 	if (interaction.isContextMenuCommand()) {
 		let cmdName = interaction.commandName.toLowerCase().split(' ').join('-') as ContextMenuName;
@@ -98,15 +108,17 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 		}
 		try {
 			command.execute(client, interaction, guildConf);
-			if (guildConf.actionslogs === 'none') return;
-			let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);
-			if (!logs_channel || !logs_channel.isTextBased()) return;
-			let cmdObj = {
-				'{user}': interaction.user.tag,
-				'{command}': command.name,
-				'{channel}': `<#${interaction.channelId}>`
-			};
-			return logs_channel.send(client.replaceEach(config.command_used, cmdObj));
+			if (guildConf.actionslogs !== 'none') {
+				let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);
+				if (logs_channel && logs_channel.isTextBased()) {
+					let cmdObj = {
+						'{user}': interaction.user.tag,
+						'{command}': command.name,
+						'{channel}': `<#${interaction.channelId}>`
+					};
+					return logs_channel.send(client.replaceEach(config.command_used, cmdObj));
+				}
+			}
 		} catch (error) {
 			client.catchError(error, interaction.channel as TextChannel);
 		}
