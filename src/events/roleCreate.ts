@@ -10,5 +10,5 @@ export default async (client: ExtendedClient, role: Role) => {
 	let logs_channel = role.guild.channels.cache.get(serverConfig.serverlogs);
 	if (!logs_channel || !logs_channel.isTextBased()) return;
 
-	logs_channel.send({ embeds: [client.blueEmbed(client.replaceEach(events.role.create, { '{role}': `<@&${role.id}>` }))] });
+	logs_channel.send({ embeds: [client.blueEmbed(client.replaceEach(events.role.create, { '{role}': role.name }))] });
 };
