@@ -16,7 +16,7 @@ export default new MessageCommand({
 	description: 'Send some feedback about the bot to the developer',
 	category: 'information',
 	async execute(client, message, _args, guildConf) {
-		if (client.user!.id !== '714489403627536415') return;
+		if (client.user!.id !== '611710846426415107') return;
 		const { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder().setCustomId('sendFeedback').setLabel(util.feedback.send_feedback).setStyle(ButtonStyle.Primary)
