@@ -412,6 +412,13 @@ export const util = {
 			return `Found ${results.length} results. Currently showing the ${current}`;
 		}
 	},
+	feedback: {
+		title: 'Do you want your comment to have a title?',
+		comment: 'What do you want to tell to the developer?',
+		main: 'Your comments are very important to help the developer to improve the bot. If you want to send feedback, press the button.',
+		send_feedback: 'Send feedback',
+		thank_you: 'Thank you for your feedback.'
+	},
 	loading: '<a:loading:735243076758667275> Processing...',
 	nsfw: "This channel isn't NSFW, use the command in one NSFW channel",
 	invite: {
