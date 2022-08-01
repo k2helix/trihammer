@@ -561,13 +561,13 @@ export const events = {
 	},
 	role: {
 		update: {
-			added: "`{role}`' permissions were updated, added: `{perms}`",
-			removed: "`{role}`'s permissions were updated, removed: `{perms}`",
-			both: "`{role}`'s permissions were updated, added: `{added}` . Removed: `{removed}`",
+			added: 'The permissions for {role} were updated, added: `{perms}`',
+			removed: 'The permissions for {role} were updated, removed: `{perms}`',
+			both: 'The permissions for {role} were updated, added: `{added}` . Removed: `{removed}`',
 			none: 'A role has been updated: `{role}`'
 		},
-		delete: 'Role deleted: {role}',
-		create: 'Role created: {role}'
+		delete: 'Role deleted: `{role}`',
+		create: 'Role created: `{role}`'
 	},
 	message: {
 		update: 'Message from {user} edited in {channel}',
@@ -594,11 +594,11 @@ export const events = {
 	},
 	channel: {
 		update: {
-			added: "`{role}`'s permissions in {channel} have changed, added: `{added}`",
-			removed: "`{role}`'s permissions in {channel} have changed, removed: `{perms}`",
-			both: "`{role}`'s permissions in {channel} have changed, added: `{added}`. Removed: `{removed}`"
+			added: 'The permissions for {role} in {channel} have changed, added: `{added}`',
+			removed: 'The permissions for {role} in {channel} have changed, removed: `{perms}`',
+			both: 'The permissions for {role} in {channel} have changed, added: `{added}`. Removed: `{removed}`'
 		},
-		delete: 'A channel has been deleted: {name}',
-		create: 'A channel has been created: {name}'
+		delete: 'A channel has been deleted: `{name}`',
+		create: 'A channel has been created: `{name}`'
 	}
 } as LanguageFile['events'];

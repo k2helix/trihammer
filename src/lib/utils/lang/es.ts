@@ -559,13 +559,13 @@ export const events = {
 	},
 	role: {
 		update: {
-			added: '{user} ha actualizado los permisos del rol `{role}`, se le ha añadido: `{perms}`',
-			removed: '{user} ha actualizado los permisos del rol `{role}`, se le ha removido: `{perms}`',
-			both: '{user} ha actualizado los permisos del rol `{role}`, se le ha añadido: `{added}`. Se le ha removido: `{removed}`',
-			none: 'Un rol ha sido actualizado: `{role}`'
+			added: 'Los permisos del rol {role} han sido actualizados, se les ha añadido: `{perms}`',
+			removed: 'Los permisos del rol {role} han sido actualizados, se les ha removido: `{perms}`',
+			both: 'Los permisos del rol {role} han sido actualizados, se les ha añadido: `{added}`. Se le ha removido: `{removed}`',
+			none: 'Un rol ha sido actualizado: {role}'
 		},
-		delete: '{user} ha borrado un rol: {role}',
-		create: '{user} ha creado un nuevo rol: {role}'
+		delete: 'Un rol ha sido borrado: `{role}`',
+		create: 'Un rol ha sido creado: `{role}`'
 	},
 	message: {
 		update: 'Mensaje de {user} editado en {channel}',
@@ -592,11 +592,11 @@ export const events = {
 	},
 	channel: {
 		update: {
-			added: 'Los permisos del rol `{role}` en el canal {channel} han cambiado, se le ha añadido: `{perms}`',
-			removed: 'Los permisos del rol `{role}` en el canal {channel} han cambiado, se le ha removido: `{perms}`',
-			both: 'Los permisos del rol `{role}` en el canal {channel} han cambiado, se le ha añadido: `{added}`. Se le ha removido `{removed}`'
+			added: 'Los permisos del rol {role} en el canal {channel} han cambiado, se le ha añadido: `{perms}`',
+			removed: 'Los permisos del rol {role} en el canal {channel} han cambiado, se le ha removido: `{perms}`',
+			both: 'Los permisos del rol {role} en el canal {channel} han cambiado, se le ha añadido: `{added}`. Se le ha removido `{removed}`'
 		},
-		delete: 'Un canal ha sido borrado: {name}',
-		create: 'Un canal ha sido creado: {name}'
+		delete: 'Un canal ha sido borrado: `{name}`',
+		create: 'Un canal ha sido creado: `{name}`'
 	}
 } as LanguageFile['events'];

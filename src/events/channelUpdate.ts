@@ -24,7 +24,7 @@ export default async (client: ExtendedClient, oldChannel: GuildChannel, newChann
 				embeds: [
 					client.yellowEmbed(
 						client.replaceEach(events.channel.update.both, {
-							'{role}': role.name,
+							'{role}': `<@&${role.id}>`,
 							'{channel}': `<#${oldChannel.id}>`,
 							'{added}': addedPerms.join(', '),
 							'{removed': removedPerms.join(', ')
@@ -35,14 +35,16 @@ export default async (client: ExtendedClient, oldChannel: GuildChannel, newChann
 		else if (addedPerms[0])
 			logs_channel.send({
 				embeds: [
-					client.yellowEmbed(client.replaceEach(events.channel.update.added, { '{role}': role.name, '{channel}': `<#${oldChannel.id}>`, '{perms}': addedPerms.join(', ') }))
+					client.lightBlueEmbed(
+						client.replaceEach(events.channel.update.added, { '{role}': `<@&${role.id}>`, '{channel}': `<#${oldChannel.id}>`, '{perms}': addedPerms.join(', ') })
+					)
 				]
 			});
 		else if (removedPerms[0])
 			logs_channel.send({
 				embeds: [
-					client.yellowEmbed(
-						client.replaceEach(events.channel.update.removed, { '{role}': role.name, '{channel}': `<#${oldChannel.id}>`, '{perms}': removedPerms.join(', ') })
+					client.orangeEmbed(
+						client.replaceEach(events.channel.update.removed, { '{role}': `<@&${role.id}>`, '{channel}': `<#${oldChannel.id}>`, '{perms}': removedPerms.join(', ') })
 					)
 				]
 			});

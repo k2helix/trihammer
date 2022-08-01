@@ -21,12 +21,14 @@ module.exports = async (client: ExtendedClient, oldRole: Role, newRole: Role) =>
 	if (addedPerms[0] && removedPerms[0])
 		logs_channel.send({
 			embeds: [
-				client.yellowEmbed(client.replaceEach(events.role.update.removed, { '{role}': newRole.name, '{added}': addedPerms.join(', '), '{removed}': removedPerms.join(', ') }))
+				client.yellowEmbed(
+					client.replaceEach(events.role.update.removed, { '{role}': `<@&${newRole.id}>`, '{added}': addedPerms.join(', '), '{removed}': removedPerms.join(', ') })
+				)
 			]
 		});
 	else if (removedPerms[0])
-		logs_channel.send({ embeds: [client.yellowEmbed(client.replaceEach(events.role.update.removed, { '{role}': newRole.name, '{perms}': removedPerms.join(', ') }))] });
+		logs_channel.send({ embeds: [client.orangeEmbed(client.replaceEach(events.role.update.removed, { '{role}': `<@&${newRole.id}>`, '{perms}': removedPerms.join(', ') }))] });
 	else if (addedPerms[0])
-		logs_channel.send({ embeds: [client.yellowEmbed(client.replaceEach(events.role.update.added, { '{role}': newRole.name, '{perms}': addedPerms.join(', ') }))] });
-	else logs_channel.send({ embeds: [client.yellowEmbed(events.role.update.none.replace('{role}', newRole.name))] });
+		logs_channel.send({ embeds: [client.lightBlueEmbed(client.replaceEach(events.role.update.added, { '{role}': `<@&${newRole.id}>`, '{perms}': addedPerms.join(', ') }))] });
+	else logs_channel.send({ embeds: [client.yellowEmbed(events.role.update.none.replace('{role}', `<@&${newRole.id}>`))] });
 };
