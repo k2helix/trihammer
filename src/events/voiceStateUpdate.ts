@@ -1,23 +1,14 @@
 import { ModelServer, Server } from '../lib/utils/models';
-import { queue } from '../lib/modules/music';
+import { Queue, queue } from '../lib/modules/music';
 import ExtendedClient from '../lib/structures/Client';
 import { VoiceState } from 'discord.js';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
-import { getVoiceConnection } from '@discordjs/voice';
-import { Queue } from '../lib/structures/interfaces/MusicInterfaces';
 
 function setLeaveTimeout(client: ExtendedClient, serverQueue: Queue, music: LanguageFile['music']) {
 	serverQueue.leaveTimeout = setTimeout(() => {
-		serverQueue.songs = [];
-		getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();
-		queue.delete(serverQueue.voiceChannel.guild.id);
 		serverQueue!.textChannel.send({ embeds: [client.redEmbed(music.leave_timeout)] });
+		serverQueue.stop();
 	}, 60000);
-}
-
-function clearLeaveTimeout(serverQueue: Queue) {
-	clearTimeout(serverQueue.leaveTimeout!);
-	serverQueue.leaveTimeout = null;
 }
 
 export default async (client: ExtendedClient, oldState: VoiceState, newState: VoiceState) => {
@@ -31,22 +22,22 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 	const { music, events } = (await import(`../lib/utils/lang/${serverConfig.lang}`)) as LanguageFile;
 	let member = newState.member!;
 
-	let serverQueue = queue.get(oldState.guild.id);
+	const serverQueue = queue.get(oldState.guild.id);
 	if (serverQueue && (serverQueue.voiceChannel.id === oldChannel?.id || serverQueue.voiceChannel.id === newChannel?.id))
 		if (member.id === client.user!.id && newChannel && oldChannel) {
 			serverQueue.voiceChannel = newChannel;
-			if (serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size > 0 && serverQueue.songs.length > 0) clearLeaveTimeout(serverQueue);
+			if (serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size > 0 && serverQueue.songs.length > 0) serverQueue.clearLeaveTimeout();
 			else if (!serverQueue.leaveTimeout && newChannel.members!.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);
 		} else if (!newChannel || newChannel.id !== serverQueue.voiceChannel.id) {
 			let members = oldChannel!.members;
 			// if the bot was disconnected
 			if (member.id === client.user!.id) {
-				if (serverQueue.leaveTimeout) clearLeaveTimeout(serverQueue);
+				if (serverQueue.leaveTimeout) serverQueue.clearLeaveTimeout();
 				return queue.delete(oldState.guild.id);
 			}
 			if (!serverQueue.leaveTimeout && members.has(client.user!.id) && members.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);
 		} else if (newChannel.members.has(client.user!.id) && serverQueue.leaveTimeout && member.id !== client.user!.id && serverQueue.songs.length > 0)
-			clearLeaveTimeout(serverQueue);
+			serverQueue.clearLeaveTimeout();
 
 	if (!logs_channel || !logs_channel.isTextBased()) return;
 	if (!newState.member || newState.member.user.bot) return;

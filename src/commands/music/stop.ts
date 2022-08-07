@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -26,10 +25,6 @@ export default new MessageCommand({
 			serverQueue.songs[0]?.requested === 'Autoplay' ||
 			serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3;
 		if (!permission) return message.channel.send({ embeds: [client.redEmbed(music.need_dj.stop)] });
-
-		serverQueue.songs = [];
-		getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();
-		if (serverQueue.leaveTimeout) clearTimeout(serverQueue.leaveTimeout);
-		queue.delete(message.guild.id);
+		serverQueue.stop();
 	}
 });

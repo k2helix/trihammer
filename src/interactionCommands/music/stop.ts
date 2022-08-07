@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -24,10 +23,7 @@ export default new Command({
 			serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3;
 		if (!permission) return interaction.reply({ embeds: [client.redEmbed(music.need_dj.stop)], ephemeral: true });
 
-		serverQueue.songs = [];
-		getVoiceConnection(serverQueue.voiceChannel.guildId!)!.destroy();
-		if (serverQueue.leaveTimeout) clearTimeout(serverQueue.leaveTimeout);
-		queue.delete(interaction.guildId);
+		serverQueue.stop();
 		interaction.reply({ embeds: [client.blueEmbed('See you next time!')] });
 	}
 });

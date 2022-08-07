@@ -1,5 +1,3 @@
-import { BaseGuildTextChannel, VoiceBasedChannel } from 'discord.js';
-
 interface Song {
 	id: string;
 	title: string;
@@ -14,15 +12,5 @@ interface Song {
 	seek: number;
 	skip: string[];
 }
-interface Queue {
-	textChannel: BaseGuildTextChannel;
-	voiceChannel: VoiceBasedChannel;
-	songs: Song[];
-	volume: number;
-	playing: boolean;
-	loop: boolean;
-	shuffle: boolean;
-	autoplay: boolean;
-	leaveTimeout: ReturnType<typeof setTimeout> | null;
-}
-export { Queue, Song };
+
+export { Song };

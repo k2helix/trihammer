@@ -216,7 +216,7 @@ export const music = {
 	pause: '⏸ Playback paused',
 	resume: '▶ Playback resumed',
 	tts: {
-		queue: 'You cannot use this command while there is an active queue',
+		file: 'No puedes usar este comando mientras haya un archivo sonando',
 		too_long: 'The text shall be 200 or fewer in length'
 	},
 	playlists: {
@@ -277,6 +277,7 @@ export const music = {
 	cancel: 'No response. Cancelling...',
 	seek: 'Jumping to {time}...',
 	seek_cancelled: 'The video ends before arriving there',
+	cannot_seek_files: 'This command is not available for files',
 	skip: {
 		already_voted: 'You already voted to skip ({votes})',
 		skipping: 'Skipping...',
@@ -297,7 +298,7 @@ export const music = {
 			channel: 'Channel:',
 			duration: 'Duration:',
 			requested_by: 'Requested by:',
-			tts: 'Now playing'
+			tts: 'Playing text in the voice channel'
 		}
 	},
 	need_dj: {

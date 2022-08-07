@@ -1,7 +1,6 @@
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { getVoiceConnection } from '@discordjs/voice';
 
 export default new Command({
 	name: 'seek',
@@ -16,6 +15,7 @@ export default new Command({
 
 		if (!voiceChannel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
 		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
+		if (serverQueue.songs[0].id === 'file') return interaction.reply({ embeds: [client.redEmbed(music.cannot_seek_files)], ephemeral: true });
 
 		const array = interaction.options.getString('timestamp')!.split(':').reverse();
 
@@ -28,11 +28,10 @@ export default new Command({
 		if (all > Number(serverQueue.songs[0].durationInSec)) return interaction.reply({ embeds: [client.redEmbed(music.seek_cancelled)], ephemeral: true });
 		if (all === 0) all = 0.05;
 
-		serverQueue.songs.splice(1, 0, serverQueue.songs[0]);
-		serverQueue.songs[1].seek = all;
+		(serverQueue.getResource()!.metadata as { seek: true }) = { seek: true };
+		serverQueue.songs[0].seek = all;
+		serverQueue.skip(); // force player state change
 
-		//@ts-ignore
-		getVoiceConnection(interaction.guildId)!.state.subscription.player.stop();
 		interaction.reply({ embeds: [client.blueEmbed(music.seek.replace('{time}', interaction.options.getString('timestamp')!))] });
 	}
 });

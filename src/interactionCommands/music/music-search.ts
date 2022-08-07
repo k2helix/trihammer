@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction, TextChannel } from 'discord.js';
-import { handleVideo } from '../../lib/modules/music';
+import { Queue, queue } from '../../lib/modules/music';
 import play, { YouTubeVideo } from 'play-dl';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -19,10 +19,15 @@ export default new Command({
 		if (interaction.guild.members.me!.voice.channel && interaction.guild.members.me!.voice.channelId !== voiceChannel.id)
 			return interaction.reply({ embeds: [client.redEmbed(music.wrong_vc)], ephemeral: true });
 
+		const serverQueue = queue.get(interaction.guildId!) || new Queue({ voiceChannel: voiceChannel, textChannel: interaction.channel as TextChannel });
+
 		const videos = (await play.search(searchString, { limit: 10 }).catch((err) => {
 			return client.catchError(err, interaction.channel as TextChannel);
 		})) as YouTubeVideo[];
-		if (typeof videos === 'boolean' || videos?.length < 1) return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
+		if (typeof videos === 'boolean' || videos?.length < 1) {
+			if (!serverQueue.songs[0]) serverQueue.stop();
+			return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
+		}
 
 		interaction.deferReply();
 
@@ -51,11 +56,12 @@ export default new Command({
 		} catch (error) {
 			if (interaction.replied || interaction.deferred) interaction.editReply({ embeds: [client.redEmbed(music.cancel)] });
 			else interaction.reply({ embeds: [client.redEmbed(music.cancel)], ephemeral: true });
+			if (!serverQueue.songs[0]) serverQueue.stop();
 			return msg.delete();
 		}
-		// @ts-ignore
-		const actualVideo = videos[selected.values[0]];
-		await handleVideo(actualVideo, interaction, voiceChannel, false);
+
+		const actualVideo = videos[selected.values[0] as unknown as number];
+		serverQueue.handleVideo(actualVideo, interaction.user.id);
 		return interaction.editReply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${actualVideo.title}**`))] });
 	}
 });

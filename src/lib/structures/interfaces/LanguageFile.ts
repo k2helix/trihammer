@@ -126,7 +126,7 @@ export default interface LanguageFile {
 		pause: string;
 		resume: string;
 		tts: {
-			queue: string;
+			file: string;
 			too_long: string;
 		};
 		playlists: {
@@ -187,6 +187,7 @@ export default interface LanguageFile {
 		cancel: string;
 		seek: string;
 		seek_cancelled: string;
+		cannot_seek_files: string;
 		skip: {
 			already_voted: string;
 			skipping: string;

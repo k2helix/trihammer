@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { EmbedBuilder } from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
@@ -36,22 +35,18 @@ export default new Command({
 		let durationMs = serverQueue.songs[0].durationInSec! * 1000;
 
 		let seek = serverQueue.songs[0].seek;
-		//@ts-ignore
-		let now = Time_convertor(getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.playbackDuration + Number(seek * 1000));
-		let porcentaje = Math.floor(
-			//@ts-ignore
-			((getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.playbackDuration + Number(seek * 1000)) / durationMs) * 100
-		);
-		let index = Math.floor(porcentaje / 10);
-		let string = '▬▬▬▬▬▬▬▬▬▬';
-		let position = setCharAt(string, index, ':radio_button:');
+		let playbackDuration = serverQueue.getPlaybackDuration();
+		let now = Time_convertor(playbackDuration + Number(seek * 1000));
+		let percentage = Math.floor(((playbackDuration + Number(seek * 1000)) / durationMs) * 100);
+
+		let bar = setCharAt('▬▬▬▬▬▬▬▬▬▬', Math.floor(percentage / 10), ':radio_button:');
 
 		let embed = new EmbedBuilder()
 			.setTitle(music.now_playing)
 			.setDescription(`**[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`)
 			.setThumbnail(`https://img.youtube.com/vi/${serverQueue.songs[0].id}/hqdefault.jpg`)
 			.addFields(
-				{ name: `${now} / ${serverQueue.songs[0].duration} (${porcentaje}%)`, value: position, inline: true },
+				{ name: `${now} ${serverQueue.songs[0].durationInSec === 0 ? '' : `/ ${serverQueue.songs[0].duration} (${percentage}%)`}`, value: bar, inline: true },
 				{
 					name: music.play.now_playing.requested_by,
 					value: `${serverQueue.songs[0].requested === 'Autoplay' ? 'Autoplay' : `<@${serverQueue.songs[0].requested}>`}`,

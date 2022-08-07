@@ -2,7 +2,6 @@ import { queue } from '../../lib/modules/music';
 import { PermissionsBitField } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { getVoiceConnection } from '@discordjs/voice';
 export default new Command({
 	name: 'forceskip',
 	description: 'Forceskip a song',
@@ -21,17 +20,14 @@ export default new Command({
 			interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages) ||
 			interaction.member.id === serverQueue.songs[0].requested;
 		if (permission) {
-			// @ts-ignore
-			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+			serverQueue.skip();
 			return interaction.reply({ embeds: [client.orangeEmbed(music.skip.skipping)] });
-			// eslint-disable-next-line curly
-		} else if (interaction.options.getString('to')) {
+		} else if (interaction.options.getString('to'))
 			if ((djRole && interaction.member!.roles.cache.has(djRole.id)) || serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3) {
 				serverQueue.songs = serverQueue.songs.slice(parseInt(interaction.options.getString('to')!) - 2); // -1 to the array position and another -1 because of the skip
-				//@ts-ignore
-				getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+				serverQueue.skip();
 				return interaction.reply({ embeds: [client.orangeEmbed(music.skip.skipping)] });
 			} else return interaction.reply({ embeds: [client.redEmbed(music.skipto_restricted)], ephemeral: true });
-		} else return interaction.reply({ embeds: [client.redEmbed(music.need_dj.stop)] });
+		else return interaction.reply({ embeds: [client.redEmbed(music.need_dj.stop)] });
 	}
 });

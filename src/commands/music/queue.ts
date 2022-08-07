@@ -6,7 +6,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 export default new MessageCommand({
 	name: 'queue',
 	description: 'View the currently queued songs',
-	aliases: ['q'],
+	aliases: ['q', 'ls'],
 	category: 'music',
 	required_args: [{ index: 0, type: 'number', name: 'page', optional: true }],
 	async execute(client, message, args, guildConf) {

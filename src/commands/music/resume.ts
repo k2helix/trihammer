@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -11,8 +10,7 @@ export default new MessageCommand({
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		if (serverQueue && !serverQueue.playing && !serverQueue.leaveTimeout) {
 			serverQueue.playing = true;
-			// @ts-ignore
-			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player!.unpause();
+			serverQueue.getPlayer()!.unpause();
 			return message.channel.send({ embeds: [client.blueEmbed(music.resume)] });
 		}
 		return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });

@@ -14,7 +14,6 @@ export default new MessageCommand({
 		if (!message.member!.voice.channel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		serverQueue.loop = !serverQueue.loop;
-		// queue.set(message.guild.id, serverQueue);
 		message.channel.send({ embeds: [client.blueEmbed(serverQueue.loop ? music.loop.enabled : music.loop.disabled)] });
 	}
 });

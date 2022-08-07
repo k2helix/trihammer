@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -19,15 +18,13 @@ export default new MessageCommand({
 
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission = message.member.roles.cache.has(djRole?.id || '') || message.member.id === serverQueue.songs[0].requested || serverQueue.songs[0].requested === 'Autoplay';
-		// @ts-ignore
-		if (permission) return getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+		if (permission) return serverQueue.skip();
 
 		const members = serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size,
 			required = Math.floor(members / 2),
 			skips = serverQueue.songs[0].skip;
 		if (skips.length >= required) {
-			// @ts-ignore
-			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+			serverQueue.skip();
 			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.skipping)] });
 		}
 		if (skips.includes(message.author.id))
@@ -35,8 +32,7 @@ export default new MessageCommand({
 
 		skips.push(message.author.id);
 		if (skips.length >= required) {
-			// @ts-ignore
-			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+			serverQueue.skip();
 			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.skipping)] });
 		} else return message.channel.send({ embeds: [client.orangeEmbed(music.skip.voting.replace('{votes}', `${skips.length}/${required}`))] });
 	}

@@ -1,4 +1,3 @@
-import { getVoiceConnection } from '@discordjs/voice';
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
@@ -23,9 +22,7 @@ export default new MessageCommand({
 
 		if (parseFloat(args[0]) > 5) return message.channel.send({ embeds: [client.redEmbed(music.too_much)] });
 
-		serverQueue.volume = parseInt(args[0]);
-		// @ts-ignore
-		getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.state.resource?.volume.setVolumeLogarithmic(parseInt(args[0]) / 5);
+		serverQueue.setVolume(parseFloat(args[0]));
 		message.channel.send({ embeds: [client.blueEmbed(music.volume.replace('{volume}', args[0]))] });
 	}
 });

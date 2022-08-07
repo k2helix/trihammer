@@ -1,7 +1,6 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { queue } from '../../lib/modules/music';
-import { getVoiceConnection } from '@discordjs/voice';
 
 export default new MessageCommand({
 	name: 'seek',
@@ -16,6 +15,7 @@ export default new MessageCommand({
 		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
+		if (serverQueue.songs[0].id === 'file') return message.channel.send({ embeds: [client.redEmbed(music.cannot_seek_files)] });
 
 		const array = args.join(' ').split(':').reverse();
 
@@ -28,11 +28,10 @@ export default new MessageCommand({
 		if (all > Number(serverQueue.songs[0].durationInSec)) return message.channel.send({ embeds: [client.redEmbed(music.seek_cancelled)] });
 		if (all === 0) all = 0.05;
 
-		serverQueue.songs.splice(1, 0, serverQueue.songs[0]);
-		serverQueue.songs[1].seek = all;
+		(serverQueue.getResource()!.metadata as { seek: true }) = { seek: true };
+		serverQueue.songs[0].seek = all;
+		serverQueue.skip(); // force player state change
 
-		//@ts-ignore
-		getVoiceConnection(message.guildId!)!.state.subscription.player.stop();
 		message.channel.send({ embeds: [client.blueEmbed(music.seek.replace('{time}', args.join(' ')))] });
 	}
 });

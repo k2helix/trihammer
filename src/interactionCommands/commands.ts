@@ -760,8 +760,14 @@ export default [
 					{
 						name: 'song',
 						type: ApplicationCommandOptionType.String,
-						description: 'The song you want to add',
+						description: 'The song you want to add (set to "file" if you want to play a file)',
 						required: true
+					},
+					{
+						name: 'file',
+						type: ApplicationCommandOptionType.Attachment,
+						description: 'The file (mp3, mp4, wav or ogg) you want to play (set song to "file")',
+						required: false
 					},
 					{
 						name: 'confirm-result',
@@ -823,7 +829,7 @@ export default [
 				]
 			},
 			{
-				name: 'voteskip',
+				name: 'skip',
 				description: 'Vote to skip to the next song in queue',
 				type: ApplicationCommandOptionType.Subcommand,
 				options: [
@@ -1003,6 +1009,24 @@ export default [
 				type: ApplicationCommandOptionType.String,
 				description: 'The text to encode or decode',
 				required: true
+			}
+		]
+	},
+	{
+		name: 'tts',
+		description: 'Play a TTS message in your voice channel',
+		options: [
+			{
+				name: 'text',
+				type: ApplicationCommandOptionType.String,
+				description: 'The text you want to play',
+				required: true
+			},
+			{
+				name: 'language',
+				type: ApplicationCommandOptionType.String,
+				description: "The language of the narrator (es-ES, en-GB...) (guild's if not set)",
+				required: false
 			}
 		]
 	},

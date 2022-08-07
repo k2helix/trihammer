@@ -13,14 +13,14 @@ export default new MessageCommand({
 	async execute(client, message, args, guildConf) {
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		const serverQueue = queue.get(message.guild!.id);
-		if (!serverQueue) return await message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
+		if (!serverQueue) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 
 		if (!args[0]) return message.channel.send({ embeds: [client.redEmbed(music.need_qnumber)] });
 		if (isNaN(parseInt(args[0]))) return message.channel.send({ embeds: [client.redEmbed(music.need_qnumber)] });
-		if (args[0] === '1') return await message.channel.send({ embeds: [client.redEmbed(music.cannot_remove)] });
+		if (args[0] === '1') return message.channel.send({ embeds: [client.redEmbed(music.cannot_remove)] });
 
 		const index = parseInt(args[0]) - 1;
 		const song = serverQueue.songs[index];

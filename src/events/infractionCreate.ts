@@ -33,5 +33,5 @@ export default async (client: ExtendedClient, infr: Infraction) => {
 		'{reason}': infr.reason
 	};
 
-	channel.send({ embeds: [client.blackEmbed(client.replaceEach(mod.infraction_created, obj))] });
+	channel.send({ embeds: [client.whiteEmbed(client.replaceEach(mod.infraction_created, obj))] });
 };

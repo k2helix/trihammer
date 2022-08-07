@@ -1,7 +1,6 @@
 import { queue } from '../../lib/modules/music';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { getVoiceConnection } from '@discordjs/voice';
 
 export default new MessageCommand({
 	name: 'skipto',
@@ -20,8 +19,7 @@ export default new MessageCommand({
 		const djRole = message.guild!.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		if ((djRole && message.member!.roles.cache.has(djRole.id)) || serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3) {
 			serverQueue.songs = serverQueue.songs.slice(song - 2); // -1 to the array position and another -1 because of the skip
-			//@ts-ignore
-			getVoiceConnection(serverQueue.voiceChannel.guildId)!.state.subscription.player.stop();
+			serverQueue.skip();
 			return message.channel.send({ embeds: [client.orangeEmbed(music.skip.skipping)] });
 		} else return message.channel.send({ embeds: [client.redEmbed(music.skipto_restricted)] });
 	}

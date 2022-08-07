@@ -1,45 +1,49 @@
 import { queue } from '../../lib/modules/music';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { DiscordGatewayAdapterCreator, StreamType, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
-import Stream from 'stream';
-import https from 'https';
+import { DiscordGatewayAdapterCreator, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
+import { Readable } from 'stream';
+import fetch from 'node-fetch';
 export default new MessageCommand({
 	name: 'tts',
 	description: 'Play a TTS message',
 	category: 'music',
-	required_args: [
-		{ index: 0, type: 'string', name: 'language' },
-		{ index: 0, type: 'string', name: 'text' }
-	],
+	required_args: [{ index: 0, type: 'string', name: 'text' }],
 	async execute(client, message, args, guildConf) {
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		if (queue.get(message.guild!.id)) return message.channel.send({ embeds: [client.redEmbed(music.tts.queue)] });
-		if (args.slice(1).join(' ').length > 200) return message.channel.send({ embeds: [client.redEmbed(music.tts.too_long)] });
+		if (args.join(' ').length > 200) return message.channel.send({ embeds: [client.redEmbed(music.tts.too_long)] });
 
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 
-		let url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${args.slice(1).join(' ')}&tl=${args[0]}&total=1&idx=0&client=tw-ob&prev=input&ttsspeed=1`;
-		let stream = new Stream.PassThrough();
-
-		// @ts-ignore
-		https.get(url, function (response) {
-			response.pipe(stream);
+		const serverQueue = queue.get(message.guildId!);
+		if (serverQueue) {
+			if (serverQueue.songs[0].id === 'file') return message.channel.send({ embeds: [client.redEmbed(music.tts.file)] });
+			serverQueue.songs[0].seek = Math.floor((serverQueue.getPlaybackDuration() + serverQueue.songs[0].seek * 1000) / 1000);
+		}
+		const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${args.join(' ')}&tl=${guildConf.lang}&total=1&idx=0&client=tw-ob&prev=input&ttsspeed=1`;
+		const response = await fetch(url).catch((err) => {
+			return client.catchError(message.channel, err);
 		});
-		let connection = joinVoiceChannel({
-			channelId: voiceChannel.id,
-			guildId: message.guildId!,
-			adapterCreator: message.guild!.voiceAdapterCreator as DiscordGatewayAdapterCreator
-		});
+		if (response) {
+			let connection =
+				getVoiceConnection(message.guildId!) ||
+				joinVoiceChannel({
+					channelId: voiceChannel.id,
+					guildId: message.guildId!,
+					adapterCreator: message.guild!.voiceAdapterCreator as DiscordGatewayAdapterCreator
+				});
 
-		const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
-		const player = createAudioPlayer();
-		player.play(resource);
-		connection.subscribe(player);
+			const resource = createAudioResource(response.body as Readable, { inputType: StreamType.Arbitrary, metadata: { seek: true } });
+			const player = serverQueue?.getPlayer() || createAudioPlayer();
+			player.play(resource);
 
-		player.on('stateChange', (oldState, newState) => {
-			if (oldState.status == 'playing' && newState.status == 'idle') connection.destroy();
-		});
+			if (!serverQueue) {
+				connection.subscribe(player);
+				player.on('stateChange', (oldState, newState) => {
+					if (oldState.status == 'playing' && newState.status == 'idle') connection.destroy();
+				});
+			}
+		}
 	}
 });

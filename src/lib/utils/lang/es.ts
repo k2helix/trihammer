@@ -212,7 +212,7 @@ export const music = {
 	pause: '⏸ Reproducción pausada (ayuda por favor)',
 	resume: '▶ Reproducción continuada',
 	tts: {
-		queue: 'No puedes usar este comando mientras haya una cola activa',
+		file: 'No puedes usar este comando mientras haya un archivo sonando',
 		too_long: 'El texto debe tener menos de 200 caracteres.'
 	},
 	playlists: {
@@ -274,6 +274,7 @@ export const music = {
 	cancel: 'No hubo respuesta. Cancelando...',
 	seek: 'Saltando a {time}...',
 	seek_cancelled: 'El video finaliza antes de llegar ahí.',
+	cannot_seek_files: 'Este comando no está disponible para archivos',
 	skip: {
 		already_voted: 'Ya has votado para saltar ({votes})',
 		skipping: 'Saltando...',
@@ -294,7 +295,7 @@ export const music = {
 			channel: 'Canal:',
 			duration: 'Duración:',
 			requested_by: 'Pedida por:',
-			tts: 'Sonando'
+			tts: 'Reproduciendo texto en el canal de voz'
 		}
 	},
 	need_dj: {

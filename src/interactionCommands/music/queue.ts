@@ -65,7 +65,7 @@ export default new Command({
 				play: interaction.options.getBoolean('confirm-result') ? 'music-search' : 'music-play',
 				remove: 'remove',
 				move: 'move',
-				voteskip: 'voteskip',
+				skip: 'skip',
 				forceskip: 'forceskip',
 				stop: 'stop',
 				loop: 'loop',

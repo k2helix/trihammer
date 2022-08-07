@@ -1,7 +1,6 @@
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { queue } from '../../lib/modules/music';
-import { getVoiceConnection } from '@discordjs/voice';
 export default new Command({
 	name: 'volume',
 	description: 'Set the queue volume',
@@ -23,9 +22,7 @@ export default new Command({
 
 		if (parseFloat(newVolume) > 5) return interaction.reply({ embeds: [client.redEmbed(music.too_much)], ephemeral: true });
 
-		serverQueue.volume = parseFloat(newVolume);
-		// @ts-ignore
-		getVoiceConnection(serverQueue.voiceChannel.guildId).state.subscription.player.state.resource.volume.setVolumeLogarithmic(parseFloat(newVolume) / 5);
+		serverQueue.setVolume(parseFloat(newVolume));
 		interaction.reply({ embeds: [client.blueEmbed(music.volume.replace('{volume}', newVolume))] });
 	}
 });

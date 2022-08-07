@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction, TextChannel } from 'discord.js';
-import { handleVideo } from '../../lib/modules/music';
+import { Queue, queue } from '../../lib/modules/music';
 import play, { YouTubeVideo } from 'play-dl';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -20,10 +20,15 @@ export default new MessageCommand({
 		if (message.guild.members.me!.voice.channel && message.guild.members.me!.voice.channelId !== voiceChannel.id)
 			return message.channel.send({ embeds: [client.redEmbed(music.wrong_vc)] });
 
+		const serverQueue = queue.get(message.guild.id) || new Queue({ voiceChannel: voiceChannel, textChannel: message.channel as TextChannel });
+
 		const videos = (await play.search(searchString, { limit: 10 }).catch((err) => {
 			return client.catchError(err, message.channel as TextChannel);
 		})) as YouTubeVideo[];
-		if (typeof videos === 'boolean' || videos?.length < 1) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
+		if (typeof videos === 'boolean' || videos?.length < 1) {
+			if (!serverQueue.songs[0]) serverQueue.stop();
+			return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
+		}
 
 		let options = [];
 		for (let index = 0; index < videos.length; index++) {
@@ -49,10 +54,11 @@ export default new MessageCommand({
 			msg.delete();
 		} catch (error) {
 			message.channel.send({ embeds: [client.redEmbed(music.cancel)] });
+			if (!serverQueue.songs[0]) serverQueue.stop();
 			return msg.delete();
 		}
-		// @ts-ignore
-		const actualVideo = videos[selected.values[0]];
-		await handleVideo(actualVideo, message, voiceChannel, false);
+
+		const actualVideo = videos[selected.values[0] as unknown as number];
+		serverQueue.handleVideo(actualVideo, message.author.id);
 	}
 });
