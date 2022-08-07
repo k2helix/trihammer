@@ -31,7 +31,7 @@ export default new Command({
 	async execute(client, interaction, guildConf) {
 		const serverQueue = queue.get(interaction.guildId!);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
+		if (!serverQueue || serverQueue.leaveTimeout || !serverQueue.songs[0]) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 		let durationMs = serverQueue.songs[0].durationInSec! * 1000;
 
 		let seek = serverQueue.songs[0].seek;

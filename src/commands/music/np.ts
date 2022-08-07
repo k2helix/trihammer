@@ -32,7 +32,7 @@ export default new MessageCommand({
 	async execute(client, message, _args, guildConf) {
 		const serverQueue = queue.get(message.guildId!);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
+		if (!serverQueue || serverQueue.leaveTimeout || !serverQueue.songs[0]) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		let durationMs = serverQueue.songs[0].durationInSec! * 1000;
 
 		let seek = serverQueue.songs[0].seek;
