@@ -178,7 +178,7 @@ class Queue {
 	}
 
 	public skip() {
-		this.getPlayer()!.stop();
+		this.getPlayer()?.stop();
 	}
 
 	public getResource() {

@@ -60,15 +60,16 @@ config.enabled_commands.forEach(async (dir) => {
 		client.commands.set(command.name, command);
 	}
 
-	if (dir === 'development') return;
-	const interactionCommandFiles = readdirSync(join(__dirname, 'interactionCommands', dir)).filter((file) => file.endsWith('.js'));
-	for (const file of interactionCommandFiles) {
-		let command = await import(join(__dirname, 'interactionCommands', dir, file));
-		if (command.default instanceof Command) {
-			command = Object.assign(command.default, command);
-			delete command.default;
+	if (dir !== 'development') {
+		const interactionCommandFiles = readdirSync(join(__dirname, 'interactionCommands', dir)).filter((file) => file.endsWith('.js'));
+		for (const file of interactionCommandFiles) {
+			let command = await import(join(__dirname, 'interactionCommands', dir, file));
+			if (command.default instanceof Command) {
+				command = Object.assign(command.default, command);
+				delete command.default;
+			}
+			client.interactionCommands.set(command.name, command);
 		}
-		client.interactionCommands.set(command.name, command);
 	}
 });
 

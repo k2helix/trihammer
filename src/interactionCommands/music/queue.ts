@@ -35,11 +35,11 @@ export default new Command({
 			]);
 			const view_embed = new EmbedBuilder()
 				.setTitle(music.queue_songs)
-				.setDescription(
-					`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](https://www.youtube.com/watch?v=${song.id}) \`${song.duration}\``).join('\n')}`
-				)
+				.setDescription(`${selectedPortion.map((song) => `**${++amplifiedPage} -** [${song.title}](${song.url}}) \`${song.duration}\``).join('\n')}`)
 				.setColor('White')
-				.setFooter({ text: client.replaceEach(music.queue_page, { '{number}': page.toString(), '{total}': (Math.floor(serverQueue.songs.length / 10) + 1).toString() }) })
+				.setFooter({
+					text: client.replaceEach(music.queue_page, { '{number}': page.toString(), '{total}': (Math.floor((serverQueue.songs.length - 0.1) / 10) + 1).toString() })
+				}) // -0.1 because if the length is a multiple of 10 (e.g 30) the total number of pages would be (Math.floor(29.9 / 10) = 2) + 1 = 3, whereas if we do not substract 0.1 it would be (Math.floor(30 / 10) = 3) + 1 = 4, being it a lie as there are not 4 pages
 				.setTimestamp();
 
 			interaction.reply({ embeds: [view_embed], components: [row] });
