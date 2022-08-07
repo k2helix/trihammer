@@ -288,7 +288,7 @@ export const music = {
 	skipto_restricted: 'You can only use this command if you are less than 4 persons in the call or you have a role called **DJ**',
 	play: {
 		added_to_queue: {
-			title: '__Added to the queue',
+			title: '__Added to the queue__',
 			description: '{song} has been succesfully added to the queue',
 			channel: 'Channel:',
 			duration: 'Duration:'

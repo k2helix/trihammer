@@ -27,7 +27,10 @@ export default new Command({
 
 		const serverQueue = queue.get(interaction.guildId!) || new Queue({ voiceChannel: voiceChannel, textChannel: interaction.channel as TextChannel });
 
-		if (searchString.match(/https?:\/\/.*?\.(wav|mp3|ogg|mp4).*?$/im)?.index === 0) return serverQueue.addFileToQueue(searchString, interaction.user.id);
+		if (searchString.match(/https?:\/\/.*?\.(wav|mp3|ogg|mp4).*?$/im)?.index === 0) {
+			interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${searchString}**`))], ephemeral: true });
+			return serverQueue.addFileToQueue(searchString, interaction.user.id);
+		}
 
 		let type = await play.validate(searchString);
 

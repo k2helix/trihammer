@@ -62,7 +62,7 @@ class Queue {
 		};
 		this.songs.push(song);
 		if (this.leaveTimeout) this.clearLeaveTimeout();
-		if (!this.getPlayer() || this.getPlayer()?.state.status === AudioPlayerStatus.Idle) return this.play(this.songs[0]);
+		if ((!this.getPlayer() || this.getPlayer()?.state.status === AudioPlayerStatus.Idle) && this.songs.length === 1) return this.play(this.songs[0]);
 		if (!fromPlaylist) this.textChannel.send({ embeds: [this.addedToQueueEmbed(song, music)] });
 	}
 
