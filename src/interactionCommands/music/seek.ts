@@ -15,7 +15,7 @@ export default new Command({
 
 		if (!voiceChannel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
 		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
-		if (serverQueue.songs[0].id === 'file') return interaction.reply({ embeds: [client.redEmbed(music.cannot_seek_files)], ephemeral: true });
+		if (serverQueue.songs[0]?.id === 'file') return interaction.reply({ embeds: [client.redEmbed(music.cannot_seek_files)], ephemeral: true });
 
 		const array = interaction.options.getString('timestamp')!.split(':').reverse();
 

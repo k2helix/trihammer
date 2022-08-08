@@ -15,7 +15,7 @@ export default new MessageCommand({
 		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
-		if (serverQueue.songs[0].id === 'file') return message.channel.send({ embeds: [client.redEmbed(music.cannot_seek_files)] });
+		if (serverQueue.songs[0]?.id === 'file') return message.channel.send({ embeds: [client.redEmbed(music.cannot_seek_files)] });
 
 		const array = args.join(' ').split(':').reverse();
 

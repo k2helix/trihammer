@@ -22,7 +22,7 @@ export default new Command({
 
 		const serverQueue = queue.get(interaction.guildId!);
 		if (serverQueue) {
-			if (serverQueue.songs[0].id === 'file') return interaction.reply({ embeds: [client.redEmbed(music.tts.file)] });
+			if (serverQueue.songs[0]?.id === 'file') return interaction.reply({ embeds: [client.redEmbed(music.tts.file)] });
 			serverQueue.songs[0].seek = Math.floor((serverQueue.getPlaybackDuration() + serverQueue.songs[0].seek * 1000) / 1000);
 		}
 		const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${text}&tl=${lang}&total=1&idx=0&client=tw-ob&prev=input&ttsspeed=1`;

@@ -76,11 +76,15 @@ class Queue {
 			return this.catchErrorAndSkip(error);
 		}
 
-		if (!source?.stream) return this.textChannel.send('An error ocurred when getting the stream');
-		const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
-		const player = this.getOrCreatePlayer();
-		player.play(resource);
-		resource.volume?.setVolumeLogarithmic(this.volume / 5);
+		try {
+			if (!source?.stream) return this.textChannel.send('An error ocurred when getting the stream');
+			const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
+			const player = this.getOrCreatePlayer();
+			player.play(resource);
+			resource.volume?.setVolumeLogarithmic(this.volume / 5);
+		} catch (error) {
+			this.catchErrorAndSkip(error);
+		}
 
 		if (!song.seek) this.textChannel.send({ embeds: [this.playingEmbed(song, music)] });
 	}
