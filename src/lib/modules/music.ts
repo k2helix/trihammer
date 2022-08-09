@@ -210,8 +210,7 @@ class Queue {
 	}
 
 	public setVolume(volume: number) {
-		// @ts-ignore
-		this.getResource()?.volume.setVolumeLogarithmic(volume / 5);
+		this.getResource()?.volume?.setVolumeLogarithmic(volume / 5);
 		this.volume = volume;
 	}
 
