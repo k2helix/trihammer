@@ -132,7 +132,7 @@ class Queue {
 
 	public async handleNextSong() {
 		if (this.autoplay)
-			if (this.songs.length == 1) {
+			if (this.songs.length == 1 && this.songs[0].id !== 'file') {
 				let relatedVideos = (await video_info(this.songs[0].url)).related_videos;
 				let firstVid = (await video_info(relatedVideos[0])).video_details;
 				let i = 0;
