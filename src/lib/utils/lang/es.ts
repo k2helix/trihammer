@@ -336,7 +336,9 @@ export const util = {
 		joinedString: '📥 Entrada:',
 		joined: function (user) {
 			return `${convertDate(user.joinedTimestamp!)}. Hace ${T_convertor(Math.floor(Date.now()) - user.joinedTimestamp!)}`;
-		}
+		},
+		server_avatar: 'Ver avatar del servidor',
+		user_avatar: 'Ver avatar del usuario'
 	},
 	server: {
 		main: function (guild, owner) {

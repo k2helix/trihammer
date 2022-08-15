@@ -235,6 +235,8 @@ export default interface LanguageFile {
 			};
 			joinedString: string;
 			joined: (user: GuildMember) => string;
+			server_avatar: string;
+			user_avatar: string;
 		};
 		server: {
 			main: (guild: Guild, owner: GuildMember) => string;

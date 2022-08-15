@@ -339,7 +339,9 @@ export const util = {
 		joinedString: '📥 Joined at:',
 		joined: function (user) {
 			return `${convertDate(user.joinedTimestamp!)}. ${T_convertor(Math.floor(Date.now()) - user.joinedTimestamp!)} ago.`;
-		}
+		},
+		server_avatar: 'View server avatar',
+		user_avatar: 'View user avatar'
 	},
 	server: {
 		main: function (guild, owner) {
