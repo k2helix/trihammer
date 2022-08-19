@@ -21,7 +21,8 @@ export default new MessageCommand({
 			.setAuthor({ name: guild.name, iconURL: guild.iconURL()! })
 			.setColor('Random')
 			.setThumbnail(guild.iconURL()!)
-			.addFields({ name: util.user.information, value: util.server.main(guild, owner) });
+			.addFields({ name: util.user.information, value: util.server.main(guild, owner) })
+			.setImage(guild.bannerURL({ size: 1024 }));
 
 		message.channel.send({ embeds: [serverembed] });
 	}

@@ -5,7 +5,7 @@ import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 
 export default new Command({
-	name: 'queue',
+	name: 'playlist',
 	description: 'Add, remove or view the songs in the current queue',
 	category: 'music',
 	async execute(client, interaction, guildConf) {
