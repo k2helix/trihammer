@@ -49,7 +49,7 @@ export default new MessageCommand({
 					});
 			});
 			collector.on('end', () => {
-				msg.edit({ components: [] });
+				msg.edit({ components: [] }).catch(() => null);
 			});
 		}
 	}

@@ -50,7 +50,7 @@ export default new MessageCommand({
 			client.interactionCommands.get(reaction.customId)!.execute(client, reaction, guildConf);
 		});
 		collector.on('end', () => {
-			msg.edit({ components: [] });
+			msg.edit({ components: [] }).catch(() => null);
 		});
 	}
 });

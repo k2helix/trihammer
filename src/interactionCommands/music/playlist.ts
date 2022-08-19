@@ -55,7 +55,7 @@ export default new Command({
 				client.interactionCommands.get(reaction.customId)!.execute(client, reaction as ButtonInteraction, guildConf);
 			});
 			collector.on('end', () => {
-				msg.edit({ components: [] });
+				msg.edit({ components: [] }).catch(() => null);
 			});
 		} else {
 			let currentSongOpt = { view: 'np', seek: 'seek', pause: 'pause', resume: 'resume' };

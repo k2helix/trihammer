@@ -120,7 +120,7 @@ export default new Command({
 				}
 			});
 			collector.on('end', () => {
-				msg.edit({ components: [] });
+				msg.edit({ components: [] }).catch(() => null);
 			});
 		} catch (err) {
 			console.error(err);

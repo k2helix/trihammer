@@ -59,7 +59,7 @@ export default new Command({
 					});
 			});
 			collector.on('end', () => {
-				if (!interaction.isContextMenuCommand()) msg.edit({ components: [] });
+				if (!interaction.isContextMenuCommand()) msg.edit({ components: [] }).catch(() => null);
 			});
 		}
 	}
