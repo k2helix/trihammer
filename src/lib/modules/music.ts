@@ -1,4 +1,4 @@
-import { AudioPlayer, AudioPlayerStatus, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
+import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { Readable } from 'stream';
@@ -41,6 +41,7 @@ class Queue {
 			});
 		} catch (err) {
 			this.textChannel.send({ embeds: [new EmbedBuilder().setColor('Red').setDescription(`I could not join the voice channel: \`${(err as Error).message}\``)] });
+			queue.delete(this.guild.id);
 		}
 	}
 
@@ -61,8 +62,8 @@ class Queue {
 			skip: []
 		};
 		this.songs.push(song);
-		if (this.leaveTimeout) this.clearLeaveTimeout();
-		if ((!this.getPlayer() || this.getPlayer()?.state.status === AudioPlayerStatus.Idle) && this.songs.length === 1) return this.play(this.songs[0]);
+		if (this.leaveTimeout && requester !== 'Autoplay') this.clearLeaveTimeout();
+		if (this.songs.length === 1) return this.play(this.songs[0]);
 		if (!fromPlaylist) this.textChannel.send({ embeds: [this.addedToQueueEmbed(song, music)] });
 	}
 
@@ -123,7 +124,7 @@ class Queue {
 		};
 		this.songs.push(song);
 		if (this.leaveTimeout) this.clearLeaveTimeout();
-		if (!this.getPlayer() || this.getPlayer()?.state.status === AudioPlayerStatus.Idle) return this.playFile(this.songs[0]);
+		if (this.songs.length === 1) return this.playFile(this.songs[0]);
 		this.textChannel.send({ embeds: [this.addedToQueueEmbed(song, music)] });
 	}
 
@@ -140,7 +141,8 @@ class Queue {
 					compareTwoStrings(this.songs[0].title.toLowerCase(), firstVid.title!.toLowerCase()) > 0.8 ||
 					firstVid.durationInSec - this.songs[0].durationInSec > 3000
 				);
-				this.handleVideo(firstVid, 'Autoplay');
+				this.songs.shift();
+				return this.handleVideo(firstVid, 'Autoplay');
 			}
 
 		if (this.loop) {
@@ -175,7 +177,7 @@ class Queue {
 		if (this.leaveTimeout) this.clearLeaveTimeout();
 		this.getPlayer()?.stop();
 		queue.delete(this.guild.id);
-		this.getConnection().destroy();
+		this.getConnection()?.destroy();
 	}
 
 	public skip() {
@@ -193,7 +195,7 @@ class Queue {
 	}
 
 	public getConnection() {
-		return getVoiceConnection(this.guild.id)!;
+		return getVoiceConnection(this.guild.id);
 	}
 
 	public getPlaybackDuration() {
@@ -230,7 +232,7 @@ class Queue {
 				if (oldState.resource?.metadata?.seek && !newState.resource) return this.play(this.songs[0]);
 				if (oldState.status == 'playing' && newState.status == 'idle') this.handleNextSong();
 			});
-			this.getConnection().subscribe(player);
+			this.getConnection()?.subscribe(player);
 		}
 		return player;
 	}
