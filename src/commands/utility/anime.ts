@@ -156,8 +156,9 @@ export default new MessageCommand({
 		let data;
 
 		if (message.content.toLowerCase().includes('-search')) {
-			let results = await getResultsFromSearch(anime);
+			let results = await getResultsFromSearch(anime.slice(0, anime.indexOf('-search')));
 			if (!results) return;
+
 			let options = [];
 			for (let index = 0; index < results.length; index++) {
 				const element = results[index];
@@ -166,6 +167,7 @@ export default new MessageCommand({
 			const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
 				new SelectMenuBuilder().setCustomId('anime').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 			);
+
 			let searchEmbed = new EmbedBuilder()
 				.setTitle(util.image.title)
 				.setColor('Random')
@@ -184,7 +186,6 @@ export default new MessageCommand({
 
 		if (!data) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 		let embed = new EmbedBuilder()
-
 			.setTitle(data.title)
 			.setURL(data.url)
 			.setDescription(`${data.score} ⭐`)

@@ -1,10 +1,23 @@
-/* eslint-disable curly */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-case-declarations */
+// @ts-nocheck
 import request from 'node-superfetch';
-import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	ComponentType,
+	EmbedBuilder,
+	MessageOptions,
+	SelectMenuBuilder,
+	SelectMenuInteraction
+} from 'discord.js';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
+
+const languages = {
+	es: 'spanish',
+	en: 'english'
+};
 
 // async function getGameSearch(query) {
 // 	let { body } = await request.get({ url: `https://store.playstation.com/store/api/chihiro/00_09_000/tumbler/US/en/99/${encodeURI(query)}?size=10&suggested_size=5&mode=game`);
@@ -44,23 +57,17 @@ export default new MessageCommand({
 	category: 'utility',
 	async execute(client, message, args, guildConf) {
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		// not rewriting this, lol
-		try {
-			let steamGame = args.join(' ');
-			// @ts-ignore
-			let result;
-			let appId;
-			if (steamGame.toLowerCase().includes('-search')) {
-				let index = steamGame.indexOf('-search');
-				steamGame = steamGame.slice(0, index);
-				result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
-				// @ts-ignore
-				if (result.body.total == 0) return message.channel.send({ embeds: [client.redEmbed(util.game.not_found)] });
 
+		try {
+			let isSearch = message.content.toLowerCase().includes('-search');
+			let steamGame = isSearch ? args.join(' ').slice(0, args.join(' ').indexOf('-search')) : args.join(' ');
+			let result = await request.get(`https://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
+			if (result.body.total == 0) return message.channel.send({ embeds: [client.redEmbed(util.game.not_found)] });
+
+			let appId;
+			if (isSearch) {
 				let options = [];
-				// @ts-ignore
 				for (let index = 0; index < result.body.items.length; index++) {
-					// @ts-ignore
 					const element = result.body.items[index];
 					options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 				}
@@ -73,9 +80,7 @@ export default new MessageCommand({
 					.setTitle(util.image.title)
 					.setColor('Random')
 					.setDescription(
-						// @ts-ignore
 						`${result.body.items
-							// @ts-ignore
 							.map((res) => `**${result.body.items.findIndex((x) => x.id === res.id) + 1} -** [${res.name}](https://store.steampowered.com/app/${res.id})`)
 							.join('\n')}\n ${util.anime.type_a_number}`
 					);
@@ -90,80 +95,62 @@ export default new MessageCommand({
 					message.channel.send({ content: music.cancel });
 					return msg.delete();
 				}
-			} else {
-				// @ts-ignore
-				result = await request.get(`http://store.steampowered.com/api/storesearch/?term=${steamGame}&l=english&cc=US`);
-				// @ts-ignore
-				appId = result.body.items[0].id;
-			}
-			// @ts-ignore
-			let tags: string[] = [];
-			// @ts-ignore
-			let steamDLCs: string[] = [];
-			let { body } = await request.get(`http://store.steampowered.com/api/appdetails?appids=${appId}&l=${guildConf.lang === 'es' ? 'spanish' : 'english'}`);
-			// @ts-ignore
+			} else appId = result.body.items[0].id;
+
+			let { body } = await request.get(`https://store.steampowered.com/api/appdetails?appids=${appId}&l=${languages[guildConf.lang as 'es' | 'en']}`);
 			let data = body[appId].data;
-			let price = data.price_overview ? data.price_overview.final_formatted : '???';
-			if (!data.price_overview)
-				if (data.is_free) price = '$0.00';
-				else price = '???';
+			let steamDLCs: string[] = [];
 
-			data.genres.forEach((genre: { description: string }) => {
-				tags.push(genre.description);
-			});
-			if (!data.dlc) {
-				let embed = new EmbedBuilder()
-					.setTitle(data.name)
-					.setDescription(data.short_description)
-					.setImage(data.header_image)
-					.setColor('Random')
-					.addFields(
-						{ name: util.game.release, value: data.release_date.date },
-						{ name: util.game.genres, value: tags.join(', ') },
-						{ name: util.game.price, value: price },
-						{ name: util.game.publishers, value: data.publishers.join(', ') || 'No' }
-					)
-					.setFooter({ text: 'Steam Store' });
-				message.channel.send({ embeds: [embed] });
-				// eslint-disable-next-line curly
-			} else {
-				// @ts-ignore
-				data.dlc.forEach(async (dlc) => {
-					if (data.dlc.indexOf(dlc) < 4) {
-						let { body } = await request.get('https://store.steampowered.com/api/appdetails?appids=' + dlc);
-						// @ts-ignore
-						let dlcprice = body[dlc].data.price_overview ? body[dlc].data.price_overview.final_formatted : '???';
-						// @ts-ignore
-						if (!body[dlc].data.price_overview) {
-							// @ts-ignore
-							if (body[dlc].data.is_free) dlcprice = '$0.00';
-							else dlcprice = '???';
-						}
+			let embed = new EmbedBuilder()
+				.setTitle(data.name)
+				.setDescription(data.short_description)
+				.setImage(data.header_image)
+				.setColor('Random')
+				.addFields(
+					{ name: util.game.release, value: data.release_date.date },
+					{ name: util.game.genres, value: data.genres.map((g) => g.description).join(', ') },
+					{ name: util.game.price, value: data.is_free ? '$0.00' : data.price_overview?.final_formatted || '???' },
+					{ name: util.game.publishers, value: data.publishers.join(', ') || 'No' }
+				)
+				.setFooter({ text: 'Steam Store' });
 
-						// @ts-ignore
-						steamDLCs.push(`${body[dlc].data.name} (${dlcprice})`);
-						let length = data.dlc.length < 3 ? data.dlc.length : 3;
-						if (steamDLCs.length == length) {
-							let embed = new EmbedBuilder()
-								.setTitle(data.name)
-								.setDescription(data.short_description)
-								.setImage(data.header_image)
-								.setColor('Random')
-								.addFields(
-									{ name: util.game.release, value: data.release_date.date },
-									{ name: util.game.genres, value: tags.join(', ') },
-									{ name: util.game.price, value: price },
-									{ name: util.game.publishers, value: data.publishers.join(', ') || 'No' },
-									{ name: 'DLCs', value: `${steamDLCs.join('\n') || 'No'}${data.dlc.length > 3 ? `\n${data.dlc.length - 3} more...` : ''}`, inline: false }
-								)
-								.setFooter({ text: 'Steam Store' });
-							message.channel.send({ embeds: [embed] });
+			let info: MessageOptions = { embeds: [embed] };
+			let row: ActionRowBuilder<ButtonBuilder>;
+
+			if (data.dlc) {
+				row = new ActionRowBuilder<ButtonBuilder>().addComponents(new ButtonBuilder().setCustomId('dlcs').setLabel(util.game.show_dlcs).setStyle(ButtonStyle.Primary));
+				info.components = [row];
+			}
+			let msg = await message.channel.send(info);
+			if (info.components) {
+				const filter = (int: ButtonInteraction) => int.user.id === message.author.id;
+				const collector = msg.createMessageComponentCollector({ filter, time: 30000, componentType: ComponentType.Button });
+				collector.on('collect', async (reaction) => {
+					for (let index = 0; index < data.dlc.length; index++)
+						if (index <= 3) {
+							const dlcId = data.dlc[index];
+							let dlc = (await request.get('https://store.steampowered.com/api/appdetails?appids=' + dlcId)).body[dlcId].data;
+							steamDLCs.push(`${dlc.name} (${dlc.is_free ? '$0.00' : dlc.price_overview?.final_formatted || '???'})`);
 						}
-					}
+					reaction.update({
+						embeds: [
+							embed.addFields({
+								name: 'DLCs',
+								value: `${steamDLCs.join('\n') || 'No'}${data.dlc.length > 3 ? `\n${data.dlc.length - 3} more...` : ''}`,
+								inline: false
+							})
+						],
+						components: []
+					});
+					collector.stop('Button pressed');
+				});
+				collector.on('end', () => {
+					if (collector.endReason !== 'Button pressed') msg.edit({ components: [] }).catch(() => null);
 				});
 			}
 		} catch (err) {
-			return message.channel.send(util.game.not_found);
+			console.log(err);
+			return message.channel.send({ embeds: [client.redEmbed(util.game.not_found)] });
 		}
 	}
 });

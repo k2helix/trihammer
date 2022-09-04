@@ -460,7 +460,8 @@ export const util = {
 		genres: 'Géneros:',
 		price: 'Precio:',
 		publishers: 'Distribuidores',
-		not_found: 'No pude encontrar ese juego en Steam ni la PS Store'
+		not_found: 'No pude encontrar ese juego en Steam',
+		show_dlcs: 'Mostrar DLCs'
 	},
 	convert: {
 		need: 'Debe ser {prefix}convert <cantidad> <unidad base> <unidad objetivo> (separado por espacios)',

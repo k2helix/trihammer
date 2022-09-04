@@ -341,6 +341,7 @@ export default interface LanguageFile {
 			price: string;
 			publishers: string;
 			not_found: string;
+			show_dlcs: string;
 		};
 		convert: {
 			need: string;

@@ -118,8 +118,8 @@ async function getInfoFromName(name: string, getBestMatch = true) {
 	if (!items || !items.length) return;
 
 	try {
-		const bestMacth = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
-		const url = bestMacth ? bestMacth.url : items[0].url;
+		const bestMatch = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
+		const url = bestMatch ? bestMatch.url : items[0].url;
 		const data = await getInfoFromURL(url);
 
 		data!.url = url;

@@ -118,8 +118,8 @@ async function getInfoFromName(name: string, getBestMatch = true) {
 	if (!items || !items.length) return;
 
 	try {
-		const bestMacth = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
-		const url = bestMacth ? bestMacth.url : items[0].url;
+		const bestMatch = getBestMatch ? matchSorter(items, name, { keys: ['name'] })[0] : items[0];
+		const url = bestMatch ? bestMatch.url : items[0].url;
 		const data = await getInfoFromURL(url);
 
 		data!.url = url;
@@ -144,10 +144,7 @@ export default new MessageCommand({
 		let manga = args.join(' ');
 		let data;
 		if (manga.toLowerCase().includes('-search')) {
-			let index = manga.indexOf('-search');
-			manga = manga.slice(0, index);
-
-			let results = await getResultsFromSearch(manga);
+			let results = await getResultsFromSearch(manga.slice(0, manga.indexOf('-search')));
 			if (!results) return;
 
 			let options = [];

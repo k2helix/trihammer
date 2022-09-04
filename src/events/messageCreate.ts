@@ -222,15 +222,21 @@ export default async (client: ExtendedClient, message: Message) => {
 	}
 	try {
 		command.execute(client, message, args, serverConfig);
-		if (serverConfig.actionslogs === 'none') return;
-		const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
-		if (!logs_channel || !logs_channel.isTextBased()) return;
-		const cmdObj = {
-			'{user}': message.author.tag,
-			'{command}': command!.name,
-			'{channel}': `<#${message.channel.id}>`
-		};
-		return logs_channel.send({ embeds: [client.orangeEmbed(client.replaceEach(config.command_used, cmdObj))] });
+		if (serverConfig.actionslogs !== 'none') {
+			const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
+			if (logs_channel && logs_channel.isTextBased())
+				return logs_channel.send({
+					embeds: [
+						client.orangeEmbed(
+							client.replaceEach(config.command_used, {
+								'{user}': message.author.tag,
+								'{command}': command!.name,
+								'{channel}': `<#${message.channel.id}>`
+							})
+						)
+					]
+				});
+		}
 	} catch (error) {
 		client.catchError(error, message.channel as TextChannel);
 	}

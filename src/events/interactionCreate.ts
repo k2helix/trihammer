@@ -110,14 +110,18 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 			command.execute(client, interaction, guildConf);
 			if (guildConf.actionslogs !== 'none') {
 				let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);
-				if (logs_channel && logs_channel.isTextBased()) {
-					let cmdObj = {
-						'{user}': interaction.user.tag,
-						'{command}': command.name,
-						'{channel}': `<#${interaction.channelId}>`
-					};
-					return logs_channel.send(client.replaceEach(config.command_used, cmdObj));
-				}
+				if (logs_channel && logs_channel.isTextBased())
+					return logs_channel.send({
+						embeds: [
+							client.orangeEmbed(
+								client.replaceEach(config.command_used, {
+									'{user}': interaction.user.tag,
+									'{command}': command!.name,
+									'{channel}': `<#${interaction.channelId}>`
+								})
+							)
+						]
+					});
 			}
 		} catch (error) {
 			client.catchError(error, interaction.channel as TextChannel);

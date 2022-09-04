@@ -186,7 +186,6 @@ export default new Command({
 
 		if (!data) return interaction.editReply({ embeds: [client.redEmbed(music.not_found)] });
 		let embed = new EmbedBuilder()
-
 			.setTitle(data.title)
 			.setURL(data.url)
 			.setDescription(`${data.score} ⭐`)

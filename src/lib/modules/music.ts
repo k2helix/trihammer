@@ -167,7 +167,7 @@ class Queue {
 		Promise.reject(error); //cannot call client.catchError here, so handle it with the unhandledRejection event in the index file
 
 		this.textChannel.send({
-			embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', this.songs[0].title) + `\`${error.message}\``).setColor('Red')]
+			embeds: [new EmbedBuilder().setDescription(music.error_stream.replace('{video}', this.songs[0]?.title || 'video') + `\`${error.message}\``).setColor('Red')]
 		});
 		this.handleNextSong();
 	}
