@@ -79,10 +79,12 @@ export default new Command({
 				.setImage(data.header_image)
 				.setColor('Random')
 				.addFields(
-					{ name: util.game.release, value: data.release_date.date },
-					{ name: util.game.genres, value: data.genres.map((g) => g.description).join(', ') },
-					{ name: util.game.price, value: data.is_free ? '$0.00' : data.price_overview?.final_formatted || '???' },
-					{ name: util.game.publishers, value: data.publishers.join(', ') || 'No' }
+					{ name: util.game.release, value: data.release_date.date, inline: true },
+					{ name: util.game.genres, value: data.genres.map((g) => g.description).join(', '), inline: true },
+					{ name: '​', value: '​', inline: true },
+					{ name: util.game.price, value: data.is_free ? '$0.00' : data.price_overview?.final_formatted || '???', inline: true },
+					{ name: util.game.publishers, value: data.publishers.join(', ') || 'No', inline: true },
+					{ name: '​', value: '​', inline: true }
 				)
 				.setFooter({ text: 'Steam Store' });
 
