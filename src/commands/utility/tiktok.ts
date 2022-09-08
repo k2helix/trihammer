@@ -59,7 +59,7 @@ export default new MessageCommand({
 
 						postsData.push({
 							itemInfos: {
-								video: { urls: [videoSources[index].attribs.src.slice(12)], shortened_video: null },
+								video: { urls: [videoSources[index].attribs.src.slice(42)], shortened_video: null },
 								text: mainComment,
 								createTime: date || '',
 								playCount: views,
