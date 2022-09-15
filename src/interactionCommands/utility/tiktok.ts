@@ -57,7 +57,7 @@ export default new MessageCommand({
 
 						postsData.push({
 							itemInfos: {
-								video: { urls: [videoSources[index].attribs.src.slice(42)], shortened_video: null },
+								video: { urls: [videoSources[index].attribs.src.slice(videoSources[index].attribs.src.lastIndexOf('https://'))], shortened_video: null },
 								text: mainComment,
 								createTime: date || '',
 								playCount: views,
@@ -73,6 +73,7 @@ export default new MessageCommand({
 			} while (!currentPost && currentInstance < instances.length);
 
 			if (!currentPost && currentInstance === instances.length) {
+				// broken as of 15/9/22, just scrape from proxitok
 				let { text } = await request.get({
 					url: `https://www.tiktok.com/node/share/user/@${(interaction as ChatInputCommandInteraction).options.getString('user')}?aid=1988`,
 					headers: {

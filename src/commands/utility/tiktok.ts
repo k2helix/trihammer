@@ -35,7 +35,7 @@ export default new MessageCommand({
 			let currentInstance = 0;
 			do {
 				let r = await request.get(`${instances[currentInstance]}/@${args[0]}`).catch(() => null);
-				if (r?.status === 200) {
+				if (r?.status !== 200) {
 					let $ = load(r.text as string);
 					let posts = $('div[class="media-content"]');
 					let videoSources = posts.find('source');
@@ -59,7 +59,7 @@ export default new MessageCommand({
 
 						postsData.push({
 							itemInfos: {
-								video: { urls: [videoSources[index].attribs.src.slice(42)], shortened_video: null },
+								video: { urls: [videoSources[index].attribs.src.slice(videoSources[index].attribs.src.lastIndexOf('https://'))], shortened_video: null },
 								text: mainComment,
 								createTime: date || '',
 								playCount: views,
@@ -75,6 +75,7 @@ export default new MessageCommand({
 			} while (!currentPost && currentInstance < instances.length);
 
 			if (!currentPost && currentInstance === instances.length) {
+				// broken as of 15/9/22, just scrape from proxitok
 				let { text } = await request.get({
 					url: `https://www.tiktok.com/node/share/user/@${args[0]}?aid=1988`,
 					headers: {
