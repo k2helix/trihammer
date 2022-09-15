@@ -35,7 +35,7 @@ export default new MessageCommand({
 			let currentInstance = 0;
 			do {
 				let r = await request.get(`${instances[currentInstance]}/@${args[0]}`).catch(() => null);
-				if (r?.status !== 200) {
+				if (r?.status === 200) {
 					let $ = load(r.text as string);
 					let posts = $('div[class="media-content"]');
 					let videoSources = posts.find('source');
