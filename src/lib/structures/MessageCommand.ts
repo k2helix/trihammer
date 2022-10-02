@@ -13,7 +13,7 @@ class MessageCommand {
 	required_args: { index: number; type: 'user' | 'member' | 'channel' | 'role' | 'string' | 'number' | string; name: string; optional?: boolean; ignore?: boolean }[];
 	required_perms: PermissionsString[];
 	client_perms: PermissionsString[];
-	execute: (client: Client, message: Message, args: string[], guildConf: GuildConfig) => unknown;
+	execute: (client: Client, message: Message<true>, args: string[], guildConf: GuildConfig) => unknown;
 	constructor(options: MessageCommandOptions) {
 		this.name = options.name;
 		this.aliases = options.aliases ?? [];

@@ -1,4 +1,4 @@
-import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl';
 import config from '../../../config.json';
 import { Queue, queue } from '../../lib/modules/music';
 import { EmbedBuilder, TextChannel } from 'discord.js';
@@ -64,7 +64,9 @@ export default new MessageCommand({
 				}
 
 		if (type === 'yt_playlist') {
-			const playlist = await play.playlist_info(searchString, { incomplete: true });
+			const playlist = (await play.playlist_info(searchString, { incomplete: true }).catch((err) => {
+				return client.catchError(err, message.channel as TextChannel);
+			})) as YouTubePlayList;
 			const videos = await playlist.all_videos();
 			videos.forEach(async (video) => {
 				await serverQueue!.handleVideo(video, message.author.id, true);

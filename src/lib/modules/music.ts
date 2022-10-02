@@ -191,7 +191,7 @@ class Queue {
 
 	public getPlayer() {
 		// @ts-ignore
-		return this.getConnection().state.subscription?.player as AudioPlayer | undefined;
+		return this.getConnection()?.state.subscription?.player as AudioPlayer | undefined;
 	}
 
 	public getConnection() {

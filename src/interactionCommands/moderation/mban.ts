@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, User } from 'discord.js';
+import { ChatInputCommandInteraction, GuildTextBasedChannel, User } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import Command from '../../lib/structures/Command';
 import { ModelInfrs } from '../../lib/utils/models';
@@ -50,7 +50,7 @@ export default new Command({
 							});
 						})
 						.catch(() => {
-							return interaction.channel!.send(mod.user_404.replace('{id}', id));
+							return (interaction.channel as GuildTextBasedChannel)!.send(mod.user_404.replace('{id}', id));
 						});
 					++ctt;
 				});

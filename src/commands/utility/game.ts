@@ -7,7 +7,7 @@ import {
 	ButtonStyle,
 	ComponentType,
 	EmbedBuilder,
-	MessageOptions,
+	MessageCreateOptions,
 	SelectMenuBuilder,
 	SelectMenuInteraction
 } from 'discord.js';
@@ -116,7 +116,7 @@ export default new MessageCommand({
 				)
 				.setFooter({ text: 'Steam Store' });
 
-			let info: MessageOptions = { embeds: [embed] };
+			let info: MessageCreateOptions = { embeds: [embed] };
 			let row: ActionRowBuilder<ButtonBuilder>;
 
 			if (data.dlc) {

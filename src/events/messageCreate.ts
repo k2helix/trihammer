@@ -33,7 +33,7 @@ const cooldowns = new Collection();
 
 import { ModelServer, Server } from '../lib/utils/models';
 
-export default async (client: ExtendedClient, message: Message) => {
+export default async (client: ExtendedClient, message: Message<true>) => {
 	if (!client.application?.owner) await client.application?.fetch();
 	if (message.author.bot || !message.guild || !message.member) return;
 

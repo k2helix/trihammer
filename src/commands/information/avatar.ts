@@ -1,5 +1,5 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder, MessageCreateOptions } from 'discord.js';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
 	name: 'avatar',
@@ -23,7 +23,7 @@ export default new MessageCommand({
 			.addFields({ name: util.sauce.more_source, value: util.sauce.search_sources(avatar) })
 			.setImage(avatar);
 
-		let info: MessageOptions = { embeds: [info_embed] };
+		let info: MessageCreateOptions = { embeds: [info_embed] };
 		let row: ActionRowBuilder<ButtonBuilder>;
 		if (member?.avatar) {
 			row = new ActionRowBuilder<ButtonBuilder>().addComponents(

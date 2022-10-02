@@ -13,5 +13,5 @@ export default interface MessageCommandOptions {
 	required_roles?: ('MODERATOR' | 'ADMINISTRATOR')[];
 	required_perms?: PermissionsString[];
 	client_perms?: PermissionsString[];
-	execute: (client: Client, message: Message, args: string[], guildConf: GuildConfig) => unknown;
+	execute: (client: Client, message: Message<true>, args: string[], guildConf: GuildConfig) => unknown;
 }

@@ -1,5 +1,5 @@
 import Command from '../../lib/structures/Command';
-import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl';
 import { Queue, queue } from '../../lib/modules/music';
 import { EmbedBuilder, TextChannel } from 'discord.js';
 import config from '../../../config.json';
@@ -68,7 +68,9 @@ export default new Command({
 				}
 
 		if (type === 'yt_playlist') {
-			const playlist = await play.playlist_info(searchString, { incomplete: true });
+			const playlist = (await play.playlist_info(searchString, { incomplete: true }).catch((err) => {
+				return client.catchError(err, interaction.channel as TextChannel);
+			})) as YouTubePlayList;
 			const videos = await playlist.all_videos();
 			videos.forEach((video) => {
 				serverQueue!.handleVideo(video, interaction.user.id, true);

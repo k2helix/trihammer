@@ -21,7 +21,7 @@ export default new MessageCommand({
 
 		message.channel.messages
 			.fetch({
-				limit: amount > 100 ? 100 : amount
+				limit: Math.floor(amount * 1.5) //do not use amount here as it would fetch that amount of messages whether they are from the given user or not, thus it would not really delete that amount
 			})
 			.then((list) => {
 				let messageCollection = list.filter((m) => m.author.id === user.id && Date.now() - 1123200000 < m.createdTimestamp);
