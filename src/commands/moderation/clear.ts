@@ -12,7 +12,7 @@ export default new MessageCommand({
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let amount = parseInt(args[0]) || 50;
-		message.channel.bulkDelete(amount, true).catch(() => {
+		message.channel.bulkDelete(amount > 100 ? 100 : amount, true).catch(() => {
 			return message.channel.send({ embeds: [client.redEmbed(mod.bulkDelete_14d)] });
 		});
 	}

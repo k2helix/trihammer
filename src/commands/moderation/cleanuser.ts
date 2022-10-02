@@ -17,11 +17,12 @@ export default new MessageCommand({
 		const { mod } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const user = message.mentions.members!.first()! || message.guild!.members.cache.get(args[0])!;
-		let amount = parseInt(args[1]) || 100;
+		let amount = parseInt(args[1]) || 50;
+		let fetchAmount = Math.floor(amount * 1.5);
 
 		message.channel.messages
 			.fetch({
-				limit: Math.floor(amount * 1.5) //do not use amount here as it would fetch that amount of messages whether they are from the given user or not, thus it would not really delete that amount
+				limit: fetchAmount > 100 ? 100 : fetchAmount //do not use amount here as it would fetch that amount of messages whether they are from the given user or not, thus it would not really delete that amount
 			})
 			.then((list) => {
 				let messageCollection = list.filter((m) => m.author.id === user.id && Date.now() - 1123200000 < m.createdTimestamp);
