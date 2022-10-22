@@ -31,7 +31,7 @@ export default new MessageCommand({
 		let postsData: post[];
 		let msg = await message.channel.send({ embeds: [client.loadingEmbed()] });
 		try {
-			let instances = ['https://proxitok.herokuapp.com', 'https://proxitok.pussthecat.org', 'https://proxitok.privacydev.net'];
+			let instances = ['https://proxitok.pabloferreiro.es', 'https://proxitok.pussthecat.org', 'https://proxitok.privacydev.net'];
 			let currentInstance = 0;
 			do {
 				let r = await request.get(`${instances[currentInstance]}/@${args[0]}`).catch(() => null);
@@ -50,16 +50,17 @@ export default new MessageCommand({
 						let mainCommentParagraph = valuableChildren.find((ch) => ch.children.length === 1);
 						let interactionsParagraph = valuableChildren[valuableChildren.length - 1];
 
-						let date = nameAndDateParagraph.children.find((ch: { name: string; attribs: { title: string } }) => ch.name === 'small' && ch.attribs?.title)?.attribs.title;
+						let date = nameAndDateParagraph.children.find((ch: { name: string; attribs: { title: string } }) => ch.name === 'small' && ch.attribs?.title).children[0]?.data;
 						let mainComment = mainCommentParagraph ? mainCommentParagraph.children[0].data : null;
 						let interactions = interactionsParagraph.children.filter((ch: { attribs: { class: string } }) => ch.attribs && ch.attribs.class === 'icon-text');
 						let views = interactions[0].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
 						let likes = interactions[1].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
 						let comments = interactions[2].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
 
+						let videoSrc = decodeURIComponent(videoSources[index].attribs.src);
 						postsData.push({
 							itemInfos: {
-								video: { urls: [videoSources[index].attribs.src.slice(videoSources[index].attribs.src.lastIndexOf('https://'))], shortened_video: null },
+								video: { urls: [videoSrc.slice(videoSrc.lastIndexOf('https://'))], shortened_video: null },
 								text: mainComment,
 								createTime: date || '',
 								playCount: views,
