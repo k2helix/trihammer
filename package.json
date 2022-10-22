@@ -10,7 +10,7 @@
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
     "@sentry/node": "^7.12.1",
-    "bufferutil": "^4.0.6",
+    "bufferutil": "^4.0.7",
     "canvas": "^2.10.1",
     "cheerio": "^1.0.0-rc.12",
     "child_process": "^1.0.2",
