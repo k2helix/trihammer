@@ -30,7 +30,7 @@
     "node-schedule": "^2.1.0",
     "node-superfetch": "github:k2helix/node-superfetch",
     "play-dl2": "^1.9.6",
-    "utf-8-validate": "^5.0.9",
+    "utf-8-validate": "^5.0.10",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
