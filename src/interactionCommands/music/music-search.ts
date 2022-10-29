@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction, TextChannel } from 'discord.js';
 import { Queue, queue } from '../../lib/modules/music';
-import play, { YouTubeVideo } from 'play-dl';
+import play, { YouTubeVideo } from 'play-dl2';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 

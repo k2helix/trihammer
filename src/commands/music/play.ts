@@ -1,4 +1,4 @@
-import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl';
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl2';
 import config from '../../../config.json';
 import { Queue, queue } from '../../lib/modules/music';
 import { EmbedBuilder, TextChannel } from 'discord.js';
