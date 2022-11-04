@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder } from 'discord.js';
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -44,9 +44,9 @@ export default new Command({
 
 			interaction.reply({ embeds: [view_embed], components: [row] });
 			let msg = await interaction.fetchReply();
-			const collector = msg.createMessageComponentCollector({ time: 60000 });
+			const collector = msg.createMessageComponentCollector({ time: 60000, componentType: ComponentType.Button });
 
-			//@ts-ignore
+			// @ts-ignore
 			collector.on('collect', (reaction) => {
 				if (reaction.customId === 'crossx')
 					if (reaction.user.id !== interaction.user.id) return;

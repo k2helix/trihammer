@@ -1,5 +1,5 @@
 import Command from '../../lib/structures/Command';
-import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl2';
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl';
 import { Queue, queue } from '../../lib/modules/music';
 import { EmbedBuilder, TextChannel } from 'discord.js';
 import config from '../../../config.json';

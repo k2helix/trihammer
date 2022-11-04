@@ -1,6 +1,6 @@
 import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
-import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl2';
+import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import { compareTwoStrings } from '../utils/functions';
