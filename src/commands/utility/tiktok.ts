@@ -39,11 +39,10 @@ export default new MessageCommand({
 					let $ = load(r.text as string);
 					let posts = $('div[class="media-content"]');
 					let videoSources = posts.find('source');
-					let postsContent = posts.find('div[class="content"]');
 					postsData = [];
-					for (let index = 0; index < postsContent.length; index++) {
-						const content = postsContent[index];
-						let valuableChildren = content.children.filter((ch) => ch.children);
+					for (let index = 0; index < posts.length; index++) {
+						const content = posts[index];
+						let valuableChildren = content.children.filter((ch) => ch.children && !ch.attribs.class);
 
 						let nameAndDateParagraph = valuableChildren[0];
 						// let tagsParagraph = valuableChildren.find((ch) => ch.children[0].attribs && ch.children[0].attribs.class === 'tags');
