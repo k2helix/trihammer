@@ -17,7 +17,7 @@
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "erlpack": "^0.1.4",
-    "glitch-canvas": "^1.1.11",
+    "glitch-canvas": "^1.1.12",
     "google-translate-api-x": "github:k2helix/google-translate-api",
     "japaneasy": "github:Trunks8257/japaneasy",
     "libsodium-wrappers": "^0.7.10",
