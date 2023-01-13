@@ -27,7 +27,7 @@
     "moment-timezone": "^0.5.38",
     "mongoose": "^5.13.15",
     "node-geocoder": "^4.2.0",
-    "node-schedule": "^2.1.0",
+    "node-schedule": "^2.1.1",
     "node-superfetch": "github:k2helix/node-superfetch",
     "play-dl": "^1.9.6",
     "utf-8-validate": "^5.0.10",
