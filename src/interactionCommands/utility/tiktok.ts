@@ -4,7 +4,7 @@ import request from 'node-superfetch';
 import { load } from 'cheerio';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType, TextChannel } from 'discord.js';
-import { abbrNum } from '../../lib/utils/functions';
+import { abbrNum, shuffle } from '../../lib/utils/functions';
 interface post {
 	itemInfos: {
 		video: {
@@ -29,7 +29,15 @@ export default new MessageCommand({
 		let postsData: post[];
 		interaction.reply({ embeds: [client.loadingEmbed()] });
 		try {
-			let instances = ['https://proxitok.pabloferreiro.es', 'https://proxitok.pussthecat.org', 'https://proxitok.privacydev.net'];
+			// randomize because sometimes some instances do work but the video link does not (mainly the first one)
+			let instances = shuffle([
+				'https://proxitok.pabloferreiro.es',
+				// 'https://proxitok.pussthecat.org',
+				'https://proxitok.privacydev.net',
+				// 'https://proxitok.esmailelbob.xyz',
+				'https://tok.artemislena.eu',
+				'https://tok.adminforge.de'
+			]);
 			let currentInstance = 0;
 			do {
 				let r = await request.get(`${instances[currentInstance]}/@${(interaction as ChatInputCommandInteraction).options.getString('user')}`).catch(() => null);

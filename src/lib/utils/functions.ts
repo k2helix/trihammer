@@ -260,4 +260,21 @@ function abbrNum(number: number, decPlaces: number): string {
 
 	return number.toString();
 }
-export { abbrNum, bulkReplace, array_move, prinsjoto, wordOfTheDay, digitalTime, fromKana, swap, findBestMatch, compareTwoStrings };
+
+function shuffle(array: unknown[]) {
+	let currentIndex = array.length,
+		randomIndex;
+
+	// While there remain elements to shuffle.
+	while (currentIndex != 0) {
+		// Pick a remaining element.
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+
+		// And swap it with the current element.
+		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+	}
+
+	return array;
+}
+export { abbrNum, bulkReplace, array_move, prinsjoto, wordOfTheDay, digitalTime, fromKana, shuffle, swap, findBestMatch, compareTwoStrings };

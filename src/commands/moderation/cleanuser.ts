@@ -25,7 +25,7 @@ export default new MessageCommand({
 				limit: fetchAmount > 100 ? 100 : fetchAmount //do not use amount here as it would fetch that amount of messages whether they are from the given user or not, thus it would not really delete that amount
 			})
 			.then((list) => {
-				let messageCollection = list.filter((m) => m.author.id === user.id && Date.now() - 1123200000 < m.createdTimestamp);
+				let messageCollection = list.filter((m) => m.author.id === user.id && m.bulkDeletable);
 				let messages = [...messageCollection.values()].slice(0, amount);
 				if (!messages || !messages[1]) return message.channel.send({ embeds: [client.redEmbed(mod.bulkDelete_14d)] });
 				(message.channel as TextChannel).bulkDelete(messages).catch((error) => {
