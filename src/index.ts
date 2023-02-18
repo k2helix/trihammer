@@ -8,7 +8,6 @@ import { readdir, readdirSync } from 'fs';
 import { captureException, init } from '@sentry/node';
 import MessageCommand from './lib/structures/MessageCommand';
 import Command from './lib/structures/Command';
-import sync from '../sync/sync-repos';
 
 dotenv.config();
 
@@ -52,7 +51,6 @@ const client = new Client(
 
 // const array = ['Mod', 'xp', 'Utilidad', 'Kawaii', 'config', 'Music'];
 
-config.enabled_commands.forEach(async (dir) => {
 	const commandFiles = readdirSync(join(__dirname, 'commands', dir)).filter((file) => file.endsWith('.js'));
 	for (const file of commandFiles) {
 		let { default: command } = await import(join(__dirname, 'commands', dir, file));
@@ -78,7 +76,6 @@ config.enabled_commands.forEach(async (dir) => {
 
 readdir(join(__dirname, 'events'), (err, files) => {
 	if (err) return console.error(err);
-	files.forEach(async (file) => {
 		if (!file.endsWith('.js') || file.endsWith('.map')) return;
 		let evt = await import(join(__dirname, 'events', file));
 		const evtName = file.split('.')[0];
