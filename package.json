@@ -31,7 +31,7 @@
     "node-superfetch": "github:k2helix/node-superfetch",
     "play-dl": "^1.9.6",
     "utf-8-validate": "^6.0.2",
-    "zlib-sync": "^0.1.7"
+    "zlib-sync": "^0.1.8"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
