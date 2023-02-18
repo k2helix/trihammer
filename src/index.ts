@@ -8,6 +8,7 @@ import { readdir, readdirSync } from 'fs';
 import { captureException, init } from '@sentry/node';
 import MessageCommand from './lib/structures/MessageCommand';
 import Command from './lib/structures/Command';
+import sync from '../sync/sync-repos';
 
 dotenv.config();
 
@@ -45,6 +46,8 @@ const client = new Client(
 	},
 	{ prefix: config.default_prefix, administrators: config.administrators }
 );
+
+
 // require('./lib/modules/twitter').checkTweets(client);
 
 // const array = ['Mod', 'xp', 'Utilidad', 'Kawaii', 'config', 'Music'];
