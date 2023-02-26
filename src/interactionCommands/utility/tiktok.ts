@@ -5,6 +5,8 @@ import { load } from 'cheerio';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType, TextChannel } from 'discord.js';
 import { abbrNum, shuffle } from '../../lib/utils/functions';
+import ExtendedClient from '../../lib/structures/Client';
+
 interface post {
 	itemInfos: {
 		video: {
@@ -19,6 +21,23 @@ interface post {
 		index: number;
 	};
 }
+
+function postMessage(client: ExtendedClient, post: post['itemInfos'], baseString: string) {
+	return client.replaceEach(baseString, {
+		'{videoUrl}': post.video.shortened_video || post.video.urls[0],
+		'{mainComment}': post.text || '',
+		'{likes}': !isNaN(post.diggCount as number) ? abbrNum(post.diggCount as number, 1) : (post.diggCount as string),
+		'{views}': !isNaN(post.playCount as number) ? abbrNum(post.playCount as number, 1) : (post.playCount as string),
+		'{comments}': !isNaN(post.commentCount as number) ? abbrNum(post.commentCount as number, 1) : (post.commentCount as string),
+		'{current}': (post.index + 1).toString(),
+		'{date}': post.createTime.length === 10 ? `<t:${post.createTime}>` : (post.createTime as string)
+	});
+}
+
+async function shortenUrl(url: string) {
+	return (await request.get('https://is.gd/create.php?format=simple&url=' + url).catch(() => null))?.text;
+}
+
 export default new MessageCommand({
 	name: 'tiktok',
 	description: 'Search for someone in TikTok',
@@ -31,9 +50,9 @@ export default new MessageCommand({
 		try {
 			// randomize because sometimes some instances do work but the video link does not (mainly the first one)
 			let instances = shuffle([
-				'https://proxitok.pabloferreiro.es',
+				// 'https://proxitok.pabloferreiro.es',
 				'https://proxitok.pussthecat.org',
-				'https://proxitok.privacydev.net',
+				// 'https://proxitok.privacydev.net',
 				'https://proxitok.esmailelbob.xyz',
 				'https://tok.artemislena.eu',
 				'https://tok.adminforge.de'
@@ -119,7 +138,9 @@ export default new MessageCommand({
 			const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 			if (!currentPost) return interaction.editReply({ embeds: [client.redEmbed(music.not_found)] });
-			currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
+			currentPost.video.shortened_video = await shortenUrl(
+				'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
+			);
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder().setCustomId('dobleleft').setEmoji({ id: '882631909442744350' }).setStyle(ButtonStyle.Primary),
@@ -128,18 +149,14 @@ export default new MessageCommand({
 				new ButtonBuilder().setCustomId('dobleright').setEmoji({ id: '882631788550324295' }).setStyle(ButtonStyle.Primary),
 				new ButtonBuilder().setCustomId('crossx').setEmoji({ id: '882639143874723932' }).setStyle(ButtonStyle.Danger)
 			]);
+
+			let baseString = client.replaceEach(util.tiktok, {
+				'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
+				'{total}': postsData.length.toString()
+			});
+
 			interaction.editReply({
-				content: client.replaceEach(util.tiktok, {
-					'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-					'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
-					'{mainComment}': currentPost.text || '',
-					'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
-					'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
-					'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
-					'{current}': (currentPost.index + 1).toString(),
-					'{total}': postsData.length.toString(),
-					'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
-				}),
+				content: postMessage(client, currentPost, baseString),
 				components: [row],
 				embeds: []
 			});
@@ -154,77 +171,37 @@ export default new MessageCommand({
 						currentPost = postsData[currentIndex - 10]?.itemInfos || postsData[0].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex - 10] ? currentIndex - 10 : 0;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
-						int.update(
-							client.replaceEach(util.tiktok, {
-								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
-								'{mainComment}': currentPost.text || '',
-								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
-								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
-								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
-								'{current}': (currentPost.index + 1).toString(),
-								'{total}': postsData.length.toString(),
-								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
-							})
-						);
+							currentPost.video.shortened_video = await shortenUrl(
+								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
+							);
+						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'left':
 						currentPost = postsData[currentIndex - 1]?.itemInfos || postsData[postsData.length - 1].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex - 1] ? currentIndex - 1 : postsData.length - 1;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
-						int.update(
-							client.replaceEach(util.tiktok, {
-								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
-								'{mainComment}': currentPost.text || '',
-								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
-								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
-								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
-								'{current}': (currentPost.index + 1).toString(),
-								'{total}': postsData.length.toString(),
-								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
-							})
-						);
+							currentPost.video.shortened_video = await shortenUrl(
+								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
+							);
+						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'right':
 						currentPost = postsData[currentIndex + 1]?.itemInfos || postsData[0].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex + 1] ? currentIndex + 1 : 0;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
-						int.update(
-							client.replaceEach(util.tiktok, {
-								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
-								'{mainComment}': currentPost.text || '',
-								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
-								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
-								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
-								'{current}': (currentPost.index + 1).toString(),
-								'{total}': postsData.length.toString(),
-								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
-							})
-						);
+							currentPost.video.shortened_video = await shortenUrl(
+								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
+							);
+						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'dobleright':
 						currentPost = postsData[currentIndex + 10]?.itemInfos || postsData[postsData.length - 1].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex + 10] ? currentIndex + 10 : postsData.length - 1;
 						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = (await request.get('https://is.gd/create.php?format=simple&url=' + currentPost.video.urls[0]).catch(() => null))?.text;
-						int.update(
-							client.replaceEach(util.tiktok, {
-								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
-								'{mainComment}': currentPost.text || '',
-								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
-								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
-								'{comments}': !isNaN(currentPost.commentCount as number) ? abbrNum(currentPost.commentCount as number, 1) : (currentPost.commentCount as string),
-								'{current}': (currentPost.index + 1).toString(),
-								'{total}': postsData.length.toString(),
-								'{date}': currentPost.createTime.length === 10 ? `<t:${currentPost.createTime}>` : (currentPost.createTime as string)
-							})
-						);
+							currentPost.video.shortened_video = await shortenUrl(
+								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
+							);
+						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'crossx':
 						int.update({ components: [] });
