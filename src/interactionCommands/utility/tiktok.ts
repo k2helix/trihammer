@@ -32,9 +32,9 @@ export default new MessageCommand({
 			// randomize because sometimes some instances do work but the video link does not (mainly the first one)
 			let instances = shuffle([
 				'https://proxitok.pabloferreiro.es',
-				// 'https://proxitok.pussthecat.org',
+				'https://proxitok.pussthecat.org',
 				'https://proxitok.privacydev.net',
-				// 'https://proxitok.esmailelbob.xyz',
+				'https://proxitok.esmailelbob.xyz',
 				'https://tok.artemislena.eu',
 				'https://tok.adminforge.de'
 			]);
@@ -62,10 +62,10 @@ export default new MessageCommand({
 						let likes = interactions[1].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
 						let comments = interactions[2].children.filter((ch: { name: string }) => ch.name === 'span')[1].children[0].data;
 
-						let videoSrc = decodeURIComponent(videoSources[index].attribs.src);
+						let videoSrc = videoSources[index].attribs.src;
 						postsData.push({
 							itemInfos: {
-								video: { urls: [videoSrc.slice(videoSrc.lastIndexOf('https://'))], shortened_video: null },
+								video: { urls: [instances[currentInstance] + videoSrc], shortened_video: null },
 								text: mainComment,
 								createTime: date || '',
 								playCount: views,
@@ -131,7 +131,7 @@ export default new MessageCommand({
 			interaction.editReply({
 				content: client.replaceEach(util.tiktok, {
 					'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-					'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
+					'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
 					'{mainComment}': currentPost.text || '',
 					'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
 					'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
@@ -158,7 +158,7 @@ export default new MessageCommand({
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
+								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
 								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
 								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
@@ -177,7 +177,7 @@ export default new MessageCommand({
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
+								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
 								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
 								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
@@ -196,7 +196,7 @@ export default new MessageCommand({
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
+								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
 								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
 								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
@@ -215,7 +215,7 @@ export default new MessageCommand({
 						int.update(
 							client.replaceEach(util.tiktok, {
 								'{user}': `@${(interaction as ChatInputCommandInteraction).options.getString('user')}`,
-								'{videoUrl}': currentPost.video.shortened_video || currentPost.video.urls[0],
+								'{videoUrl}': currentPost.video.shortened_video + '\n\n' + currentPost.video.urls[0],
 								'{mainComment}': currentPost.text || '',
 								'{likes}': !isNaN(currentPost.diggCount as number) ? abbrNum(currentPost.diggCount as number, 1) : (currentPost.diggCount as string),
 								'{views}': !isNaN(currentPost.playCount as number) ? abbrNum(currentPost.playCount as number, 1) : (currentPost.playCount as string),
