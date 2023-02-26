@@ -84,7 +84,7 @@ export default new MessageCommand({
 						let videoSrc = videoSources[index].attribs.src;
 						postsData.push({
 							itemInfos: {
-								video: { urls: [instances[currentInstance] + videoSrc], shortened_video: null },
+								video: { urls: [videoSrc.slice(videoSrc.lastIndexOf('https'))], shortened_video: null },
 								text: mainComment,
 								createTime: date || '',
 								playCount: views,
