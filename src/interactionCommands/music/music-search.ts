@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction, TextChannel } from 'discord.js';
+import { ActionRowBuilder, ComponentType, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, TextChannel } from 'discord.js';
 import { Queue, queue } from '../../lib/modules/music';
 import play, { YouTubeVideo } from 'play-dl';
 import Command from '../../lib/structures/Command';
@@ -36,8 +36,8 @@ export default new Command({
 			const element = videos[index];
 			options.push({ label: `${index + 1}- ${element.title}`.slice(0, 99), value: index.toString() });
 		}
-		const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-			new SelectMenuBuilder().setCustomId('music-search').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+		const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+			new StringSelectMenuBuilder().setCustomId('music-search').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 		);
 
 		let songIndex = 0;
@@ -48,7 +48,7 @@ export default new Command({
 			.setDescription(`${videos.map((v) => `**${++songIndex} -** [${v.title}](${v.url}) - ${v.durationRaw}`).join('\n')} \n${music.type_a_number}`)
 			.setTimestamp();
 		let msg = await interaction.channel!.send({ embeds: [embed], components: [row] });
-		const filter = (int: SelectMenuInteraction) => int.customId === 'music-search' && int.user.id === interaction.user.id;
+		const filter = (int: StringSelectMenuInteraction) => int.customId === 'music-search' && int.user.id === interaction.user.id;
 		let selected;
 		try {
 			selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });

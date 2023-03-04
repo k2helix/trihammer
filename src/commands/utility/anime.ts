@@ -142,7 +142,7 @@ async function getInfoFromName(name: string, getBestMatch = true) {
 		console.error(e);
 	}
 }
-import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ComponentType, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from 'discord.js';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
@@ -164,8 +164,8 @@ export default new MessageCommand({
 				const element = results[index];
 				options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 			}
-			const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-				new SelectMenuBuilder().setCustomId('anime').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+			const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+				new StringSelectMenuBuilder().setCustomId('anime').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 			);
 
 			let searchEmbed = new EmbedBuilder()
@@ -173,7 +173,7 @@ export default new MessageCommand({
 				.setColor('Random')
 				.setDescription(`${results.map((result) => `**${results!.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}`);
 			let msg = await message.channel.send({ embeds: [searchEmbed], components: [row] });
-			const filter = (int: SelectMenuInteraction) => int.customId === 'anime' && int.user.id === message.author.id;
+			const filter = (int: StringSelectMenuInteraction) => int.customId === 'anime' && int.user.id === message.author.id;
 			try {
 				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 				data = await getInfoFromURL(`https://myanimelist.net/anime/${selected.values[0]}`);

@@ -9,8 +9,8 @@ import {
 	ComponentType,
 	EmbedBuilder,
 	MessageCreateOptions,
-	SelectMenuBuilder,
-	SelectMenuInteraction
+	StringSelectMenuBuilder,
+	StringSelectMenuInteraction
 } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -43,8 +43,8 @@ export default new Command({
 					options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 				}
 
-				const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-					new SelectMenuBuilder().setCustomId('game').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+				const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+					new StringSelectMenuBuilder().setCustomId('game').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 				);
 
 				let embedSearch = new EmbedBuilder()
@@ -57,7 +57,7 @@ export default new Command({
 					);
 
 				let msg = await interaction.channel!.send({ embeds: [embedSearch], components: [row] });
-				const filter = (int: SelectMenuInteraction) => int.customId === 'game' && int.user.id === interaction.user.id;
+				const filter = (int: StringSelectMenuInteraction) => int.customId === 'game' && int.user.id === interaction.user.id;
 				try {
 					let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 					appId = selected.values[0];

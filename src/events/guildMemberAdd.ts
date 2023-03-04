@@ -1,8 +1,11 @@
 import { AttachmentBuilder, GuildMember } from 'discord.js';
-import Canvas from 'canvas';
+import Canvas, { registerFont } from 'canvas';
 import { ModelMutes, ModelServer, ModelWelc, Server, Welc } from '../lib/utils/models';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
+
+registerFont('./assets/fonts/RobotoSlab-VariableFont_wght.ttf', { family: 'RobotoSlab' });
+
 function wrapText(context: Canvas.CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
 	const words = text.split(' ');
 	let line = '';
@@ -50,10 +53,10 @@ export default async (client: ExtendedClient, member: GuildMember) => {
 		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 		ctx.strokeStyle = '#74037b';
 		ctx.strokeRect(0, 0, canvas.width, canvas.height);
-		ctx.font = '80px sans-serif';
+		ctx.font = '80px RobotoSlab';
 		ctx.fillStyle = '#e91e63';
 		ctx.fillText(member.user.username + ',', canvas.width / 10, canvas.height / 1.8);
-		context.font = '60px sans-serif';
+		context.font = '60px RobotoSlab';
 		context.fillStyle = welcomeConfig.color;
 		wrapText(canvas.getContext('2d'), text, 140, 610, 1400, 65);
 		ctx.beginPath();

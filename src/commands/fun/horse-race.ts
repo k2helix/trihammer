@@ -1,4 +1,5 @@
-import { CanvasRenderingContext2D, Image, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, Image, createCanvas, loadImage, registerFont } from 'canvas';
+registerFont('./assets/fonts/RobotoSlab-VariableFont_wght.ttf', { family: 'RobotoSlab' });
 
 function formatTime(time: number) {
 	const min = Math.floor(time / 60);
@@ -34,7 +35,7 @@ function drawImageWithTint(ctx: CanvasRenderingContext2D, image: Image, color: s
 import { horses } from '../../lib/utils/objects';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
-import { ActionRowBuilder, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ComponentType, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from 'discord.js';
 export default new MessageCommand({
 	name: 'horse-race',
 	description: 'Play some horse races',
@@ -58,9 +59,9 @@ export default new MessageCommand({
 				const result = results[i];
 				const horse = chosenHorses.find((hor) => hor.name === result.name);
 				if (colors[i]) drawImageWithTint(ctx, horseImg, colors[i], 37, 114 + 49 * i, 49, 49);
-				ctx.font = '34px sans-serif';
+				ctx.font = '34px RobotoSlab';
 				ctx.fillText(formatTime(result.time), 755, 138 + 49 * i);
-				ctx.font = '15px sans-serif';
+				ctx.font = '15px RobotoSlab';
 				ctx.fillText(horse!.name, 251, 138 + 49 * i);
 			}
 			return { attachment: canvas.toBuffer(), name: 'leaderboard.png' };
@@ -77,13 +78,13 @@ export default new MessageCommand({
 			const element = chosenHorses[index];
 			options.push({ label: `${index + 1}- ${element.name}`, value: index.toString() });
 		}
-		const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-			new SelectMenuBuilder().setCustomId('horses').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+		const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+			new StringSelectMenuBuilder().setCustomId('horses').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 		);
 
 		let mainMessage = await message.channel.send({ embeds: [embed], components: [row] });
 		let currentBets: { user: string; horse: string }[] = [];
-		const filter = (int: SelectMenuInteraction) => int.customId === 'horses';
+		const filter = (int: StringSelectMenuInteraction) => int.customId === 'horses';
 		const collector = await mainMessage.createMessageComponentCollector({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 
 		collector.on('collect', (i) => {

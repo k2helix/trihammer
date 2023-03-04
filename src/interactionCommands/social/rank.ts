@@ -1,13 +1,14 @@
 import Command from '../../lib/structures/Command';
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Canvas, createCanvas, loadImage } from 'canvas';
+import { Canvas, createCanvas, loadImage, registerFont } from 'canvas';
 import { ModelRank, ModelUsers, Rank } from '../../lib/utils/models';
+registerFont('./assets/fonts/RobotoSlab-VariableFont_wght.ttf', { family: 'RobotoSlab' });
 
 const applyText = (canvas: Canvas, text: string) => {
 	const ctx = canvas.getContext('2d');
 	let fontSize = 70;
 
-	do ctx.font = `${(fontSize -= 10)}px sans-serif`;
+	do ctx.font = `${(fontSize -= 10)}px RobotoSlab`;
 	while (ctx.measureText(text).width > canvas.width - 300);
 
 	return ctx.font;
@@ -70,11 +71,11 @@ export default new Command({
 			ctx.fillStyle = '#ffffff';
 			ctx.fillText(user.tag, 280, 100);
 
-			ctx.font = '28px sans-serif';
+			ctx.font = '28px RobotoSlab';
 			ctx.fillStyle = '#ffffff';
 			ctx.fillText(`XP: ${xp}/${Math.floor(nivel / 0.0081654953837673)}`, 310, 200);
 
-			ctx.font = '28px sans-serif';
+			ctx.font = '28px RobotoSlab';
 			ctx.fillStyle = '#ffffff';
 			ctx.fillText(
 				`Level ${nivel} - Top #${

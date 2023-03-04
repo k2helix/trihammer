@@ -1,7 +1,8 @@
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { CanvasRenderingContext2D, createCanvas, loadImage } from 'canvas';
+import { CanvasRenderingContext2D, createCanvas, loadImage, registerFont } from 'canvas';
 import { ModelUsers } from '../../lib/utils/models';
 import Command from '../../lib/structures/Command';
+registerFont('./assets/fonts/RobotoSlab-VariableFont_wght.ttf', { family: 'RobotoSlab' });
 
 function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
 	let words = text.split(' ');
@@ -48,28 +49,28 @@ export default new Command({
 			ctx.strokeStyle = '#74037b';
 			ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-			ctx.font = user.tag.length < 12 ? '30px sans-serif' : '20px sans-serif';
+			ctx.font = user.tag.length < 12 ? '30px RobotoSlab' : '20px RobotoSlab';
 			ctx.fillStyle = '#0e0d0e';
 			ctx.fillText(user.tag, 130, 90);
 
-			ctx.font = '17px sans-serif';
+			ctx.font = '17px RobotoSlab';
 			ctx.fillStyle = '#0e0d0e';
 			ctx.fillText(global.pdesc, 135, 120);
 
-			ctx.font = '24px sans-serif';
+			ctx.font = '24px RobotoSlab';
 			ctx.fillStyle = '#0e0d0e';
 			ctx.fillText('|\n|\n|\n|\n|', 130, 180);
 
-			ctx.font = '24px sans-serif';
+			ctx.font = '24px RobotoSlab';
 			ctx.fillStyle = '#0e0d0e';
 			ctx.fillText(`Total XP\n${xp}`, 32, 180);
 
-			ctx.font = '20px sans-serif';
+			ctx.font = '20px RobotoSlab';
 			ctx.fillStyle = '#ff0007';
 			ctx.fillText(`+${global.rep}rep`, 30, 295);
 
 			context.fillStyle = '#0e0d0e';
-			context.font = '22px sans-serif';
+			context.font = '22px RobotoSlab';
 			wrapText(canvas.getContext('2d'), global.ptext, 140, 170, 275, 20);
 
 			const avatar = await loadImage(user.displayAvatarURL({ extension: 'png' }));

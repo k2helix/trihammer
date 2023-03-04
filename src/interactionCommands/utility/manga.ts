@@ -130,7 +130,7 @@ async function getInfoFromName(name: string, getBestMatch = true) {
 		console.error(e);
 	}
 }
-import { ActionRowBuilder, ChatInputCommandInteraction, ComponentType, EmbedBuilder, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, ChatInputCommandInteraction, ComponentType, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } from 'discord.js';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new Command({
@@ -152,8 +152,8 @@ export default new Command({
 				const element = results[index];
 				options.push({ label: `${index + 1}- ${element.name}`.slice(0, 99), value: element.id.toString() });
 			}
-			const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-				new SelectMenuBuilder().setCustomId('manga').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
+			const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+				new StringSelectMenuBuilder().setCustomId('manga').setPlaceholder(util.anime.nothing_selected).setMaxValues(1).addOptions(options)
 			);
 
 			let searchEmbed = new EmbedBuilder()
@@ -161,7 +161,7 @@ export default new Command({
 				.setColor('Random')
 				.setDescription(`${results.map((result) => `**${results!.indexOf(result) + 1} -** [${result.name}](${result.url})`).join('\n')}\n ${util.anime.type_a_number}`);
 			let msg = await interaction.channel!.send({ embeds: [searchEmbed], components: [row] });
-			const filter = (int: SelectMenuInteraction) => int.customId === 'manga' && int.user.id === interaction.user.id;
+			const filter = (int: StringSelectMenuInteraction) => int.customId === 'manga' && int.user.id === interaction.user.id;
 			try {
 				let selected = await msg.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.SelectMenu });
 				data = await getInfoFromURL(`https://myanimelist.net/manga/${selected.values[0]}`);

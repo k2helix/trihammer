@@ -1,4 +1,4 @@
-import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
+import { AudioPlayer, AudioResource, StreamType, VoiceConnectionState, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
 import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { Readable } from 'stream';
@@ -33,11 +33,23 @@ class Queue {
 		if (!getQueue(this.guild)) queue.set(this.guild.id, this);
 
 		try {
-			joinVoiceChannel({
+			const connection = joinVoiceChannel({
 				channelId: this.voiceChannel.id,
 				guildId: this.guild.id,
 				adapterCreator: this.guild.voiceAdapterCreator,
 				selfDeaf: true
+			});
+			connection.on('stateChange', (oldState, newState) => {
+				const oldNetworking = Reflect.get(oldState, 'networking');
+				const newNetworking = Reflect.get(newState, 'networking');
+
+				const networkStateChangeHandler = (_oldNetworkState: VoiceConnectionState, newNetworkState: VoiceConnectionState) => {
+					const newUdp = Reflect.get(newNetworkState, 'udp');
+					clearInterval(newUdp?.keepAliveInterval);
+				};
+
+				oldNetworking?.off('stateChange', networkStateChangeHandler);
+				newNetworking?.on('stateChange', networkStateChangeHandler);
 			});
 		} catch (err) {
 			this.textChannel.send({ embeds: [new EmbedBuilder().setColor('Red').setDescription(`I could not join the voice channel: \`${(err as Error).message}\``)] });

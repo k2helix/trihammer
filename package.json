@@ -9,7 +9,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.14.0",
-    "@sentry/node": "^7.37.2",
+    "@sentry/node": "^7.40.0",
     "bufferutil": "^4.0.7",
     "canvas": "^2.11.0",
     "cheerio": "^1.0.0-rc.12",
@@ -22,24 +22,24 @@
     "japaneasy": "github:Trunks8257/japaneasy",
     "libsodium-wrappers": "^0.7.11",
     "match-sorter": "^6.3.1",
-    "mathjs": "^11.5.1",
+    "mathjs": "^11.6.0",
     "megadb": "^3.4.0",
-    "moment-timezone": "^0.5.40",
-    "mongoose": "^5.13.15",
+    "moment-timezone": "^0.5.41",
+    "mongoose": "^5.13.16",
     "node-geocoder": "^4.2.0",
     "node-schedule": "^2.1.1",
     "node-superfetch": "github:k2helix/node-superfetch",
     "play-dl": "^1.9.6",
-    "utf-8-validate": "^6.0.2",
+    "utf-8-validate": "^6.0.3",
     "zlib-sync": "^0.1.8"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
     "@types/node": "^18.7.4",
     "@types/node-fetch": "^2.6.2",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "@typescript-eslint/parser": "^5.51.0",
-    "eslint": "^8.34.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.4",
@@ -47,7 +47,8 @@
   },
   "scripts": {
     "compile": "tsc",
-    "start": "npm install --legacy-peer-deps && node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/src/index.js"
+    "start": "npm install --legacy-peer-deps && node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/src/index.js",
+    "debug": "tsc && node dist/src/index.js"
   },
   "keywords": [
     "discord",
