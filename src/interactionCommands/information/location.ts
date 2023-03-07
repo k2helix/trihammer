@@ -12,6 +12,7 @@ export default new Command({
 	description: 'Search for an ubication in the map',
 	category: 'utility',
 	async execute(client, interaction, guildConf) {
+		if (!process.env.MAPQUEST_API_KEY || !process.env.OPENCAGE_API_KEY) return;
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const geocoder = NodeGeocoder(options);

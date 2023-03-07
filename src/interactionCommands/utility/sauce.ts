@@ -8,6 +8,7 @@ export default new Command({
 	description: 'Get the source of an image',
 	category: 'utility',
 	async execute(client, interaction, guildConf) {
+		if (!process.env.SAUCENAO_API_KEY) return;
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let image =
 			(interaction as ChatInputCommandInteraction).options.getString('image') ||

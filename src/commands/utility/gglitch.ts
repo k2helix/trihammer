@@ -22,6 +22,7 @@ export default new MessageCommand({
 	category: 'image_manipulation',
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
+		if (!process.env.PXL_API_TOKEN) return;
 		let image = message.author.displayAvatarURL({ size: 1024, extension: 'png' });
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 

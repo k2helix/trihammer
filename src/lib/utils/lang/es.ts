@@ -258,7 +258,7 @@ export const music = {
 	requested_by: 'Pedida por:',
 	playlist: 'Playlist: **{playlist}** fue añadida a la cola',
 	queue_songs: '__**Canciones en cola**__',
-	queue_page: 'Página {number} de {total}',
+	queue_page: 'Página {number} de {total} | Duración estimada de {min} minutos',
 	need_qnumber: 'Pon un número para borrarlo de la cola',
 	must_be_number: 'Tienes que envíar un número',
 	cannot_move: 'No puedes mover la canción que está sonando ahora mismo',

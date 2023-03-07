@@ -10,6 +10,7 @@ export default new MessageCommand({
 	category: 'utility',
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args, guildConf) {
+		if (!process.env.SAUCENAO_API_KEY) return;
 		let image = message.author.displayAvatarURL({ size: 1024, extension: 'png' });
 		let user = message.mentions.users.first() || client.users.cache.get(args[0]);
 

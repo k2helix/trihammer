@@ -6,6 +6,7 @@ export default new MessageCommand({
 	aliases: ['restart'],
 	category: 'unknown',
 	async execute(client, message) {
+		if (!process.env.HEROKU_TOKEN) return;
 		if (!client.config.administrators.includes(message.author.id)) return;
 		message.channel.send('Restarting...');
 		await request.delete({

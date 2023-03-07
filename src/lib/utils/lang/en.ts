@@ -261,7 +261,7 @@ export const music = {
 	requested_by: 'Requested by:',
 	playlist: 'Playlist: **{playlist}** has been added to the queue',
 	queue_songs: '__**Queued Songs**__',
-	queue_page: 'Page {number} of {total}',
+	queue_page: 'Page {number} of {total} | Estimated duration of {min} minutes',
 	need_qnumber: 'Type a number to delete it from the queue',
 	must_be_number: 'You must type a number',
 	cannot_move: 'You cannot move the currently playing song',

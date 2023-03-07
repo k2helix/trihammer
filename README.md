@@ -7,12 +7,28 @@ A Discord bot with a lot of commands and now open source!
 If you want to self host the bot, then edit .env.example and config.json.example with all your credentials and configuration and rename them to .env and config.json \
 If you want to use the spotify api for music commands, read and follow [this guide](https://github.com/play-dl/play-dl/tree/9d24008a2be6e1d72af9af06fcb072ac5cd99a42/instructions#spotify).
 - First, download the code manually or do it with git: `git clone https://github.com/k2helix/trihammer.git && cd trihammer`
-- Now you will have to install the required packages: `npm install --legacy-peer-deps`
-- Run it by using `tsc && node dist/src/index.js`
+- Now you will have to install the required packages: `npm install`
+- Build typescript code with `tsc` (do `npm install -g typescript` if not found)
+- Run it by using `node dist/src/index.js`
 
 If for some reason attachments of some command stop working, renew the url with the assets in the assets folder.
+
+### __Required credentials__
+In order for the bot to work you need special access tokens and api keys found in `.env` or `config.json`. \
+**Required credentials**:
+- TOKEN: your discord bot token which you can find in the Discord Developer Portal
+- MONGO_URI: your MongoDB database uri, which you can get for free on [their site](https://www.mongodb.com/atlas/database)
+
+**Optional credentials**:
+- SENTRY_DSN: useful for error debugging, you can get one at https://sentry.io/welcome/. Enable this in the config file
+- DBL_API_KEY: if your bot is available on top.gg, by setting this key it will update joined servers when the bot is added/removed from a server. Enable this in the config file
+- SAUCENAO_API_KEY: required for the `sauce` command to work
+- HEROKU_TOKEN: if your bot is hosted on Heroku and this token is set, the reset command will restart the process (change the url in that command to match your app's name)
+- PXL_API_TOKEN: api key needed for the `gglitch` command to work
+- OPENCAGE_API_KEY & MAPQUEST_API_KEY: both needed for the `location` command
+
 ### Notes
-- If you are not using Heroku, you can remove its api key from .env and delete or edit the reset command. Same goes for top.gg and Sentry.
+- If you do not use any of the optional services included in `.env`, you can remove their entries.
 - If you want to add more slash commands, edit the commands.ts file in src/interactionCommands and deploy them with t-deploy.
 
 I'm a bit lazy and some things are very improvable, I'm conscious.

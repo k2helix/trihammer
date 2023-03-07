@@ -14,6 +14,7 @@ export default new MessageCommand({
 	category: 'utility',
 	required_args: [{ index: 0, name: 'location query', type: 'string' }],
 	async execute(client, message, args, guildConf) {
+		if (!process.env.MAPQUEST_API_KEY || !process.env.OPENCAGE_API_KEY) return;
 		const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const geocoder = NodeGeocoder(options);
