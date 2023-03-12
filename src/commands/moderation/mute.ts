@@ -40,7 +40,7 @@ export default new MessageCommand({
 						SendMessages: false,
 						AddReactions: false
 					});
-				else if (channel.isVoiceBased())
+				if (channel.isVoiceBased())
 					channel.permissionOverwrites.create(mutedRole!, {
 						Connect: false,
 						Speak: false
