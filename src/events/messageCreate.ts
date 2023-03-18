@@ -129,10 +129,11 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 			let perms = command.required_roles.includes('MODERATOR')
 				? message.member.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole)
 				: message.member.roles.cache.has(serverConfig.adminrole);
+
 			if (!perms)
 				if (command.required_perms.length > 0) {
 					const permsBitfield = PermissionsBitField.resolve(command.required_perms);
-					if (!message.member?.permissions.has(permsBitfield))
+					if (!message.member.permissions.has(permsBitfield))
 						return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 				} else return message.channel.send({ embeds: [client.redEmbed(command.required_roles.includes('MODERATOR') ? config.mod_perm : config.admin_perm)] });
 		} else if (command.required_perms.length === 0)
@@ -140,7 +141,7 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 
 	if (command.required_perms.length > 0 && (command.required_roles.length === 0 || !message.guild.roles.cache.hasAny(serverConfig.modrole, serverConfig.adminrole))) {
 		const permsBitfield = PermissionsBitField.resolve(command.required_perms);
-		if (!message.member?.permissions.has(permsBitfield))
+		if (!message.member.permissions.has(permsBitfield))
 			return message.channel.send({ embeds: [client.redEmbed(config.required_perms + `${command.required_perms.map((p) => `\`${p}\``).join(', ')}`)] });
 	}
 
@@ -178,8 +179,8 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 					{
 						let role =
 							message.mentions.roles.first() ||
-							message.guild?.roles.cache.get(args[index]) ||
-							message.guild?.roles.cache.find((r) => r.name.toLowerCase() === args[index].toLowerCase());
+							message.guild.roles.cache.get(args[index]) ||
+							message.guild.roles.cache.find((r) => r.name.toLowerCase() === args[index].toLowerCase());
 						if (!role) addToRequired(tmpArgs, arg, requiredArgs);
 					}
 					break;

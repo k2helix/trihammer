@@ -9,7 +9,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.15.0",
-    "@sentry/node": "^7.42.0",
+    "@sentry/node": "^7.43.0",
     "bufferutil": "^4.0.7",
     "canvas": "^2.11.0",
     "cheerio": "^1.0.0-rc.12",
@@ -22,7 +22,7 @@
     "japaneasy": "github:Trunks8257/japaneasy",
     "libsodium-wrappers": "^0.7.11",
     "match-sorter": "^6.3.1",
-    "mathjs": "^11.6.0",
+    "mathjs": "^11.7.0",
     "megadb": "^3.4.0",
     "moment-timezone": "^0.5.41",
     "mongoose": "^5.13.16",
@@ -35,15 +35,15 @@
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
-    "@types/node": "^18.7.4",
+    "@types/node": "^18.15.3",
     "@types/node-fetch": "^2.6.2",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   },
   "scripts": {
     "compile": "tsc",

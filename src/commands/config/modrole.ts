@@ -8,12 +8,16 @@ export default new MessageCommand({
 	category: 'configuration',
 	required_args: [
 		{ index: 0, name: 'disable', type: 'string', optional: true, ignore: true },
-		{ index: 0, name: 'role', type: 'role' }
+		{ index: 0, name: 'role', type: 'role', optional: true }
 	],
 	required_perms: ['Administrator'],
 	required_roles: ['ADMINISTRATOR'],
 	async execute(client, message, args, guildConf) {
-		let role = message.mentions.roles.first() || message.guild!.roles.cache.find((r) => r.name === args.join(' ')) || message.guild!.roles.cache.get(args[0]);
+		let role =
+			message.mentions.roles.first() ||
+			message.guild!.roles.cache.find((r) => r.name === args.join(' ')) ||
+			message.guild!.roles.cache.get(args[0]) ||
+			message.member!.roles.highest;
 		const serverConfig = await ModelServer.findOne({ server: message.guild!.id });
 		const { config } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
