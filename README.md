@@ -11,10 +11,10 @@ If you want to use the spotify api for music commands, read and follow [this gui
 - Build typescript code with `tsc` (do `npm install -g typescript` if not found)
 - Run it by using `node dist/src/index.js`
 
-If for some reason attachments of some command stop working, renew the url with the assets in the assets folder. \
+If for some reason attachments of some command stop working, renew the url with the assets in the assets folder.
 
 ### __Required credentials__
-In order for the bot to work you need special access tokens and api keys found in `.env` or `config.json`. \
+In order for the bot to work you need special access tokens and api keys found in `.env` or `config.json`. 
 
 **Required credentials**:
 - TOKEN: your discord bot token which you can find in the Discord Developer Portal
