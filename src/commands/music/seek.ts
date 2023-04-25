@@ -25,7 +25,7 @@ export default new MessageCommand({
 
 		let all = Math.floor(seconds + minutes /*+ Number(hours)*/);
 		if (isNaN(all)) return;
-		if (all > Number(serverQueue.songs[0].durationInSec)) return message.channel.send({ embeds: [client.redEmbed(music.seek_cancelled)] });
+		if (all >= Number(serverQueue.songs[0].durationInSec)) return message.channel.send({ embeds: [client.redEmbed(music.seek_cancelled)] });
 		if (all === 0) all = 0.05;
 
 		(serverQueue.getResource()!.metadata as { seek: true }) = { seek: true };

@@ -25,7 +25,7 @@ export default new Command({
 
 		let all = Math.floor(seconds + minutes /*+ Number(hours)*/);
 		if (isNaN(all)) return interaction.reply({ embeds: [client.redEmbed('Invalid timestamp')], ephemeral: true });
-		if (all > Number(serverQueue.songs[0].durationInSec)) return interaction.reply({ embeds: [client.redEmbed(music.seek_cancelled)], ephemeral: true });
+		if (all >= Number(serverQueue.songs[0].durationInSec)) return interaction.reply({ embeds: [client.redEmbed(music.seek_cancelled)], ephemeral: true });
 		if (all === 0) all = 0.05;
 
 		(serverQueue.getResource()!.metadata as { seek: true }) = { seek: true };
