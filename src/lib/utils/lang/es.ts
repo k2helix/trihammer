@@ -454,7 +454,7 @@ export const util = {
 	similar_commands: '**Hmmmm, parece que has intentado ejecutar un comando.**\nPulsa en el botón con el nombre del comando que quieras usar o X si no es ninguno de estos.',
 	command_selected: 'Comando ejecutado 👍',
 	none_selected: 'Entendido, cerrando interacción',
-	about: `¡Un bot de Discord con muchos comandos y de código abierto!\n\n**{username}** se esfuerza por hacer tu servidor un lugar mejor teniendo un montón de comandos útiles e interactivos para casi todo lo que necesites.\nPuedes encontrar el código fuente en: https://github.com/k2helix/trihammer\n\n> [Invitación recomendada]({invite_link})\n> [Invitación sin permisos]({invite_link_np})\n\nSi necesitas ayuda, no dudes en unirte al [servidor de soporte](${configFile.support_server_invite}) y preguntar ahí.\nActualmente sirviendo para **{guilds} servidores** y **{members} miembros en caché**.`,
+	about: `¡Un bot de Discord con muchos comandos y de código abierto!\n\n**{username}** se esfuerza por hacer tu servidor un lugar mejor teniendo un montón de comandos útiles e interactivos para casi todo lo que necesites.\nPuedes encontrar el código fuente en: https://github.com/k2helix/trihammer\n\n> [Invitación recomendada]({invite_link})\n> [Invitación sin permisos]({invite_link_np})\n\nSi necesitas ayuda, no dudes en unirte al [servidor de soporte](${configFile.support_server_invite}) y preguntar ahí.\nActualmente sirviendo para **{guilds} servidores** y **{members} miembros en caché**. En línea desde {time}`,
 	game: {
 		release: 'Fecha de salida:',
 		genres: 'Géneros:',
