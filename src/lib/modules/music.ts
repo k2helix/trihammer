@@ -1,6 +1,6 @@
 import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
-import { SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
+import { InfoData, SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
 import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import { compareTwoStrings } from '../utils/functions';
@@ -132,17 +132,39 @@ class Queue {
 		if (this.autoplay)
 			if (this.songs.length == 1 && this.songs[0].id !== 'file') {
 				let relatedVideos = (await video_info(this.songs[0].url)).related_videos;
-				let firstVid = (await video_info(relatedVideos[0])).video_details;
+				let firstVidInfo: InfoData | undefined;
 				let i = 0;
-				// if the first recommendation of recommended video by youtube is the one that just ended or the video title is very similar or the recommended video is a lot longer than the current one, get another until this stops happening;
-				do firstVid = (await video_info(relatedVideos[i++])).video_details;
+
+				// if the first recommendation of recommended video by youtube is the one that just ended or the video title is very similar or the recommended video is a lot longer than the current one, get another until this stops happening (10 tries);
 				while (
-					(await video_info(firstVid.url)).related_videos[0] === this.songs[0].url ||
-					compareTwoStrings(this.songs[0].title.toLowerCase(), firstVid.title!.toLowerCase()) > 0.8 ||
-					firstVid.durationInSec - this.songs[0].durationInSec > 3000
-				);
+					i < 10 &&
+					(!firstVidInfo ||
+						firstVidInfo.related_videos[0] === this.songs[0].url ||
+						compareTwoStrings(this.songs[0].title.toLowerCase(), firstVidInfo.video_details.title!.toLowerCase()) > 0.8 ||
+						firstVidInfo.video_details.durationInSec - this.songs[0].durationInSec > 3000)
+				) {
+					try {
+						firstVidInfo = await video_info(relatedVideos[i]);
+						console.log(i, firstVidInfo.video_details.title);
+					} catch (error) {
+						console.log(error);
+					}
+					i++;
+				}
+
+				if (!firstVidInfo) {
+					this.textChannel.send('Tried to fetch a recommended video 10 times but got none. **Aborting queue**');
+					return this.stop();
+				}
+
+				// do firstVid = (await video_info(relatedVideos[i++])).video_details;
+				// while (
+				// 	(await video_info(firstVid.url)).related_videos[0] === this.songs[0].url ||
+				// 	compareTwoStrings(this.songs[0].title.toLowerCase(), firstVid.title!.toLowerCase()) > 0.8 ||
+				// 	firstVid.durationInSec - this.songs[0].durationInSec > 3000
+				// );
 				this.songs.shift();
-				return this.handleVideo(firstVid, 'Autoplay');
+				return this.handleVideo(firstVidInfo?.video_details, 'Autoplay');
 			}
 
 		if (this.loop) {

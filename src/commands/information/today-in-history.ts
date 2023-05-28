@@ -3,28 +3,11 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 
 import { EmbedBuilder } from 'discord.js';
 import request from 'node-superfetch';
-import translate from 'google-translate-api-x';
+import translate, { googleTranslateApi } from 'google-translate-api-x';
 
 function monthandday(ms: number) {
-	let date = new Date(ms),
-		months = {
-			0: '1',
-			1: '2',
-			2: '3',
-			3: '4',
-			4: '5',
-			5: '6',
-			6: '7',
-			7: '8',
-			8: '9',
-			9: '10',
-			10: '11',
-			11: '12'
-		},
-		month = months[date.getMonth() as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 0],
-		day = date.getDate();
-
-	return `${month}/${day}`;
+	let date = new Date(ms);
+	return `${date.getMonth() + 1}/${date.getDate()}`;
 }
 export default new MessageCommand({
 	name: 'today-in-history',
@@ -40,7 +23,7 @@ export default new MessageCommand({
 		const body = JSON.parse(text!);
 		const events = body.data.Events;
 		const event = events[Math.floor(Math.random() * events.length)];
-		let translated = await translate(event.text, { from: 'en', to: guildConf.lang });
+		let translated = (await translate(event.text, { from: 'en', to: guildConf.lang })) as googleTranslateApi.TranslationResponse;
 		const embed = new EmbedBuilder()
 			.setColor(0x9797ff)
 			.setURL(body.url)
