@@ -145,7 +145,7 @@ class Queue {
 				) {
 					try {
 						firstVidInfo = await video_info(relatedVideos[i]);
-						console.log(i, firstVidInfo.video_details.title);
+						// console.log(i, firstVidInfo.video_details.title);
 					} catch (error) {
 						console.log(error);
 					}
