@@ -108,7 +108,7 @@ export const config = {
 	maybe_not_in_cache: ' (puede que no tenga al usuario en caché, prueba @mencionándole)',
 	command_used: ':wrench: {user} ha usado el comando **{command}** en {channel}',
 	shutdown:
-		'Trihammer **dejará de dar servicio** el <t:1690848000:D> (<t:1690848000:R>) por falta de recursos para mantenerlo vivo. Volverá tan pronto como una manera viable de alojarlo sea encontrada. Gracias por su apoyo todos estos años.',
+		'Trihammer **dejará de dar servicio** el <t:1690848000:D> (<t:1690848000:R>) por falta de recursos para mantenerlo vivo. Volverá tan pronto como una manera viable de alojarlo sea encontrada. Si tienes alguna idea que pueda resultar útil, contacta a través del comando `feedback` o por mensaje directo a `k2helix`. Gracias por su apoyo todos estos años.',
 	twitter: {
 		follow: function (username, channel, id) {
 			return `Recibirás las notificaciones de ${username} (${id}) en <#${channel.id}> en cuanto se reinicie el bot (menos de 12h)`;
