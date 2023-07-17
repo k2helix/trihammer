@@ -107,6 +107,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 			setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 		}
 		try {
+			interaction.channel!.send({ embeds: [client.orangeEmbed(config.shutdown)] });
 			command.execute(client, interaction, guildConf);
 			if (guildConf.actionslogs !== 'none') {
 				let logs_channel = interaction.guild!.channels.cache.get(guildConf.actionslogs);

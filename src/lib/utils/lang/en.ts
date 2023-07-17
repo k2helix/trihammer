@@ -111,6 +111,8 @@ export const config = {
 	required_args: 'You did not provide the following argument(s): ',
 	maybe_not_in_cache: ' (may be the user is not cached, try @mentioning them',
 	command_used: ':wrench: {user} has used the command **{command}** in {channel}',
+	shutdown:
+		'Trihammer **will be shutting down** on <t:1690848000:D> (<t:1690848000:R>) due to a lack of resources to keep it alive. It will come back as soon as a viable way to maintain it is found. Thanks for your support all these years.',
 	twitter: {
 		follow: function (username, channel, id) {
 			return `You will receive notificacions from ${username} (${id}) in <#${channel.id}> when the bot restars (less than 12h)`;
