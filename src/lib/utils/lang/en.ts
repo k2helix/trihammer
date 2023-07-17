@@ -112,7 +112,7 @@ export const config = {
 	maybe_not_in_cache: ' (may be the user is not cached, try @mentioning them',
 	command_used: ':wrench: {user} has used the command **{command}** in {channel}',
 	shutdown:
-		'Trihammer **will be shutting down** on <t:1690848000:D> (<t:1690848000:R>) due to a lack of resources to keep it alive. It will come back as soon as a viable way to maintain it is found. If you think you have an useful idea, contact via the `feedback` command or send a direct message to `k2helix`. Thanks for your support all these years.',
+		'Trihammer **will be shutting down** on <t:1690848000:D> (<t:1690848000:R>) due to a lack of resources to keep it alive. It will come back as soon as a viable way to maintain it is found. If you think you have a useful idea, contact via the `feedback` command or send a direct message to `k2helix`. Thanks for your support all these years.',
 	twitter: {
 		follow: function (username, channel, id) {
 			return `You will receive notificacions from ${username} (${id}) in <#${channel.id}> when the bot restars (less than 12h)`;
