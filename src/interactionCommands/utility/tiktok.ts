@@ -138,9 +138,7 @@ export default new MessageCommand({
 			const { util, music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 			if (!currentPost) return interaction.editReply({ embeds: [client.redEmbed(music.not_found)] });
-			currentPost.video.shortened_video = await shortenUrl(
-				'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
-			);
+			currentPost.video.shortened_video = await shortenUrl('https://is.gd/create.php?format=simple&url=' + encodeURIComponent(currentPost.video.urls[0]));
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder().setCustomId('dobleleft').setEmoji({ id: '882631909442744350' }).setStyle(ButtonStyle.Primary),
