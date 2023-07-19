@@ -111,8 +111,6 @@ export const config = {
 	required_args: 'You did not provide the following argument(s): ',
 	maybe_not_in_cache: ' (may be the user is not cached, try @mentioning them',
 	command_used: ':wrench: {user} has used the command **{command}** in {channel}',
-	shutdown:
-		'Trihammer **will be shutting down** on <t:1690848000:D> (<t:1690848000:R>) due to a lack of resources to keep it alive. It will come back as soon as a viable way to maintain it is found. If you think you have a useful idea, contact via the `feedback` command or send a direct message to `k2helix`. Thanks for your support all these years.',
 	twitter: {
 		follow: function (username, channel, id) {
 			return `You will receive notificacions from ${username} (${id}) in <#${channel.id}> when the bot restars (less than 12h)`;
@@ -387,8 +385,7 @@ export const util = {
 			}).`;
 		},
 		search_sources: function (url) {
-			// eslint-disable-next-line prettier/prettier
-			return `<:google:749389813274378241> [Search image in Google](https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&image_url=${encodeURIComponent(url)})\n<:yandex:749389643367186573> [Search image in Yandex (recommended)](https://yandex.com/images/search?url=${url}&rpt=imageview)\n<:saucenao:785119535454748682> [Search image in SauceNAO (NSFW)](https://saucenao.com/search.php?url=${url})`;
+			return `<:google:749389813274378241> [Search image in Google](https://www.google.com/searchbyimage?image_url=${url})\n<:yandex:749389643367186573> [Search image in Yandex (recommended)](https://yandex.com/images/search?url=${url}&rpt=imageview)\n<:saucenao:785119535454748682> [Search image in SauceNAO (NSFW)](https://saucenao.com/search.php?url=${url})`;
 		}
 	},
 	remind: function (reason, time) {

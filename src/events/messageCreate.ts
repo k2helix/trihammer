@@ -101,7 +101,6 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 
 			const filter = (int: ButtonInteraction) => int.user.id === message.author.id;
 			try {
-				// @ts-ignore
 				let selected = await sentMessage.awaitMessageComponent({ filter, time: 15000, componentType: ComponentType.Button });
 				if (selected.customId === 'crossx') {
 					sentMessage.delete();
@@ -223,7 +222,6 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 	}
 	try {
-		// message.channel.send({ embeds: [client.orangeEmbed(config.shutdown)] });
 		command.execute(client, message, args, serverConfig);
 		if (serverConfig.actionslogs !== 'none') {
 			const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
