@@ -223,7 +223,7 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 	}
 	try {
-		message.channel.send({ embeds: [client.orangeEmbed(config.shutdown)] });
+		// message.channel.send({ embeds: [client.orangeEmbed(config.shutdown)] });
 		command.execute(client, message, args, serverConfig);
 		if (serverConfig.actionslogs !== 'none') {
 			const logs_channel = message.guild!.channels.cache.get(serverConfig.actionslogs);
