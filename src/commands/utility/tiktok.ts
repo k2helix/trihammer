@@ -166,43 +166,26 @@ export default new MessageCommand({
 					case 'dobleleft':
 						currentPost = postsData[currentIndex - 10]?.itemInfos || postsData[0].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex - 10] ? currentIndex - 10 : 0;
-						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = await shortenUrl(
-								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
-							);
-						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'left':
 						currentPost = postsData[currentIndex - 1]?.itemInfos || postsData[postsData.length - 1].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex - 1] ? currentIndex - 1 : postsData.length - 1;
-						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = await shortenUrl(
-								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
-							);
-						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'right':
 						currentPost = postsData[currentIndex + 1]?.itemInfos || postsData[0].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex + 1] ? currentIndex + 1 : 0;
-						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = await shortenUrl(
-								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
-							);
-						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'dobleright':
 						currentPost = postsData[currentIndex + 10]?.itemInfos || postsData[postsData.length - 1].itemInfos;
 						if (!currentPost.index) currentPost.index = postsData[currentIndex + 10] ? currentIndex + 10 : postsData.length - 1;
-						if (!currentPost.video.shortened_video)
-							currentPost.video.shortened_video = await shortenUrl(
-								'https://is.gd/create.php?format=simple&url=' + `${instances[currentInstance - 1]}/stream?url=` + encodeURIComponent(currentPost.video.urls[0])
-							);
-						int.update(postMessage(client, currentPost, baseString));
 						break;
 					case 'crossx':
 						int.update({ components: [] });
-						break;
+						return;
 				}
+
+				if (!currentPost.video.shortened_video) currentPost.video.shortened_video = await shortenUrl(encodeURIComponent(currentPost.video.urls[0]));
+				int.update(postMessage(client, currentPost, baseString));
 			});
 
 			collector.on('end', () => {
