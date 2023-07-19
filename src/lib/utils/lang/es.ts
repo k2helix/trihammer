@@ -384,7 +384,8 @@ export const util = {
 			}).`;
 		},
 		search_sources: function (url) {
-			return `<:google:749389813274378241> [Buscar imagen en google](https://www.google.com/searchbyimage?image_url=${url})\n<:yandex:749389643367186573> [Buscar imagen en Yandex (recomendado)](https://yandex.com/images/search?url=${url}&rpt=imageview)\n<:saucenao:785119535454748682> [Buscar imagen en SauceNAO (NSFW)](https://saucenao.com/search.php?url=${url})`;
+			// eslint-disable-next-line prettier/prettier
+			return `<:google:749389813274378241> [Buscar imagen en google](https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&image_url=${encodeURIComponent(url)})\n<:yandex:749389643367186573> [Buscar imagen en Yandex (recomendado)](https://yandex.com/images/search?url=${url}&rpt=imageview)\n<:saucenao:785119535454748682> [Buscar imagen en SauceNAO (NSFW)](https://saucenao.com/search.php?url=${url})`;
 		}
 	},
 	remind: function (reason, time) {
