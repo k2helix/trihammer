@@ -31,6 +31,7 @@ export default interface LanguageFile {
 		required_args: string;
 		maybe_not_in_cache: string;
 		command_used: string;
+		shutdown: string;
 		twitter: {
 			follow: (username: string, channel: TextChannel, id: string) => string;
 			unfollow: (username: string) => string;
