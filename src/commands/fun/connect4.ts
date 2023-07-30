@@ -1,8 +1,8 @@
 import MessageCommand from '../../lib/structures/MessageCommand';
 
-const blankEmoji = '⚪️';
-const playerOneEmoji = '🔴';
-const playerTwoEmoji = '🟡';
+const blankEmoji = ':white_circle:'; // ⚪️
+const playerOneEmoji = ':red_circle:'; // 🔴
+const playerTwoEmoji = ':yellow_circle:'; // 🟡
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require('megadb');
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';

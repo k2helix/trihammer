@@ -66,7 +66,7 @@ let tttdb = new db.crearDB('tictactoe');
 export default new MessageCommand({
 	name: 'tictactoe',
 	description: 'Play tic tac toe with a friend',
-	aliases: ['3enraya', 'tresenraya'],
+	aliases: ['3enraya', 'tresenraya', 'ttt'],
 	required_args: [{ index: 0, type: 'member', name: 'user' }],
 	category: 'fun',
 	async execute(client, message, args, guildConf) {
