@@ -314,7 +314,7 @@ export const util = {
 		server: '**__Específico del servidor__**',
 		main_info: function (user) {
 			// eslint-disable-next-line prettier/prettier
-			return `**ID**: ${user.id}\n**Creado**: <t:${Math.floor(user.createdTimestamp / 1000)}:R> **->** <t:${Math.floor(user.createdTimestamp / 1000)}:F>\n**Bot**: ${user.bot ? 'Sí' : 'No'}`;
+			return `**ID**: ${user.id}\n**Nombre global**: ${user.displayName}\n**Creado**: <t:${Math.floor(user.createdTimestamp / 1000)}:R> **->** <t:${Math.floor(user.createdTimestamp / 1000)}:F>\n**Bot**: ${user.bot ? 'Sí' : 'No'}`;
 		},
 		server_specific: function (member) {
 			return `**Nombre mostrado**: ${member.displayName}\n**Se unió**: <t:${Math.floor(member.joinedTimestamp! / 1000)}:R> **->** <t:${Math.floor(

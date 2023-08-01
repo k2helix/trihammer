@@ -17,7 +17,7 @@ export default new MessageCommand({
 		let member = await message.guild!.members.fetch(givenId).catch(() => undefined);
 		let avatar = user.displayAvatarURL({ extension: 'png', size: 1024 });
 		let info_embed = new EmbedBuilder()
-			.setTitle(`${user.tag}`)
+			.setTitle(`${user.displayName}`)
 			.setColor(user.hexAccentColor || 'Random')
 			.setDescription(`[Link](${avatar})`)
 			.addFields({ name: util.sauce.more_source, value: util.sauce.search_sources(avatar) })

@@ -34,7 +34,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 
 	if (interaction.isModalSubmit()) {
 		let embed = new EmbedBuilder()
-			.setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+			.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.displayAvatarURL() })
 			.setTitle(interaction.fields.getTextInputValue('feedbackTitle') || null)
 			.setColor('Green')
 			.setDescription(interaction.fields.getTextInputValue('feedbackComment'));

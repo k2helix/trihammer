@@ -18,13 +18,13 @@ export default new Command({
 		if (interaction.isContextMenuCommand()) {
 			let user = client.users.cache.get(interaction.targetId);
 			user!
-				.send(music.ytt.yt_invited.replace('{author}', interaction.user.tag) + `https://discord.gg/${invite.code}`)
+				.send(music.ytt.yt_invited.replace('{author}', interaction.user.displayName) + `https://discord.gg/${invite.code}`)
 				.then(() => {
 					return interaction.reply(music.ytt.yttogether + `${voiceChannel.name}: https://discord.gg/${invite.code} | ` + music.ytt.yt_dm);
 				})
 				.catch(() => {
 					return interaction.reply(
-						`<@${user!.id}> ` + music.ytt.yt_invited.replace('{author}', interaction.user.tag) + `https://discord.gg/${invite.code} | ` + music.ytt.yt_nodm
+						`<@${user!.id}> ` + music.ytt.yt_invited.replace('{author}', interaction.user.displayName) + `https://discord.gg/${invite.code} | ` + music.ytt.yt_nodm
 					);
 				});
 		} else interaction.reply({ content: music.ytt.yttogether + `${voiceChannel.name}: https://discord.gg/${invite.code}` });
