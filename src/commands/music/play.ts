@@ -1,4 +1,4 @@
-import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubePlayList, YouTubeVideo } from 'play-dl';
+import play, { SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
 import config from '../../../config.json';
 import { Queue, queue } from '../../lib/modules/music';
 import { EmbedBuilder, TextChannel } from 'discord.js';
@@ -50,10 +50,10 @@ export default new MessageCommand({
 						}
 						return;
 					} else {
-						let searched = (await play.search(`${(spot as SpotifyTrack).artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
+						let searched = await play.search(`${(spot as SpotifyTrack).artists[0]?.name} ${spot.name}`, { limit: 1 }).catch((err) => {
 							return client.catchError(err, message.channel as TextChannel);
-						})) as YouTubeVideo[];
-						if (typeof searched === 'boolean' || searched.length < 1) {
+						});
+						if (typeof searched === 'boolean' || !searched || searched.length < 1) {
 							if (!serverQueue.songs[0]) serverQueue.stop();
 							return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 						}
@@ -64,10 +64,15 @@ export default new MessageCommand({
 				}
 
 		if (type === 'yt_playlist') {
-			const playlist = (await play.playlist_info(searchString, { incomplete: true }).catch((err) => {
-				return client.catchError(err, message.channel as TextChannel);
-			})) as YouTubePlayList;
-			const videos = await playlist.all_videos();
+			const playlist = await play.playlist_info(searchString, { incomplete: true }).catch((err) => {
+				client.catchError(err, message.channel as TextChannel);
+			});
+			const videos = await playlist?.all_videos();
+
+			if (!playlist || !videos || videos.length < 1) {
+				if (!serverQueue.songs[0]) serverQueue.stop();
+				return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
+			}
 			videos.forEach(async (video) => {
 				await serverQueue!.handleVideo(video, message.author.id, true);
 			});
@@ -77,10 +82,10 @@ export default new MessageCommand({
 			try {
 				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
 				else {
-					let videos = (await play.search(searchString, { limit: 1 }).catch((err) => {
+					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
 						return client.catchError(err, message.channel as TextChannel);
-					})) as YouTubeVideo[];
-					if (typeof videos === 'boolean' || videos?.length < 1) {
+					});
+					if (typeof videos === 'boolean' || !videos || videos.length < 1) {
 						if (!serverQueue.songs[0]) serverQueue.stop();
 						return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 					}

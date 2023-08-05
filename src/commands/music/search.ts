@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ComponentType, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, TextChannel } from 'discord.js';
 import { Queue, queue } from '../../lib/modules/music';
-import play, { YouTubeVideo } from 'play-dl';
+import play from 'play-dl';
 import MessageCommand from '../../lib/structures/MessageCommand';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
 export default new MessageCommand({
@@ -22,10 +22,10 @@ export default new MessageCommand({
 
 		const serverQueue = queue.get(message.guild.id) || new Queue({ voiceChannel: voiceChannel, textChannel: message.channel as TextChannel });
 
-		const videos = (await play.search(searchString, { limit: 10 }).catch((err) => {
+		const videos = await play.search(searchString, { limit: 10 }).catch((err) => {
 			return client.catchError(err, message.channel as TextChannel);
-		})) as YouTubeVideo[];
-		if (typeof videos === 'boolean' || videos?.length < 1) {
+		});
+		if (typeof videos === 'boolean' || !videos || videos.length < 1) {
 			if (!serverQueue.songs[0]) serverQueue.stop();
 			return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 		}
