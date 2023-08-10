@@ -48,14 +48,17 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 				}).lean();
 				if (roleInDb) {
 					const rol = message.guild.roles.cache.get(roleInDb.role);
-					if (rol) {
-						message.member.roles.add(rol);
-						const lvlObj = {
-							'{user}': `<@${message.author.id}>`,
-							'{role}': rol.name
-						};
-						message.channel.send(client.replaceEach(xp.lvlup, lvlObj));
-					}
+					if (rol)
+						try {
+							message.member.roles.add(rol);
+							const lvlObj = {
+								'{user}': `<@${message.author.id}>`,
+								'{role}': rol.name
+							};
+							message.channel.send(client.replaceEach(xp.lvlup, lvlObj));
+						} catch (error) {
+							console.log(error);
+						}
 				}
 				const local = await ModelRank.findOne({
 					id: message.author.id,
@@ -73,7 +76,12 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 					});
 					if (roleInDb) {
 						const rol = message.guild!.roles.cache.get(roleInDb.role);
-						if (rol) message.member!.roles.add(rol);
+						if (rol)
+							try {
+								message.member!.roles.add(rol);
+							} catch (error) {
+								console.error(error);
+							}
 					}
 				});
 				const local = await ModelRank.findOne({
