@@ -57,7 +57,7 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 							};
 							message.channel.send(client.replaceEach(xp.lvlup, lvlObj));
 						} catch (error) {
-							console.log(error);
+							console.log(`Error when adding role ${rol.name} to ${message.author.tag} in server ${message.guild!.name}`, error);
 						}
 				}
 				const local = await ModelRank.findOne({
@@ -80,7 +80,7 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 							try {
 								message.member!.roles.add(rol);
 							} catch (error) {
-								console.log(error);
+								console.log(`Error when adding role ${rol.name} to ${message.author.tag} in server ${message.guild!.name}`, error);
 							}
 					}
 				});
