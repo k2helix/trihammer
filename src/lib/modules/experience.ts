@@ -50,12 +50,18 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 					const rol = message.guild.roles.cache.get(roleInDb.role);
 					if (rol)
 						try {
-							message.member.roles.add(rol);
-							const lvlObj = {
-								'{user}': `<@${message.author.id}>`,
-								'{role}': rol.name
-							};
-							message.channel.send(client.replaceEach(xp.lvlup, lvlObj));
+							message.member.roles
+								.add(rol)
+								.catch(() => null)
+								.then((m) => {
+									if (m!.roles.cache.has(rol.id))
+										message.channel.send(
+											client.replaceEach(xp.lvlup, {
+												'{user}': `<@${message.author.id}>`,
+												'{role}': rol.name
+											})
+										);
+								});
 						} catch (error) {
 							console.log(`Error when adding role ${rol.name} to ${message.author.tag} in server ${message.guild!.name}`, error);
 						}
@@ -78,7 +84,7 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 						const rol = message.guild!.roles.cache.get(roleInDb.role);
 						if (rol)
 							try {
-								message.member!.roles.add(rol);
+								message.member!.roles.add(rol).catch(() => null);
 							} catch (error) {
 								console.log(`Error when adding role ${rol.name} to ${message.author.tag} in server ${message.guild!.name}`, error);
 							}
