@@ -80,7 +80,7 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 							try {
 								message.member!.roles.add(rol);
 							} catch (error) {
-								console.error(error);
+								console.log(error);
 							}
 					}
 				});
