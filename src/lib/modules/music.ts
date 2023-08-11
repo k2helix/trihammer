@@ -70,9 +70,9 @@ class Queue {
 	public async play(song: Song) {
 		if (!song) return this.stop();
 		const { music } = (await import(`../utils/lang/${this.language}`)) as LanguageFile;
-		let source: YouTubeStream | SoundCloudStream;
+		let source: YouTubeStream | SoundCloudStream | void;
 		try {
-			source = await stream(song.url, { seek: song.seek || 0 });
+			source = await stream(song.url, { seek: song.seek || 0 }).catch((err) => this.catchErrorAndSkip(err));
 		} catch (error) {
 			return this.catchErrorAndSkip(error);
 		}
