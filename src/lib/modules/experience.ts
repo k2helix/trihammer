@@ -54,7 +54,7 @@ async function manageActivity(client: ExtendedClient, message: Message, xp: Lang
 								.add(rol)
 								.catch(() => null)
 								.then((m) => {
-									if (m!.roles.cache.has(rol.id))
+									if (m?.roles.cache.has(rol.id))
 										message.channel.send(
 											client.replaceEach(xp.lvlup, {
 												'{user}': `<@${message.author.id}>`,
