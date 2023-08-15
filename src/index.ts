@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import config from '../config.json';
 import Client from './lib/structures/Client';
 import { join } from 'path';
-import { GatewayIntentBits, TextChannel } from 'discord.js';
+import { GatewayIntentBits, Options, TextChannel } from 'discord.js';
 import { readdir, readdirSync } from 'fs';
 import { captureException, init } from '@sentry/node';
 import MessageCommand from './lib/structures/MessageCommand';
@@ -41,7 +41,12 @@ const intents = [
 const client = new Client(
 	{
 		allowedMentions: { parse: ['users', 'roles'], repliedUser: true },
-		intents: intents
+		intents: intents,
+		makeCache: Options.cacheWithLimits({
+			// @ts-expect-error
+			DMMessageManager: 200,
+			GuildMessageManager: 200
+		})
 	},
 	{ prefix: config.default_prefix, administrators: config.administrators }
 );
