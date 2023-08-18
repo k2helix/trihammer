@@ -43,7 +43,6 @@ const client = new Client(
 		allowedMentions: { parse: ['users', 'roles'], repliedUser: true },
 		intents: intents,
 		makeCache: Options.cacheWithLimits({
-			// @ts-expect-error
 			DMMessageManager: 200,
 			GuildMessageManager: 200
 		})
