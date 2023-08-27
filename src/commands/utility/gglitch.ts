@@ -23,6 +23,7 @@ export default new MessageCommand({
 	description: 'Glitch a gif',
 	aliases: ['gifglitch'],
 	category: 'image_manipulation',
+	cooldown: 10,
 	required_args: [{ index: 0, name: 'image', type: 'string', optional: true }],
 	async execute(client, message, args) {
 		let msg = await message.channel.send({ embeds: [client.loadingEmbed()] });
