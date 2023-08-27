@@ -13,7 +13,7 @@ If you want to use the spotify api for music commands, read and follow [this gui
 
 If for some reason attachments of some command stop working, renew the url with the assets in the assets folder.
 
-### __Required credentials__
+### __Credentials__
 In order for the bot to work you need special access tokens and api keys found in `.env` or `config.json`. 
 
 **Required credentials**:
@@ -25,7 +25,7 @@ In order for the bot to work you need special access tokens and api keys found i
 - DBL_API_KEY: if your bot is available on top.gg, by setting this key it will update joined servers when the bot is added/removed from a server. Enable this in the config file
 - SAUCENAO_API_KEY: required for the `sauce` command to work
 - HEROKU_TOKEN: if your bot is hosted on Heroku and this token is set, the reset command will restart the process (change the url in that command to match your app's name)
-- PXL_API_TOKEN: api key needed for the `gglitch` command to work
+- PXL_API_TOKEN: api key needed for the `gglitch` command to work (else it will try to generate the result locally)
 - OPENCAGE_API_KEY & MAPQUEST_API_KEY: both needed for the `location` command
 
 ### Notes
