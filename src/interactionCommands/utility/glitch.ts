@@ -30,10 +30,10 @@ export default new Command({
 		ctx.drawImage(data, 0, 0, canvas.width, canvas.height);
 		const buffer = canvas.toBuffer();
 
-		let seed = Math.floor(Math.random() * 20);
-		let iterations = Math.floor(Math.random() * 20);
-		let amount = Math.floor(Math.random() * 20);
-		let quality = Math.floor(10 + Math.random() * 89);
+		let seed = Math.floor(Math.random() * 20) + 1;
+		let iterations = Math.floor(Math.random() * 20) + 1;
+		let amount = Math.floor(Math.random() * 20) + 1;
+		let quality = Math.floor(10 + Math.random() * 89) + 1;
 		let text = `Seed: ${seed} | Iterations: ${iterations} | Amount ${amount} | Quality ${quality}`;
 		glitch({ seed: seed, iterations: iterations, amount: amount, quality: quality })
 			.fromBuffer(buffer)

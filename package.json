@@ -22,7 +22,7 @@
     "japaneasy": "github:Trunks8257/japaneasy",
     "libsodium-wrappers": "^0.7.11",
     "match-sorter": "^6.3.1",
-    "mathjs": "^11.9.1",
+    "mathjs": "^11.10.0",
     "megadb": "^3.4.0",
     "moment-timezone": "^0.5.43",
     "mongoose": "^5.13.20",
@@ -35,15 +35,15 @@
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
-    "@types/node": "^18.17.5",
+    "@types/node": "^18.17.11",
     "@types/node-fetch": "^2.6.4",
-    "@typescript-eslint/eslint-plugin": "^6.4.0",
-    "@typescript-eslint/parser": "^6.4.0",
-    "eslint": "^8.47.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "eslint": "^8.48.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "compile": "tsc",
