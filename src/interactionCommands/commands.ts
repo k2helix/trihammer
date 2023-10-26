@@ -1492,6 +1492,33 @@ const commands: ApplicationCommandDataResolvable[] = [
 		]
 	},
 	{
+		name: 'fakeyou',
+		description: 'Play a TTS message with a voice from FakeYou',
+		description_localizations: {
+			'es-ES': 'Haz sonar un mensaje en tu canal de voz con una voz de FakeYou'
+		},
+		options: [
+			{
+				name: 'voice',
+				type: ApplicationCommandOptionType.String,
+				description: 'The name of the person that you want to fake',
+				description_localizations: {
+					'es-ES': 'El nombre de la persona a la que quieres imitar'
+				},
+				required: true
+			},
+			{
+				name: 'text',
+				type: ApplicationCommandOptionType.String,
+				description: 'The text you want to play',
+				description_localizations: {
+					'es-ES': 'El texto que quieres hacer sonar'
+				},
+				required: true
+			}
+		]
+	},
+	{
 		name: 'calculate',
 		description: 'Calculate the given expression',
 		description_localizations: {
