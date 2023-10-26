@@ -57,6 +57,8 @@ export default new Command({
 			(m) => m.title?.toLowerCase().includes(voice.toLowerCase()) || m.name?.toLowerCase().includes(voice.toLowerCase())
 		)[0];
 
+		if (!model) return interaction.reply('404 Not found');
+
 		try {
 			const headers = new Headers();
 			headers.append('Content-Type', 'application/json');

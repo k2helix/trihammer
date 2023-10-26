@@ -57,6 +57,8 @@ export default new MessageCommand({
 			(m) => m.title?.toLowerCase().includes(args[0].toLowerCase()) || m.name?.toLowerCase().includes(args[0].toLowerCase())
 		)[0];
 
+		if (!model) return message.channel.send('404 Not found');
+
 		try {
 			const headers = new Headers();
 			headers.append('Content-Type', 'application/json');
