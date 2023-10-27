@@ -215,7 +215,8 @@ export const music = {
 	resume: '▶ Reproducción continuada',
 	tts: {
 		file: 'No puedes usar este comando mientras haya un archivo sonando',
-		too_long: 'El texto debe tener menos de 200 caracteres.'
+		too_long: 'El texto debe tener menos de 200 caracteres.',
+		fakeyou_not_found: 'No pude encontrar ninguna voz llamada **{voice}**. Prueba mirando voces similares en <https://fakeyou.com/>'
 	},
 	playlists: {
 		titles: {

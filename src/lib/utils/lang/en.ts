@@ -219,7 +219,8 @@ export const music = {
 	resume: '▶ Playback resumed',
 	tts: {
 		file: 'No puedes usar este comando mientras haya un archivo sonando',
-		too_long: 'The text shall be 200 or fewer in length'
+		too_long: 'The text shall be 200 or fewer in length',
+		fakeyou_not_found: 'I could not find a voice named **{voice}**. Try looking in <https://fakeyou.com/> for similar voices.'
 	},
 	playlists: {
 		titles: {

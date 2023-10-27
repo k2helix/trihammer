@@ -129,6 +129,7 @@ export default interface LanguageFile {
 		tts: {
 			file: string;
 			too_long: string;
+			fakeyou_not_found: string;
 		};
 		playlists: {
 			titles: {

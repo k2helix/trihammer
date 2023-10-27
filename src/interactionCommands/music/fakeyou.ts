@@ -57,7 +57,7 @@ export default new Command({
 			(m) => m.title?.toLowerCase().includes(voice.toLowerCase()) || m.name?.toLowerCase().includes(voice.toLowerCase())
 		)[0];
 
-		if (!model) return interaction.reply('404 Not found');
+		if (!model) return interaction.reply({ embeds: [client.redEmbed(music.tts.fakeyou_not_found)] });
 
 		try {
 			const headers = new Headers();

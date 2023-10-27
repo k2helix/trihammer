@@ -47,17 +47,18 @@ export default new MessageCommand({
 	],
 	async execute(client, message, args, guildConf) {
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		if (args.join(' ').length > 200) return message.channel.send({ embeds: [client.redEmbed(music.tts.too_long)] });
 
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
+
+		if (args.slice(1).join(' ').length > 200) return message.channel.send({ embeds: [client.redEmbed(music.tts.too_long)] });
 
 		// eslint-disable-next-line prettier/prettier
 		const model = voiceModels.filter(
 			(m) => m.title?.toLowerCase().includes(args[0].toLowerCase()) || m.name?.toLowerCase().includes(args[0].toLowerCase())
 		)[0];
 
-		if (!model) return message.channel.send('404 Not found');
+		if (!model) return message.channel.send({ embeds: [client.redEmbed(music.tts.fakeyou_not_found)] });
 
 		try {
 			const headers = new Headers();
