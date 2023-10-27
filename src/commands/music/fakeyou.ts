@@ -58,7 +58,7 @@ export default new MessageCommand({
 			(m) => m.title?.toLowerCase().includes(args[0].toLowerCase()) || m.name?.toLowerCase().includes(args[0].toLowerCase())
 		)[0];
 
-		if (!model) return message.channel.send({ embeds: [client.redEmbed(music.tts.fakeyou_not_found)] });
+		if (!model) return message.channel.send({ embeds: [client.redEmbed(music.tts.fakeyou_not_found.replace('{voice}', args[0]))] });
 
 		try {
 			const headers = new Headers();
