@@ -15,7 +15,7 @@ export default new MessageCommand({
 		let embed = new EmbedBuilder();
 		embed.setTitle(client.replaceEach(kawaii.poke, { '{author}': message.member!.displayName, '{member}': user!.displayName }));
 		embed.setColor('Random');
-		embed.setImage((body as { data: { response: { url: string } } }).data.response.url);
+		embed.setImage((body as { data: { response: { url: string } } }).data?.response.url);
 
 		message.channel.send({ embeds: [embed] });
 	}

@@ -9,7 +9,7 @@ export default new Command({
 	execute(client, interaction) {
 		interaction.deferReply().then(async () => {
 			if ((interaction as ChatInputCommandInteraction).options.getBoolean('global')) {
-				let top: Users[] = await ModelUsers.find({ globalxp: { $gte: 320000 } }).lean();
+				let top: Users[] = await ModelUsers.find({ globalxp: { $gte: 400000 } }).lean();
 				top.sort((a, b) => {
 					return b.globalxp - a.globalxp;
 				});

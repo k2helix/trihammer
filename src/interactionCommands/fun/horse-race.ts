@@ -46,9 +46,7 @@ export default new Command({
 		let { util } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		async function generateLeaderboard(chosenHorses: { name: string; minTime: number }[], results: { name: string; time: number }[]) {
 			const lb = await loadImage(util.horse_race.img);
-			const horseImg = await loadImage(
-				'https://cdn.discordapp.com/attachments/487962590887149603/829043185552326666/57-570437_thoroughbred-the-kentucky-derby-horse-racing-equestrian-horse1.png'
-			);
+			const horseImg = await loadImage('assets/horse-race/horse.png');
 			const canvas = createCanvas(lb.width, lb.height);
 			const ctx = canvas.getContext('2d');
 			ctx.drawImage(lb, 0, 0);

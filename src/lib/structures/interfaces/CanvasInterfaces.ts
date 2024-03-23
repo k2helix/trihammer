@@ -493,7 +493,7 @@ class RankCanvas {
 		if (this.data.level.display && !isNaN(this.data.level.data!)) {
 			ctx.font = `bold 36px ${ops.fontX}`;
 			ctx.fillStyle = this.data.level.textColor!;
-			ctx.fillText(this.data.level.displayText!, 800 - ctx.measureText(toAbbrev(parseInt(this.data.level.data as unknown as string))).width, 82);
+			ctx.fillText(this.data.level.displayText!, 700 - ctx.measureText(toAbbrev(parseInt(this.data.level.data as unknown as string))).width, 82);
 
 			ctx.font = `bold 32px ${ops.fontX}`;
 			ctx.fillStyle = this.data.level.color!;
@@ -507,7 +507,7 @@ class RankCanvas {
 			ctx.fillStyle = this.data.rank.textColor!;
 			ctx.fillText(
 				this.data.rank.displayText!,
-				800 -
+				700 -
 					ctx.measureText(toAbbrev(parseInt(this.data.level.data as unknown as string)) || '-').width -
 					7 -
 					ctx.measureText(this.data.level.displayText!).width -
@@ -521,7 +521,7 @@ class RankCanvas {
 			ctx.textAlign = 'end';
 			ctx.fillText(
 				toAbbrev(parseInt(this.data.rank.data as unknown as string)),
-				790 - ctx.measureText(toAbbrev(parseInt(this.data.level.data as unknown as string)) || '-').width - 7 - ctx.measureText(this.data.level.displayText!).width,
+				700 - ctx.measureText(toAbbrev(parseInt(this.data.level.data as unknown as string)) || '-').width - 7 - ctx.measureText(this.data.level.displayText!).width,
 				82
 			);
 		}

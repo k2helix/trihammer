@@ -440,7 +440,7 @@ export const util = {
 		selected: 'Your choice was confirmed.',
 		no_bets: "Sorry, can't have a race with no bets!",
 		win: 'And the winners are... **{users}**!',
-		img: 'https://cdn.discordapp.com/attachments/487962590887149603/714123824743972924/enleaderboard.png'
+		img: 'assets/horse-race/enleaderboard.png'
 	},
 	help: {
 		title: 'Commands',

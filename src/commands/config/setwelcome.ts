@@ -28,7 +28,7 @@ export default new MessageCommand({
 				server: message.guild!.id,
 				canal: channel.id,
 				color: '#ffffff',
-				image: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
+				image: 'assets/default-background.png',
 				text: `Welcome to ${message.guild!.name}`
 			});
 			welcome = newModel;

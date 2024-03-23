@@ -8,18 +8,32 @@ export default new Command({
 	async execute(client, interaction, guildConf) {
 		let selected = (interaction as ChatInputCommandInteraction).options.getString('image')!;
 		type image = 'pione' | 'pitwo' | 'pithree' | 'pifour' | 'pifive' | 'pisix' | 'piseven' | 'pieight' | 'pinine' | 'piten' | 'pieleven';
+		// let images = {
+		// 	pione: 'https://cdn.discordapp.com/attachments/487962590887149603/716052349851795496/images.png',
+		// 	pitwo: 'https://cdn.discordapp.com/attachments/487962590887149603/716052326154108980/images.png',
+		// 	pithree: 'https://cdn.discordapp.com/attachments/487962590887149603/716052302389313676/images.png',
+		// 	pifour: 'https://cdn.discordapp.com/attachments/487962590887149603/716052163025174588/2Q.png',
+		// 	pifive: 'https://cdn.discordapp.com/attachments/487962590887149603/716049978174472233/unknown.png',
+		// 	pisix: 'https://cdn.discordapp.com/attachments/487962590887149603/716052072981856256/abstract-background-3036235_960_720.png',
+		// 	piseven: 'https://cdn.discordapp.com/attachments/588140412036841482/715736357892390982/heart-5209050_1920.jpg',
+		// 	pieight: 'https://cdn.discordapp.com/attachments/588140412036841482/715736559126708294/ferris-wheel-5228823_1280.png',
+		// 	pinine: 'https://cdn.discordapp.com/attachments/588140412036841482/715736136227749942/hall-5215746_1920.jpg',
+		// 	piten: 'https://cdn.discordapp.com/attachments/588140412036841482/715735767481319474/animal-1845263_1920.jpg',
+		// 	pieleven: 'https://cdn.discordapp.com/attachments/588140412036841482/715735868434022460/rabbit-542554_1920.jpg'
+		// };
+
 		let images = {
-			pione: 'https://cdn.discordapp.com/attachments/487962590887149603/716052349851795496/images.png',
-			pitwo: 'https://cdn.discordapp.com/attachments/487962590887149603/716052326154108980/images.png',
-			pithree: 'https://cdn.discordapp.com/attachments/487962590887149603/716052302389313676/images.png',
-			pifour: 'https://cdn.discordapp.com/attachments/487962590887149603/716052163025174588/2Q.png',
-			pifive: 'https://cdn.discordapp.com/attachments/487962590887149603/716049978174472233/unknown.png',
-			pisix: 'https://cdn.discordapp.com/attachments/487962590887149603/716052072981856256/abstract-background-3036235_960_720.png',
-			piseven: 'https://cdn.discordapp.com/attachments/588140412036841482/715736357892390982/heart-5209050_1920.jpg',
-			pieight: 'https://cdn.discordapp.com/attachments/588140412036841482/715736559126708294/ferris-wheel-5228823_1280.png',
-			pinine: 'https://cdn.discordapp.com/attachments/588140412036841482/715736136227749942/hall-5215746_1920.jpg',
-			piten: 'https://cdn.discordapp.com/attachments/588140412036841482/715735767481319474/animal-1845263_1920.jpg',
-			pieleven: 'https://cdn.discordapp.com/attachments/588140412036841482/715735868434022460/rabbit-542554_1920.jpg'
+			pione: 'assets/profile/1.png',
+			pitwo: 'assets/profile/2.png',
+			pithree: 'assets/profile/3.png',
+			pifour: 'assets/profile/4.png',
+			pifive: 'assets/profile/5.png',
+			pisix: 'assets/profile/6.png',
+			piseven: 'assets/profile/7.png',
+			pieight: 'assets/profile/8.png',
+			pinine: 'assets/profile/9.png',
+			piten: 'assets/profile/10.png',
+			pieleven: 'assets/profile/11.png'
 		};
 
 		let global = await ModelUsers.findOne({ id: interaction.user.id });
@@ -28,7 +42,7 @@ export default new Command({
 				id: interaction.user.id,
 				globalxp: 0,
 				pimage: images[selected as image],
-				rimage: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
+				rimage: 'assets/default-background.png',
 				pdesc: '',
 				ptext: 'Bla bla bla...',
 				rep: 0,

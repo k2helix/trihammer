@@ -21,9 +21,9 @@ export default async (client: ExtendedClient, guild: Guild) => {
 				authorization: process.env.DBL_API_KEY!
 			},
 			body: JSON.stringify({
-				server_count: client.guilds.cache.size,
-				shard_id: null,
-				shard_count: null
+				server_count: client.guilds.cache.size
+				// shard_id: null,
+				// shard_count: null
 			})
 		});
 

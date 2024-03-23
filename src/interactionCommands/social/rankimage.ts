@@ -10,11 +10,11 @@ export default new Command({
 
 		type image = 'rione' | 'ritwo' | 'rithree' | 'rifour' | 'rifive';
 		let images = {
-			rione: 'https://cdn.discordapp.com/attachments/487962590887149603/716052206356529162/images.png',
-			ritwo: 'https://cdn.discordapp.com/attachments/487962590887149603/716049978174472233/unknown.png',
-			rithree: 'https://cdn.discordapp.com/attachments/487962590887149603/716052102463356928/2Q.png',
-			rifour: 'https://cdn.discordapp.com/attachments/487962590887149603/716052143399895201/9k.png',
-			rifive: 'https://cdn.discordapp.com/attachments/684154385408065693/715721659486830603/images.png'
+			rione: 'assets/rank/1.png',
+			ritwo: 'assets/rank/2.png',
+			rithree: 'assets/rank/3.png',
+			rifour: 'assets/rank/4.png',
+			rifive: 'assets/rank/5.png'
 		};
 
 		let global = await ModelUsers.findOne({ id: interaction.user.id });
@@ -22,7 +22,7 @@ export default new Command({
 			let newModel = new ModelUsers({
 				id: interaction.user.id,
 				globalxp: 0,
-				pimage: 'https://cdn.discordapp.com/attachments/487962590887149603/695967471932538915/Z.png',
+				pimage: 'assets/blank.png',
 				rimage: images[selected as image],
 				pdesc: '',
 				ptext: 'Bla bla bla...',

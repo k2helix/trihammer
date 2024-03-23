@@ -437,7 +437,7 @@ export const util = {
 		selected: 'Selección confirmada',
 		no_bets: 'Lo siento, no puedo iniciar una carrera sin apuestas',
 		win: 'Y los ganadores son... **{users}**!',
-		img: 'https://cdn.discordapp.com/attachments/487962590887149603/714123875549446144/leaderboard.png'
+		img: 'assets/horse-race/leaderboard.png'
 	},
 	help: {
 		title: 'Comandos',

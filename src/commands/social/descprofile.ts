@@ -13,8 +13,8 @@ export default new MessageCommand({
 			let newModel = new ModelUsers({
 				id: message.author.id,
 				globalxp: 0,
-				pimage: 'https://cdn.discordapp.com/attachments/487962590887149603/695967471932538915/Z.png',
-				rimage: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
+				pimage: 'assets/blank.png',
+				rimage: 'assets/default-background.png',
 				pdesc: '',
 				ptext: 'Bla bla bla...',
 				rep: 0,

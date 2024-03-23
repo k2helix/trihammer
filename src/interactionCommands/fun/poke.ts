@@ -14,10 +14,11 @@ export default new Command({
 		const { kawaii } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		let { body } = await request.get('https://api.nekos.dev/api/v3/images/sfw/gif/poke/');
+
 		let embed = new EmbedBuilder();
 		embed.setTitle(client.replaceEach(kawaii.poke, { '{author}': interaction.user.username, '{member}': user.username }));
 		embed.setColor('Random');
-		embed.setImage((body as { data: { response: { url: string } } }).data.response.url);
+		embed.setImage((body as { data: { response: { url: string } } }).data?.response.url);
 
 		interaction.reply({ embeds: [embed] });
 	}

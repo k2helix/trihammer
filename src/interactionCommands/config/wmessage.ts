@@ -18,7 +18,7 @@ export default new Command({
 				server: interaction.guildId,
 				canal: 'none',
 				color: '#ffffff',
-				image: 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png',
+				image: 'assets/default-background.png',
 				text: msg
 			});
 			welcomeModel = newModel;

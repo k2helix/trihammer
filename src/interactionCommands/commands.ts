@@ -437,25 +437,25 @@ const commands: ApplicationCommandDataResolvable[] = [
 					}
 				]
 			},
-			{
-				name: 'location',
-				description: 'Search for a location',
-				description_localizations: {
-					'es-ES': 'Busca una ubicación'
-				},
-				type: ApplicationCommandOptionType.Subcommand,
-				options: [
-					{
-						name: 'query',
-						type: ApplicationCommandOptionType.String,
-						description: 'The location you want to search',
-						description_localizations: {
-							'es-ES': 'La ubicación que quieres buscar'
-						},
-						required: true
-					}
-				]
-			},
+			// {
+			// 	name: 'location',
+			// 	description: 'Search for a location',
+			// 	description_localizations: {
+			// 		'es-ES': 'Busca una ubicación'
+			// 	},
+			// 	type: ApplicationCommandOptionType.Subcommand,
+			// 	options: [
+			// 		{
+			// 			name: 'query',
+			// 			type: ApplicationCommandOptionType.String,
+			// 			description: 'The location you want to search',
+			// 			description_localizations: {
+			// 				'es-ES': 'La ubicación que quieres buscar'
+			// 			},
+			// 			required: true
+			// 		}
+			// 	]
+			// },
 			{
 				name: 'tiktok',
 				description: "Search for a user's posts on TikTok",
@@ -2061,24 +2061,24 @@ const commands: ApplicationCommandDataResolvable[] = [
 			}
 		]
 	},
-	{
-		name: 'poke',
-		description: 'Poke someone',
-		description_localizations: {
-			'es-ES': 'Molesta un poco a alguien'
-		},
-		options: [
-			{
-				name: 'user',
-				type: ApplicationCommandOptionType.User,
-				description: 'The user you want to poke',
-				description_localizations: {
-					'es-ES': 'El usuario a quien quieres molestar'
-				},
-				required: false
-			}
-		]
-	},
+	// {
+	// 	name: 'poke',
+	// 	description: 'Poke someone',
+	// 	description_localizations: {
+	// 		'es-ES': 'Molesta un poco a alguien'
+	// 	},
+	// 	options: [
+	// 		{
+	// 			name: 'user',
+	// 			type: ApplicationCommandOptionType.User,
+	// 			description: 'The user you want to poke',
+	// 			description_localizations: {
+	// 				'es-ES': 'El usuario a quien quieres molestar'
+	// 			},
+	// 			required: false
+	// 		}
+	// 	]
+	// },
 	{
 		name: 'slap',
 		description: "Slap someone's face",

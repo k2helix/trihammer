@@ -9,7 +9,7 @@ export default new MessageCommand({
 	required_args: [{ index: 0, name: 'global', type: 'string', optional: true }],
 	async execute(client, message, args) {
 		if (args[0] === 'global') {
-			let top: Users[] = await ModelUsers.find({ globalxp: { $gte: 320000 } }).lean();
+			let top: Users[] = await ModelUsers.find({ globalxp: { $gte: 400000 } }).lean();
 			top.sort((a, b) => {
 				return b.globalxp - a.globalxp;
 			});

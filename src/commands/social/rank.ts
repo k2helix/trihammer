@@ -26,15 +26,12 @@ export default new MessageCommand({
 			local = newRankModel;
 		}
 		let gl = await ModelUsers.findOne({ id: user.id }).lean();
-		let url = gl.rimage;
-		if (url === 'https://github.com/discordjs/guide/blob/master/code-samples/popular-topics/canvas/12/wallpaper.jpg?raw=true')
-			url = 'https://cdn.discordapp.com/attachments/487962590887149603/887039987940470804/wallpaper.png';
 		let top: Rank[] = await ModelRank.find({ server: message.guild!.id }).lean();
 		let position = (element: Rank) => element.id === user.id && element.server === message.guild!.id;
 
 		const rank = new RankCanvas()
 			.setAvatar(user.displayAvatarURL({ extension: 'png' }))
-			.setBackground('IMAGE', url)
+			.setBackground('IMAGE', gl.rimage)
 			.setRank(
 				top
 					.sort((a, b) => {
