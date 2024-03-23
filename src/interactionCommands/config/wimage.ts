@@ -12,7 +12,8 @@ export default new Command({
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let image =
 			(interaction as ChatInputCommandInteraction).options.getString('image') || (interaction as ChatInputCommandInteraction).options.getAttachment('attachment')?.url;
-		if (!image?.toLowerCase().startsWith('http')) return interaction.reply({ embeds: [client.redEmbed(welcome.need_url)] });
+		if (!image?.toLowerCase().startsWith('http') || image?.includes('cdn.discordapp.com') || image?.includes('media.discordapp.net'))
+			return interaction.reply({ embeds: [client.redEmbed(welcome.need_url)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: interaction.guildId });
 		if (!welcomeModel) {

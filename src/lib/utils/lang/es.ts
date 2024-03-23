@@ -189,7 +189,7 @@ export const welcome = {
 	wmessage: 'Ok, texto establecido como texto de bienvenida.',
 	channel: 'Ok, canal {channel} establecido como canal de bienvenidas.',
 	hex: 'Tiene que ser un hexadecimal (incluyendo #)',
-	need_url: 'Debes añadir la imagen vía url al comando'
+	need_url: 'Debes añadir la imagen vía url al comando (no puede estar subida en Discord ya que ahora el enlace expira y no puede ser usado)'
 } as LanguageFile['welcome'];
 
 export const functions = {

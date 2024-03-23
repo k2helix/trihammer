@@ -12,7 +12,8 @@ export default new MessageCommand({
 	async execute(client, message, args, guildConf) {
 		const { welcome } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 		let image = args[0];
-		if (!image || !image.toLowerCase().startsWith('http') || image.includes('cdn.discord')) return message.channel.send({ embeds: [client.redEmbed(welcome.need_url)] });
+		if (!image || !image.toLowerCase().startsWith('http') || image.includes('cdn.discordapp.com') || image.includes('media.discordapp.net'))
+			return message.channel.send({ embeds: [client.redEmbed(welcome.need_url)] });
 
 		let welcomeModel = await ModelWelc.findOne({ server: message.guild!.id });
 		if (!welcomeModel) {

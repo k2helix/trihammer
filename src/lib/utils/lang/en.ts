@@ -193,7 +193,7 @@ export const welcome = {
 	wmessage: 'Ok, text set as welcome text.',
 	channel: 'Ok, channel {channel} set as welcome channel.',
 	hex: 'It must be a hexadecimal (including #)',
-	need_url: 'You need to add the url of the image'
+	need_url: 'You need to add the url of the image (it cannot be uploaded here in discord as now the link expires and cannot be used)'
 } as LanguageFile['welcome'];
 
 export const functions = {
