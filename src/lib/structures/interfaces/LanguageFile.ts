@@ -330,6 +330,7 @@ export default interface LanguageFile {
 				mod: string;
 				config: string;
 			};
+			support: string;
 			footer: string;
 		};
 		invalid_user: string;

@@ -452,6 +452,8 @@ export const util = {
 			mod: '❯ Moderación',
 			config: '❯ Configuración'
 		},
+		support:
+			'Si estás disfruntando con Trihammer, puede que te guste Pato, un Oso Polar enfocado en la diversión y el roleplay que tiene varias funcionalidades. Tiene sistema de niveles, economía global, incluso un sistema de inventarios y una tienda. Si quieres invitar a Pato pulsa [aquí](https://discord.com/oauth2/authorize?client_id=849295055058763856&permissions=8&scope=bot).',
 		footer: ' comandos.'
 	},
 	invalid_user: 'No has proporcionado un usuario válido',

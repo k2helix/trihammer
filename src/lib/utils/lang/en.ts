@@ -455,6 +455,8 @@ export const util = {
 			mod: '❯ Moderation',
 			config: '❯ Configuration'
 		},
+		support:
+			"If you're enjoying Trihammer, you might like Pato, a polar bear focused on fun and roleplay that has several features. From a level system and global enconomy to an inventory system and shop. If you want to invite Pato click [here](https://discord.com/oauth2/authorize?client_id=849295055058763856&permissions=8&scope=bot).",
 		footer: ' commands.'
 	},
 	invalid_user: 'You did not provide a valid user',

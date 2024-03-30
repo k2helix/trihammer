@@ -22,9 +22,9 @@ export default new MessageCommand({
 
 		let commands = {
 			info: client.commands.filter((cmd) => cmd.category == 'information'),
-			util: client.commands.filter((cmd) => cmd.category == 'utility'),
-			image_manipulation: client.commands.filter((cmd) => cmd.category == 'image_manipulation'),
 			social: client.commands.filter((cmd) => cmd.category == 'social'),
+			image_manipulation: client.commands.filter((cmd) => cmd.category == 'image_manipulation'),
+			util: client.commands.filter((cmd) => cmd.category == 'utility'),
 			music: client.commands.filter((cmd) => cmd.category == 'music'),
 			fun: client.commands.filter((cmd) => cmd.category == 'fun'),
 			mod: client.commands.filter((cmd) => cmd.category == 'moderation'),
@@ -43,6 +43,13 @@ export default new MessageCommand({
 			let cmds = commands[k];
 			help_embed.addFields({ name: `${util.help.fields[k]} (${cmds.size})`, value: cmds.map((cmd) => `\`${cmd.name}\``).join(', ') || 'No', inline: true });
 		});
+
+		if (client.user!.id === '611710846426415107')
+			help_embed.addFields({
+				name: '‎',
+				value: util.help.support,
+				inline: false
+			});
 
 		help_embed.setFooter({ text: client.commands.size + util.help.footer });
 
