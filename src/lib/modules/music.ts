@@ -135,22 +135,34 @@ class Queue {
 				let firstVidInfo: InfoData | undefined;
 				let i = 0;
 
-				/*  if the first recommendation of recommended video by youtube is the one that just ended
-					OR the video title is very similar OR the recommended video is a lot longer than the current one,
-					following a least-squares adjustment process with the following input:
-					(previous_vid_duration, max_recommended_vid_duration): (1,5), (2,6), (3,7), (4,7), (5,8), (60,90)
+				/*
+					If the first recommendation of the recommended video by youtube is the one that just ended
+					(to avoid autoplay playing two songs in loop) OR the video title is very similar OR the recommended
+					video is a lot longer than the current one, which is done by checking the difference of durations
+					but should (commented) be done following a least-squares adjustment process with the following input:
+					(previous_vid_duration, max_recommended_vid_duration)- (1,5), (2,6), (3,7), (4,7), (5,8), (60,90)
 					get another until this stops happening;
+
+					Note that the first condition (firstVidInfo.related_videos[0] === this.songs[0].url) does not
+					really make sense as it's possible that when fetching the recommended video (later, when
+					autoplay is called for a second time) for firstVidInfo
+					1 - the related videos change
+					2 - the current song is a recommendation but not the first one. If this happens, this
+						algorithm could discard every related video except the one which is the current song.
+					So it is possible that a song is being played, then autoplay plays another song and then
+					autoplay plays the previous song again. Possible but unlikely.
 				*/
 				while (
 					i < relatedVideos.length &&
 					(!firstVidInfo ||
 						firstVidInfo.related_videos[0] === this.songs[0].url ||
 						compareTwoStrings(this.songs[0].title.toLowerCase(), firstVidInfo.video_details.title!.toLowerCase()) > 0.8 ||
-						firstVidInfo.video_details.durationInSec > 1.46 * this.songs[0].durationInSec + 2.246 * 60)
+						firstVidInfo.video_details.durationInSec - this.songs[0].durationInSec > 3000)
+					// firstVidInfo.video_details.durationInSec > 1.46 * this.songs[0].durationInSec + 2.246 * 60)
 				) {
 					try {
 						firstVidInfo = await video_info(relatedVideos[i]);
-						// console.log(i, firstVidInfo.video_details.title);
+						console.log(i, firstVidInfo.video_details.title);
 					} catch (error) {
 						console.error(error);
 					}
