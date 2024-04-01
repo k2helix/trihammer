@@ -13,7 +13,7 @@ import {
 import ManageActivity from '../lib/modules/experience';
 import ExtendedClient from '../lib/structures/Client';
 import LanguageFile from '../lib/structures/interfaces/LanguageFile';
-import { compareTwoStrings } from '../lib/utils/functions';
+import { compareTwoStrings, prinsjoto } from '../lib/utils/functions';
 
 type required_arg = { index: number; name: string; type: string; optional?: boolean; ignore?: boolean };
 
@@ -65,7 +65,7 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 
 	ManageActivity(client, message, xp);
 
-	// require('../lib/utils/functions').prinsjoto(message);
+	if (message.guild!.id === '603833979996602391') prinsjoto(message);
 
 	if (message.content.match(`^<@(!)?${client.user!.id}>`)) return message.channel.send({ embeds: [client.orangeEmbed(other.mention.split('{prefix}').join(prefix))] });
 

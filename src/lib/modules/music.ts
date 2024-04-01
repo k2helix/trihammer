@@ -135,25 +135,30 @@ class Queue {
 				let firstVidInfo: InfoData | undefined;
 				let i = 0;
 
-				// if the first recommendation of recommended video by youtube is the one that just ended or the video title is very similar or the recommended video is a lot longer than the current one, get another until this stops happening (10 tries);
+				/*  if the first recommendation of recommended video by youtube is the one that just ended
+					OR the video title is very similar OR the recommended video is a lot longer than the current one,
+					following a least-squares adjustment process with the following input:
+					(previous_vid_duration, max_recommended_vid_duration): (1,5), (2,6), (3,7), (4,7), (5,8), (60,90)
+					get another until this stops happening;
+				*/
 				while (
-					i < 10 &&
+					i < relatedVideos.length &&
 					(!firstVidInfo ||
 						firstVidInfo.related_videos[0] === this.songs[0].url ||
 						compareTwoStrings(this.songs[0].title.toLowerCase(), firstVidInfo.video_details.title!.toLowerCase()) > 0.8 ||
-						firstVidInfo.video_details.durationInSec - this.songs[0].durationInSec > 3000)
+						firstVidInfo.video_details.durationInSec > 1.46 * this.songs[0].durationInSec + 2.246 * 60)
 				) {
 					try {
 						firstVidInfo = await video_info(relatedVideos[i]);
 						// console.log(i, firstVidInfo.video_details.title);
 					} catch (error) {
-						console.log(error);
+						console.error(error);
 					}
 					i++;
 				}
 
 				if (!firstVidInfo) {
-					this.textChannel.send('Tried to fetch a recommended video 10 times but got none. **Aborting queue**');
+					this.textChannel.send('Tried to fetch a recommended video but got none. **Aborting queue**');
 					return this.stop();
 				}
 

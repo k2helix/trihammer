@@ -60,62 +60,60 @@ function array_move(arr: unknown[], old_index: number, new_index: number) {
 }
 
 function prinsjoto(message: Message) {
-	if (message.guild!.id === '603833979996602391') {
-		if (message.content.toLowerCase().includes('feo')) message.react('618038981942050826');
+	if (message.content.toLowerCase().includes('feo')) message.react('618038981942050826');
 
-		if (message.content.toLowerCase().includes('fbi'))
-			message.channel.send({
-				content: 'FBI OPEN UP!!!!!!!!',
-				files: [
-					{
-						attachment: 'https://media1.tenor.com/images/e683152889dc703c77ce5bada1e89705/tenor.gif?itemid=11500735',
-						name: 'fbi' + '.gif'
-					}
-				]
-			});
+	if (message.content.toLowerCase().includes('fbi'))
+		message.channel.send({
+			content: 'FBI OPEN UP!!!!!!!!',
+			files: [
+				{
+					attachment: 'https://media1.tenor.com/images/e683152889dc703c77ce5bada1e89705/tenor.gif?itemid=11500735',
+					name: 'fbi' + '.gif'
+				}
+			]
+		});
 
-		if (message.content.toLowerCase().includes('papelera'))
-			message.channel.send({
-				content: 'esto es una papelera japoniense no es nada especial pero es japoniense la gente tira cosas no tienen sentimientos pobre papelera acuérdate de ella',
-				files: [
-					{
-						attachment: 'https://i.imgur.com/mgNoaIl.png',
-						name: 'papelera' + '.png'
-					}
-				]
-			});
+	if (message.content.toLowerCase().includes('papelera'))
+		message.channel.send({
+			content: 'esto es una papelera japoniense no es nada especial pero es japoniense la gente tira cosas no tienen sentimientos pobre papelera acuérdate de ella',
+			files: [
+				{
+					attachment: 'https://i.imgur.com/mgNoaIl.png',
+					name: 'papelera' + '.png'
+				}
+			]
+		});
 
-		if (message.content.toLowerCase().includes('puta'))
-			message.channel.send({
-				files: [
-					{
-						attachment: 'https://cdn.discordapp.com/attachments/487962590887149603/673603357545332758/sketch-1580669947883.png',
-						name: 'puta.png'
-					}
-				]
-			});
+	if (message.content.toLowerCase().includes('puta'))
+		message.channel.send({
+			files: [
+				{
+					attachment: 'https://cdn.discordapp.xyz/attachments/487962590887149603/673603357545332758/sketch-1580669947883.png',
+					name: 'puta.png'
+				}
+			]
+		});
 
-		if (message.content.toLowerCase().includes('g2'))
-			message.channel.send({
-				content: 'G2 está mamadísimo',
-				files: [
-					{
-						attachment: 'https://cdn.discordapp.com/attachments/418590211803578391/612048235728732161/Goga-ganado-Rainbow-Six-Siege_1219688028_133861_1440x600.png',
-						name: 'G2mamadisimo' + '.png'
-					}
-				]
-			});
+	if (message.content.toLowerCase().includes('g2'))
+		message.channel.send({
+			content: 'G2 está mamadísimo',
+			files: [
+				{
+					attachment: 'https://cdn.discordapp.xyz/attachments/418590211803578391/612048235728732161/Goga-ganado-Rainbow-Six-Siege_1219688028_133861_1440x600.png',
+					name: 'G2mamadisimo' + '.png'
+				}
+			]
+		});
 
-		if (message.content.toLowerCase().includes('puto'))
-			message.channel.send({
-				files: [
-					{
-						attachment: 'https://i.imgur.com/9Pvl5bA.png',
-						name: 'puto' + '.png'
-					}
-				]
-			});
-	}
+	if (message.content.toLowerCase().includes('puto'))
+		message.channel.send({
+			files: [
+				{
+					attachment: 'https://i.imgur.com/9Pvl5bA.png',
+					name: 'puto' + '.png'
+				}
+			]
+		});
 }
 function wordOfTheDay(client: ExtendedClient, channel: TextChannel) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
