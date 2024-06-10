@@ -106,7 +106,7 @@ class Queue {
 		}
 	}
 
-	public async addFileToQueue(url: string, requester: string) {
+	public async addFileToQueue(url: string, requester: string, suno = false) {
 		const { music } = (await import(`../utils/lang/${this.language}`)) as LanguageFile;
 		const song = {
 			id: 'file',
@@ -114,8 +114,8 @@ class Queue {
 			duration: '00:00',
 			durationInSec: 0,
 			channel: {
-				url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-				name: 'Unknown'
+				url: suno ? 'https://suno.com/' : 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+				name: suno ? 'Suno' : 'Unknown'
 			},
 			url: url,
 			requested: requester,
@@ -126,6 +126,16 @@ class Queue {
 		if (this.leaveTimeout) this.clearLeaveTimeout();
 		if (this.songs.length === 1) return this.playFile(this.songs[0]);
 		this.textChannel.send({ embeds: [this.addedToQueueEmbed(song, music)] });
+	}
+
+	public async addSunoSongToQueue(url: string, requester: string) {
+		const id = url.replace('https://suno.com/song/', '');
+
+		const response = await fetch('http://localhost:3000/api/get?ids=' + id, { headers: { 'Content-Type': 'application/json' } });
+		if (response) {
+			const data = await response.json();
+			this.addFileToQueue(data[0].audio_url, requester, true);
+		}
 	}
 
 	public async handleNextSong() {

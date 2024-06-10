@@ -29,6 +29,8 @@ export default new MessageCommand({
 
 		if (searchString.match(/https?:\/\/.*?\.(wav|mp3|ogg|mp4).*?$/im)?.index === 0) return serverQueue.addFileToQueue(searchString, message.author.id);
 
+		if (config.suno_api && searchString.startsWith('https://suno.com/song/')) return serverQueue.addSunoSongToQueue(searchString, message.author.id);
+
 		let type = await play.validate(searchString);
 
 		if (config.spotify_api)

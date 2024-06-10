@@ -69,6 +69,8 @@ export default new Command({
 	category: 'fun',
 	async execute(client, interaction, guildConf) {
 		if (!interaction.isChatInputCommand() && !interaction.isContextMenuCommand()) return;
+
+		//@ts-ignore
 		const opponent = interaction.options.getUser('user');
 		if (!opponent) return;
 

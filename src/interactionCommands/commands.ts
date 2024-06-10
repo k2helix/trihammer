@@ -1070,6 +1070,24 @@ const commands: ApplicationCommandDataResolvable[] = [
 		]
 	},
 	{
+		name: 'generate',
+		description: 'Generate a song using Suno',
+		description_localizations: {
+			'es-ES': 'Genera una canción usando Suno'
+		},
+		options: [
+			{
+				name: 'prompt',
+				type: ApplicationCommandOptionType.String,
+				description: 'Prompt that describes what you want to generate',
+				description_localizations: {
+					'es-ES': 'Prompt que describe lo que quieres generar'
+				},
+				required: true
+			}
+		]
+	},
+	{
 		name: 'playlist',
 		description: 'Add, remove or view the songs in the current queue',
 		description_localizations: {

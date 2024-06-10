@@ -182,6 +182,8 @@ export default interface LanguageFile {
 		song_removed: string;
 		song_removed_and_sliced: string;
 		song_404: string;
+		insufficient_quota: string;
+		not_generated: string;
 		invalid_song: string;
 		song_select: string;
 		cancel_select: string;

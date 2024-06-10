@@ -1,14 +1,14 @@
 {
   "name": "trihammer",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "main": "dist/src/index.js",
   "engines": {
-    "node": "20.x",
+    "node": "18.x",
     "npm": "10.x"
   },
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
-    "@discordjs/voice": "^0.16.1",
+    "@discordjs/voice": "^0.17.0",
     "@sentry/node": "^7.108.0",
     "bufferutil": "^4.0.8",
     "canvas": "^2.11.2",

@@ -273,6 +273,8 @@ export const music = {
 	song_removed: '**{song}** has been removed from the queue',
 	song_removed_and_sliced: 'The songs from that song to the end where removed from the queue',
 	song_404: "There isn't a song with that number in the queue",
+	insufficient_quota: 'The maximum number of songs has been generated. Try again tomorrow',
+	not_generated: 'Your song could not be generated. It probably was because it contained words that Suno does not allow.',
 	invalid_song: 'Invalid song, cancelling.',
 	song_select: '__**Song Selection**__',
 	cancel_select: 'Type "cancel" if you do not want to select any song.',

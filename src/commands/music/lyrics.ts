@@ -44,7 +44,19 @@ export default new MessageCommand({
 		let song = args.join(' ') || queue.get(message.guildId!)?.songs[0].title;
 		if (!song) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
-		let lyrics = await getSongLyrics(song);
+		let lyrics;
+		if (queue.get(message.guildId!)?.songs[0].channel.url == 'https://suno.com/') {
+			const id = queue.get(message.guildId!)?.songs[0].title.replace('.mp3', '');
+			const { body } = await request.get('http://localhost:3000/api/get?ids=' + id, {
+				headers: {
+					accept: 'application/json'
+				}
+			});
+
+			//@ts-ignore
+			lyrics = body[0].lyric;
+		} else lyrics = await getSongLyrics(song);
+
 		if (!lyrics) return message.channel.send({ embeds: [client.redEmbed(music.lyrics_not_found)] });
 
 		message.channel.send({ embeds: [client.blueEmbed(lyrics.length > 4096 ? `${lyrics.slice(0, 4080)}\n...` : lyrics)] });

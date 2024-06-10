@@ -19,7 +19,9 @@ export default new Command({
 		let searchString;
 		if (interaction.isContextMenuCommand()) searchString = (await interaction.channel!.messages.fetch(interaction.targetId)).content;
 		else searchString = interaction.options.getString('song');
+
 		if (!searchString) return interaction.reply({ embeds: [client.redEmbed(music.invalid_song)], ephemeral: true });
+		//@ts-ignore
 		if (searchString === 'file' && interaction.options.getAttachment('file')) searchString = interaction.options.getAttachment('file')!.url;
 
 		if (interaction.guild.members.me!.voice.channel && interaction.guild.members.me!.voice.channelId !== voiceChannel.id)
@@ -30,6 +32,11 @@ export default new Command({
 		if (searchString.match(/https?:\/\/.*?\.(wav|mp3|ogg|mp4).*?$/im)?.index === 0) {
 			interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${searchString}**`))], ephemeral: true });
 			return serverQueue.addFileToQueue(searchString, interaction.user.id);
+		}
+
+		if (config.suno_api && searchString.startsWith('https://suno.com/song/')) {
+			interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${searchString}**`))], ephemeral: true });
+			return serverQueue.addSunoSongToQueue(searchString, interaction.user.id);
 		}
 
 		let type = await play.validate(searchString);

@@ -270,6 +270,8 @@ export const music = {
 	song_removed: '**{song}** ha sido removida de la cola',
 	song_removed_and_sliced: 'Se ha borrado a partir de esa canción de la cola',
 	song_404: 'La cola no tiene ninguna canción con ese número',
+	insufficient_quota: 'Se ha generado el número máximo de canciones. Vuelve a intentarlo mañana',
+	not_generated: 'No se pudo generar tu canción. Probablemente fue porque contenía palabras que Suno no permite.',
 	invalid_song: 'Canción invalida, cancelando.',
 	song_select: '__**Selección de canciones**__',
 	cancel_select: 'Escribe "cancel" si no quieres seleccionar ninguna canción',
