@@ -4,6 +4,7 @@
     "logs_channel": "id of the channel where the logs will be sent",
     "use_sentry": true, //if you want to use sentry for error handling
     "spotify_api": true, //if you want to be able to use spotify api for music (read README.md)
+    "suno_api": true, //if you want to use suno AI to generate and play songs (read README.md)
     "top.gg": true, //if you are going to use top.gg for guildCreate and guildDelete events and the rep command
     "credentials": {
         "dotenv": true, //if your tokens and api keys are in the .env file, if you want them in this file, set it to false.

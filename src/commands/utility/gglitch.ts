@@ -17,7 +17,7 @@ import MessageCommand from '../../lib/structures/MessageCommand';
 import { spawn } from 'child_process';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glitch = require('glitch-canvas');
-import { AttachmentBuilder, BufferResolvable, EmbedBuilder } from 'discord.js';
+import { BufferResolvable, EmbedBuilder } from 'discord.js';
 export default new MessageCommand({
 	name: 'gglitch',
 	description: 'Glitch a gif',
@@ -35,88 +35,70 @@ export default new MessageCommand({
 		if (args[0] && args[0].startsWith('http')) image = args[0];
 		if ([...message.attachments.values()][0]) image = [...message.attachments.values()][0].url;
 
-		if (!process.env.PXL_API_TOKEN || message.content.endsWith('local')) {
-			const { body } = await request.get(image);
-			const data = await loadImage(body as Buffer);
+		const { body } = await request.get(image);
+		const data = await loadImage(body as Buffer);
 
-			const canvas = createCanvas(data.width < 250 ? 278 : data.width, data.height < 250 ? 278 : data.height);
-			const ctx = canvas.getContext('2d');
-			ctx.drawImage(data, 0, 0, canvas.width, canvas.height);
+		const canvas = createCanvas(data.width < 250 ? 278 : data.width, data.height < 250 ? 278 : data.height);
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(data, 0, 0, canvas.width, canvas.height);
 
-			const buffer = canvas.toBuffer();
-			const frameDuration = 100;
+		const buffer = canvas.toBuffer();
+		const frameDuration = 100;
 
-			// eslint-disable-next-line prettier/prettier
-			const ffmpegArgs = [
-				'-y',
-				'-f',
-				'image2pipe',
-				'-r',
-				`${1000 / frameDuration}`,
-				'-i',
-				'-',
-				'-vf',
-				`fps=${1000 / frameDuration}`,
-				'-f',
-				'gif',
-				'pipe:1'
-			];
+		// eslint-disable-next-line prettier/prettier
+		const ffmpegArgs = [
+			'-y',
+			'-f',
+			'image2pipe',
+			'-r',
+			`${1000 / frameDuration}`,
+			'-i',
+			'-',
+			'-vf',
+			`fps=${1000 / frameDuration}`,
+			'-f',
+			'gif',
+			'pipe:1'
+		];
 
-			const ffmpegProcess = spawn('ffmpeg', ffmpegArgs, {
-				stdio: ['pipe', 'pipe', 'pipe']
-			});
+		const ffmpegProcess = spawn('ffmpeg', ffmpegArgs, {
+			stdio: ['pipe', 'pipe', 'pipe']
+		});
 
-			// Only randomize iterations (and a 1/3 probability to change the amount a little) so that the gif looks more consistent.
-			let seed = Math.floor(Math.random() * 20) + 1;
-			let amount = Math.floor(Math.random() * 20) + 1;
-			let quality = Math.floor(10 + Math.random() * 89);
-			for (let index = 0; index <= 9; index++) {
-				let iterations = Math.floor(Math.random() * 15) + 1;
-				amount = Math.round(Math.random() / 1.5) ? amount + 1 : amount;
-				// let text = `INDEX ${index} - Seed: ${seed} | Iterations: ${iterations} | Amount ${amount} | Quality ${quality}`;
-				glitch({ seed: seed + index, iterations: iterations, amount: amount, quality: quality })
-					.fromBuffer(buffer)
-					.toBuffer()
-					.then(function (glitchedBuffer: Buffer) {
-						ffmpegProcess.stdin.write(glitchedBuffer);
-						// console.log(text);
-						if (index === 9) ffmpegProcess.stdin.end();
-					})
-					.catch(() => null);
-			}
-
-			const gifBuffer = await new Promise((resolve) => {
-				const buffers: Uint8Array[] = [];
-				ffmpegProcess.stdout!.on('data', (data) => buffers.push(data));
-				ffmpegProcess.stdout!.on('end', () => resolve(Buffer.concat(buffers)));
-			});
-
-			message.channel.send({
-				embeds: [new EmbedBuilder().setColor(3092790).setImage('attachment://glitch.gif')],
-				files: [
-					{
-						attachment: gifBuffer as BufferResolvable,
-						name: 'glitch.gif'
-					}
-				]
-			});
-		} else {
-			// @ts-ignore
-			let { body } = await request
-				.post({
-					url: 'https://api.pxlapi.dev/glitch',
-					headers: { 'Content-Type': 'application/json', Authorization: 'Application ' + process.env.PXL_API_TOKEN },
-					body: JSON.stringify({
-						images: [image],
-						gif: {}
-					})
+		// Only randomize iterations (and a 1/3 probability to change the amount a little) so that the gif looks more consistent.
+		let seed = Math.floor(Math.random() * 20) + 1;
+		let amount = Math.floor(Math.random() * 20) + 1;
+		let quality = Math.floor(10 + Math.random() * 89);
+		for (let index = 0; index <= 9; index++) {
+			let iterations = Math.floor(Math.random() * 15) + 1;
+			amount = Math.round(Math.random() / 1.5) ? amount + 1 : amount;
+			// let text = `INDEX ${index} - Seed: ${seed} | Iterations: ${iterations} | Amount ${amount} | Quality ${quality}`;
+			glitch({ seed: seed + index, iterations: iterations, amount: amount, quality: quality })
+				.fromBuffer(buffer)
+				.toBuffer()
+				.then(function (glitchedBuffer: Buffer) {
+					ffmpegProcess.stdin.write(glitchedBuffer);
+					// console.log(text);
+					if (index === 9) ffmpegProcess.stdin.end();
 				})
-				.catch((err: Error) => {
-					return message.channel.send(err.message);
-				});
-			const attachment = new AttachmentBuilder(body, { name: 'glitch.gif' });
-			message.channel.send({ embeds: [new EmbedBuilder().setColor(3092790).setImage('attachment://glitch.gif')], files: [attachment] });
+				.catch(() => null);
 		}
+
+		const gifBuffer = await new Promise((resolve) => {
+			const buffers: Uint8Array[] = [];
+			ffmpegProcess.stdout!.on('data', (data) => buffers.push(data));
+			ffmpegProcess.stdout!.on('end', () => resolve(Buffer.concat(buffers)));
+		});
+
+		message.channel.send({
+			embeds: [new EmbedBuilder().setColor(3092790).setImage('attachment://glitch.gif')],
+			files: [
+				{
+					attachment: gifBuffer as BufferResolvable,
+					name: 'glitch.gif'
+				}
+			]
+		});
 
 		msg.delete();
 	}

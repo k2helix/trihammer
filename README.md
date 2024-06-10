@@ -6,12 +6,15 @@ A Discord bot with a lot of commands and now open source!
 
 If you want to self host the bot, then edit .env.example and config.json.example with all your credentials and configuration and rename them to .env and config.json \
 If you want to use the spotify api for music commands, read and follow [this guide](https://github.com/play-dl/play-dl/tree/9d24008a2be6e1d72af9af06fcb072ac5cd99a42/instructions#spotify).
-- First, download the code manually or do it with git: `git clone https://github.com/k2helix/trihammer.git && cd trihammer`
-- Now you will have to install the required packages: `npm install`
-- Build typescript code with `tsc` (do `npm install -g typescript` if not found)
-- Run it by using `node dist/src/index.js`
 
-If for some reason attachments of some command stop working, renew the url with the assets in the assets folder.
+There are commands that use [Suno](https://suno.com) to work. In order to make them usable, `suno_api` must be set to true in `config.json` **and** a suno api server must be running in the same host ([here are the docs to do this](https://suno.gcui.ai/)).
+
+Installation steps:
+- First, download the code manually or do it with git: `git clone https://github.com/k2helix/trihammer.git && cd trihammer`
+- Now you will have to install the required packages: `npm install`. If you get some error when building canvas or discordjs/opus, maybe it has to do with the node version (18 is suggested) or glibc in linux.
+- Build typescript code with `tsc` (do `npm install -g typescript` if not found)
+- Run it by using `node dist/src/index.js` or `npm start`
+
 
 ### __Credentials__
 In order for the bot to work you need special access tokens and api keys found in `.env` or `config.json`. 
@@ -25,8 +28,6 @@ In order for the bot to work you need special access tokens and api keys found i
 - DBL_API_KEY: if your bot is available on top.gg, by setting this key it will update joined servers when the bot is added/removed from a server. Enable this in the config file
 - SAUCENAO_API_KEY: required for the `sauce` command to work
 - HEROKU_TOKEN: if your bot is hosted on Heroku and this token is set, the reset command will restart the process (change the url in that command to match your app's name)
-- PXL_API_TOKEN: api key needed for the `gglitch` command to work (else it will try to generate the result locally)
-- OPENCAGE_API_KEY & MAPQUEST_API_KEY: both needed for the `location` command
 
 ### Notes
 - If you do not use any of the optional services included in `.env`, you can remove their entries.
