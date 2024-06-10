@@ -45,7 +45,7 @@ export default new MessageCommand({
 		if (!song) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
 		let lyrics;
-		if (queue.get(message.guildId!)?.songs[0].channel.url == 'https://suno.com/') {
+		if (queue.get(message.guildId!)?.songs[0].channel.url == 'https://suno.com/' && !args[0]) {
 			const id = queue.get(message.guildId!)?.songs[0].title.replace('.mp3', '');
 			const { body } = await request.get('http://localhost:3000/api/get?ids=' + id, {
 				headers: {
