@@ -36,18 +36,16 @@ export default new Command({
 				})
 			})
 			.then(({ body }) => {
-				msg.delete();
 				//@ts-ignore
 				if (body[0].audio_url == 'https://cdn1.suno.ai/None.mp3') return interaction.editReply({ embeds: [client.redEmbed(music.not_generated)] });
 
+				msg.delete();
 				const serverQueue = queue.get(interaction.guild.id) || new Queue({ voiceChannel: voiceChannel, textChannel: interaction.channel as TextChannel });
 				//@ts-ignore
 				serverQueue.addFileToQueue(body[0].audio_url, message.author.id, true);
 			})
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			.catch((err) => {
-				interaction.editReply({ embeds: [client.redEmbed(music.insufficient_quota + `\n${err.message}`)] });
-				msg.delete();
+				interaction.editReply({ embeds: [client.redEmbed(music.insufficient_quota + `\n\`${err.message}\``)] });
 			});
 	}
 });

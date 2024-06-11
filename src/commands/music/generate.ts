@@ -45,7 +45,6 @@ export default new MessageCommand({
 				//@ts-ignore
 				serverQueue.addFileToQueue(body[0].audio_url, message.author.id, true);
 			})
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			.catch((err) => {
 				message.channel.send({ embeds: [client.redEmbed(music.insufficient_quota + `\n\`${err.message}\``)] });
 				msg.delete();
