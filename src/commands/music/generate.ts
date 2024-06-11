@@ -43,11 +43,11 @@ export default new MessageCommand({
 
 				const serverQueue = queue.get(message.guild.id) || new Queue({ voiceChannel: voiceChannel, textChannel: message.channel as TextChannel });
 				//@ts-ignore
-				serverQueue.addFileToQueue(body[0].audio_url, message.author.id);
+				serverQueue.addFileToQueue(body[0].audio_url, message.author.id, true);
 			})
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			.catch((_err) => {
-				message.channel.send({ embeds: [client.redEmbed(music.insufficient_quota)] });
+			.catch((err) => {
+				message.channel.send({ embeds: [client.redEmbed(music.insufficient_quota + `\n${err.message}`)] });
 				msg.delete();
 			});
 	}

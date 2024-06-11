@@ -42,11 +42,11 @@ export default new Command({
 
 				const serverQueue = queue.get(interaction.guild.id) || new Queue({ voiceChannel: voiceChannel, textChannel: interaction.channel as TextChannel });
 				//@ts-ignore
-				serverQueue.addFileToQueue(body[0].audio_url, message.author.id);
+				serverQueue.addFileToQueue(body[0].audio_url, message.author.id, true);
 			})
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			.catch((_err) => {
-				interaction.editReply({ embeds: [client.redEmbed(music.insufficient_quota)] });
+			.catch((err) => {
+				interaction.editReply({ embeds: [client.redEmbed(music.insufficient_quota + `\n${err.message}`)] });
 				msg.delete();
 			});
 	}
