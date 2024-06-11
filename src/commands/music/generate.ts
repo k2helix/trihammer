@@ -47,7 +47,7 @@ export default new MessageCommand({
 			})
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			.catch((err) => {
-				message.channel.send({ embeds: [client.redEmbed(music.insufficient_quota + `\n${err.message}`)] });
+				message.channel.send({ embeds: [client.redEmbed(music.insufficient_quota + `\n\`${err.message}\``)] });
 				msg.delete();
 			});
 	}
