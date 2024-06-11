@@ -27,7 +27,7 @@ export default async (client: ExtendedClient, oldChannel: GuildChannel, newChann
 							'{role}': `<@&${role.id}>`,
 							'{channel}': `<#${oldChannel.id}>`,
 							'{added}': addedPerms.join(', '),
-							'{removed': removedPerms.join(', ')
+							'{removed}': removedPerms.join(', ')
 						})
 					)
 				]

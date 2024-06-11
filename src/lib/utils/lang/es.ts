@@ -571,9 +571,9 @@ export const events = {
 	},
 	role: {
 		update: {
-			added: 'Los permisos del rol {role} han sido actualizados, se les ha añadido: `{perms}`',
-			removed: 'Los permisos del rol {role} han sido actualizados, se les ha removido: `{perms}`',
-			both: 'Los permisos del rol {role} han sido actualizados, se les ha añadido: `{added}`. Se le ha removido: `{removed}`',
+			added: 'Los permisos del rol {role} han sido actualizados, se le ha añadido: `{perms}`',
+			removed: 'Los permisos del rol {role} han sido actualizados, se le ha removido: `{perms}`',
+			both: 'Los permisos del rol {role} han sido actualizados, se le ha añadido: `{added}`. Se le ha removido: `{removed}`',
 			none: 'Un rol ha sido actualizado: {role}'
 		},
 		delete: 'Un rol ha sido borrado: `{role}`',

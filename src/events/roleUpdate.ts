@@ -22,7 +22,7 @@ module.exports = async (client: ExtendedClient, oldRole: Role, newRole: Role) =>
 		logs_channel.send({
 			embeds: [
 				client.yellowEmbed(
-					client.replaceEach(events.role.update.removed, { '{role}': `<@&${newRole.id}>`, '{added}': addedPerms.join(', '), '{removed}': removedPerms.join(', ') })
+					client.replaceEach(events.role.update.both, { '{role}': `<@&${newRole.id}>`, '{added}': addedPerms.join(', '), '{removed}': removedPerms.join(', ') })
 				)
 			]
 		});
