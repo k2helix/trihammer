@@ -258,7 +258,7 @@ export const music = {
 	not_found: 'Nothing could be found',
 	error_nothing_found: 'There was an error while searching for that video: ',
 	that_video: 'that video',
-	error_stream: "There was an error when attempting to play {video}, **it is highly possible that it is age restricted (therefore I can't play it)**. More info below\n\n",
+	error_stream: "There was an error when attempting to play {video}, **it is highly possible that it is age restricted or that it's from a generated channel (and therefore I can't play it - try searching for its lyrics)**. More info below\n\n",
 	length: 'Lyrics are too long',
 	now_playing: '__Now playing__',
 	requested_by: 'Requested by:',

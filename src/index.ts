@@ -26,7 +26,10 @@ mongoose.connect(process.env.MONGO_URI!, {
 	useUnifiedTopology: true
 });
 const db = mongoose.connection;
+
+//@ts-ignore
 db.on('error', console.error.bind(console, 'connection error:'));
+//@ts-ignore
 db.once('open', function () {
 	console.log(`[MONGO_DB] Connected succesfully`);
 });

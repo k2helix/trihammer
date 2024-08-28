@@ -34,7 +34,7 @@ export default new MessageCommand({
 					adapterCreator: message.guild!.voiceAdapterCreator as DiscordGatewayAdapterCreator
 				});
 
-			const resource = createAudioResource(response.body as Readable, { inputType: StreamType.Arbitrary, metadata: { seek: true } });
+			const resource = createAudioResource(response.body as unknown as Readable, { inputType: StreamType.Arbitrary, metadata: { seek: true } });
 			const player = serverQueue?.getPlayer() || createAudioPlayer();
 			player.play(resource);
 

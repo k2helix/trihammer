@@ -1,12 +1,15 @@
 import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
 import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
-import { InfoData, SoundCloudStream, YouTubeStream, YouTubeVideo, stream, video_info } from 'play-dl';
-import { Readable } from 'stream';
+import { InfoData, YouTubeVideo, video_info } from 'play-dl';
+import { Readable, Stream } from 'stream';
 import fetch from 'node-fetch';
 import { compareTwoStrings } from '../utils/functions';
 import { ModelServer, Server } from '../utils/models';
 import LanguageFile from '../structures/interfaces/LanguageFile';
 import { Song } from '../structures/interfaces/MusicInterfaces';
+import InvidJS from '@invidjs/invid-js';
+
+const defaultInstance = 'https://invidious.reallyaweso.me';
 
 const queue: Map<string, Queue> = new Map();
 
@@ -22,12 +25,14 @@ class Queue {
 	public loop = false;
 	public shuffle = false;
 	public autoplay = false;
+	public instance: string;
 	public songs: Song[] = [];
 
 	constructor(options: { voiceChannel: VoiceBasedChannel; textChannel: BaseGuildTextChannel }) {
 		this.voiceChannel = options.voiceChannel;
 		this.textChannel = options.textChannel;
 		this.guild = options.voiceChannel.guild;
+		this.instance = defaultInstance;
 		this.setLang(); // if the guild language is changed while a queue is running, the strings used here will be in this language until it gets destroyed
 
 		if (!getQueue(this.guild)) queue.set(this.guild.id, this);
@@ -70,16 +75,29 @@ class Queue {
 	public async play(song: Song) {
 		if (!song) return this.stop();
 		const { music } = (await import(`../utils/lang/${this.language}`)) as LanguageFile;
-		let source: YouTubeStream | SoundCloudStream;
+
+		const instances = await InvidJS.fetchInstances({
+			api_allowed: true,
+			url: defaultInstance
+		  });
+		const instance = instances[Math.floor(Math.random() * instances.length)];
+
+		let video = await InvidJS.fetchVideo(instance, song.id);
+
+		//@ts-ignore
+		let format = video.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
+
+		if (!format) return this.textChannel.send('An error ocurred when getting the stream');
+
+		let source: Stream;
 		try {
-			source = await stream(song.url, { seek: song.seek || 0 });
+			source = await InvidJS.saveStream(instance, video, format);
 		} catch (error) {
 			return this.catchErrorAndSkip(error);
 		}
 
-		if (!source?.stream) return this.textChannel.send('An error ocurred when getting the stream');
-
-		const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
+		//@ts-ignore
+		const resource = createAudioResource(source.rewind(), { inputType: source.type, inlineVolume: true });
 		const player = this.getOrCreatePlayer();
 		player.play(resource);
 		resource.volume?.setVolumeLogarithmic(this.volume / 5);
@@ -95,7 +113,7 @@ class Queue {
 			});
 
 			if (response) {
-				const resource = createAudioResource(response.body as Readable, { inputType: StreamType.Arbitrary, inlineVolume: true });
+				const resource = createAudioResource(response.body as unknown as Readable, { inputType: StreamType.Arbitrary, inlineVolume: true });
 				const player = this.getOrCreatePlayer();
 				player.play(resource);
 				resource.volume?.setVolumeLogarithmic(this.volume / 5);

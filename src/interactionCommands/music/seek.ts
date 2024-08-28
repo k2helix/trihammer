@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { queue } from '../../lib/modules/music';
 import Command from '../../lib/structures/Command';
 import LanguageFile from '../../lib/structures/interfaces/LanguageFile';
@@ -7,6 +9,7 @@ export default new Command({
 	description: 'Jump to a part of the song',
 	category: 'music',
 	async execute(client, interaction, guildConf) {
+		return interaction.reply({ embeds: [client.redEmbed('Command disabled until YouTube fixes its shit')] });
 		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 
 		const serverQueue = queue.get(interaction.guildId);

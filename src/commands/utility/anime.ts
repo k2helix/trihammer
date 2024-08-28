@@ -31,7 +31,7 @@ interface anime {
 }
 
 const getFromBorder = ($: CheerioAPI, t: string) => {
-	return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim();
+	return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').trim();
 };
 const parsePage = (data: Buffer) => {
 	const $ = load(data);
@@ -75,9 +75,10 @@ const parsePage = (data: Buffer) => {
 		.map((elem) => elem.trim().slice(0, elem.trim().length / 2));
 	result.duration = getFromBorder($, 'Duration:');
 	result.score = getFromBorder($, 'Score:').split(' ')[0].slice(0, -1);
-	result.ranked = getFromBorder($, 'Ranked:').slice(0, -1);
+	result.ranked = getFromBorder($, 'Ranked:').split('\n')[0];
 	result.popularity = getFromBorder($, 'Popularity:');
 
+	console.log(result);
 	return result;
 };
 
@@ -185,6 +186,7 @@ export default new MessageCommand({
 		} else data = await getInfoFromName(anime);
 
 		if (!data) return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
+
 		let embed = new EmbedBuilder()
 			.setTitle(data.title)
 			.setURL(data.url)

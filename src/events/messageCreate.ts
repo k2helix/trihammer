@@ -69,6 +69,8 @@ export default async (client: ExtendedClient, message: Message<true>) => {
 
 	if (message.content.match(`^<@(!)?${client.user!.id}>`)) return message.channel.send({ embeds: [client.orangeEmbed(other.mention.split('{prefix}').join(prefix))] });
 
+	if (message.channelId === '1252296320912461887') client.commands.get('sendmsg')!.execute(client, message, [], serverConfig);
+
 	if (!message.content.startsWith(prefix)) return;
 
 	const args = message.content.slice(prefix.length).split(/ +/);
