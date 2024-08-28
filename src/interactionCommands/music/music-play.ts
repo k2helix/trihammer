@@ -100,7 +100,7 @@ export default new Command({
 						if (!serverQueue.songs[0]) serverQueue.stop();
 						return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 					}
-					video = (await play.video_info((videos as YouTubeVideo[])[0].id!)).video_details;
+					video = videos[0];
 				}
 				serverQueue.handleVideo(video, interaction.user.id);
 				return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${video.title}**`))], ephemeral: true });

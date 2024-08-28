@@ -91,7 +91,7 @@ export default new MessageCommand({
 						if (!serverQueue.songs[0]) serverQueue.stop();
 						return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 					}
-					video = (await play.video_info((videos as YouTubeVideo[])[0].id!)).video_details;
+					video = videos[0];
 				}
 				serverQueue.handleVideo(video, message.author.id);
 			} catch (err) {
