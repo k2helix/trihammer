@@ -79,7 +79,7 @@ class Queue {
 		const instances = await InvidJS.fetchInstances({
 			api_allowed: true,
 			url: defaultInstance
-		  });
+		});
 		const instance = instances[Math.floor(Math.random() * instances.length)];
 
 		let video = await InvidJS.fetchVideo(instance, song.id);
