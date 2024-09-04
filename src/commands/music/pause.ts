@@ -9,8 +9,8 @@ export default new MessageCommand({
 	async execute(client, message, _args, guildConf) {
 		const serverQueue = queue.get(message.guildId!);
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
-		if (serverQueue && serverQueue.playing && !serverQueue.leaveTimeout) {
-			serverQueue.playing = false;
+		if (serverQueue && serverQueue.playing && !serverQueue.paused && !serverQueue.leaveTimeout) {
+			serverQueue.paused = true;
 			serverQueue.getPlayer()!.pause();
 			return message.channel.send({ embeds: [client.blueEmbed(music.pause)] });
 		}

@@ -161,6 +161,7 @@ export default interface LanguageFile {
 		no_vc: string;
 		wrong_vc: string;
 		no_queue: string;
+		not_playing: string;
 		leave_timeout: string;
 		lyrics_name: string;
 		lyrics_not_found: string;

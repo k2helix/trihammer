@@ -14,6 +14,8 @@ export default new Command({
 		const serverQueue = queue.get(interaction.guildId);
 		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 
+		if (!serverQueue.playing) return interaction.reply({ embeds: [client.redEmbed(music.not_playing)], ephemeral: true });
+
 		const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission =
 			interaction.member.roles.cache.has(djRole?.id || '') ||

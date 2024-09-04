@@ -14,6 +14,8 @@ export default new Command({
 		const serverQueue = queue.get(interaction.guildId);
 		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 
+		if (!serverQueue.playing) return interaction.reply({ embeds: [client.redEmbed(music.not_playing)], ephemeral: true });
+
 		if (interaction.isChatInputCommand() && interaction.options.getString('to')) {
 			const djRole = interaction.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 			if ((djRole && interaction.member!.roles.cache.has(djRole.id)) || serverQueue.voiceChannel.members.filter((m) => !m.user.bot).size <= 3) {

@@ -33,6 +33,7 @@ export default async (client: ExtendedClient, oldState: VoiceState, newState: Vo
 			// if the bot was disconnected
 			if (member.id === client.user!.id) {
 				if (serverQueue.leaveTimeout) serverQueue.clearLeaveTimeout();
+				serverQueue.stop();
 				return queue.delete(oldState.guild.id);
 			}
 			if (!serverQueue.leaveTimeout && members.has(client.user!.id) && members.filter((m) => !m.user.bot).size === 0) setLeaveTimeout(client, serverQueue, music);

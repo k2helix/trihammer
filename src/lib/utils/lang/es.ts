@@ -212,7 +212,7 @@ export const music = {
 		disabled: '⏭️ Autoplay desactivado'
 	},
 	pause: '⏸ Reproducción pausada (ayuda por favor)',
-	resume: '▶ Reproducción continuada',
+	resume: '▶ Reproducción reanudada',
 	tts: {
 		file: 'No puedes usar este comando mientras haya un archivo sonando',
 		too_long: 'El texto debe tener menos de 200 caracteres.',
@@ -248,6 +248,7 @@ export const music = {
 	no_vc: 'No estás en un canal de voz',
 	wrong_vc: 'No estás en el mi canal de voz.',
 	no_queue: 'No hay ninguna canción en la cola',
+	not_playing: 'Parece que no hay nada sonando ahora mismo',
 	leave_timeout: 'He abandonado el canal de voz porque nadie me estaba escuchando :(',
 	lyrics_name: 'Debes poner el nombre de la canción',
 	lyrics_not_found: 'No encontré la letra de la canción que pediste. Intenta especificar más (el/la artista...)',

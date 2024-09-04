@@ -252,6 +252,7 @@ export const music = {
 	no_vc: 'You are not in a voice channel',
 	wrong_vc: 'You are not in my voice channel',
 	no_queue: "There isn't any song in the queue",
+	not_playing: "It seems there's nothing playing right now",
 	leave_timeout: 'I left the channel because there was nobody listening to me :(',
 	lyrics_name: 'You need to type the name of the song',
 	lyrics_not_found: 'I could not find the lyrics of the song you requested. Try being more specific (the artist...)',

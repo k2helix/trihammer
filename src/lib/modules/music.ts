@@ -20,19 +20,20 @@ class Queue {
 	public textChannel: BaseGuildTextChannel;
 	public voiceChannel: VoiceBasedChannel;
 	public volume = 1;
-	public playing = true;
+	public playing = false;
+	public paused = false;
 	public language = 'en';
 	public loop = false;
 	public shuffle = false;
 	public autoplay = false;
-	public instance: string;
+	// public instance: string;
 	public songs: Song[] = [];
 
 	constructor(options: { voiceChannel: VoiceBasedChannel; textChannel: BaseGuildTextChannel }) {
 		this.voiceChannel = options.voiceChannel;
 		this.textChannel = options.textChannel;
 		this.guild = options.voiceChannel.guild;
-		this.instance = defaultInstance;
+		// this.instance = defaultInstance;
 		this.setLang(); // if the guild language is changed while a queue is running, the strings used here will be in this language until it gets destroyed
 
 		if (!getQueue(this.guild)) queue.set(this.guild.id, this);
@@ -120,6 +121,7 @@ class Queue {
 		const player = this.getOrCreatePlayer();
 		player.play(resource);
 		resource.volume?.setVolumeLogarithmic(this.volume / 5);
+		this.playing = true;
 
 		if (!song.seek) this.textChannel.send({ embeds: [this.playingEmbed(song, music)] });
 	}
@@ -136,6 +138,7 @@ class Queue {
 				const player = this.getOrCreatePlayer();
 				player.play(resource);
 				resource.volume?.setVolumeLogarithmic(this.volume / 5);
+				this.playing = true;
 				this.textChannel.send({ embeds: [this.playingEmbed(file, music)] });
 			}
 		} catch (error) {
@@ -316,7 +319,10 @@ class Queue {
 			player.on('stateChange', (oldState, newState) => {
 				// @ts-ignore
 				if (oldState.resource?.metadata?.seek && !newState.resource) return this.play(this.songs[0]);
-				if (oldState.status == 'playing' && newState.status == 'idle') this.handleNextSong();
+				if (oldState.status == 'playing' && newState.status == 'idle') {
+					this.playing = false;
+					this.handleNextSong();
+				}
 			});
 			this.getConnection()?.subscribe(player);
 		}

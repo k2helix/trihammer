@@ -16,6 +16,8 @@ export default new MessageCommand({
 		const serverQueue = queue.get(message.guild.id);
 		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
 
+		if (!serverQueue.playing) return message.channel.send({ embeds: [client.redEmbed(music.not_playing)] });
+
 		const djRole = message.guild.roles.cache.find((role) => role.name.toLowerCase() === 'dj');
 		let permission = message.member.roles.cache.has(djRole?.id || '') || message.member.id === serverQueue.songs[0].requested || serverQueue.songs[0].requested === 'Autoplay';
 		if (permission) return serverQueue.skip();

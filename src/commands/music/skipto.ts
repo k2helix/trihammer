@@ -12,6 +12,9 @@ export default new MessageCommand({
 
 		const serverQueue = queue.get(message.guild!.id);
 		if (!serverQueue || serverQueue?.leaveTimeout) return message.channel.send({ embeds: [client.redEmbed(music.no_queue)] });
+
+		if (!serverQueue.playing) return message.channel.send({ embeds: [client.redEmbed(music.not_playing)] });
+
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 
