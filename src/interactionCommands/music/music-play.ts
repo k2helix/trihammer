@@ -91,17 +91,17 @@ export default new Command({
 		} else {
 			let video;
 			try {
-				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
-				else {
-					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
-						return client.catchError(err, interaction.channel as TextChannel);
-					});
-					if (typeof videos === 'boolean' || !videos || videos.length < 1) {
-						if (!serverQueue.songs[0]) serverQueue.stop();
-						return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
-					}
-					video = videos[0];
+				// if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
+				// else {
+				let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
+					return client.catchError(err, interaction.channel as TextChannel);
+				});
+				if (typeof videos === 'boolean' || !videos || videos.length < 1) {
+					if (!serverQueue.songs[0]) serverQueue.stop();
+					return interaction.reply({ embeds: [client.redEmbed(music.not_found)], ephemeral: true });
 				}
+				video = videos[0];
+				// }
 				serverQueue.handleVideo(video, interaction.user.id);
 				return interaction.reply({ embeds: [client.blueEmbed(music.play.added_to_queue.description.replace('{song}', `**${video.title}**`))], ephemeral: true });
 			} catch (err) {

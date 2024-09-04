@@ -1,5 +1,5 @@
 import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
-import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
+import { BaseGuildTextChannel, EmbedBuilder, Guild, Message, VoiceBasedChannel } from 'discord.js';
 import { InfoData, YouTubeVideo, video_info } from 'play-dl';
 import { Readable, Stream } from 'stream';
 import fetch from 'node-fetch';
@@ -77,10 +77,12 @@ class Queue {
 		const { music } = (await import(`../utils/lang/${this.language}`)) as LanguageFile;
 
 		const instances = await InvidJS.fetchInstances({
-			api_allowed: true,
-			url: defaultInstance
+			api_allowed: true
+			// url: defaultInstance
 		});
-		const instance = instances[Math.floor(Math.random() * instances.length)];
+
+		// console.log(instances);
+		const instance = instances.find((i) => i.url.includes(defaultInstance)) || instances[Math.floor(Math.random() * instances.length)];
 
 		let video = await InvidJS.fetchVideo(instance, song.id);
 
@@ -89,12 +91,29 @@ class Queue {
 
 		if (!format) return this.textChannel.send('An error ocurred when getting the stream');
 
-		let source: Stream;
+		let source: Stream | void;
+		let loadingMsg: Message | undefined;
 		try {
-			source = await InvidJS.saveStream(instance, video, format);
+			source = await InvidJS.saveStream(instance, video, format, false).catch(async (err) => {
+				// If the video cannot be played by loading it from the bot side,
+				// make it load directly on the instance side which should be allowed
+				// to do so.
+				if (err.message.includes('Not allowed to download this video!')) {
+					loadingMsg = await this.textChannel.send({ embeds: [this.loadingEmbed()] });
+					return await InvidJS.saveStream(instance, video, format, true).catch((err2) => {
+						loadingMsg!.delete();
+						return this.catchErrorAndSkip(err2);
+					});
+				}
+			});
+
+			// if (!(source instanceof Stream)) return this.textChannel.send('An error ocurred when getting the stream');
 		} catch (error) {
 			return this.catchErrorAndSkip(error);
 		}
+
+		if (loadingMsg) loadingMsg!.delete();
+		if (!source) return this.textChannel.send('An error ocurred when getting the stream');
 
 		//@ts-ignore
 		const resource = createAudioResource(source.rewind(), { inputType: source.type, inlineVolume: true });
@@ -190,7 +209,7 @@ class Queue {
 				) {
 					try {
 						firstVidInfo = await video_info(relatedVideos[i]);
-						console.log(i, firstVidInfo.video_details.title);
+						// console.log(i, firstVidInfo.video_details.title);
 					} catch (error) {
 						console.error(error);
 					}
@@ -322,6 +341,10 @@ class Queue {
 				{ name: strings.play.now_playing.duration, value: song.duration || 'Unknown', inline: true }
 			)
 			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
+	}
+
+	private loadingEmbed() {
+		return new EmbedBuilder().setColor('#5865f2').setImage('https://cdn.discordapp.com/attachments/487962590887149603/999306111360454676/in.gif?size=4096?size=4096');
 	}
 }
 

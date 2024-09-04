@@ -82,17 +82,17 @@ export default new MessageCommand({
 		} else {
 			let video;
 			try {
-				if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
-				else {
-					let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
-						return client.catchError(err, message.channel as TextChannel);
-					});
-					if (typeof videos === 'boolean' || !videos || videos.length < 1) {
-						if (!serverQueue.songs[0]) serverQueue.stop();
-						return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
-					}
-					video = videos[0];
+				// if (type === 'yt_video') video = (await play.video_info(searchString)).video_details;
+				// else {
+				let videos = await play.search(searchString, { limit: 1 }).catch((err) => {
+					return client.catchError(err, message.channel as TextChannel);
+				});
+				if (typeof videos === 'boolean' || !videos || videos.length < 1) {
+					if (!serverQueue.songs[0]) serverQueue.stop();
+					return message.channel.send({ embeds: [client.redEmbed(music.not_found)] });
 				}
+				video = videos[0];
+				// }
 				serverQueue.handleVideo(video, message.author.id);
 			} catch (err) {
 				message.channel.send({
