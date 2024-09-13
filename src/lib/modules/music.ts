@@ -83,25 +83,42 @@ class Queue {
 		});
 
 		// console.log(instances);
-		const instance = instances.find((i) => i.url.includes(defaultInstance)) || instances[Math.floor(Math.random() * instances.length)];
+		let instance = instances.find((i) => i.url.includes(defaultInstance)) || instances[Math.floor(Math.random() * instances.length)];
 
-		let video = await InvidJS.fetchVideo(instance, song.id);
+		const maxAttempts = 3;
+		let attempts = 0;
 
-		//@ts-ignore
-		let format = video.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
+		const usedInstances: string[] = [];
+		let video;
 
-		if (!format) return this.textChannel.send('An error ocurred when getting the stream');
+		while (!video && attempts < maxAttempts && instance) {
+			video = await InvidJS.fetchVideo(instance, song.id).catch((error) => {
+				console.log(instance.url, error);
+				return undefined;
+			});
+
+			usedInstances.push(instance.url);
+			instance = instances.filter((i) => !usedInstances.includes(i.url))[Math.floor(Math.random() * instances.length)];
+			attempts++;
+		}
+
+		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
+
+		if (!format) {
+			this.textChannel.send('An error ocurred when getting the stream');
+			return this.stop();
+		}
 
 		let source: Stream | void;
 		let loadingMsg: Message | undefined;
 		try {
-			source = await InvidJS.saveStream(instance, video, format, false).catch(async (err) => {
+			source = await InvidJS.saveStream(instance, video!, format, false).catch(async (err) => {
 				// If the video cannot be played by loading it from the bot side,
 				// make it load directly on the instance side which should be allowed
 				// to do so.
 				if (err.message.includes('Not allowed to download this video!')) {
 					loadingMsg = await this.textChannel.send({ embeds: [this.loadingEmbed()] });
-					return await InvidJS.saveStream(instance, video, format, true).catch((err2) => {
+					return await InvidJS.saveStream(instance, video!, format, true).catch((err2) => {
 						loadingMsg!.delete();
 						return this.catchErrorAndSkip(err2);
 					});
