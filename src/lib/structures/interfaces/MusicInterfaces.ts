@@ -10,6 +10,7 @@ interface Song {
 	url: string;
 	requested: string;
 	seek: number;
+	tryAgainFor: number;
 	skip: string[];
 }
 

@@ -65,6 +65,7 @@ class Queue {
 			},
 			url: `https://www.youtube.com/watch?v=${video.id}`,
 			requested: requester,
+			tryAgainFor: -1,
 			seek: 0,
 			skip: []
 		};
@@ -107,6 +108,10 @@ class Queue {
 
 		if (!format) {
 			this.textChannel.send(`An error occurred when getting the stream (format, using instance: <${instance?.url}>)`);
+			if (song.tryAgainFor > 0) {
+				song.tryAgainFor--;
+				this.songs.unshift(song);
+			} else if (song.tryAgainFor == -1) song.tryAgainFor = maxAttempts;
 			return this.handleNextSong();
 		}
 
@@ -134,6 +139,10 @@ class Queue {
 		if (loadingMsg) loadingMsg!.delete();
 		if (!source) {
 			this.textChannel.send(`An error occurred when getting the stream (source, using instance: <${instance.url}>)`);
+			if (song.tryAgainFor > 0) {
+				song.tryAgainFor--;
+				this.songs.unshift(song);
+			} else if (song.tryAgainFor == -1) song.tryAgainFor = maxAttempts;
 			return this.handleNextSong();
 		}
 
@@ -182,6 +191,7 @@ class Queue {
 			},
 			url: url,
 			requested: requester,
+			tryAgainFor: -1,
 			seek: 0,
 			skip: []
 		};
