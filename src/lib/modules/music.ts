@@ -125,10 +125,11 @@ class Queue {
 				if (err.message.includes('Not allowed to download this video!')) {
 					loadingMsg = await this.textChannel.send({ embeds: [this.loadingEmbed()] });
 					return await InvidJS.saveStream(instance, video!, format, true).catch((err2) => {
+						console.error(err2);
 						loadingMsg!.delete();
-						return this.catchErrorAndSkip(err2);
+						return;
 					});
-				} else return this.catchErrorAndSkip(err);
+				} else return console.error(err);
 			});
 
 			// if (!(source instanceof Stream)) return this.textChannel.send('An error ocurred when getting the stream');
