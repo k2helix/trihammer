@@ -107,7 +107,7 @@ class Queue {
 		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
 
 		if (!format) {
-			this.textChannel.send(`An error occurred when getting the stream (format, using instance: <${instance?.url}>)`);
+			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: <${instance.url}>)`, music)] });
 			if (song.tryAgainFor > 0) {
 				song.tryAgainFor--;
 				this.songs.unshift(song);
@@ -126,7 +126,7 @@ class Queue {
 					loadingMsg = await this.textChannel.send({ embeds: [this.loadingEmbed()] });
 					return await InvidJS.saveStream(instance, video!, format, true).catch((err2) => {
 						console.error(err2);
-						loadingMsg!.delete();
+						if (loadingMsg?.deletable) loadingMsg!.delete();
 						return;
 					});
 				} else return console.error(err);
@@ -137,9 +137,9 @@ class Queue {
 			return this.catchErrorAndSkip(error);
 		}
 
-		if (loadingMsg) loadingMsg!.delete();
+		if (loadingMsg?.deletable) loadingMsg.delete();
 		if (!source) {
-			this.textChannel.send(`An error occurred when getting the stream (source, using instance: <${instance.url}>)`);
+			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: <${instance.url}>)`, music)] });
 			if (song.tryAgainFor > 0) {
 				song.tryAgainFor--;
 				this.songs.unshift(song);
@@ -385,6 +385,10 @@ class Queue {
 
 	private loadingEmbed() {
 		return new EmbedBuilder().setColor('#5865f2').setImage('https://cdn.discordapp.com/attachments/487962590887149603/999306111360454676/in.gif?size=4096?size=4096');
+	}
+
+	private errorEmbed(title: string, msg: string, strings: LanguageFile['music']) {
+		return new EmbedBuilder().setDescription(strings.error_stream.replace('{video}', title || 'video') + `\`${msg}\``).setColor('Red');
 	}
 }
 
