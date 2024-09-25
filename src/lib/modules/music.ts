@@ -110,7 +110,11 @@ class Queue {
 		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
 
 		if (!format) {
-			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: ${instance?.url})`, music)] });
+			this.textChannel.send({
+				embeds: [
+					this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: ${instance?.url})\nTrying again ${song.tryAgainFor} times`, music)
+				]
+			});
 			if (this.songs[0]?.tryAgainFor > 0) {
 				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
@@ -123,6 +127,7 @@ class Queue {
 
 		let source: Stream | void;
 		let loadingMsg: Message | undefined;
+		let deleted = false;
 		try {
 			source = await InvidJS.saveStream(instance, video!, format, false).catch(async (err) => {
 				// If the video cannot be played by loading it from the bot side,
@@ -132,7 +137,8 @@ class Queue {
 					loadingMsg = await this.textChannel.send({ embeds: [this.loadingEmbed()] });
 					return await InvidJS.saveStream(instance, video!, format, true).catch((err2) => {
 						console.error(err2);
-						if (loadingMsg?.deletable) loadingMsg!.delete();
+						loadingMsg!.delete();
+						deleted = true;
 						return;
 					});
 				} else return console.error(err);
@@ -143,9 +149,13 @@ class Queue {
 			return this.catchErrorAndSkip(error);
 		}
 
-		if (loadingMsg?.deletable) loadingMsg.delete();
+		if (loadingMsg && !deleted) loadingMsg.delete();
 		if (!source) {
-			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: ${instance?.url})`, music)] });
+			this.textChannel.send({
+				embeds: [
+					this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: ${instance?.url})\nTrying again ${song.tryAgainFor} times`, music)
+				]
+			});
 			if (this.songs[0]?.tryAgainFor > 0) {
 				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
