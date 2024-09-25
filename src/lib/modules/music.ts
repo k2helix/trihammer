@@ -112,7 +112,11 @@ class Queue {
 		if (!format) {
 			this.textChannel.send({
 				embeds: [
-					this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: ${instance?.url})\nTrying again ${song.tryAgainFor} times`, music)
+					this.errorEmbed(
+						song.title,
+						`An error occurred when getting the stream (format, using instance: ${instance?.url})${song.tryAgainFor > 0 ? `\nTrying again ${song.tryAgainFor} times` : ''}`,
+						music
+					)
 				]
 			});
 			if (this.songs[0]?.tryAgainFor > 0) {
@@ -153,7 +157,11 @@ class Queue {
 		if (!source) {
 			this.textChannel.send({
 				embeds: [
-					this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: ${instance?.url})\nTrying again ${song.tryAgainFor} times`, music)
+					this.errorEmbed(
+						song.title,
+						`An error occurred when getting the stream (source, using instance: ${instance?.url})${song.tryAgainFor > 0 ? `\nTrying again ${song.tryAgainFor} times` : ''}`,
+						music
+					)
 				]
 			});
 			if (this.songs[0]?.tryAgainFor > 0) {
