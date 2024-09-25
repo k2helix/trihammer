@@ -104,10 +104,11 @@ class Queue {
 			attempts++;
 		}
 
+		if (!instance) instances[Math.floor(Math.random() * instances.length)];
 		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
 
 		if (!format) {
-			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: <${instance.url}>)`, music)] });
+			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: <${instance?.url}>)`, music)] });
 			if (song.tryAgainFor > 0) {
 				song.tryAgainFor--;
 				this.songs.unshift(song);
@@ -139,7 +140,7 @@ class Queue {
 
 		if (loadingMsg?.deletable) loadingMsg.delete();
 		if (!source) {
-			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: <${instance.url}>)`, music)] });
+			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: <${instance?.url}>)`, music)] });
 			if (song.tryAgainFor > 0) {
 				song.tryAgainFor--;
 				this.songs.unshift(song);
