@@ -26,6 +26,7 @@ class Queue {
 	public loop = false;
 	public shuffle = false;
 	public autoplay = false;
+	public currentInstance: string | null = null;
 	// public instance: string;
 	public songs: Song[] = [];
 
@@ -73,7 +74,7 @@ class Queue {
 		if (!fromPlaylist) this.textChannel.send({ embeds: [this.addedToQueueEmbed(song, music)] });
 	}
 
-	public async play(song: Song) {
+	public async play(song: Song): Promise<void> {
 		if (!song) return this.stop();
 		const { music } = (await import(`../utils/lang/${this.language}`)) as LanguageFile;
 
@@ -85,7 +86,7 @@ class Queue {
 		// console.log(instances);
 		let instance = instances.find((i) => i.url.includes(defaultInstance)) || instances[Math.floor(Math.random() * instances.length)];
 
-		const maxAttempts = 3;
+		const maxAttempts = 5;
 		let attempts = 0;
 
 		const usedInstances: string[] = [];
@@ -98,15 +99,15 @@ class Queue {
 			});
 
 			usedInstances.push(instance.url);
-			instance = instances.filter((i) => !usedInstances.includes(i.url))[Math.floor(Math.random() * instances.length)];
+			instance = instances.filter((i) => !usedInstances.includes(i.url))[Math.floor(Math.random() * (instances.length - usedInstances.length))];
 			attempts++;
 		}
 
 		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
 
 		if (!format) {
-			this.textChannel.send('An error ocurred when getting the stream');
-			return this.stop();
+			this.textChannel.send(`An error occurred when getting the stream (format, using instance: <${instance?.url}>)`);
+			return this.handleNextSong();
 		}
 
 		let source: Stream | void;
@@ -122,7 +123,7 @@ class Queue {
 						loadingMsg!.delete();
 						return this.catchErrorAndSkip(err2);
 					});
-				}
+				} else return this.catchErrorAndSkip(err);
 			});
 
 			// if (!(source instanceof Stream)) return this.textChannel.send('An error ocurred when getting the stream');
@@ -131,7 +132,12 @@ class Queue {
 		}
 
 		if (loadingMsg) loadingMsg!.delete();
-		if (!source) return this.textChannel.send('An error ocurred when getting the stream');
+		if (!source) {
+			this.textChannel.send(`An error occurred when getting the stream (source, using instance: <${instance.url}>)`);
+			return this.handleNextSong();
+		}
+
+		this.currentInstance = instance.url;
 
 		//@ts-ignore
 		const resource = createAudioResource(source.rewind(), { inputType: source.type, inlineVolume: true });
