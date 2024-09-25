@@ -99,20 +99,25 @@ class Queue {
 				return undefined;
 			});
 
-			usedInstances.push(instance.url);
-			instance = instances.filter((i) => !usedInstances.includes(i.url))[Math.floor(Math.random() * (instances.length - usedInstances.length))];
+			if (!video) {
+				usedInstances.push(instance.url);
+				instance = instances.filter((i) => !usedInstances.includes(i.url))[Math.floor(Math.random() * (instances.length - usedInstances.length))];
+			}
 			attempts++;
 		}
 
-		if (!instance) instances[Math.floor(Math.random() * instances.length)];
+		this.currentInstance = instance?.url || null;
 		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
 
 		if (!format) {
-			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: <${instance?.url}>)`, music)] });
-			if (song.tryAgainFor > 0) {
-				song.tryAgainFor--;
+			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (format, using instance: ${instance?.url})`, music)] });
+			if (this.songs[0]?.tryAgainFor > 0) {
+				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
-			} else if (song.tryAgainFor == -1) song.tryAgainFor = maxAttempts;
+			} else if (this.songs[0]?.tryAgainFor == -1) {
+				this.songs[0].tryAgainFor = maxAttempts;
+				this.songs.unshift(song);
+			}
 			return this.handleNextSong();
 		}
 
@@ -140,15 +145,16 @@ class Queue {
 
 		if (loadingMsg?.deletable) loadingMsg.delete();
 		if (!source) {
-			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: <${instance?.url}>)`, music)] });
-			if (song.tryAgainFor > 0) {
-				song.tryAgainFor--;
+			this.textChannel.send({ embeds: [this.errorEmbed(song.title, `An error occurred when getting the stream (source, using instance: ${instance?.url})`, music)] });
+			if (this.songs[0]?.tryAgainFor > 0) {
+				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
-			} else if (song.tryAgainFor == -1) song.tryAgainFor = maxAttempts;
+			} else if (this.songs[0]?.tryAgainFor == -1) {
+				this.songs[0].tryAgainFor = maxAttempts;
+				this.songs.unshift(song);
+			}
 			return this.handleNextSong();
 		}
-
-		this.currentInstance = instance.url;
 
 		//@ts-ignore
 		const resource = createAudioResource(source.rewind(), { inputType: source.type, inlineVolume: true });
