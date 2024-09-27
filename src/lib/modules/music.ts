@@ -110,19 +110,14 @@ class Queue {
 		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
 
 		if (!format) {
-			this.textChannel.send({
-				embeds: [
-					this.errorEmbed(
-						song.title,
-						`An error occurred when getting the stream (format, using instance: ${instance?.url})${song.tryAgainFor > 0 ? `\nTrying again ${song.tryAgainFor} times` : ''}`,
-						music
-					)
-				]
-			});
 			if (this.songs[0]?.tryAgainFor > 0) {
+				this.textChannel.send(`Trying again ${this.songs[0].tryAgainFor} time${this.songs[0].tryAgainFor > 1 ? 's' : ''}`);
 				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
 			} else if (this.songs[0]?.tryAgainFor == -1) {
+				this.textChannel.send({
+					embeds: [this.errorEmbed(this.songs[0].title, `An error occurred when getting the stream (format, using instance: ${instance?.url})`, music)]
+				});
 				this.songs[0].tryAgainFor = maxAttempts;
 				this.songs.unshift(song);
 			}
@@ -155,19 +150,14 @@ class Queue {
 
 		if (loadingMsg && !deleted) loadingMsg.delete();
 		if (!source) {
-			this.textChannel.send({
-				embeds: [
-					this.errorEmbed(
-						song.title,
-						`An error occurred when getting the stream (source, using instance: ${instance?.url})${song.tryAgainFor > 0 ? `\nTrying again ${song.tryAgainFor} times` : ''}`,
-						music
-					)
-				]
-			});
 			if (this.songs[0]?.tryAgainFor > 0) {
+				this.textChannel.send(`Trying again ${this.songs[0].tryAgainFor} time${this.songs[0].tryAgainFor > 1 ? 's' : ''}`);
 				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
 			} else if (this.songs[0]?.tryAgainFor == -1) {
+				this.textChannel.send({
+					embeds: [this.errorEmbed(this.songs[0].title, `An error occurred when getting the stream (source, using instance: ${instance?.url})`, music)]
+				});
 				this.songs[0].tryAgainFor = maxAttempts;
 				this.songs.unshift(song);
 			}
@@ -304,7 +294,8 @@ class Queue {
 					this.stop();
 				}, 30000);
 		} else {
-			if (this.shuffle && this.songs[0].seek === 0) this.songs.splice(0, 0, this.songs.splice(Math.floor(Math.random() * this.songs.length), 1)[0]); //swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length)); // change the song that is gonna be played with a random song
+			if (this.shuffle && this.songs[0].seek === 0 && this.songs[0].tryAgainFor < 1)
+				this.songs.splice(0, 0, this.songs.splice(Math.floor(Math.random() * this.songs.length), 1)[0]); //swap(serverQueue.songs, 0, Math.floor(Math.random() * serverQueue.songs.length)); // change the song that is gonna be played with a random song
 			this.songs[0].id === 'file' ? this.playFile(this.songs[0]) : this.play(this.songs[0]);
 		}
 	}
