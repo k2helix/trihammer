@@ -9,7 +9,7 @@ import LanguageFile from '../structures/interfaces/LanguageFile';
 import { Song } from '../structures/interfaces/MusicInterfaces';
 import InvidJS from '@invidjs/invid-js';
 
-const defaultInstance = 'https://invidious.jing.rocks';
+const defaultInstance = 'no';
 
 const queue: Map<string, Queue> = new Map();
 
