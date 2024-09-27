@@ -87,7 +87,7 @@ class Queue {
 		// console.log(instances);
 		let instance = instances.find((i) => i.url.includes(defaultInstance)) || instances[Math.floor(Math.random() * instances.length)];
 
-		const maxAttempts = 5;
+		const maxAttempts = 3;
 		let attempts = 0;
 
 		const usedInstances: string[] = [];
@@ -151,7 +151,7 @@ class Queue {
 		if (loadingMsg && !deleted) loadingMsg.delete();
 		if (!source) {
 			if (this.songs[0]?.tryAgainFor > 0) {
-				this.textChannel.send(`Trying again ${this.songs[0].tryAgainFor} time${this.songs[0].tryAgainFor > 1 ? 's' : ''}`);
+				this.textChannel.send(`Trying to play it again ${this.songs[0].tryAgainFor} time${this.songs[0].tryAgainFor > 1 ? 's' : ''}`);
 				this.songs[0].tryAgainFor--;
 				this.songs.unshift(song);
 			} else if (this.songs[0]?.tryAgainFor == -1) {
