@@ -1,0 +1,3 @@
+[submodule "neko-melody"]
+	path = neko-melody
+	url = https://github.com/YuzuZensai/NekoMelody.git
