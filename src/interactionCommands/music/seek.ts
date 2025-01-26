@@ -9,7 +9,7 @@ export default new Command({
 	description: 'Jump to a part of the song',
 	category: 'music',
 	async execute(client, interaction, guildConf) {
-		return interaction.reply({ embeds: [client.redEmbed('Command disabled until YouTube fixes its shit')] });
+		// return interaction.reply({ embeds: [client.redEmbed('Command disabled until YouTube fixes its shit')] });
 		if (!interaction.inCachedGuild() || !interaction.isChatInputCommand()) return;
 
 		const serverQueue = queue.get(interaction.guildId);

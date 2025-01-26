@@ -3,11 +3,11 @@
   "version": "2.6.2",
   "main": "dist/src/index.js",
   "engines": {
-    "node": "18.x",
+    "node": "20.x",
     "npm": "10.x"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.9.0",
+    "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.17.0",
     "@invidjs/invid-js": "github:k2helix/InvidJS",
     "@sentry/node": "^7.119.0",
@@ -56,6 +56,9 @@
     "typescript",
     "music",
     "bot"
+  ],
+  "workspaces": [
+    "neko-melody"
   ],
   "author": "k2helix"
 }

@@ -11,7 +11,7 @@ export default new MessageCommand({
 	category: 'music',
 	required_args: [{ index: 0, type: 'string', name: 'timestamp' }],
 	async execute(client, message, args, guildConf) {
-		return message.channel.send({ embeds: [client.redEmbed('Command disabled until YouTube fixes its shit')] });
+		// return message.channel.send({ embeds: [client.redEmbed('Command disabled until YouTube fixes its shit')] });
 		const { music } = (await import(`../../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
 		const serverQueue = queue.get(message.guild!.id);

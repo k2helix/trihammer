@@ -1,19 +1,21 @@
 import { AudioPlayer, AudioResource, StreamType, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
-import { BaseGuildTextChannel, EmbedBuilder, Guild, Message, VoiceBasedChannel } from 'discord.js';
+import { BaseGuildTextChannel, EmbedBuilder, Guild, VoiceBasedChannel } from 'discord.js';
 import { InfoData, YouTubeVideo, video_info } from 'play-dl';
-import { Readable, Stream } from 'stream';
+import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import { compareTwoStrings } from '../utils/functions';
 import { ModelServer, Server } from '../utils/models';
 import LanguageFile from '../structures/interfaces/LanguageFile';
 import { Song } from '../structures/interfaces/MusicInterfaces';
-import InvidJS from '@invidjs/invid-js';
-
-const defaultInstance = 'no';
+import { Player, YtDlpProvider, createPlayer } from '../../../neko-melody/src/index';
+import { AudioInformation } from '../../../neko-melody/src/providers/base';
 
 const queue: Map<string, Queue> = new Map();
+const DISABLE_AUTOPLAY = true;
 
 class Queue {
+	private nekoPlayer: Player;
+
 	public readonly guild: Guild;
 
 	public leaveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -26,14 +28,29 @@ class Queue {
 	public loop = false;
 	public shuffle = false;
 	public autoplay = false;
-	public currentInstance: string | null = null;
-	// public instance: string;
 	public songs: Song[] = [];
 
 	constructor(options: { voiceChannel: VoiceBasedChannel; textChannel: BaseGuildTextChannel }) {
 		this.voiceChannel = options.voiceChannel;
 		this.textChannel = options.textChannel;
 		this.guild = options.voiceChannel.guild;
+
+		this.nekoPlayer = createPlayer([new YtDlpProvider()]);
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		this.nekoPlayer.on('play', (_information: AudioInformation) => {
+			if (!this.nekoPlayer.stream) throw new Error('No input stream');
+
+			console.log('here');
+			const resource = createAudioResource(this.nekoPlayer.stream, {
+				inlineVolume: true
+			});
+
+			this.getOrCreatePlayer().play(resource);
+			resource.volume?.setVolumeLogarithmic(this.volume / 5);
+			this.nekoPlayer.startCurrentStream();
+		});
+
 		// this.instance = defaultInstance;
 		this.setLang(); // if the guild language is changed while a queue is running, the strings used here will be in this language until it gets destroyed
 
@@ -75,102 +92,26 @@ class Queue {
 		if (!fromPlaylist) this.textChannel.send({ embeds: [this.addedToQueueEmbed(song, music)] });
 	}
 
-	public async play(song: Song): Promise<void> {
+	public async play(song: Song) {
 		if (!song) return this.stop();
 		const { music } = (await import(`../utils/lang/${this.language}`)) as LanguageFile;
+		// let source: YouTubeStream | SoundCloudStream;
+		// try {
+		// 	source = await stream(song.url, { seek: song.seek || 0 });
+		// } catch (error) {
+		// 	return this.catchErrorAndSkip(error);
+		// }
 
-		const instances = await InvidJS.fetchInstances({
-			api_allowed: true
-			// url: defaultInstance
-		});
+		// if (!source?.stream) return this.textChannel.send('An error ocurred when getting the stream');
 
-		// console.log(instances);
-		let instance = instances.find((i) => i.url.includes(defaultInstance)) || instances[Math.floor(Math.random() * instances.length)];
+		// const resource = createAudioResource(source.stream, { inputType: source.type, inlineVolume: true });
+		// const player = this.getOrCreatePlayer();
+		// player.play(resource);
+		// resource.volume?.setVolumeLogarithmic(this.volume / 5);
 
-		const maxAttempts = 3;
-		let attempts = 0;
+		await this.nekoPlayer.play(song.url, song.seek);
 
-		const usedInstances: string[] = [];
-		let video;
-
-		while (!video && attempts < maxAttempts && instance) {
-			video = await InvidJS.fetchVideo(instance, song.id).catch((error) => {
-				console.log(instance.url, error);
-				return undefined;
-			});
-
-			if (!video) {
-				usedInstances.push(instance.url);
-				instance = instances.filter((i) => !usedInstances.includes(i.url))[Math.floor(Math.random() * (instances.length - usedInstances.length))];
-			}
-			attempts++;
-		}
-
-		this.currentInstance = instance?.url || null;
-		let format = video?.formats?.find((format) => format.audio_quality === InvidJS.AudioQuality.Medium);
-
-		if (!format) {
-			if (this.songs[0]?.tryAgainFor > 0) {
-				this.textChannel.send(`Trying again ${this.songs[0].tryAgainFor} time${this.songs[0].tryAgainFor > 1 ? 's' : ''}`);
-				this.songs[0].tryAgainFor--;
-				this.songs.unshift(song);
-			} else if (this.songs[0]?.tryAgainFor == -1) {
-				this.textChannel.send({
-					embeds: [this.errorEmbed(this.songs[0].title, `An error occurred when getting the stream (format, using instance: ${instance?.url})`, music)]
-				});
-				this.songs[0].tryAgainFor = maxAttempts;
-				this.songs.unshift(song);
-			}
-			return this.handleNextSong();
-		}
-
-		let source: Stream | void;
-		let loadingMsg: Message | undefined;
-		let deleted = false;
-		try {
-			source = await InvidJS.saveStream(instance, video!, format, false).catch(async (err) => {
-				// If the video cannot be played by loading it from the bot side,
-				// make it load directly on the instance side which should be allowed
-				// to do so.
-				if (err.message.includes('Not allowed to download this video!')) {
-					loadingMsg = await this.textChannel.send({ embeds: [this.loadingEmbed()] });
-					return await InvidJS.saveStream(instance, video!, format, true).catch((err2) => {
-						console.error(err2);
-						loadingMsg!.delete();
-						deleted = true;
-						return;
-					});
-				} else return console.error(err);
-			});
-
-			// if (!(source instanceof Stream)) return this.textChannel.send('An error ocurred when getting the stream');
-		} catch (error) {
-			return this.catchErrorAndSkip(error);
-		}
-
-		if (loadingMsg && !deleted) loadingMsg.delete();
-		if (!source) {
-			if (this.songs[0]?.tryAgainFor > 0) {
-				this.textChannel.send(`Trying to play it again ${this.songs[0].tryAgainFor} time${this.songs[0].tryAgainFor > 1 ? 's' : ''}`);
-				this.songs[0].tryAgainFor--;
-				this.songs.unshift(song);
-			} else if (this.songs[0]?.tryAgainFor == -1) {
-				this.textChannel.send({
-					embeds: [this.errorEmbed(this.songs[0].title, `An error occurred when getting the stream (source, using instance: ${instance?.url})`, music)]
-				});
-				this.songs[0].tryAgainFor = maxAttempts;
-				this.songs.unshift(song);
-			}
-			return this.handleNextSong();
-		}
-
-		//@ts-ignore
-		const resource = createAudioResource(source.rewind(), { inputType: source.type, inlineVolume: true });
-		const player = this.getOrCreatePlayer();
-		player.play(resource);
-		resource.volume?.setVolumeLogarithmic(this.volume / 5);
 		this.playing = true;
-
 		if (!song.seek) this.textChannel.send({ embeds: [this.playingEmbed(song, music)] });
 	}
 
@@ -228,7 +169,7 @@ class Queue {
 	}
 
 	public async handleNextSong() {
-		if (this.autoplay)
+		if (this.autoplay && !DISABLE_AUTOPLAY)
 			if (this.songs.length == 1 && this.songs[0].id !== 'file') {
 				let relatedVideos = (await video_info(this.songs[0].url)).related_videos;
 				let firstVidInfo: InfoData | undefined;
@@ -371,6 +312,7 @@ class Queue {
 				if (oldState.resource?.metadata?.seek && !newState.resource) return this.play(this.songs[0]);
 				if (oldState.status == 'playing' && newState.status == 'idle') {
 					this.playing = false;
+					this.nekoPlayer.endCurrentStream();
 					this.handleNextSong();
 				}
 			});
@@ -399,13 +341,13 @@ class Queue {
 			.setThumbnail(`https://img.youtube.com/vi/${song.id}/hqdefault.jpg`);
 	}
 
-	private loadingEmbed() {
-		return new EmbedBuilder().setColor('#5865f2').setImage('https://cdn.discordapp.com/attachments/487962590887149603/999306111360454676/in.gif?size=4096?size=4096');
-	}
+	// private loadingEmbed() {
+	// 	return new EmbedBuilder().setColor('#5865f2').setImage('https://cdn.discordapp.com/attachments/487962590887149603/999306111360454676/in.gif?size=4096?size=4096');
+	// }
 
-	private errorEmbed(title: string, msg: string, strings: LanguageFile['music']) {
-		return new EmbedBuilder().setDescription(strings.error_stream.replace('{video}', title || 'video') + `\`${msg}\``).setColor('Red');
-	}
+	// private errorEmbed(title: string, msg: string, strings: LanguageFile['music']) {
+	// 	return new EmbedBuilder().setDescription(strings.error_stream.replace('{video}', title || 'video') + `\`${msg}\``).setColor('Red');
+	// }
 }
 
 function getQueue(guild: Guild) {
