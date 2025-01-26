@@ -10,7 +10,7 @@ If you want to use the spotify api for music commands, read and follow [this gui
 There are commands that use [Suno](https://suno.com) to work. In order to make them usable, `suno_api` must be set to true in `config.json` **and** a suno api server must be running in the same host ([here are the docs to do this](https://suno.gcui.ai/)).
 
 Installation steps:
-- First, download the code manually or do it with git: `git clone https://github.com/k2helix/trihammer.git && cd trihammer`
+- First, download the code manually or do it with git: `git clone --recurse-submodules https://github.com/k2helix/trihammer.git && cd trihammer`
 - Now you will have to install the required packages: `npm install`. If you get some error when building canvas or discordjs/opus, maybe it has to do with the node version (18 is suggested) or glibc in linux.
 - Build typescript code with `tsc` (do `npm install -g typescript` if not found)
 - Run it by using `node dist/src/index.js` or `npm start`
