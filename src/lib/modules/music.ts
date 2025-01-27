@@ -256,12 +256,17 @@ class Queue {
 		this.songs = [];
 		if (this.leaveTimeout) this.clearLeaveTimeout();
 		this.getPlayer()?.stop();
+		this.nekoPlayer.endCurrentStream();
 		queue.delete(this.guild.id);
 		this.getConnection()?.destroy();
 	}
 
 	public skip() {
 		this.getPlayer()?.stop();
+	}
+
+	public destroyNekoPlayer() {
+		this.nekoPlayer.endCurrentStream();
 	}
 
 	public getResource() {

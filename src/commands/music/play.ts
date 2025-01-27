@@ -27,7 +27,7 @@ export default new MessageCommand({
 
 		const serverQueue = queue.get(message.guild.id) || new Queue({ voiceChannel: voiceChannel, textChannel: message.channel as TextChannel });
 
-		if (searchString.match(/https?:\/\/.*?\.(wav|mp3|ogg|mp4).*?$/im)?.index === 0) return serverQueue.addFileToQueue(searchString, message.author.id);
+		if (searchString.match(/https?:\/\/.*?\.(wav|mp3|ogg|mp4|opus).*?$/im)?.index === 0) return serverQueue.addFileToQueue(searchString, message.author.id);
 
 		if (config.suno_api && searchString.startsWith('https://suno.com/song/')) return serverQueue.addSunoSongToQueue(searchString, message.author.id);
 

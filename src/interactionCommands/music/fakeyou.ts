@@ -111,9 +111,12 @@ export default new Command({
 
 											const resource = createAudioResource(response.body as Readable, { inputType: StreamType.Arbitrary, metadata: { seek: true } });
 											const player = serverQueue?.getPlayer() || createAudioPlayer();
-											player.play(resource);
 
-											if (!serverQueue) {
+											if (serverQueue) {
+												serverQueue.destroyNekoPlayer();
+												player.play(resource);
+											} else {
+												player.play(resource);
 												connection.subscribe(player);
 												player.on('stateChange', (oldState, newState) => {
 													if (oldState.status == 'playing' && newState.status == 'idle') connection.destroy();
