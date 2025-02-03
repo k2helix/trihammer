@@ -115,7 +115,7 @@ class Queue {
 			await this.nekoPlayer.play(song.url, song.seek);
 		} catch (error) {
 			this.loading = false;
-			this.catchErrorAndSkip(error);
+			return this.catchErrorAndSkip(error);
 		}
 
 		this.loading = false;
