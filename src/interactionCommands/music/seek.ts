@@ -19,6 +19,7 @@ export default new Command({
 		if (!voiceChannel) return interaction.reply({ embeds: [client.redEmbed(music.no_vc)], ephemeral: true });
 		if (!serverQueue || serverQueue?.leaveTimeout) return interaction.reply({ embeds: [client.redEmbed(music.no_queue)], ephemeral: true });
 		if (serverQueue.songs[0]?.id === 'file') return interaction.reply({ embeds: [client.redEmbed(music.cannot_seek_files)], ephemeral: true });
+		if (!serverQueue.playing || serverQueue.loading) return interaction.reply.send({ embeds: [client.redEmbed(music.not_playing)] });
 
 		const array = interaction.options.getString('timestamp')!.split(':').reverse();
 
@@ -33,6 +34,7 @@ export default new Command({
 
 		(serverQueue.getResource()!.metadata as { seek: true }) = { seek: true };
 		serverQueue.songs[0].seek = all;
+		serverQueue.playing = false;
 		serverQueue.skip(); // force player state change
 
 		interaction.reply({ embeds: [client.blueEmbed(music.seek.replace('{time}', interaction.options.getString('timestamp')!))] });

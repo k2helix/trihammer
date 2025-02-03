@@ -23,6 +23,7 @@ class Queue {
 	public voiceChannel: VoiceBasedChannel;
 	public volume = 1;
 	public playing = false;
+	public loading = false;
 	public paused = false;
 	public language = 'en';
 	public loop = false;
@@ -41,7 +42,7 @@ class Queue {
 		this.nekoPlayer.on('play', (_information: AudioInformation) => {
 			if (!this.nekoPlayer.stream) throw new Error('No input stream');
 
-			console.log('here');
+			// console.log('here');
 			const resource = createAudioResource(this.nekoPlayer.stream, {
 				inlineVolume: true
 			});
@@ -109,8 +110,15 @@ class Queue {
 		// player.play(resource);
 		// resource.volume?.setVolumeLogarithmic(this.volume / 5);
 
-		await this.nekoPlayer.play(song.url, song.seek);
+		try {
+			this.loading = true;
+			await this.nekoPlayer.play(song.url, song.seek);
+		} catch (error) {
+			this.loading = false;
+			this.catchErrorAndSkip(error);
+		}
 
+		this.loading = false;
 		this.playing = true;
 		if (!song.seek) this.textChannel.send({ embeds: [this.playingEmbed(song, music)] });
 	}
@@ -257,8 +265,13 @@ class Queue {
 		if (this.leaveTimeout) this.clearLeaveTimeout();
 		this.getPlayer()?.stop();
 		this.nekoPlayer.endCurrentStream();
-		queue.delete(this.guild.id);
 		this.getConnection()?.destroy();
+		if (this.loading)
+			setTimeout(() => {
+				this.nekoPlayer.endCurrentStream();
+			}, 30000);
+
+		queue.delete(this.guild.id);
 	}
 
 	public skip() {
@@ -313,8 +326,17 @@ class Queue {
 				return this.catchErrorAndSkip(error);
 			});
 			player.on('stateChange', (oldState, newState) => {
+				/*
+					The first if covers many cases:
+					- Two TTS/Fakeyou at the same time, because then newState.resource is not null (it has metadata)
+					- One TTS/Fakeyou, then calling play(songs[0]), then another TTS/Fakeyou while the song is still
+					loading, as then this.loading is true and it won't try to play it again because it is not
+					playing already, so when it finishes loading it will play it anyway
+					- Two seeks while one is still loading, for the same as above
+					- Basic seek funcionality
+				*/
 				// @ts-ignore
-				if (oldState.resource?.metadata?.seek && !newState.resource) return this.play(this.songs[0]);
+				if (oldState.resource?.metadata?.seek && !newState.resource && !this.loading) return this.play(this.songs[0]);
 				if (oldState.status == 'playing' && newState.status == 'idle') {
 					this.playing = false;
 					this.nekoPlayer.endCurrentStream();

@@ -43,6 +43,7 @@ export default new Command({
 
 			if (serverQueue) {
 				serverQueue.destroyNekoPlayer();
+				serverQueue.playing = false;
 				player.play(resource);
 			} else {
 				player.play(resource);

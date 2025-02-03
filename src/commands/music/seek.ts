@@ -19,6 +19,7 @@ export default new MessageCommand({
 		const voiceChannel = message.member!.voice.channel;
 		if (!voiceChannel) return message.channel.send({ embeds: [client.redEmbed(music.no_vc)] });
 		if (serverQueue.songs[0]?.id === 'file') return message.channel.send({ embeds: [client.redEmbed(music.cannot_seek_files)] });
+		if (!serverQueue.playing || serverQueue.loading) return message.channel.send({ embeds: [client.redEmbed(music.not_playing)] });
 
 		const array = args.join(' ').split(':').reverse();
 
@@ -33,6 +34,7 @@ export default new MessageCommand({
 
 		(serverQueue.getResource()!.metadata as { seek: true }) = { seek: true };
 		serverQueue.songs[0].seek = all;
+		serverQueue.playing = false;
 		serverQueue.skip(); // force player state change
 
 		message.channel.send({ embeds: [client.blueEmbed(music.seek.replace('{time}', args.join(' ')))] });

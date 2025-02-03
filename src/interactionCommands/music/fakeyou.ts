@@ -8,6 +8,8 @@ import { Readable } from 'stream';
 import Command from '../../lib/structures/Command';
 // import fetch from 'node-fetch';
 
+const cdn = 'https://cdn-2.fakeyou.com';
+
 let cookie;
 let voiceModels;
 fetch('https://api.fakeyou.com/tts/list')
@@ -96,7 +98,7 @@ export default new Command({
 											serverQueue.songs[0].seek = Math.floor((serverQueue.getPlaybackDuration() + serverQueue.songs[0].seek * 1000) / 1000);
 										}
 
-										let url = 'https://storage.googleapis.com/vocodes-public' + job_body.state.maybe_public_bucket_wav_audio_path;
+										let url = cdn + job_body.state.maybe_public_bucket_wav_audio_path;
 										const response = await fetch(url).catch((err) => {
 											return client.catchError(interaction.channel, err);
 										});
@@ -114,6 +116,7 @@ export default new Command({
 
 											if (serverQueue) {
 												serverQueue.destroyNekoPlayer();
+												serverQueue.playing = false;
 												player.play(resource);
 											} else {
 												player.play(resource);
