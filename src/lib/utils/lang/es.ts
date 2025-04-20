@@ -1,5 +1,12 @@
 import configFile from '../../../../config.json';
 import LanguageFile from '../../structures/interfaces/LanguageFile';
+
+interface Chicken {
+	owner: string;
+	name: string;
+	health: number;
+}
+
 function convertDate(ms: number | string) {
 	const date = new Date(ms),
 		months = {
@@ -441,6 +448,53 @@ export const util = {
 		no_bets: 'Lo siento, no puedo iniciar una carrera sin apuestas',
 		win: 'Y los ganadores son... **{users}**!',
 		img: 'assets/horse-race/leaderboard.png'
+	},
+	cf: {
+		cf: 'Pelea de pollos',
+		button: 'Unirse a la pelea de pollos',
+		description: 'Va a dar comienzo una pelea de pollos en 20 segundos. ¡Pulsa el botón para unirte!',
+		name: 'Nombre de tu pollo',
+		default_name: function (owner: string) {
+			return `Pollo de ${owner}`;
+		},
+		joined: 'Te uniste a la pelea de pollos.',
+		no_participants: 'No puedo iniciar una pelea de pollos sin al menos 2 participantes',
+		list: 'Lista de participantes',
+		starting: 'La pelea de pollos está a punto de comenzar...',
+		first_round: '¡Y AHÍ VAN!',
+		chicken_lost: function (c: Chicken) {
+			return `🪦 **${c.name}** (el pollo de ${c.owner}), murió`;
+		},
+		draw: 'Por algún motivo, todos los pollos han muerto. Tenemos un empate',
+		winner: function (c: Chicken) {
+			return `¡👑 ${c.name}, el pollo de ${c.owner}, ha ganado la pelea de pollos!`;
+		},
+		game: {
+			attack1: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** le mete un picotazo a **${c2.name}**! La salud de **${c2.name}** disminuye.`;
+			},
+			attack2: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** cacarea imponentemente a **${c2.name}**! **${c2.name}** se asusta y se da un golpe, disminuyendo su salud.`;
+			},
+			attack3: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** salta encima de **${c2.name}** y le araña con las patas! La salud de **${c2.name}** disminuye.`;
+			},
+			attack4: function (c1: Chicken, c2: Chicken) {
+				return `**${c2.name}** se despista y **${c1.name}** le da con su ala! La salud de **${c2.name}** disminuye.`;
+			},
+			attack5: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.owner}** le dice a **${c1.name}** que utilice tajo aéreo contra **${c2.name}**. La salud de **${c2.name}** disminuye`;
+			},
+			both1: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** arremete corriendo y se choca contra **${c2.name}**! La salud de ambos disminuye.`;
+			},
+			combined1: function (c1: Chicken, c2: Chicken, c3: Chicken) {
+				return `**${c1.name}** y **${c2.name}** se alían para atacar a su peor enemigo, **${c3.name}**. La salud de ${c3.name} disminuye.`;
+			},
+			heal1: function (c: Chicken) {
+				return `${c.name} entra en fase de meditación y se cura.`;
+			}
+		}
 	},
 	help: {
 		title: 'Comandos',

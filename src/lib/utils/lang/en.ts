@@ -1,5 +1,12 @@
 import configFile from '../../../../config.json';
 import LanguageFile from '../../structures/interfaces/LanguageFile';
+
+interface Chicken {
+	owner: string;
+	name: string;
+	health: number;
+}
+
 function convertDate(ms: number | string) {
 	const date = new Date(ms),
 		months = {
@@ -445,6 +452,53 @@ export const util = {
 		no_bets: "Sorry, can't have a race with no bets!",
 		win: 'And the winners are... **{users}**!',
 		img: 'assets/horse-race/enleaderboard.png'
+	},
+	cf: {
+		cf: 'Cockfight',
+		button: 'Join cockfight!',
+		description: 'A cockfight is beggining in 20 seconds. Press the button to join!',
+		name: "Your cock's name",
+		default_name: function (owner: string) {
+			return `${owner}'s cock`;
+		},
+		joined: 'You joined the cockfight',
+		no_participants: 'The cockfight cannot start without at least 2 participants',
+		list: 'List of participants',
+		starting: 'The cockfight is about to start...',
+		first_round: 'AND THERE THEY GO!',
+		chicken_lost: function (c: Chicken) {
+			return `🪦 **${c.name}** (${c.owner}'s cock), died`;
+		},
+		draw: "For some reason, every chicken died. That's a draw",
+		winner: function (c: Chicken) {
+			return `¡👑 ${c.name}, ${c.owner}'s cock, won the cockfight!`;
+		},
+		game: {
+			attack1: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** pecks **${c2.name}**! **${c2.name}**'s health decreases.`;
+			},
+			attack2: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** crows imposingly at **${c2.name}**! **${c2.name}** gets scared and bumps into something, losing health.`;
+			},
+			attack3: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** jumps on top of **${c2.name}** and scratches with its claws! **${c2.name}**'s health decreases.`;
+			},
+			attack4: function (c1: Chicken, c2: Chicken) {
+				return `**${c2.name}** gets distracted and **${c1.name}** hits them with its wing! **${c2.name}**'s health decreases.`;
+			},
+			attack5: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.owner}** tells **${c1.name}** to use air slash on **${c2.name}**. **${c2.name}**'s health decreases.`;
+			},
+			both1: function (c1: Chicken, c2: Chicken) {
+				return `**${c1.name}** charges and crashes into **${c2.name}**! Both lose health.`;
+			},
+			combined1: function (c1: Chicken, c2: Chicken, c3: Chicken) {
+				return `**${c1.name}** and **${c2.name}** team up to attack their worst enemy, **${c3.name}**. **${c3.name}**'s health decreases.`;
+			},
+			heal1: function (c: Chicken) {
+				return `${c.name} enters a meditative state and heals.`;
+			}
+		}
 	},
 	help: {
 		title: 'Commands',

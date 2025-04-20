@@ -1,6 +1,11 @@
 import { Guild, GuildMember, TextChannel, User } from 'discord.js';
 import { Result } from './SaucenaoInterfaces';
 
+interface Chicken {
+	owner: string;
+	name: string;
+	health: number;
+}
 export default interface LanguageFile {
 	config: {
 		channel_set: {
@@ -319,6 +324,31 @@ export default interface LanguageFile {
 			no_bets: string;
 			win: string;
 			img: string;
+		};
+		cf: {
+			cf: string;
+			button: string;
+			description: string;
+			name: string;
+			default_name: (owner: string) => string;
+			joined: string;
+			no_participants: string;
+			list: string;
+			starting: string;
+			first_round: string;
+			chicken_lost: (c: Chicken) => string;
+			draw: string;
+			winner: (c: Chicken) => string;
+			game: {
+				attack1: (c1: Chicken, c2: Chicken) => string;
+				attack2: (c1: Chicken, c2: Chicken) => string;
+				attack3: (c1: Chicken, c2: Chicken) => string;
+				attack4: (c1: Chicken, c2: Chicken) => string;
+				attack5: (c1: Chicken, c2: Chicken) => string;
+				both1: (c1: Chicken, c2: Chicken) => string;
+				combined1: (c1: Chicken, c2: Chicken, c3: Chicken) => string;
+				heal1: (c: Chicken) => string;
+			};
 		};
 		help: {
 			title: string;

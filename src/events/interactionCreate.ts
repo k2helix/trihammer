@@ -32,7 +32,7 @@ module.exports = async (client: ExtendedClient, interaction: Interaction) => {
 	}
 	const { config, util, other } = (await import(`../lib/utils/lang/${guildConf.lang}`)) as LanguageFile;
 
-	if (interaction.isModalSubmit()) {
+	if (interaction.isModalSubmit() && interaction.customId === 'feedback') {
 		let embed = new EmbedBuilder()
 			.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.displayAvatarURL() })
 			.setTitle(interaction.fields.getTextInputValue('feedbackTitle') || null)

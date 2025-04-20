@@ -598,6 +598,14 @@ const commands: ApplicationCommandDataResolvable[] = [
 					'es-ES': 'Juega una carrera de caballos con amigos'
 				},
 				type: ApplicationCommandOptionType.Subcommand
+			},
+			{
+				name: 'cockfight',
+				description: 'Play a cockfight with friends',
+				description_localizations: {
+					'es-ES': 'Juega una pelea de pollos con amigos'
+				},
+				type: ApplicationCommandOptionType.Subcommand
 			}
 		]
 	},
