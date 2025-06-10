@@ -22,6 +22,7 @@ In order for the bot to work you need special access tokens and api keys found i
 **Required credentials**:
 - TOKEN: your discord bot token which you can find in the Discord Developer Portal
 - MONGO_URI: your MongoDB database uri, which you can get for free on [their site](https://www.mongodb.com/atlas/database)
+- COOKIES_BROWSER: not a credential, but it is needed for music to work. Anything that works as [yt-dlp](https://github.com/yt-dlp/yt-dlp/)'s `--cookies-from-browser` params will work here. For instance, `firefox` is a valid
 
 **Optional credentials**:
 - SENTRY_DSN: useful for error debugging, you can get one at https://sentry.io/welcome/. Enable this in the config file
