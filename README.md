@@ -2,6 +2,10 @@
 
 A Discord bot with a lot of commands and now open source!
 
+## Moved to Codeberg
+
+A rewrite in Rust is available at Codeberg: https://codeberg.org/k2helix/trinado
+
 ## Installation
 
 If you want to self host the bot, then edit .env.example and config.json.example with all your credentials and configuration and rename them to .env and config.json \
